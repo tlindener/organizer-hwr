@@ -10,6 +10,7 @@ namespace Organizer.Interfaces
     public class CalendarEntry
     {
 
+        [Key]
         public int CalendarEntryId { get; set; }
         [Required]
         public DateTime StartDate { get; set; }
@@ -22,9 +23,9 @@ namespace Organizer.Interfaces
             {
                 return EndDate.Subtract(StartDate).TotalMinutes;
             }
-        }
+        }      
 
-        public User Owner { get; set; }
+        public virtual User Owner { get; set; }
         public int CalendarId { get; set; }
         public virtual Calendar Calendar { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,9 @@ namespace Organizer.Interfaces
         [Key]
         public int CalendarId { get; set; }
         [Required]
-        public User Owner { get; set; }
+        public virtual User Owner { get; set; }
+        
+        public String Description { get; set; }
         public virtual List<CalendarEntry> CalendarEntries { get; set; }
 
         public Calendar()

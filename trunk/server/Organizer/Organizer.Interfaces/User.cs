@@ -12,10 +12,16 @@ namespace Organizer.Interfaces
         [Key]
         public int UserId { get; set; }
         [Required]
-        public String Name { get; set; }
+        public String GivenName { get; set; }
+        [Required]
+        public String Surname { get; set; }
+        [Required]
+        public String MailAddress { get; set; }
+        [Required]
+        public String PhoneNumber { get; set; }
 
         public int CalendarId { get; set; }
-        public virtual Calendar Calendar { get; set; }
+        public virtual List<Calendar> Calendar { get; set; }
 
     }
 }

@@ -33,7 +33,7 @@ namespace Organizer
         private bool isCalendarValid(Calendar calendar)
         {
 
-            if (!String.IsNullOrEmpty(calendar.Owner.Name))
+            if (!String.IsNullOrEmpty(calendar.Owner.Surname) && !String.IsNullOrEmpty(calendar.Owner.GivenName))
             {
                 return true;
             }
