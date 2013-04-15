@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organizer.Client.ConsoleApplication", "Organizer.Client.ConsoleApplication\Organizer.Client.ConsoleApplication.csproj", "{C1658BD7-4CF6-46DF-8B74-8CB536B64D86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organizer.Interfaces", "Organizer.Interfaces\Organizer.Interfaces.csproj", "{801BB490-3475-4ED5-8EEA-C66557C08544}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organizer", "Organizer.Calendar\Organizer.csproj", "{6CB4A714-4752-4244-814D-9D943952556F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1658BD7-4CF6-46DF-8B74-8CB536B64D86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1658BD7-4CF6-46DF-8B74-8CB536B64D86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1658BD7-4CF6-46DF-8B74-8CB536B64D86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1658BD7-4CF6-46DF-8B74-8CB536B64D86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{801BB490-3475-4ED5-8EEA-C66557C08544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{801BB490-3475-4ED5-8EEA-C66557C08544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{801BB490-3475-4ED5-8EEA-C66557C08544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{801BB490-3475-4ED5-8EEA-C66557C08544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CB4A714-4752-4244-814D-9D943952556F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CB4A714-4752-4244-814D-9D943952556F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CB4A714-4752-4244-814D-9D943952556F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CB4A714-4752-4244-814D-9D943952556F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
