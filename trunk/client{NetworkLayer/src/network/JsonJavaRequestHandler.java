@@ -3,14 +3,14 @@
  */
 package network;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import network.objects.JsonObject;
-
-import organizer.objects.DataPusher;
-import organizer.objects.types.Calendar;
+import organizer.objects.AbstractOrganizerObject;
+import organizer.objects.types.Kalendar;
 import organizer.objects.types.Termin;
+
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 /**
  * Verbindungsschnittstelle um Daten abzufragen. Eingabeobjekte werden verändert
@@ -25,6 +25,8 @@ import organizer.objects.types.Termin;
  */
 public class JsonJavaRequestHandler extends RequestHandler {
 
+	private GsonBuilder builder = null;
+	
 	/**
 	 * Verbindungsdetails für Socket hinterlegen
 	 */
@@ -33,6 +35,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	}
 
 	private void init() {
+		builder = new GsonBuilder();
 		//initialze Socket
 	}
 
@@ -44,15 +47,21 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	// Es gilt T = Cast und somit auch Cast = T
 	// Im Grunde String t = (String) fillString(json, string);
 	@Override
-	public <T extends DataPusher> T requestObject(T obj) {
+	public <T extends AbstractOrganizerObject> T requestObject(T obj) {
 		
-		JsonObject json = sendRequestToServer();
+			
+//		
+		JsonObject json1 = new JsonObject();
+		json1.addProperty("id", "3");
+		json1.addProperty("beschreibung", "Aufstehen");
+		obj = (T) builder.create().fromJson(json1, obj.getClass());
 		
-		if(obj instanceof Calendar){
-			return (T) fillCalendar(json, (Calendar) obj);
-		}else if(obj instanceof Termin){
-			return (T) fillTermin(json, (Termin) obj);
-		}
+//		JsonObject json = sendRequestToServer();
+//		if(obj instanceof Kalendar){
+//			return (T) fillCalendar(json, (Kalendar) obj);
+//		}else if(obj instanceof Termin){
+//			return (T) fillTermin(json, (Termin) obj);
+//		}
 				
 //		
 //		System.out.println("Verarbeite ID: " + obj.getID());
@@ -75,7 +84,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		return obj;
 	}
 
-	public Calendar fillCalendar(JsonObject json, Calendar obj){
+	public Kalendar fillCalendar(JsonObject json, Kalendar obj){
 		
 		return obj;
 	}
@@ -89,25 +98,25 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * Abfrage mehrerer Objekte, die die Vorgaben des Eingabeobjekts erfüllen.
 	 */
 	@Override
-	public <T extends DataPusher> List<T> requestAllObjects(T obj) {
+	public <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj) {
 		
-		System.out.println("Verarbeite ID: " + obj.getID());
-		//Abfrage an Server stellen
-		// Erstellen einer Liste von Objekten mit Input vom Server
+//		System.out.println("Verarbeite ID: " + obj.getID());
+//		//Abfrage an Server stellen
+//		// Erstellen einer Liste von Objekten mit Input vom Server
 		List<T> t = null;
-		try {
-			t = new ArrayList<>();
-			for(int i = 0; i < 10; i++){
-				@SuppressWarnings("unchecked")
-				//Cast möglich - Ursache der Warnung: Wildcard in getClass<?>
-				T object2 = (T) obj.getClass().newInstance();
-				object2.setID(i);
-				
-				t.add(object2);
-			}
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			t = new ArrayList<>();
+//			for(int i = 0; i < 10; i++){
+//				@SuppressWarnings("unchecked")
+//				//Cast möglich - Ursache der Warnung: Wildcard in getClass<?>
+//				T object2 = (T) obj.getClass().newInstance();
+//				object2.setID(i);
+//				
+//				t.add(object2);
+//			}
+//		} catch (InstantiationException | IllegalAccessException e) {
+//			e.printStackTrace();
+//		}
 		return t;
 	}
 

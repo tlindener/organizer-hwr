@@ -2,7 +2,7 @@ package network;
 
 import java.util.List;
 
-import organizer.objects.DataPusher;
+import organizer.objects.AbstractOrganizerObject;
 
 /**
  * Schnittstelle zum Abfragen von Objekten. Der Type des Eingabeobjekts
@@ -17,6 +17,6 @@ import organizer.objects.DataPusher;
  * 
  */
 public abstract class RequestHandler {
-	public abstract <T extends DataPusher> T requestObject(T obj);
-	public abstract <T extends DataPusher> List<T> requestAllObjects(T obj);
+	public abstract <T extends AbstractOrganizerObject> T requestObject(T obj);
+	public abstract <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj);
 }
