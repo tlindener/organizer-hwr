@@ -1,5 +1,7 @@
 package organizer.objects;
 
+import java.lang.reflect.Field;
+
 import network.RequestHandler;
 
 /**
@@ -22,9 +24,9 @@ public abstract class DataPusher {
 	public int getID(){
 		return this.id;
 	}
-	
-	public abstract void setData(String... data);
-	public abstract String[] getData();
+	public Field[] getFields(){
+		return getClass().getDeclaredFields();
+	}
 	@Override
 	public String toString(){
 		return this.getClass().getSimpleName();

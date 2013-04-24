@@ -4,19 +4,6 @@ import organizer.objects.DataPusher;
 
 public class Calendar extends DataPusher{
 
-	@Override
-	public void setData(String... data) {
-		for(String d: data){
-			System.out.println("Calendar: " + d);
-		}
-		
-	}
-	@Override
-	public String[] getData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/**
 	 * Rückgabe des Klassennamens über Aufruf von {@link DataPusher#toString()}
 	 * und hinzufügen von weiteren Elementen.

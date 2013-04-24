@@ -11,19 +11,97 @@ import organizer.objects.DataPusher;
  */
 public class Termin extends DataPusher{
 
-	@Override
-	public void setData(String... data) {
-		for(String d: data){
-			System.out.println("Termin: " + d);
-		}
+	private String startZeit;
+	private String endZeit;
+	private String startDatum;
+	private String endDatum;
+	private String beschreibung;
+	
+	private Raum raum;
+	
+	/**
+	 * @return the startZeit
+	 */
+	public String getStartZeit() {
+		return startZeit;
 	}
 
-	@Override
-	public String[] getData() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * @param startZeit the startZeit to set
+	 */
+	public void setStartZeit(String startZeit) {
+		this.startZeit = startZeit;
 	}
 
+	/**
+	 * @return the endZeit
+	 */
+	public String getEndZeit() {
+		return endZeit;
+	}
+
+	/**
+	 * @param endZeit the endZeit to set
+	 */
+	public void setEndZeit(String endZeit) {
+		this.endZeit = endZeit;
+	}
+
+	/**
+	 * @return the startDatum
+	 */
+	public String getStartDatum() {
+		return startDatum;
+	}
+
+	/**
+	 * @param startDatum the startDatum to set
+	 */
+	public void setStartDatum(String startDatum) {
+		this.startDatum = startDatum;
+	}
+
+	/**
+	 * @return the endDatum
+	 */
+	public String getEndDatum() {
+		return endDatum;
+	}
+
+	/**
+	 * @param endDatum the endDatum to set
+	 */
+	public void setEndDatum(String endDatum) {
+		this.endDatum = endDatum;
+	}
+
+	/**
+	 * @return the beschreibung
+	 */
+	public String getBeschreibung() {
+		return beschreibung;
+	}
+
+	/**
+	 * @param beschreibung the beschreibung to set
+	 */
+	public void setBeschreibung(String beschreibung) {
+		this.beschreibung = beschreibung;
+	}
+
+	/**
+	 * @return the raum
+	 */
+	public Raum getRaum() {
+		return raum;
+	}
+
+	/**
+	 * @param raum the raum to set
+	 */
+	public void setRaum(Raum raum) {
+		this.raum = raum;
+	}
 
 	/**
 	 * Rückgabe des Klassennamens über Aufruf von {@link DataPusher#toString()}
