@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="Organizer.WebService.OrganizerService" CodeBehind="OrganizerService.svc.cs" %>

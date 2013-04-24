@@ -6,31 +6,20 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Organizer.Interfaces
+namespace Organizer.Interfaces.Json
 {
-  
-    public class CalendarEntry
+
+    public class WebCalendarEntry
     {
 
-        [Key]
         public int CalendarEntryId { get; set; }
-        [Required]
         public DateTime StartDate { get; set; }
-        [Required]
         public DateTime EndDate { get; set; }
         public String Description { get; set; }
-        public double Duration
-        {
-            get
-            {
-                return EndDate.Subtract(StartDate).TotalMinutes;
-            }
-        }
-
-        public virtual User Owner { get; set; }
-
+        public int OwnerId { get; set; }
         public int CalendarId { get; set; }
+        public double Duration { get; set; }
 
-        public virtual Calendar Calendar { get; set; }
+
     }
 }

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organizer.Interfaces", "Org
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organizer", "Organizer.Calendar\Organizer.csproj", "{6CB4A714-4752-4244-814D-9D943952556F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organizer.WebService", "Organizer.WebService\Organizer.WebService.csproj", "{E3E520FF-765A-44E4-9C0B-7C9925C65CCE}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -29,6 +31,10 @@ Global
 		{6CB4A714-4752-4244-814D-9D943952556F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CB4A714-4752-4244-814D-9D943952556F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CB4A714-4752-4244-814D-9D943952556F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3E520FF-765A-44E4-9C0B-7C9925C65CCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3E520FF-765A-44E4-9C0B-7C9925C65CCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3E520FF-765A-44E4-9C0B-7C9925C65CCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3E520FF-765A-44E4-9C0B-7C9925C65CCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
