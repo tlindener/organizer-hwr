@@ -1,6 +1,6 @@
 package organizer.objects.types;
 
-import organizer.objects.DataPusher;
+import organizer.objects.AbstractOrganizerObject;
 
 /**
  * Beispielobjekt Termin
@@ -9,15 +9,17 @@ import organizer.objects.DataPusher;
  * @version 1.0 
  *
  */
-public class Termin extends DataPusher{
+public class Termin extends AbstractOrganizerObject{
 
-	private String startZeit;
-	private String endZeit;
-	private String startDatum;
-	private String endDatum;
-	private String beschreibung;
+	private String startZeit = null;
+	private String endZeit = null;
+	private String startDatum = null;
+	private String endDatum = null;
+	private String beschreibung = null;
 	
-	private Raum raum;
+	private Raum raum = null;
+	
+	private Person besitzer = null;
 	
 	/**
 	 * @return the startZeit
@@ -104,12 +106,32 @@ public class Termin extends DataPusher{
 	}
 
 	/**
-	 * Rückgabe des Klassennamens über Aufruf von {@link DataPusher#toString()}
-	 * und hinzufügen von weiteren Elementen.
+	 * @return the besitzer
 	 */
-	@Override
-	public String toString() {
-		String represent = super.toString()+" - ID: " + getID();
-		return represent;
+	public Person getBesitzer() {
+		return besitzer;
 	}
+
+	/**
+	 * @param besitzer the besitzer to set
+	 */
+	public void setBesitzer(Person besitzer) {
+		this.besitzer = besitzer;
+	}
+
+//	/**
+//	 * Rückgabe des Klassennamens über Aufruf von {@link DataPusher#toString()}
+//	 * und hinzufügen von weiteren Elementen.
+//	 */
+//	@Override
+//	public String toString() {
+////		StringBuilder builder = new StringBuilder("\t" + super.toString());
+////		builder.append(" ID: " + getID());
+////		builder.append(" Beschriebung: " + getBeschreibung());
+////		builder.append(" Preson: " + getBesitzer());
+////		builder.append(" Start: " + getStartDatum() + " - "+getStartZeit());
+////		builder.append(" Ende: " + getEndDatum() + " - "+getEndZeit());
+//		
+//		return builder.toString();
+//	}
 }
