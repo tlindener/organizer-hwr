@@ -6,29 +6,18 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Organizer.Interfaces
+namespace Organizer.Interfaces.Json
 {
-   
-    public class User
+
+    public class WebUser
     {
-        [Key]
-     
+
         public int UserId { get; set; }
-        [Required]
-       
         public String GivenName { get; set; }
-        [Required]
-    
         public String Surname { get; set; }
-        [Required]
-       
         public String MailAddress { get; set; }
-        [Required]
-  
         public String PhoneNumber { get; set; }
 
-        public int CalendarId { get; set; }
-        public virtual List<Calendar> Calendar { get; set; }
 
     }
 }

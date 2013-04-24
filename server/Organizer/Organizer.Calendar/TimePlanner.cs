@@ -63,6 +63,14 @@ namespace Organizer
         }
         #endregion
 
+        #region User
+
+        public List<User> GetAllUser()
+        {
+            return calendarDatabase.User.ToList();
+        }
+        #endregion
+
     }
 
     public class CalendarContext : DbContext
@@ -70,6 +78,6 @@ namespace Organizer
         public DbSet<Calendar> Calendar { get; set; }
         public DbSet<CalendarEntry> CalendarEntries { get; set; }
         public DbSet<User> User { get; set; }
-
+        public DbSet<Appointment> Appointments { get; set; }
     }
 }
