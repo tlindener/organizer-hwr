@@ -6,7 +6,6 @@ import java.util.List;
 import network.JsonJavaRequestHandler;
 import network.RequestHandler;
 
-import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Kalendar;
 import organizer.objects.types.Person;
 import organizer.objects.types.Termin;
@@ -21,47 +20,44 @@ import organizer.objects.types.Termin;
 public class Start {
 
 	public Start() {
-	
+//		Schnittstelle für Jenny um Objekte zu erfragen
 		RequestHandler s = new JsonJavaRequestHandler();
-	
-
+		Person p = s.requestObject(new Person());
+		Kalendar k = s.requestObject(new Kalendar());
+		Termin t = s.requestObject(new Termin());
+//		... usw.
+//		Wird ein ganz bestimmtes Objekt benötigt, werden zuerst Parameter gesetzt. Dadurch ist serverseitig erkennbar, welches Objeckt gesucht wird:
+		Kalendar k_request = new Kalendar();
+		k_request.setID(2);
+//		Rückgabe des Kalendars, der die ID 2 hat
+		Kalendar k_filled = s.requestObject(k_request);
 		
-//		Kalendar c = s.requestObject(new Kalendar());
-//		System.out.println(c);
+//		Wird eine von Objekten benötigt, werden zuerst Parameter gesetzt. Dadurch ist serverseitig erkennbar, welches Objeckt gesucht wird:
+		Termin t_request = new Termin();
+		t_request.setBeschreibung("WI");
+//		Rückgabe aller Termine, die als Beschreibung "WI" haben
+		List<Termin> t_filled = s.requestAllObjects(t_request);
 		
-		Termin t = new Termin();
-		t.setID(3);
-		Person p = new Person();
-		p.setID(456);
-		p.setVorname("Steffen");
-		p.setMail("steffen@organizer.de");
-		List<Kalendar> cs = new ArrayList<>();
+////		Test zur Ausgabe von Objekten über die Konsole - Auslesen per Reflections
+//		Person p1 = new Person();
+//		p1.setID(1);
+//		Kalendar k1 = new Kalendar();
+//		k1.setID(1);
+//		List<Kalendar> listK = new ArrayList<Kalendar>();
+//		Termin t1 = new Termin();
+//		t1.setID(1);
+//		List<Termin> listT = new ArrayList<Termin>();
+//		
+//		listK.add(k1);
+//		listT.add(t1);
+//		
+//		t1.setBesitzer(p1);
+//		p1.setKalendar(listK);
+//		k1.setTermine(listT);
+//		
+//		System.out.println(p1);
 		
-		Kalendar c1 = new Kalendar();
-		c1.setID(1);
-		c1.setBesitzer(p);
-		List<Termin> ts = new ArrayList<Termin>();
-		ts.add(t);
-		c1.setTermine(ts);
-		Kalendar c2 = new Kalendar();
-		c1.setID(2);
-//		Kalendar c3 = new Kalendar();
-//		c1.setID(3);
-		cs.add(c1);
-		cs.add(c2);
-//		cs.add(c3);
-		p.setKalendar(cs);
-		t.setBesitzer(p);
-		System.out.println(t);
-		System.out.println(p);
-//		t = s.requestObject(t);
-//		System.out.println(t);
 		
-//		List<Termin> ts = s.requestAllObjects(t);
-//				
-//		for(Termin t1: ts){
-//			System.out.println(t1);
-//		}
 	}
 
 	/**
