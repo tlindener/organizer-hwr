@@ -1,7 +1,7 @@
 package organizer.objects;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
+import java.util.Collection;
 
 import network.RequestHandler;
 
@@ -27,16 +27,17 @@ public abstract class AbstractOrganizerObject {
 	}
 	@Override
 	public String toString(){
+//		Name of the current class
+		StringBuilder builder = new StringBuilder("{" + this.getClass().getSimpleName()+ "");
 		
-		StringBuilder builder = new StringBuilder("{" + this.getClass().getSimpleName()+ " [");
-		
+//		Attributes of the parent class
 		Field[] parentFields = this.getClass().getSuperclass().getDeclaredFields();
 		builder = addFieldValuePairs(builder, parentFields);
-		
+//		Attributes of the current class
 		Field[] fields = this.getClass().getDeclaredFields();
 		builder = addFieldValuePairs(builder, fields);
-		
-		builder.append("]}");
+
+		builder.append("}");
 		return builder.toString();
 	}
 	
@@ -44,8 +45,8 @@ public abstract class AbstractOrganizerObject {
 		for(Field f: fields){
 			try {
 				f.setAccessible(true);
-				String value = replaceReferences(f);
-				builder.append(f.getName() + ":" + value + " | ");
+				String value = checkType(f);
+				builder.append("("+f.getName() + ":" + value + ")");
 				f.setAccessible(false);
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
@@ -55,15 +56,26 @@ public abstract class AbstractOrganizerObject {
 		}
 		return builder;
 	}
-	private String replaceReferences(Field field) throws IllegalArgumentException, IllegalAccessException{
-		//Abfrage der Vaterklasse
-		Class<?> superclass = field.getType().getSuperclass();
-		//TODO Listen abfangen
-		//nur bei Feld belegt && Vaterklasse vorhanden && Vaterklasse = AbstractOrganizerObject
-		if(field.get(this) != null && superclass != null && superclass.equals(AbstractOrganizerObject.class)){
-			return ""+((AbstractOrganizerObject)field.get(this)).getID();
-		}		
-		return ""+field.get(this);
+	private String checkType(Field field) throws IllegalArgumentException, IllegalAccessException{
+		//null is returned every time
+		if(field.get(this) == null){
+			return null;
+		}
+		//primitive types or Strings are also returned 
+		Class<?> type = field.getType();
+		if(type.isPrimitive() || type.equals(String.class)){
+			return "" + field.get(this);
+		}
+		//Collections (like List<?>) will be encapsulated by "<[" and "]>"
+		if(Collection.class.isAssignableFrom(type)){
+			return "<" + field.get(this) + ">";
+		//elements of AbstractOrganizerObject will be replaced by their IDs
+		}else if(AbstractOrganizerObject.class.isAssignableFrom(type)){
+			return ""+AbstractOrganizerObject.class.cast(field.get(this)).getID();
+		//an different class is used	
+		}else{
+			return "UNEXPECTED";
+		}
 	}
 	
 	
