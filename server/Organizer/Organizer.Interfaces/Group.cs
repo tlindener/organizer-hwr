@@ -11,7 +11,7 @@ namespace Organizer.Interfaces
         [Key]
         public int GroupId { get; set; }
         public String Description { get; set; }
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<User> Members { get; set; }
 
     }
 }

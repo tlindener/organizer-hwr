@@ -17,6 +17,8 @@ namespace Organizer.Interfaces.Json
         public String Surname { get; set; }
         public String MailAddress { get; set; }
         public String PhoneNumber { get; set; }
+        public ICollection<int> CalendarIds { get; set; }
+        public ICollection<int> GroupIds { get; set; }
 
 
     }

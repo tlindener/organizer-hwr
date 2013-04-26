@@ -38,10 +38,11 @@ namespace Organizer.WebService
                 PhoneNumber = "01773071234"
 
             };
-            calendarEntries.Add(new CalendarEntry() { Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
+            calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit",StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
             Calendar cal = new Calendar()
             {
                 Owner = owner,
+                Name = "MyCalendar",
                 CalendarEntries = calendarEntries
 
 
@@ -56,29 +57,43 @@ namespace Organizer.WebService
 
         public IEnumerable<WebUser> GetAllUser()
         {
-            throw new NotImplementedException();
+            var users = timeplanner.GetAllUser();
+            return users.Select(p => p.ToJsonUser()).ToList();
         }
 
 
 
-        public WebCalendar GetCalendarById()
+        public WebCalendar GetCalendarById(int calendarId)
         {
-            throw new NotImplementedException();
+            return timeplanner.GetCalendarById(calendarId).ToJsonCalendar();
         }
 
-        public bool AddCalendarEntryToCalendar(int calendarId, DateTime startDate, DateTime endDate, string Description, int ownerId, int roomId)
+        public bool AddCalendarEntryToCalendar(int calendarId, DateTime startDate, DateTime endDate, string description, int ownerId, int roomId)
         {
-            throw new NotImplementedException();
+            var calendar = timeplanner.GetCalendarById(calendarId);
+            var owner = timeplanner.GetUserById(ownerId);
+            var room = timeplanner.GetRoomById(roomId);
+            CalendarEntry calendarEntry = new CalendarEntry()
+            {
+                StartDate = startDate,
+                EndDate = endDate,
+                Description = description,
+                Owner = owner,
+                Room = room,
+                Calendar = calendar
+
+            };
+            return timeplanner.AddEntryToCalendar(calendarId, calendarEntry);
         }
 
         public bool RemoveEntryFromCalendar(int calendarId, int entryId)
         {
-            throw new NotImplementedException();
+           return timeplanner.RemoveEntryFromCalendar( calendarId,entryId);
         }
 
-        public WebUser GetUserById()
+        public WebUser GetUserById(int userId)
         {
-            throw new NotImplementedException();
+            return timeplanner.GetUserById(userId).ToJsonUser();
         }
     }
 
@@ -96,6 +111,7 @@ namespace Organizer.WebService
             {
                 OwnerId = calendar.Owner.UserId,
                 Id = calendar.CalendarId,
+                Name = calendar.Name,
                 Description = calendar.Description,
                 CalendarEntries = calendar.CalendarEntries.Select(p => p.ToJsonCalendarEntry()).ToList()
                  
@@ -123,6 +139,44 @@ namespace Organizer.WebService
             };
             return newCalendarEntry;
 
+        }
+        public static WebUser ToJsonUser(this User user)
+        {
+
+            if (user == null)
+            {
+                return null;
+            }
+            WebUser newUser = new WebUser()
+            {
+                Id = user.UserId,
+                GivenName = user.GivenName,
+                Surname = user.Surname,
+                MailAddress = user.MailAddress,
+                PhoneNumber = user.PhoneNumber,
+                CalendarIds = user.Calendar.Select(p => p.CalendarId).ToList(),
+                GroupIds = user.Groups.Select(p => p.GroupId).ToList()
+
+            };
+            return newUser;
+        }
+
+        public static WebGroup ToJsonGroup(this Group group)
+        {
+
+            if (group == null)
+            {
+                return null;
+            }
+
+            WebGroup newGroup = new WebGroup()
+            {
+                Description = group.Description,
+                Id = group.GroupId,
+                Members = group.Members
+
+            };
+            return newGroup;
         }
 
     }

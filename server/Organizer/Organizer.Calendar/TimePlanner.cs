@@ -15,15 +15,13 @@ namespace Organizer
         public TimePlanner()
         {
             calendarDatabase = new CalendarContext();
-            Console.WriteLine(calendarDatabase.Database.Connection.ConnectionString);
-
-        }
+                 }
 
         #region Calendar
         public bool AddNewCalendar(Calendar calendar)
         {
             
-            if (isCalendarValid(calendar))
+            if (ValidationMethods.isCalendarValid(calendar))
             {
                 calendarDatabase.Calendar.Add(calendar);
                 calendarDatabase.SaveChanges();
@@ -31,15 +29,7 @@ namespace Organizer
             }
             return false;
         }
-        private bool isCalendarValid(Calendar calendar)
-        {
 
-            if (!String.IsNullOrEmpty(calendar.Owner.Surname) && !String.IsNullOrEmpty(calendar.Owner.GivenName))
-            {
-                return true;
-            }
-            return false;
-        }
         public ICollection<Calendar> GetAllCalendar()
         {
             return calendarDatabase.Calendar.ToList();
@@ -86,6 +76,17 @@ namespace Organizer
         }
         #endregion
 
+
+        public Room GetRoomById(int roomId)
+        {
+            return calendarDatabase.Rooms.Find(roomId);
+        }
+
+        public bool RemoveEntryFromCalendar(int calendarId, int entryId)
+        {
+            var entry =  calendarDatabase.CalendarEntries.Find(entryId);
+            return calendarDatabase.Calendar.Find(calendarId).CalendarEntries.Remove(entry);
+        }
     }
 
     public class CalendarContext : DbContext
