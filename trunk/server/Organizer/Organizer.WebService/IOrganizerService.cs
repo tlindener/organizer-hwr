@@ -19,12 +19,12 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebCalendar GetCalendarById();
+        WebCalendar GetCalendarById(int calendarId);
 
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddCalendarEntryToCalendar(int calendarId, DateTime startDate,DateTime endDate,String Description,int ownerId, int roomId);
+        bool AddCalendarEntryToCalendar(int calendarId, DateTime startDate,DateTime endDate,String description,int ownerId, int roomId);
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -32,7 +32,7 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebUser GetUserById();
+        WebUser GetUserById(int userId);
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]

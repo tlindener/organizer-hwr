@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Organizer.Interfaces.JSONModel
+namespace Organizer.Interfaces.Json
 {
     public class WebGroup
     {
         public int Id { get; set; }
         public String Description { get; set; }
-        ICollection<User> Member { get; set; }
+        public ICollection<User> Members { get; set; }
     }
 }

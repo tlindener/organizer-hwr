@@ -31,12 +31,12 @@ namespace Organizer.Client.ConsoleApplication
 
             };
 
-            tp.AddCalendar(cal);
+            tp.AddNewCalendar(cal);
 
             foreach (Calendar calendar in tp.GetAllCalendar())
             {
-                Console.WriteLine(calendar.CalendarEntries[0].StartDate.ToString());
-                Console.WriteLine(calendar.Owner.Surname);
+                //Console.WriteLine(calendar.CalendarEntries[0].StartDate.ToString());
+                //Console.WriteLine(calendar.Owner.Surname);
             }
             Console.Read();
         }
