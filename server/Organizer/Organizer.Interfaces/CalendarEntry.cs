@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Organizer.Interfaces
 {
-  
+
     public class CalendarEntry
     {
 
@@ -30,7 +31,7 @@ namespace Organizer.Interfaces
         public virtual User Owner { get; set; }
 
         public int CalendarId { get; set; }
-
         public virtual Calendar Calendar { get; set; }
+        public virtual Room Room { get; set; }
     }
 }

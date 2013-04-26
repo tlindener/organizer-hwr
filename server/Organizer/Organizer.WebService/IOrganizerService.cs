@@ -19,6 +19,23 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        WebCalendar GetCalendarById();
+
+
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool AddCalendarEntryToCalendar(int calendarId, DateTime startDate,DateTime endDate,String Description,int ownerId, int roomId);
+
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool RemoveEntryFromCalendar(int calendarId, int entryId);
+
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        WebUser GetUserById();
+
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
         IEnumerable<WebUser> GetAllUser();
 
         [OperationContract]

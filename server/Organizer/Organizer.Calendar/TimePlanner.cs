@@ -20,8 +20,9 @@ namespace Organizer
         }
 
         #region Calendar
-        public bool AddCalendar(Calendar calendar)
+        public bool AddNewCalendar(Calendar calendar)
         {
+            
             if (isCalendarValid(calendar))
             {
                 calendarDatabase.Calendar.Add(calendar);
@@ -39,35 +40,49 @@ namespace Organizer
             }
             return false;
         }
-        public List<Calendar> GetAllCalendar()
+        public ICollection<Calendar> GetAllCalendar()
         {
             return calendarDatabase.Calendar.ToList();
+        }
+        public Calendar GetCalendarById(int calendarId)
+        {
+            return calendarDatabase.Calendar.Find(calendarId);
         }
         #endregion
 
         #region CalendarEntry
-        public List<CalendarEntry> findAppointment(List<Calendar> calendar, DateTime startDate, double duration)
+        public bool AddEntryToCalendar(int calendarId, CalendarEntry entry)
         {
 
-            foreach (Calendar cal in calendar)
+            var calendar = calendarDatabase.Calendar.Find(calendarId);
+            if (calendar == null)
             {
-                findConflictInCalendar(cal, startDate, duration);
+                return false;
             }
-            return null;
-
+            calendar.CalendarEntries.Add(entry);
+            calendarDatabase.SaveChanges();
+            return true;
+        
         }
-        private CalendarEntry findConflictInCalendar(Calendar calendar, DateTime startDate, double duration)
+        public ICollection<CalendarEntry> GetAllEntriesByOwner(int ownerId)
         {
-
-            return null;
+            return calendarDatabase.CalendarEntries.Where(p => p.Owner.UserId == ownerId).ToList();
         }
         #endregion
 
         #region User
 
-        public List<User> GetAllUser()
+        public ICollection<User> GetAllUser()
         {
             return calendarDatabase.User.ToList();
+        }
+        public User GetUserById(int userId)
+        {
+            return calendarDatabase.User.Find(userId);
+        }
+        public ICollection<User> GetInviteesFromAppointment(int appointmentId)
+        {
+            return calendarDatabase.Appointments.Find(appointmentId).Invitees;
         }
         #endregion
 
@@ -79,5 +94,7 @@ namespace Organizer
         public DbSet<CalendarEntry> CalendarEntries { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Group> Groups { get; set; }
     }
 }

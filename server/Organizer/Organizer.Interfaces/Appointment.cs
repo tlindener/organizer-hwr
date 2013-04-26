@@ -13,7 +13,7 @@ namespace Organizer.Interfaces
         {
             Invitees = new List<User>();
         }
-        public virtual List<User> Invitees { get; set; }
+        public virtual ICollection<User> Invitees { get; set; }
 
 
         public bool IsEmpty

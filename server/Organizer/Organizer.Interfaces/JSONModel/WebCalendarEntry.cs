@@ -12,12 +12,13 @@ namespace Organizer.Interfaces.Json
     public class WebCalendarEntry
     {
 
-        public int CalendarEntryId { get; set; }
+        public int Id { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public String Description { get; set; }
         public int OwnerId { get; set; }
         public int CalendarId { get; set; }
+        public int RoomId { get; set; }
         public double Duration { get; set; }
 
 

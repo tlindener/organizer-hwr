@@ -28,7 +28,8 @@ namespace Organizer.Interfaces
         public String PhoneNumber { get; set; }
 
         public int CalendarId { get; set; }
-        public virtual List<Calendar> Calendar { get; set; }
+        public virtual ICollection<Calendar> Calendar { get; set; }
+        public virtual ICollection<Group> Groups { get; set; }
 
     }
 }
