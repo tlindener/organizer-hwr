@@ -7,6 +7,7 @@ import java.util.List;
 
 import organizer.objects.AbstractOrganizerObject;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
@@ -24,7 +25,18 @@ import com.google.gson.JsonObject;
 public class JsonJavaRequestHandler extends RequestHandler {
 
 	private GsonBuilder builder = null;
-	
+
+	// private FieldNamingStrategy cStrategy = new FieldNamingStrategy() {
+	//
+	// @Override
+	// public String translateName(Field field) {
+	// String firstChar = field.getName().substring(0, 1);
+	// String replaceChar = firstChar.toLowerCase();
+	// System.out.println(firstChar + " : " + replaceChar);
+	// return field.getName().replaceFirst(firstChar, replaceChar);
+	// }
+	// };
+
 	/**
 	 * Verbindungsdetails für Socket hinterlegen
 	 */
@@ -34,7 +46,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 
 	private void init() {
 		builder = new GsonBuilder();
-		
+		builder.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE);
 	}
 
 	/**
@@ -42,32 +54,37 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 */
 	@Override
 	public <T extends AbstractOrganizerObject> T requestObject(T obj) {
-		
-			
-//		
-		JsonObject json = sendRequestToServer();
-		
-////	used to emulate server stream json object	
-//		json.addProperty("id", "3");
-//		json.addProperty("beschreibung", "Aufstehen");
-		
+
+		//
+		JsonObject json = sendRequestToServer(obj);
+//		 JsonObject json = new JsonObject();
+		 // used to emulate server stream json object
+//		json.addProperty("CalendarId", "1");
+//		json.addProperty("Description", "null");
+//		json.addProperty("Duration", 180);
+//		json.addProperty("EndDate", "\\/Date(1366979015630+0200)\\/");
+//		json.addProperty("Id", 0);
+//		json.addProperty("OwnerId", 1);
+//		json.addProperty("RoomId", 0);
+//		json.addProperty("StartDate", "\\/Date(1366968215630+0200)\\/");
+//		json.addProperty("Title", "null");
+//		json.addProperty("Beschreibung", "Aufstehen");
+
 		return fillObjectFromJson(json, obj);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	//unrealistic because of created object must be a type of T
-	private <T extends AbstractOrganizerObject> T fillObjectFromJson(JsonObject json, T obj) {
+	// unrealistic because of created object must be a type of T
+	private <T extends AbstractOrganizerObject> T fillObjectFromJson(
+			JsonObject json, T obj) {
 		return (T) builder.create().fromJson(json, obj.getClass());
 	}
-//
-//	public Kalendar fillCalendar(JsonObject json, Kalendar obj){
-//		
-//		return obj;
-//	}
-	
-	private JsonObject sendRequestToServer() {
-		return null;
-		
+
+	private <T extends AbstractOrganizerObject> JsonObject sendRequestToServer(
+			T obj) {
+		String json = builder.create().toJson(obj);
+		System.out.println("AUSGABE: " + json);
+		return new JsonObject();
 	}
 
 	/**
@@ -75,24 +92,24 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 */
 	@Override
 	public <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj) {
-		
-//		System.out.println("Verarbeite ID: " + obj.getID());
-//		//Abfrage an Server stellen
-//		// Erstellen einer Liste von Objekten mit Input vom Server
+
+		// System.out.println("Verarbeite ID: " + obj.getID());
+		// //Abfrage an Server stellen
+		// // Erstellen einer Liste von Objekten mit Input vom Server
 		List<T> t = null;
-//		try {
-//			t = new ArrayList<>();
-//			for(int i = 0; i < 10; i++){
-//				@SuppressWarnings("unchecked")
-//				//Cast möglich - Ursache der Warnung: Wildcard in getClass<?>
-//				T object2 = (T) obj.getClass().newInstance();
-//				object2.setID(i);
-//				
-//				t.add(object2);
-//			}
-//		} catch (InstantiationException | IllegalAccessException e) {
-//			e.printStackTrace();
-//		}
+		// try {
+		// t = new ArrayList<>();
+		// for(int i = 0; i < 10; i++){
+		// @SuppressWarnings("unchecked")
+		// //Cast möglich - Ursache der Warnung: Wildcard in getClass<?>
+		// T object2 = (T) obj.getClass().newInstance();
+		// object2.setID(i);
+		//
+		// t.add(object2);
+		// }
+		// } catch (InstantiationException | IllegalAccessException e) {
+		// e.printStackTrace();
+		// }
 		return t;
 	}
 
