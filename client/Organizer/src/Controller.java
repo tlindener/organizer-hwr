@@ -8,7 +8,10 @@ public class Controller implements DataPusher, ActionListener{
 
 	/**
 	 * @param args
+	 * 
 	 */
+	
+
 	private Model myModel;
 	private window_Hauptmenue myHauptmenue;
 	private Object[][] beschreibungsDaten;
