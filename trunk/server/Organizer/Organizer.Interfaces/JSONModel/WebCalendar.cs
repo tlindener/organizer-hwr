@@ -13,7 +13,7 @@ namespace Organizer.Interfaces.Json
     public class WebCalendar
     {
 
-        public int CalendarId { get; set; }
+        public int Id { get; set; }
         public int OwnerId { get; set; }
         public String Description { get; set; }
         public List<WebCalendarEntry> CalendarEntries { get; set; }

@@ -12,7 +12,7 @@ namespace Organizer.Interfaces.Json
     public class WebUser
     {
 
-        public int UserId { get; set; }
+        public int Id { get; set; }
         public String GivenName { get; set; }
         public String Surname { get; set; }
         public String MailAddress { get; set; }

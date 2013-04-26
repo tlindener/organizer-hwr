@@ -47,8 +47,10 @@ namespace Organizer.WebService
 
             };
 
-            timeplanner.AddCalendar(cal);
+            timeplanner.AddNewCalendar(cal);
 
+            var entry = new CalendarEntry() { Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
+            timeplanner.AddEntryToCalendar(timeplanner.GetAllCalendar().First().CalendarId, entry);
 
         }
 
@@ -57,6 +59,27 @@ namespace Organizer.WebService
             throw new NotImplementedException();
         }
 
+
+
+        public WebCalendar GetCalendarById()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddCalendarEntryToCalendar(int calendarId, DateTime startDate, DateTime endDate, string Description, int ownerId, int roomId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveEntryFromCalendar(int calendarId, int entryId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public WebUser GetUserById()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 
@@ -72,7 +95,7 @@ namespace Organizer.WebService
             WebCalendar newCalendar = new WebCalendar()
             {
                 OwnerId = calendar.Owner.UserId,
-                CalendarId = calendar.CalendarId,
+                Id = calendar.CalendarId,
                 Description = calendar.Description,
                 CalendarEntries = calendar.CalendarEntries.Select(p => p.ToJsonCalendarEntry()).ToList()
                  

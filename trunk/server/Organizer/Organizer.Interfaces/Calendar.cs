@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace Organizer.Interfaces
 {
-    
+
     public class Calendar
     {
-        [Key]       
+        [Key]
         public int CalendarId { get; set; }
-        [Required]        
+        [Required]
         public virtual User Owner { get; set; }
-               public String Description { get; set; }        
-        public virtual List<CalendarEntry> CalendarEntries { get; set; }
-        public virtual List<Appointment> AppointmentEntries { get; set; }
+        public String Description { get; set; }
+        public virtual ICollection<CalendarEntry> CalendarEntries { get; set; }
+        public virtual ICollection<Appointment> AppointmentEntries { get; set; }
 
         public Calendar()
         {
