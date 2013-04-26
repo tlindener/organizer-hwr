@@ -51,6 +51,7 @@
     <Compile Include="Group.cs" />
     <Compile Include="JSONModel\WebCalendar.cs" />
     <Compile Include="JSONModel\WebCalendarEntry.cs" />
+    <Compile Include="JSONModel\WebGroup.cs" />
     <Compile Include="JSONModel\WebRoom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="JSONModel\WebUser.cs" />

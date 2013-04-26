@@ -19,6 +19,8 @@ namespace Organizer.Interfaces
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime EndDate { get; set; }
+        [Required]
+        public String Title { get; set; }
         public String Description { get; set; }
         public double Duration
         {
@@ -27,9 +29,7 @@ namespace Organizer.Interfaces
                 return EndDate.Subtract(StartDate).TotalMinutes;
             }
         }
-
         public virtual User Owner { get; set; }
-
         public int CalendarId { get; set; }
         public virtual Calendar Calendar { get; set; }
         public virtual Room Room { get; set; }
