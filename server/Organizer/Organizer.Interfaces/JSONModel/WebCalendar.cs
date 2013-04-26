@@ -15,6 +15,7 @@ namespace Organizer.Interfaces.Json
 
         public int Id { get; set; }
         public int OwnerId { get; set; }
+        public String Name { get; set; }
         public String Description { get; set; }
         public List<WebCalendarEntry> CalendarEntries { get; set; }
         public List<Appointment> AppointmentEntries { get; set; }

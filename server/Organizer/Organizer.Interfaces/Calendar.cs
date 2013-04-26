@@ -16,6 +16,7 @@ namespace Organizer.Interfaces
         public int CalendarId { get; set; }
         [Required]
         public virtual User Owner { get; set; }
+        public String Name { get; set; }
         public String Description { get; set; }
         public virtual ICollection<CalendarEntry> CalendarEntries { get; set; }
         public virtual ICollection<Appointment> AppointmentEntries { get; set; }
