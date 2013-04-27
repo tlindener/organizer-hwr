@@ -1,6 +1,6 @@
 package organizer.objects.types;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import organizer.objects.AbstractOrganizerObject;
@@ -9,48 +9,79 @@ import organizer.objects.AbstractOrganizerObject;
  * Beispielobjekt Termin
  * 
  * @author Steffen Baumann
- * @version 1.0 
- *
+ * @version 1.0
+ * 
  */
-public class CalendarEntry extends AbstractOrganizerObject{
+public class CalendarEntry extends AbstractOrganizerObject {
 
-	private Date startDate = null;
-	private Date endDate = null;
+	private long startDate = -1;
+	private long endDate = -1;
 	private String title = "";
 	private String description = "";
-	
+
 	private int ownerId = -1;
 	private int calendarId = -1;
 	private int roomId = -1;
-	
+
 	private double duration = -1.0;
 
 	/**
 	 * @return the startDate
 	 */
-	public Date getStartDate() {
+	public long getStartDate() {
+
 		return startDate;
 	}
 
 	/**
-	 * @param startDate the startDate to set
+	 * @param startDate
+	 *            the startDate to set
 	 */
-	public void setStartDate(Date startDate) {
+	public void setStartDate(long startDate) {
 		this.startDate = startDate;
 	}
 
 	/**
 	 * @return the endDate
 	 */
-	public Date getEndDate() {
+	public long getEndDate() {
 		return endDate;
 	}
 
 	/**
-	 * @param endDate the endDate to set
+	 * @param endDate
+	 *            the endDate to set
 	 */
-	public void setEndDate(Date endDate) {
+	public void setEndDate(long endDate) {
 		this.endDate = endDate;
+	}
+
+	/**
+	 * @return the start hour of this {@link CalendarEntry}
+	 */
+	public int getStartHour() {
+		return convertLongToDate(startDate).get(Calendar.HOUR_OF_DAY);
+	}
+
+	/**
+	 * @return the end hour of this {@link CalendarEntry}
+	 */
+	public int getEndHour() {
+		return convertLongToDate(endDate).get(Calendar.HOUR_OF_DAY);
+	}
+
+	/**
+	 * @return the start minute of this {@link CalendarEntry}
+	 */
+	public int getStartMinute() {
+		return convertLongToDate(startDate).get(Calendar.MINUTE);
+	}
+
+	/**
+	 * @return the end minute of this {@link CalendarEntry}
+	 */
+	public int getEndMinute() {
+		return convertLongToDate(endDate).get(Calendar.MINUTE);
 	}
 
 	/**
@@ -61,7 +92,8 @@ public class CalendarEntry extends AbstractOrganizerObject{
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param title
+	 *            the title to set
 	 */
 	public void setTitle(String title) {
 		this.title = title;
@@ -75,7 +107,8 @@ public class CalendarEntry extends AbstractOrganizerObject{
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -89,7 +122,8 @@ public class CalendarEntry extends AbstractOrganizerObject{
 	}
 
 	/**
-	 * @param ownerId the ownerId to set
+	 * @param ownerId
+	 *            the ownerId to set
 	 */
 	public void setOwnerId(int ownerId) {
 		this.ownerId = ownerId;
@@ -103,7 +137,8 @@ public class CalendarEntry extends AbstractOrganizerObject{
 	}
 
 	/**
-	 * @param calendarId the calendarId to set
+	 * @param calendarId
+	 *            the calendarId to set
 	 */
 	public void setCalendarId(int calendarId) {
 		this.calendarId = calendarId;
@@ -117,7 +152,8 @@ public class CalendarEntry extends AbstractOrganizerObject{
 	}
 
 	/**
-	 * @param raumId the raumId to set
+	 * @param raumId
+	 *            the raumId to set
 	 */
 	public void setRoomId(int raumId) {
 		this.roomId = raumId;
@@ -131,10 +167,17 @@ public class CalendarEntry extends AbstractOrganizerObject{
 	}
 
 	/**
-	 * @param duration the duration to set
+	 * @param duration
+	 *            the duration to set
 	 */
 	public void setDuration(double duration) {
 		this.duration = duration;
 	}
-		
+
+	private GregorianCalendar convertLongToDate(long millis) {
+		GregorianCalendar tmp = new GregorianCalendar();
+		tmp.setTimeInMillis(millis);
+		return tmp;
+	}
+
 }

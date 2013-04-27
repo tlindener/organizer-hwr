@@ -9,6 +9,8 @@ public class Calendar extends AbstractOrganizerObject{
 	private int ownerId = -1;
 	private String description = "";
 	private List<CalendarEntry> calendarEntries = new ArrayList<>();
+	
+	
 	/**
 	 * @return the ownerId
 	 */

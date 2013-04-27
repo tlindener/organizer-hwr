@@ -1,7 +1,5 @@
 package run;
 
-import java.util.Date;
-
 import network.JsonJavaRequestHandler;
 import network.RequestHandler;
 
@@ -15,10 +13,27 @@ import organizer.objects.types.CalendarEntry;
  *
  */
 public class Start {
-
+	
 	public Start() {
 //		Schnittstelle für Jenny um Objekte zu erfragen
 		RequestHandler s = new JsonJavaRequestHandler();
+		
+//		try {
+//			Date d = new Date();
+//			Long t = new Long("1366968215630");
+//			d.setTime(t);
+//			
+//			Calendar ca = new GregorianCalendar();
+//			ca.setTimeInMillis(t);
+//			
+//			System.out.println(ca.get(Calendar.HOUR_OF_DAY));
+////			XMLGregorianCalendar xmlGregCa = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregCa);
+//			XMLGregorianCalendar xmlGregCa = DatatypeFactory.newInstance().newXMLGregorianCalendar("1366968215630+0200");
+////			xmlGregCa.getXMLSchemaType();
+//			System.out.println(xmlGregCa.getYear());
+//		} catch (DatatypeConfigurationException e) {
+//			e.printStackTrace();
+//		}
 		
 //		Person p = new Person();
 //		p.setID(1);
@@ -42,30 +57,8 @@ public class Start {
 //		List<CalendarEntry> t_filled = s.requestAllObjects(t_request);
 				
 		CalendarEntry c = new CalendarEntry();
-		c.setStartDate(new Date());
-		c.setStartDate(new Date());
-		s.requestObject(c);
-		
-////		Test zur Ausgabe von Objekten über die Konsole - Auslesen per Reflections
-//		Person p1 = new Person();
-//		p1.setID(1);
-//		Kalendar k1 = new Kalendar();
-//		k1.setID(1);
-//		List<Kalendar> listK = new ArrayList<Kalendar>();
-//		Termin t1 = new Termin();
-//		t1.setID(1);
-//		List<Termin> listT = new ArrayList<Termin>();
-//		
-//		listK.add(k1);
-//		listT.add(t1);
-//		
-//		t1.setBesitzer(p1);
-//		p1.setKalendar(listK);
-//		k1.setTermine(listT);
-//		
-//		System.out.println(p1);
-		
-		
+		c = s.requestObject(c);
+		System.out.println(c);
 	}
 
 	/**

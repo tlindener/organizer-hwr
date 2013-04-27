@@ -9,6 +9,7 @@ import organizer.objects.AbstractOrganizerObject;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**
@@ -56,19 +57,19 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	public <T extends AbstractOrganizerObject> T requestObject(T obj) {
 
 		//
-		JsonObject json = sendRequestToServer(obj);
-//		 JsonObject json = new JsonObject();
-		 // used to emulate server stream json object
-//		json.addProperty("CalendarId", "1");
-//		json.addProperty("Description", "null");
-//		json.addProperty("Duration", 180);
-//		json.addProperty("EndDate", "\\/Date(1366979015630+0200)\\/");
-//		json.addProperty("Id", 0);
-//		json.addProperty("OwnerId", 1);
-//		json.addProperty("RoomId", 0);
-//		json.addProperty("StartDate", "\\/Date(1366968215630+0200)\\/");
-//		json.addProperty("Title", "null");
-//		json.addProperty("Beschreibung", "Aufstehen");
+//		JsonObject json = sendRequestToServer(obj);
+		 JsonObject json = new JsonObject();
+//		  used to emulate server stream json object
+		json.addProperty("CalendarId", "1");
+		json.addProperty("Description", "Description");
+		json.addProperty("Duration", 180);
+		json.addProperty("EndDate", "\\/Date(1366979015630+0200)\\/");
+		json.addProperty("Id", 0);
+		json.addProperty("OwnerId", 1);
+		json.addProperty("RoomId", 0);
+		json.addProperty("StartDate", "\\/Date(668767800000+0200)\\/");
+		json.addProperty("Title", "Title");
+		json.addProperty("Beschreibung", "Aufstehen");
 
 		return fillObjectFromJson(json, obj);
 	}
@@ -77,9 +78,34 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	// unrealistic because of created object must be a type of T
 	private <T extends AbstractOrganizerObject> T fillObjectFromJson(
 			JsonObject json, T obj) {
+		
+		if(json.get("StartDate")!=null){
+			json = parseDateTime(json, "StartDate");
+		}
+		if(json.get("EndDate")!=null){
+			json = parseDateTime(json, "EndDate");
+		}
 		return (T) builder.create().fromJson(json, obj.getClass());
 	}
+	
+	private JsonObject parseDateTime(JsonObject json, String fieldName){
+		String originalValue = json.get(fieldName).toString();
+		String longValue = originalValue.substring(originalValue.indexOf("(")+1, originalValue.indexOf("+"));
+		long l = -1;
+		try{
+			l = Long.parseLong(longValue);
+			
+		}catch(NumberFormatException ex){
+			ex.printStackTrace();
+		}
+		json.remove(fieldName);
+		JsonElement elements = builder.create().toJsonTree(l);
+		json.add(fieldName, elements);
+		return json;
+	}
+	
 
+	@SuppressWarnings("unused")
 	private <T extends AbstractOrganizerObject> JsonObject sendRequestToServer(
 			T obj) {
 		String json = builder.create().toJson(obj);

@@ -74,7 +74,7 @@ public abstract class AbstractOrganizerObject {
 			return ""+AbstractOrganizerObject.class.cast(field.get(this)).getID();
 		//an different class is used	
 		}else{
-			return "UNEXPECTED";
+			return type.getSimpleName();
 		}
 	}
 	
