@@ -18,7 +18,7 @@ public class HashMapToDataModel {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Object[][] list = new Object[][] { { "1", "a" }, { "2", "b" },
+		Object[][] list = new Object[][] {{ "1", "a" }, { "2", "b" },
 				{ "3", "c" } };
 
 		HashMap<String, String> map = convertModel(list, new String(),
