@@ -33,7 +33,7 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebCalendarEntry GetCalendarEntryById(int entryId);
+        WebCalendarEntry GetCalendarEntryById(int calendarEntryId);
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
