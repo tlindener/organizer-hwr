@@ -18,18 +18,18 @@ namespace Organizer.WebService
 
         public OrganizerService()
         {
-
             timeplanner = new TimePlanner();
         }
 
-        public IEnumerable<WebCalendar> GetAllCalendar()
+        public ICollection<WebCalendar> GetAllCalendar()
         {
             var calendar = timeplanner.GetAllCalendar();
-            return calendar.Select(p => p.ToJsonCalendar()).ToList();
+            return calendar.Select(p => p.ToWebCalendar()).ToList();
         }
         public void InsertTestData()
         {
             var calendarEntries = new List<CalendarEntry>();
+
             var owner = new Organizer.Interfaces.User()
             {
                 GivenName = "Tobias",
@@ -38,7 +38,7 @@ namespace Organizer.WebService
                 PhoneNumber = "01773071234"
 
             };
-            calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit",StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
+            calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
             Calendar cal = new Calendar()
             {
                 Owner = owner,
@@ -55,17 +55,17 @@ namespace Organizer.WebService
 
         }
 
-        public IEnumerable<WebUser> GetAllUser()
+        public ICollection<WebUser> GetAllUser()
         {
             var users = timeplanner.GetAllUser();
-            return users.Select(p => p.ToJsonUser()).ToList();
+            return users.Select(p => p.ToWebUser()).ToList();
         }
 
 
 
         public WebCalendar GetCalendarById(int calendarId)
         {
-            return timeplanner.GetCalendarById(calendarId).ToJsonCalendar();
+            return timeplanner.GetCalendarById(calendarId).ToWebCalendar();
         }
 
         public bool AddCalendarEntryToCalendar(int calendarId, DateTime startDate, DateTime endDate, string description, int ownerId, int roomId)
@@ -88,12 +88,60 @@ namespace Organizer.WebService
 
         public bool RemoveEntryFromCalendar(int calendarId, int entryId)
         {
-           return timeplanner.RemoveEntryFromCalendar( calendarId,entryId);
+            return timeplanner.RemoveEntryFromCalendar(calendarId, entryId);
         }
 
         public WebUser GetUserById(int userId)
         {
-            return timeplanner.GetUserById(userId).ToJsonUser();
+            return timeplanner.GetUserById(userId).ToWebUser();
+        }
+
+
+        public ICollection<WebCalendarEntry> GetCalendarEntriesByOwnerId(int ownerId)
+        {
+          return  timeplanner.GetAllEntriesByOwner(ownerId).Select(p => p.ToWebCalendarEntry()).ToList();
+        }
+
+        public WebCalendarEntry GetCalendarEntryById(int entryId)
+        {
+            return GetCalendarEntryById(entryId);
+        }
+
+        public ICollection<WebRoom> GetAllRooms()
+        {
+            return timeplanner.GetAllRooms().Select(p => p.ToWebRoom()).ToList();
+        }
+
+        public WebRoom GetRoomById(int roomId)
+        {
+            return timeplanner.GetRoomById(roomId).ToWebRoom();
+        }
+
+
+        public bool AddNewCalendar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICollection<WebCalendarEntry> GetEntriesByRoom(int roomId)
+        {
+            return timeplanner.GetEntriesByRoom(roomId).Select(p=> p.ToWebCalendarEntry()).ToList();
+        }
+
+        public WebGroup GetGroupById(int groupId)
+        {
+            return timeplanner.GetGroupById(groupId).ToWebGroup();
+        }
+
+        public ICollection<WebGroup> GetGroupsByUserId(int userId)
+        {
+            var groups = timeplanner.GetGroupsByUserId(userId);
+            return groups.Select(p => p.ToWebGroup()).ToList();
+        }
+
+        public ICollection<WebUser> GetInviteesFromAppointment(int appointmentId)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -101,25 +149,25 @@ namespace Organizer.WebService
     public static class ExtensionMethods
     {
 
-        public static WebCalendar ToJsonCalendar(this Calendar calendar)
+        public static WebCalendar ToWebCalendar(this Calendar calendar)
         {
             if (calendar == null)
             {
                 return null;
             }
-            WebCalendar newCalendar = new WebCalendar()
+            return new WebCalendar()
             {
                 OwnerId = calendar.Owner.UserId,
                 Id = calendar.CalendarId,
                 Name = calendar.Name,
                 Description = calendar.Description,
-                CalendarEntries = calendar.CalendarEntries.Select(p => p.ToJsonCalendarEntry()).ToList()
-                 
+                CalendarEntries = calendar.CalendarEntries.Select(p => p.ToWebCalendarEntry()).ToList()
+
             };
-            return newCalendar;
+          
 
         }
-        public static WebCalendarEntry ToJsonCalendarEntry(this CalendarEntry calendarEntry)
+        public static WebCalendarEntry ToWebCalendarEntry(this CalendarEntry calendarEntry)
         {
             if (calendarEntry == null)
             {
@@ -127,7 +175,7 @@ namespace Organizer.WebService
 
             }
 
-            WebCalendarEntry newCalendarEntry = new WebCalendarEntry()
+            return new WebCalendarEntry()
             {
                 OwnerId = calendarEntry.Owner.UserId,
                 CalendarId = calendarEntry.CalendarEntryId,
@@ -137,17 +185,17 @@ namespace Organizer.WebService
                 Duration = calendarEntry.Duration
 
             };
-            return newCalendarEntry;
+   
 
         }
-        public static WebUser ToJsonUser(this User user)
+        public static WebUser ToWebUser(this User user)
         {
 
             if (user == null)
             {
                 return null;
             }
-            WebUser newUser = new WebUser()
+            return new WebUser()
             {
                 Id = user.UserId,
                 GivenName = user.GivenName,
@@ -158,10 +206,10 @@ namespace Organizer.WebService
                 GroupIds = user.Groups.Select(p => p.GroupId).ToList()
 
             };
-            return newUser;
+            
         }
 
-        public static WebGroup ToJsonGroup(this Group group)
+        public static WebGroup ToWebGroup(this Group group)
         {
 
             if (group == null)
@@ -169,15 +217,31 @@ namespace Organizer.WebService
                 return null;
             }
 
-            WebGroup newGroup = new WebGroup()
+            return new WebGroup()
             {
                 Description = group.Description,
                 Id = group.GroupId,
                 Members = group.Members
 
             };
-            return newGroup;
+
         }
 
+
+        public static WebRoom ToWebRoom(this Room room)
+        {
+
+            if (room == null)
+            {
+                return null;
+            }
+            return new WebRoom()
+            {
+                Id = room.RoomId,
+                Description = room.Description,
+                Location = room.Location,
+                Seats = room.Seats
+            };
+        }
     }
 }
