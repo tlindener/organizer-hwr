@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -85,10 +86,7 @@ namespace Organizer
         {
             return calendarDatabase.User.Find(userId);
         }
-        public ICollection<User> GetInviteesFromAppointment(int appointmentId)
-        {
-            return calendarDatabase.Appointments.Find(appointmentId).Invitees;
-        }
+
         #endregion
 
         #region Rooms
@@ -121,14 +119,34 @@ namespace Organizer
             return calendarDatabase.Groups.Where(p => p.Members == member).ToList();
         }
         #endregion
+
+        public bool ValidateUser(String userName, string password)
+        {
+
+            var user = calendarDatabase.User.Where(p => p.UserName == userName && p.Password == password);
+            if (user != null && user.First() != null)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        private static string getSHA512Hash(string text)
+        {
+            string hash = "";
+            SHA512 alg = SHA512.Create();
+            byte[] result = alg.ComputeHash(Encoding.UTF8.GetBytes(text));
+            hash = Encoding.UTF8.GetString(result);
+            return hash;
+        }
+    
     }
 
     public class CalendarContext : DbContext
     {
         public DbSet<Calendar> Calendar { get; set; }
         public DbSet<CalendarEntry> CalendarEntries { get; set; }
-        public DbSet<User> User { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<User> User { get; set; }      
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Group> Groups { get; set; }
     }

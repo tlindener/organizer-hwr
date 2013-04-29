@@ -18,12 +18,11 @@ namespace Organizer.Interfaces.Json
         public String Name { get; set; }
         public String Description { get; set; }
         public List<WebCalendarEntry> CalendarEntries { get; set; }
-        public List<Appointment> AppointmentEntries { get; set; }
+
 
         public WebCalendar()
         {
-            CalendarEntries = new List<WebCalendarEntry>();
-            AppointmentEntries = new List<Appointment>();
+            CalendarEntries = new List<WebCalendarEntry>();            
         }
     }
 }

@@ -12,6 +12,25 @@ namespace Organizer.Interfaces
 
     public class CalendarEntry
     {
+        public CalendarEntry()
+        {
+            Invitees = new List<User>();
+        }
+        public virtual ICollection<User> Invitees { get; set; }
+
+
+        public bool IsEmpty
+        {
+            get
+            {
+                if (Invitees.Count == 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
 
         [Key]
         public int CalendarEntryId { get; set; }
@@ -19,7 +38,7 @@ namespace Organizer.Interfaces
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime EndDate { get; set; }
-             public String Title { get; set; }
+        public String Title { get; set; }
         public String Description { get; set; }
         public double Duration
         {

@@ -12,8 +12,12 @@ namespace Organizer.WebService
 {
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service1" in code, svc and config file together.
     // NOTE: In order to launch WCF Test Client for testing this service, please select Service1.svc or Service1.svc.cs at the Solution Explorer and start debugging.
+   [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class OrganizerService : IOrganizerService
     {
+       
+     
+
         Organizer.TimePlanner timeplanner;
 
         public OrganizerService()
@@ -35,7 +39,10 @@ namespace Organizer.WebService
                 GivenName = "Tobias",
                 Surname = "Lindener",
                 MailAddress = "tobias.lindener@gmail.com",
-                PhoneNumber = "01773071234"
+                PhoneNumber = "01773071234",
+                Password = "Test",
+                UserName = "Tobias"
+
 
             };
             calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
@@ -139,9 +146,17 @@ namespace Organizer.WebService
             return groups.Select(p => p.ToWebGroup()).ToList();
         }
 
-        public ICollection<WebUser> GetInviteesFromAppointment(int appointmentId)
+
+
+        public bool AddNewCalendar(string name, string description, int ownerId)
         {
-            throw new NotImplementedException();
+            return timeplanner.AddNewCalendar(new Calendar()
+            {
+                Name = name,
+                Description = description,
+                Owner = timeplanner.GetUserById(ownerId)
+                
+            });
         }
     }
 
