@@ -46,6 +46,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Selectors" />
+    <Reference Include="System.identitymodel.services" />
+    <Reference Include="System.ServiceModel.Activation" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -70,9 +74,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="OrganizerService.svc" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UserNameValidator.cs" />
     <Compile Include="OrganizerService.svc.cs">
       <DependentUpon>OrganizerService.svc</DependentUpon>
     </Compile>
@@ -84,6 +91,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="SWeb.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="SWeb.Debug.config">
+      <DependentUpon>SWeb.config</DependentUpon>
+    </None>
+    <None Include="SWeb.Release.config">
+      <DependentUpon>SWeb.config</DependentUpon>
+    </None>
+    <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -19,12 +19,12 @@ namespace Organizer.Interfaces
         public String Name { get; set; }
         public String Description { get; set; }
         public virtual ICollection<CalendarEntry> CalendarEntries { get; set; }
-        public virtual ICollection<Appointment> AppointmentEntries { get; set; }
+        
 
         public Calendar()
         {
             CalendarEntries = new List<CalendarEntry>();
-            AppointmentEntries = new List<Appointment>();
+           
         }
 
         public bool IsEmpty

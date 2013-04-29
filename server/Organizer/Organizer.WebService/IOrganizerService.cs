@@ -10,7 +10,7 @@ using System.Text;
 namespace Organizer.WebService
 {
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IService1" in both code and config file together.
-    [ServiceContract]
+     [ServiceContract]
     public interface IOrganizerService
     {
         [OperationContract]
@@ -22,7 +22,7 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddNewCalendar();
+        bool AddNewCalendar(string name,string description,int ownerId);      
 
 
 
@@ -37,7 +37,7 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<Organizer.Interfaces.CalendarEntry> GetEntriesByRoom(int roomId);
+        ICollection<WebCalendarEntry> GetEntriesByRoom(int roomId);
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -81,21 +81,9 @@ namespace Organizer.WebService
         ICollection<WebGroup> GetGroupsByUserId(int userId);
 
         #endregion Group
+ 
 
-        [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
-      ICollection<WebUser> GetInviteesFromAppointment(int appointmentId);
-        [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebRoom GetRoomById(int roomId);
 
-        [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebUser GetUserById(int userId);
-
-        [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool RemoveEntryFromCalendar(int calendarId, int entryId);
 
 
         [OperationContract]

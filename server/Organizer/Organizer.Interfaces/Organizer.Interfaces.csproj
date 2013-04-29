@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Appointment.cs" />
     <Compile Include="Calendar.cs" />
     <Compile Include="CalendarEntry.cs" />
     <Compile Include="Group.cs" />
