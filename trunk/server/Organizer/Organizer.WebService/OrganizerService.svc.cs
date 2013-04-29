@@ -12,7 +12,7 @@ namespace Organizer.WebService
 {
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service1" in code, svc and config file together.
     // NOTE: In order to launch WCF Test Client for testing this service, please select Service1.svc or Service1.svc.cs at the Solution Explorer and start debugging.
-   [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
+   [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
     public class OrganizerService : IOrganizerService
     {
        
@@ -93,9 +93,9 @@ namespace Organizer.WebService
             return timeplanner.AddEntryToCalendar(calendarId, calendarEntry);
         }
 
-        public bool RemoveEntryFromCalendar(int calendarId, int entryId)
+        public bool RemoveEntryFromCalendar(int calendarId, int calendarEntryId)
         {
-            return timeplanner.RemoveEntryFromCalendar(calendarId, entryId);
+            return timeplanner.RemoveEntryFromCalendar(calendarId, calendarEntryId);
         }
 
         public WebUser GetUserById(int userId)
@@ -109,9 +109,9 @@ namespace Organizer.WebService
           return  timeplanner.GetAllEntriesByOwner(ownerId).Select(p => p.ToWebCalendarEntry()).ToList();
         }
 
-        public WebCalendarEntry GetCalendarEntryById(int entryId)
+        public WebCalendarEntry GetCalendarEntryById(int calendarEntryId)
         {
-            return GetCalendarEntryById(entryId);
+            return GetCalendarEntryById(calendarEntryId);
         }
 
         public ICollection<WebRoom> GetAllRooms()
