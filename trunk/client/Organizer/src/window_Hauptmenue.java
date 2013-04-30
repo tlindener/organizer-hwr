@@ -113,14 +113,17 @@ public class window_Hauptmenue extends JFrame {
 					Object obj = myDataPusher.getBeschreibungen()[row][col];
 							
 					return obj;
+					
 				}
 				public void setValueAt(Object value, int row, int col) {
-						myDataPusher.getBeschreibungen()[row][col] = value;
+						
+					myDataPusher.getBeschreibungen()[row][col] = value;
 				       fireTableCellUpdated(row, col);
 				}
 			};
 
 			table_1 = new JTable(dataModel);
+			
 			table_1.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
