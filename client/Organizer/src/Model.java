@@ -35,16 +35,16 @@ public class Model {
 //		String name = "beschreibungen" + datum;
 		
 		beschreibungen = new HashMap();
-		beschreibungen.put("8.00", "Aufstehen");
-		beschreibungen.put("12.00", "Mittag");	
-		beschreibungen.put("17.00", "Feierabend");
+		beschreibungen.put("8:00", "Aufstehen");
+		beschreibungen.put("12:00", "Mittag");	
+		beschreibungen.put("17:00", "Feierabend");
 		return beschreibungen;	
 	}
 	public HashMap setDetails()
 	{
 		details = new HashMap();
-		details.put("8.00", "Jetzt aber wirklich aufstehen!");
-		details.put("12.00", "Lecker essen ist angesagt!!!!");	
+		details.put("8:00", "Jetzt aber wirklich aufstehen!");
+		details.put("12:00", "Lecker essen ist angesagt!!!!");	
 		return details;	
 	}
 	public Object getDetails(String zeit)
