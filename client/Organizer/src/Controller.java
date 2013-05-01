@@ -18,6 +18,7 @@ public class Controller implements DataPusher, ActionListener {
 	private Model myModel;
 	private window_Hauptmenue myHauptmenue;
 	private Object[][] beschreibungsDaten;
+	private Object[][] terminDauer;
 	private window_TerminBearbeiten myTerminBearbeiten;
 	private RequestHandler myRequester;
 	private Date aktDateCon;
@@ -28,7 +29,6 @@ public class Controller implements DataPusher, ActionListener {
 		myHauptmenue = new window_Hauptmenue(this, this);
 		myTerminBearbeiten = new window_TerminBearbeiten(this, this);
 		erstelleDOBeschreibungen();
-		
 	}
 
 	public static void main(String[] args) {
@@ -38,12 +38,13 @@ public class Controller implements DataPusher, ActionListener {
 	public void pushKalender() {
 
 	}
-/*
- * DO= DatenObjekt
- * @me: vllt eher in Model???
- */
-	public void erstelleDOBeschreibungen()
-	{
+
+	/*
+	 * DO= DatenObjekt
+	 * 
+	 * @me: vllt eher in Model???
+	 */
+	public void erstelleDOBeschreibungen() {
 		beschreibungsDaten = new Object[1440][2];
 		int myTimeHour = 0;
 		int myTimeMinute = 0;
@@ -73,27 +74,31 @@ public class Controller implements DataPusher, ActionListener {
 				beschreibungsDaten[i][0] = myTime;
 				beschreibungsDaten[i][1] = myModel.getBeschreibung(myTime);
 
-			} else if (myTimeMinute==1) {
-				System.out.println(myTimeMinute);
+			} else if (myTimeMinute == 1) {
+
 				beschreibungsDaten[i][0] = myTime;
 				beschreibungsDaten[i][1] = "Volle Stunde " + myTimeHour;
 			}
-			
-				if (i<1439)
-			i = i + 1;
+
+			if (i < 1439)
+				i = i + 1;
 		}
-		for (Object[] row:beschreibungsDaten)
-		{
-			for (Object element:row)
-			{
-				System.out.print(element + " ");
-				
-			}
-			System.out.println();
-		}
-		
+
 		konvertiereBeschreibungsDaten();
 	}
+
+	
+	public Object getDauer(String zeit)
+	{
+		return myModel.getDauer(zeit);
+	}
+	
+	public void setDauer()
+	{
+		
+
+	}
+	
 	@Override
 	public Object[][] getBeschreibungen() {
 		return beschreibungsDaten;
@@ -157,18 +162,20 @@ public class Controller implements DataPusher, ActionListener {
 		int j = 0;
 		for (int i = 0; i < 1439; i++) {
 			if (beschreibungsDaten[i][1] != null) {
-				
+
 				beschreibungsDatenKonv[j][0] = beschreibungsDaten[i][0];
 				beschreibungsDatenKonv[j][1] = beschreibungsDaten[i][1];
 				if (j < 48) {
 					j++;
 				}
 			}
-			
+
 		}
 		beschreibungsDaten = beschreibungsDatenKonv;
 		return beschreibungsDaten;
 	}
+	
+	
 
 	public String getDetails(String aktZeit) {
 		String details = null;
