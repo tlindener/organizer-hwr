@@ -77,7 +77,7 @@ public class Controller implements DataPusher, ActionListener {
 			} else if (myTimeMinute == 1) {
 
 				beschreibungsDaten[i][0] = myTime;
-				beschreibungsDaten[i][1] = "Volle Stunde " + myTimeHour;
+				beschreibungsDaten[i][1] = "";
 			}
 
 			if (i < 1439)

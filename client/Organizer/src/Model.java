@@ -38,7 +38,7 @@ public class Model {
 //		String name = "beschreibungen" + datum;
 		
 		dauer = new HashMap();
-		dauer.put("8:00", 1.5);
+		dauer.put("8:15", 1.5);
 		dauer.put("12:00", 2.0);	
 		dauer.put("17:00", 3.0);
 		return dauer;	
@@ -55,7 +55,7 @@ public class Model {
 //		String name = "beschreibungen" + datum;
 		
 		beschreibungen = new HashMap();
-		beschreibungen.put("8:00","Aufstehen");
+		beschreibungen.put("8:15", "Aufstehen");
 		beschreibungen.put("12:00", "Mittag");	
 		beschreibungen.put("17:00", "Feierabend");
 		return beschreibungen;	
@@ -63,7 +63,7 @@ public class Model {
 	public HashMap setDetails()
 	{
 		details = new HashMap();
-		details.put("8:00", "Jetzt aber wirklich aufstehen!");
+		details.put("8:15", "Jetzt aber wirklich aufstehen!");
 		details.put("12:00", "Lecker essen ist angesagt!!!!");	
 		return details;	
 	}
@@ -76,7 +76,7 @@ public class Model {
 		}
 		else
 			{
-			System.out.println(details.get(zeit)+","+ zeit);
+			
 			return "Es besteht zu der Ausgewählten Zeit kein Termin oder es wurden keine Details hinzugefügt";
 			}
 	}
