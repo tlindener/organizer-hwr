@@ -3,14 +3,29 @@
  */
 package network;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import network.objects.ByProperty;
+import network.objects.NetDateTimeAdapter;
+import network.objects.Utils;
+
 import organizer.objects.AbstractOrganizerObject;
+import organizer.objects.types.CalendarEntry;
 
 import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Verbindungsschnittstelle um Daten abzufragen. Eingabeobjekte werden verändert
@@ -25,19 +40,10 @@ import com.google.gson.JsonObject;
  */
 public class JsonJavaRequestHandler extends RequestHandler {
 
-	private GsonBuilder builder = null;
+	private Gson gson = null;
 
-	// private FieldNamingStrategy cStrategy = new FieldNamingStrategy() {
-	//
-	// @Override
-	// public String translateName(Field field) {
-	// String firstChar = field.getName().substring(0, 1);
-	// String replaceChar = firstChar.toLowerCase();
-	// System.out.println(firstChar + " : " + replaceChar);
-	// return field.getName().replaceFirst(firstChar, replaceChar);
-	// }
-	// };
-
+	private HttpURLConnection connection = null;
+	
 	/**
 	 * Verbindungsdetails für Socket hinterlegen
 	 */
@@ -46,97 +52,93 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	}
 
 	private void init() {
-		builder = new GsonBuilder();
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Date.class, new NetDateTimeAdapter());
 		builder.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE);
+		gson = builder.create();
 	}
 
 	/**
 	 * Abfrage eines Objekte, das die Vorgaben des Eingabeobjekts erfüllen.
 	 */
-	@Override
-	public <T extends AbstractOrganizerObject> T requestObject(T obj) {
-
-		//
-//		JsonObject json = sendRequestToServer(obj);
-		 JsonObject json = new JsonObject();
-//		  used to emulate server stream json object
-		json.addProperty("CalendarId", "1");
-		json.addProperty("Description", "Description");
-		json.addProperty("Duration", 180);
-		json.addProperty("EndDate", "\\/Date(1366979015630+0200)\\/");
-		json.addProperty("Id", 0);
-		json.addProperty("OwnerId", 1);
-		json.addProperty("RoomId", 0);
-		json.addProperty("StartDate", "\\/Date(668767800000+0200)\\/");
-		json.addProperty("Title", "Title");
-		json.addProperty("Beschreibung", "Aufstehen");
-
-		return fillObjectFromJson(json, obj);
-	}
-
 	@SuppressWarnings("unchecked")
-	// unrealistic because of created object must be a type of T
-	private <T extends AbstractOrganizerObject> T fillObjectFromJson(
-			JsonObject json, T obj) {
-		
-		if(json.get("StartDate")!=null){
-			json = parseDateTime(json, "StartDate");
-		}
-		if(json.get("EndDate")!=null){
-			json = parseDateTime(json, "EndDate");
-		}
-		return (T) builder.create().fromJson(json, obj.getClass());
-	}
-	
-	private JsonObject parseDateTime(JsonObject json, String fieldName){
-		String originalValue = json.get(fieldName).toString();
-		String longValue = originalValue.substring(originalValue.indexOf("(")+1, originalValue.indexOf("+"));
-		long l = -1;
+	@Override
+	public <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj) {
+		String getCmd = Utils.buildGetByOwnIdCommand(obj);
+		String json = sendRequestToServer(getCmd);
 		try{
-			l = Long.parseLong(longValue);
-			
-		}catch(NumberFormatException ex){
+			return (T) gson.fromJson(json, obj.getClass());
+		}catch(JsonSyntaxException ex){
 			ex.printStackTrace();
 		}
-		json.remove(fieldName);
-		JsonElement elements = builder.create().toJsonTree(l);
-		json.add(fieldName, elements);
-		return json;
+		return null;
 	}
 	
-
-	@SuppressWarnings("unused")
-	private <T extends AbstractOrganizerObject> JsonObject sendRequestToServer(
-			T obj) {
-		String json = builder.create().toJson(obj);
-		System.out.println("AUSGABE: " + json);
-		return new JsonObject();
+	private String sendRequestToServer(String request) {
+		
+		System.out.println(request);
+		
+//		JsonElement e = gson.toJsonTree(new Date());
+		CalendarEntry ce = new CalendarEntry();
+		ce.setStartDate(new Date());
+		ce.setEndDate(new Date());
+		System.out.println(gson.toJson(ce));
+		
+//		 try {
+//			connection =  (HttpURLConnection) (new URL("http://test:1234/OrganizerService.svc/"+request)).openConnection();
+//			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//			String jsonString = reader.readLine();
+//			connection.disconnect();
+//			return jsonString;
+//		} catch (MalformedURLException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		
+		String jsonString = "{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1366979015630+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968215630+0200)\\/\",\"Title\":null}";
+//		String jsonString2 = "[{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1366979015630+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968215630+0200)\\/\",\"Title\":null},{\"CalendarId\":2,\"Description\":null,\"Duration\":1440,\"EndDate\":\"\\/Date(1367054619440+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968219440+0200)\\/\",\"Title\":null}]";
+		return jsonString;
+//		return null;
 	}
-
+	
 	/**
 	 * Abfrage mehrerer Objekte, die die Vorgaben des Eingabeobjekts erfüllen.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj) {
-
-		// System.out.println("Verarbeite ID: " + obj.getID());
-		// //Abfrage an Server stellen
-		// // Erstellen einer Liste von Objekten mit Input vom Server
-		List<T> t = null;
-		// try {
-		// t = new ArrayList<>();
-		// for(int i = 0; i < 10; i++){
-		// @SuppressWarnings("unchecked")
-		// //Cast möglich - Ursache der Warnung: Wildcard in getClass<?>
-		// T object2 = (T) obj.getClass().newInstance();
-		// object2.setID(i);
-		//
-		// t.add(object2);
-		// }
-		// } catch (InstantiationException | IllegalAccessException e) {
-		// e.printStackTrace();
-		// }
-		return t;
+		try{
+			String getCmd = Utils.buildGetAllCommand(obj);
+			String json = sendRequestToServer(getCmd);
+			
+			List<JsonElement> tmp = gson.fromJson(json, new TypeToken<List<JsonElement>>(){}.getType());
+			List<T> result = new ArrayList<>();
+			for(int i = 0; i < tmp.size(); i++){
+				result.add((T) gson.fromJson(tmp.get(i), obj.getClass()));
+			}		
+			return  result;
+		}catch(IllegalArgumentException ex){
+			ex.printStackTrace();
+		}catch(JsonSyntaxException ex){
+			ex.printStackTrace();
+		}
+		return null;
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AbstractOrganizerObject> T requestObject(T obj,
+			ByProperty by) {
+		try{
+			String getCmd = Utils.buildGetCommand(obj, by);
+			String json = sendRequestToServer(getCmd);
+			return (T) gson.fromJson(json, obj.getClass());
+		}catch(IllegalArgumentException ex){
+			ex.printStackTrace();
+		}catch(JsonSyntaxException ex){
+			ex.printStackTrace();
+		}
+		return null;
+	}
 }

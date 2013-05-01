@@ -2,6 +2,8 @@ package network;
 
 import java.util.List;
 
+import network.objects.ByProperty;
+
 import organizer.objects.AbstractOrganizerObject;
 
 /**
@@ -17,6 +19,7 @@ import organizer.objects.AbstractOrganizerObject;
  * 
  */
 public abstract class RequestHandler {
-	public abstract <T extends AbstractOrganizerObject> T requestObject(T obj);
+	public abstract <T extends AbstractOrganizerObject> T requestObject(T obj, ByProperty by);
+	public abstract <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj);
 	public abstract <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj);
 }

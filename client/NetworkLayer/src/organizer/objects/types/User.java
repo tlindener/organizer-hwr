@@ -12,7 +12,7 @@ import organizer.objects.AbstractOrganizerObject;
  * @author Steffen Baumann
  *
  */
-public class Person extends AbstractOrganizerObject {
+public class User extends AbstractOrganizerObject {
 	
 	private String surname = "";
 	private String givenname = "";

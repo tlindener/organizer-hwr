@@ -1,6 +1,9 @@
 package organizer.objects.types;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import organizer.objects.AbstractOrganizerObject;
@@ -14,8 +17,8 @@ import organizer.objects.AbstractOrganizerObject;
  */
 public class CalendarEntry extends AbstractOrganizerObject {
 
-	private long startDate = -1;
-	private long endDate = -1;
+	private Date startDate = null;
+	private Date endDate = null;
 	private String title = "";
 	private String description = "";
 
@@ -28,8 +31,7 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	/**
 	 * @return the startDate
 	 */
-	public long getStartDate() {
-
+	public Date getStartDate() {
 		return startDate;
 	}
 
@@ -37,14 +39,14 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	 * @param startDate
 	 *            the startDate to set
 	 */
-	public void setStartDate(long startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
 	/**
 	 * @return the endDate
 	 */
-	public long getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
 
@@ -52,7 +54,7 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	 * @param endDate
 	 *            the endDate to set
 	 */
-	public void setEndDate(long endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
@@ -60,28 +62,28 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	 * @return the start hour of this {@link CalendarEntry}
 	 */
 	public int getStartHour() {
-		return convertLongToDate(startDate).get(Calendar.HOUR_OF_DAY);
+		return convertDateToCalendar(startDate).get(Calendar.HOUR_OF_DAY);
 	}
 
 	/**
 	 * @return the end hour of this {@link CalendarEntry}
 	 */
 	public int getEndHour() {
-		return convertLongToDate(endDate).get(Calendar.HOUR_OF_DAY);
+		return convertDateToCalendar(endDate).get(Calendar.HOUR_OF_DAY);
 	}
 
 	/**
 	 * @return the start minute of this {@link CalendarEntry}
 	 */
 	public int getStartMinute() {
-		return convertLongToDate(startDate).get(Calendar.MINUTE);
+		return convertDateToCalendar(startDate).get(Calendar.MINUTE);
 	}
 
 	/**
 	 * @return the end minute of this {@link CalendarEntry}
 	 */
 	public int getEndMinute() {
-		return convertLongToDate(endDate).get(Calendar.MINUTE);
+		return convertDateToCalendar(endDate).get(Calendar.MINUTE);
 	}
 
 	/**
@@ -90,7 +92,7 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	public String getTitle() {
 		return title;
 	}
-
+	
 	/**
 	 * @param title
 	 *            the title to set
@@ -173,11 +175,30 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	public void setDuration(double duration) {
 		this.duration = duration;
 	}
-
-	private GregorianCalendar convertLongToDate(long millis) {
-		GregorianCalendar tmp = new GregorianCalendar();
-		tmp.setTimeInMillis(millis);
+	
+	public static Date parseStringToDate(String day, String time){
+		Date date = new Date();
+		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
+		try {
+			date = df.parse(day + " " + time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}		
+		return date;
+	}
+	
+	public static Calendar convertDateToCalendar(Date date) {
+		Calendar tmp = new GregorianCalendar();
+		tmp.setTime(date);
 		return tmp;
 	}
-
+	
+	public Date setTimeToDate(Date date, String time){
+		String[] splitt = time.split(":");
+		Calendar cal = convertDateToCalendar(date);
+		cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(splitt[0]));
+		cal.set(Calendar.MINUTE, Integer.parseInt(splitt[1]));
+		return cal.getTime();
+	}
+	
 }
