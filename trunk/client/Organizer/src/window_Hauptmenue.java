@@ -110,7 +110,17 @@ public class window_Hauptmenue extends JFrame {
 				}
 
 				public int getRowCount() {
-					return 48;
+					int rowCount = 0;
+					Object[][] obj=myDataPusher.getBeschreibungen();
+					for (int i=0; i<48;i++)
+					{
+						
+						if(obj[i][0]!=null)
+						{
+							rowCount=rowCount+1;
+						}
+					}
+					return rowCount;
 				}
 
 				@Override
@@ -129,6 +139,7 @@ public class window_Hauptmenue extends JFrame {
 			};
 
 			table_1 = new JTable(dataModel);
+			
 			table_1.setDefaultRenderer(Object.class, myRenderer);
 			setRowHeightDyn();
 			table_1.addMouseListener(new MouseAdapter() {
