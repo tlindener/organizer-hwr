@@ -19,7 +19,7 @@ import organizer.objects.AbstractOrganizerObject;
  * 
  */
 public abstract class RequestHandler {
-	public abstract <T extends AbstractOrganizerObject> T requestObject(T obj, ByProperty by);
+	public abstract <T extends AbstractOrganizerObject> List<T> requestObjects(T obj, ByProperty by);
 	public abstract <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj);
 	public abstract <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj);
 }

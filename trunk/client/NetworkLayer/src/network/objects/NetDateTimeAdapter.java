@@ -36,14 +36,10 @@ public class NetDateTimeAdapter extends TypeAdapter<Date> {
         }
         return result;
     }
-    /**
-     * <b>THIS METHOD IS NOT IMPLEMENTED</b>
-     */
 	@Override
 	public void write(JsonWriter out, Date value) throws IOException, UnsupportedOperationException {
 		String date = "\\/Date("+value.getTime()+"+0000)\\/";
 		out.value(date);
-//		throw new UnsupportedOperationException("This method is not implemented");
 	}
 
 }

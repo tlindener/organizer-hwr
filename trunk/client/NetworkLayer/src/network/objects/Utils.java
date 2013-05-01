@@ -1,7 +1,6 @@
 package network.objects;
 
 import java.lang.reflect.Field;
-import java.util.Date;
 import java.util.HashMap;
 
 import organizer.objects.AbstractOrganizerObject;
@@ -77,6 +76,11 @@ public class Utils {
 	public static <T extends AbstractOrganizerObject> boolean isFieldOf(T obj,
 			String fieldName) {
 		Field[] fields = obj.getClass().getDeclaredFields();
+		Field[] superFields =obj.getClass().getSuperclass().getDeclaredFields();
+		return (iterateThroughFields(fields, fieldName) || iterateThroughFields(superFields, fieldName));
+
+	}
+	private static boolean iterateThroughFields(Field[] fields, String fieldName){
 		for (Field f : fields) {
 			if (f.getName().equalsIgnoreCase(fieldName)){
 				return true;
@@ -84,7 +88,5 @@ public class Utils {
 		}
 		return false;
 	}
-	public static String parseDateToNetDateTime(Date d){
-		return "\\/Date("+d.getTime()+"+0000)\\/";
-	}
+	
 }
