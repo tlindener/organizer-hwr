@@ -13,6 +13,7 @@ import organizer.objects.AbstractOrganizerObject;
  *
  */
 public class Group extends AbstractOrganizerObject {
+	
 	private String description = "";
 	private List<Integer> users = new ArrayList<Integer>();
 	
