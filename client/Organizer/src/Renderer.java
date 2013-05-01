@@ -11,12 +11,20 @@ public class Renderer extends DefaultTableCellRenderer{
     @Override
     public Component getTableCellRendererComponent(JTable table, Object obj, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel label = (JLabel)super.getTableCellRendererComponent(table, obj, isSelected,hasFocus, row, column);
+       
         
-//        if(obj.equals(obj)){
+        
+        	if(!label.getText().equals("")&& column==1){
+//        	System.out.println("hier");
+//        	
+        		label.setBackground(Color.YELLOW);
 //        	 
-//        	setBackground(Color.RED);
-//        	 
-//        	}
+        	}
+        	else
+        	{
+        		label.setBackground(color.WHITE);
+        	}
+      
 //        if((row % 2) == 1 && !isSelected){
 //            label.setBackground(color);
 //        }
