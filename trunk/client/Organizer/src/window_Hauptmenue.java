@@ -33,6 +33,7 @@ public class window_Hauptmenue extends JFrame {
 	private JTable table_1;
 	private JPanel contentPane;
 	private DataPusher myDataPusher;
+	private Renderer myRenderer;
 	private ActionListener myCon;
 	private JTextField textField;
 	private JList list;
@@ -42,6 +43,8 @@ public class window_Hauptmenue extends JFrame {
 	private JButton btnAbmelden;
 	private String aktDateCali;
 	private JCalendar cali;
+	
+	
 
 	/**
 	 * Launch the application.
@@ -50,6 +53,7 @@ public class window_Hauptmenue extends JFrame {
 	{
 		myCon=con;
 		this.myDataPusher=myDataPusher;
+		myRenderer=new Renderer();
 		
 		init();
 	}
@@ -125,7 +129,7 @@ public class window_Hauptmenue extends JFrame {
 			};
 
 			table_1 = new JTable(dataModel);
-			System.out.println(table_1.getValueAt(1, 1));
+			table_1.setDefaultRenderer(Object.class, myRenderer);
 			setRowHeightDyn();
 			table_1.addMouseListener(new MouseAdapter() {
 				@Override
@@ -247,13 +251,35 @@ public class window_Hauptmenue extends JFrame {
 	
 	public void setRowHeightDyn()
 	{
-		for(int i=table_1.getRowHeight();i>0; i--)
+		for(int i=table_1.getRowCount()-1;i>0; i--)
 		{
-			if(table_1.getValueAt(i, 0)!=null)
+			if (table_1.getValueAt(i, 0)!=null)
 			{
-			System.out.println(table_1.getValueAt(i, 0));
+				if(myDataPusher.getDauer((String) table_1.getValueAt(i, 0))!=null)
+				{
+					double dauer=(Double) myDataPusher.getDauer((String) table_1.getValueAt(i, 0));
+					if(dauer>1)
+					{
+						for (int j=(int)Math.round(dauer)-1; j>0; j--)
+						{ 
+							System.out.println(j);
+							table_1.setValueAt(table_1.getValueAt(i, 1), i+j, 1);
+//							table_1.;
+						}
+						
+					}
+					/*
+					 * Alternative Idee: Größe der Spalten verändern--> komplexere Anpassung des Datenmodells
+					 * da keine Möglichkeit einfach Zeilen auszublenden
+					 */
+//					table_1.setRowHeight(i, (int)Math.round(20*dauer));
+					
+				}
+				else
+				{
+					table_1.setRowHeight(i, 20);
+				}
 			}
-			
 		
 		}
 	}

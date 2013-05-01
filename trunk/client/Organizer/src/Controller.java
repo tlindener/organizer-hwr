@@ -26,9 +26,9 @@ public class Controller implements DataPusher, ActionListener {
 	public Controller() {
 		myRequester = new JsonJavaRequestHandler();
 		myModel = new Model();
+		erstelleDOBeschreibungen();
 		myHauptmenue = new window_Hauptmenue(this, this);
 		myTerminBearbeiten = new window_TerminBearbeiten(this, this);
-		erstelleDOBeschreibungen();
 	}
 
 	public static void main(String[] args) {
@@ -90,13 +90,18 @@ public class Controller implements DataPusher, ActionListener {
 	
 	public Object getDauer(String zeit)
 	{
+		if(myModel.getDauer(zeit)!=null)
+		{
 		return myModel.getDauer(zeit);
+		}
+		else
+			return null;
+
 	}
 	
 	public void setDauer()
 	{
 		
-
 	}
 	
 	@Override
