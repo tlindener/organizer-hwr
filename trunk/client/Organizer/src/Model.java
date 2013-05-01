@@ -9,6 +9,7 @@ public class Model {
 	private HashMap beschreibungen;
 	private HashMap details;
 	private String aktDate=null;
+	private HashMap dauer;
 	
 	
 	public String getAktDatum() {
@@ -25,17 +26,35 @@ public class Model {
 		setDetails();
 	}
 	
+	public HashMap setDauer()
+	{
+
+/*
+ * Kommunikation mit Server um Daten abzufragen
+ 
+ * für Netzwerkschicht: .put(Uhrzeit, Dauer)
+ */
+//		String name = "beschreibungen" + datum;
+		
+		dauer = new HashMap();
+		dauer.put("8:00", 3.15);
+		dauer.put("12:00", 1.00);	
+		dauer.put("17:00", 5.00);
+		return dauer;	
+	}
+	
 	public HashMap setBeschreibung()
 	{
 
 /*
  * Kommunikation mit Server um Daten abzufragen
- * die Parameter beschreibung, details, personen und raum werden vom Server übergeben
+ 
+ * für Netzwerkschicht: .put(Uhrzeit, Beschreibung)
  */
 //		String name = "beschreibungen" + datum;
 		
 		beschreibungen = new HashMap();
-		beschreibungen.put("8:00", "Aufstehen");
+		beschreibungen.put("8:00","Aufstehen");
 		beschreibungen.put("12:00", "Mittag");	
 		beschreibungen.put("17:00", "Feierabend");
 		return beschreibungen;	
@@ -64,6 +83,10 @@ public class Model {
 	public Object getBeschreibung(String zeit)
 	{
 		return beschreibungen.get(zeit);
+	}
+	public Object getDauer(String zeit)
+	{
+		return dauer.get(zeit);
 	}
 
 }

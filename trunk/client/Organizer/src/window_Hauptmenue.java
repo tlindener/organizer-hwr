@@ -87,6 +87,7 @@ public class window_Hauptmenue extends JFrame {
 // Termintabelle
 //			Speicherung der Beschreibungen im Modell über HashMap
 		
+			
 			TableModel dataModel = new AbstractTableModel() {
 				@Override
 				public String getColumnName(int column) {
@@ -110,9 +111,8 @@ public class window_Hauptmenue extends JFrame {
 
 				@Override
 				public Object getValueAt(int row, int col) {
-					Object obj = myDataPusher.getBeschreibungen()[row][col];
-							
-					return obj;
+					
+					return myDataPusher.getBeschreibungen()[row][col];
 					
 				}
 				public void setValueAt(Object value, int row, int col) {
@@ -120,19 +120,22 @@ public class window_Hauptmenue extends JFrame {
 					myDataPusher.getBeschreibungen()[row][col] = value;
 				       fireTableCellUpdated(row, col);
 				}
+				
+				
 			};
 
 			table_1 = new JTable(dataModel);
-			
+			System.out.println(table_1.getValueAt(1, 1));
+			setRowHeightDyn();
 			table_1.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					JTable zwTab = (JTable)e.getSource();
 					zwTab.getSelectedRow();
 					String details=myDataPusher.getDetails((String) table_1.getValueAt(zwTab.getSelectedRow(),0 ));
-					System.out.println("Details: "+(String) table_1.getValueAt(zwTab.getSelectedRow(),1 ));
+//					System.out.println("Details: "+(String) table_1.getValueAt(zwTab.getSelectedRow(),1 ));
 					textArea.setText(details);
-					}
+					}  
 			});
 			
 			JScrollPane scrollpane = new JScrollPane(table_1);
@@ -240,6 +243,25 @@ public class window_Hauptmenue extends JFrame {
 		panel.add(btnAbmelden, gbc_btnAbmelden);
 		setVisible(true);
 		
+	}
+	
+	public void setRowHeightDyn()
+	{
+		for(int i=table_1.getRowHeight();i>0; i--)
+		{
+			if(table_1.getValueAt(i, 0)!=null)
+			{
+			System.out.println(table_1.getValueAt(i, 0));
+			}
+			
+		
+		}
+	}
+	public JTable getTable_1() {
+		return table_1;
+	}
+	public void setTable_1(JTable table_1) {
+		this.table_1 = table_1;
 	}
 	public String getAktDateCali()
 	{
