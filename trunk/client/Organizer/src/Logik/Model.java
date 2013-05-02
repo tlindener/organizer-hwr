@@ -1,3 +1,4 @@
+package Logik;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,9 +12,9 @@ public class Model {
 	 */
 	private HashMap Kalenderdaten;
 	
-	private HashMap <String,String>beschreibungen;
+	private HashMap <String, String> beschreibungen;
 	private HashMap <String, String> details;
-	private HashMap <String, List>personen;
+	private HashMap <String, List> personen;
 	private HashMap <String, String>raeume;
 	private HashMap <String, Double>dauer;
 	private Date aktDate;
