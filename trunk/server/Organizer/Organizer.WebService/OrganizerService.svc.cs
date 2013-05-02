@@ -42,8 +42,8 @@ namespace Organizer.WebService
 
            timeplanner.AddNewCalendar(cal);
 
-           var entry = new CalendarEntry() { Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
-           timeplanner.AddEntryToCalendar(timeplanner.GetAllCalendar().First().CalendarId, entry);
+           var entry = new CalendarEntry() { CalendarId = timeplanner.GetAllCalendar().First().CalendarId, Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
+           timeplanner.AddEntryToCalendar(entry);
 
        }
      
@@ -75,23 +75,6 @@ namespace Organizer.WebService
             return timeplanner.GetCalendarById(calendarId).ToWebCalendar();
         }
 
-        public bool AddCalendarEntryToCalendar(int calendarId, DateTime startDate, DateTime endDate, string description, int ownerId, int roomId)
-        {
-            var calendar = timeplanner.GetCalendarById(calendarId);
-            var owner = timeplanner.GetUserById(ownerId);
-            var room = timeplanner.GetRoomById(roomId);
-            CalendarEntry calendarEntry = new CalendarEntry()
-            {
-                StartDate = startDate,
-                EndDate = endDate,
-                Description = description,
-                Owner = owner,
-                Room = room,
-                Calendar = calendar
-
-            };
-            return timeplanner.AddEntryToCalendar(calendarId, calendarEntry);
-        }
 
         public bool RemoveEntryFromCalendar(int calendarId, int calendarEntryId)
         {
@@ -125,10 +108,6 @@ namespace Organizer.WebService
         }
 
 
-        public bool AddNewCalendar()
-        {
-            throw new NotImplementedException();
-        }
 
         public ICollection<WebCalendarEntry> GetEntriesByRoom(int roomId)
         {
@@ -157,6 +136,50 @@ namespace Organizer.WebService
                 Owner = timeplanner.GetUserById(ownerId)
                 
             });
+        }
+
+
+        public bool AddNewCalendar(WebCalendar calendar)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddCalendarEntryToCalendar(int calendarId, WebCalendarEntry calendarEntry)
+        {
+            var calendar = timeplanner.GetCalendarById(calendarId);
+
+            var owner = timeplanner.GetUserById(calendarEntry.OwnerId);
+            var room = timeplanner.GetRoomById(calendarEntry.RoomId);
+            CalendarEntry entry = new CalendarEntry()
+            {
+                StartDate = calendarEntry.StartDate,
+                EndDate = calendarEntry.EndDate,
+                Description = calendarEntry.Description,
+                Owner = owner,
+                Room = room,
+                Calendar = calendar
+
+            };
+            return timeplanner.AddEntryToCalendar(entry);       
+            
+        }
+
+        public bool AddUser(WebUser user)
+        {
+            User dbUser = new User();
+            return timeplanner.AddUser(dbUser);
+        }
+
+        public bool AddRoom(WebRoom room)
+        {
+            Room dbRoom = new Room();
+            return timeplanner.AddRoom(dbRoom);
+        }
+
+        public bool AddGroup(WebGroup group)
+        {
+            Group dbGroup = new Group();
+            return timeplanner.AddGroup(dbGroup);
         }
     }
 

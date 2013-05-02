@@ -57,8 +57,8 @@ namespace Organizer
 
             AddNewCalendar(cal);
 
-            var entry = new CalendarEntry() { Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
-            AddEntryToCalendar(GetAllCalendar().First().CalendarId, entry);
+            var entry = new CalendarEntry() {CalendarId=GetAllCalendar().First().CalendarId, Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
+            AddEntryToCalendar(entry);
 
         }
         public ICollection<Calendar> GetAllCalendar()
@@ -76,10 +76,10 @@ namespace Organizer
         {
             return calendarDatabase.CalendarEntries.Find(calendarEntryId);
         }
-        public bool AddEntryToCalendar(int calendarId, CalendarEntry entry)
+        public bool AddEntryToCalendar(CalendarEntry entry)
         {
 
-            var calendar = calendarDatabase.Calendar.Find(calendarId);
+            var calendar = calendarDatabase.Calendar.Find(entry.CalendarId);
             if (calendar == null)
             {
                 return false;
@@ -175,7 +175,28 @@ namespace Organizer
         }
 
 
-  
+
+
+        public bool AddUser(User dbUser)
+        {
+            calendarDatabase.User.Add(dbUser);
+            calendarDatabase.SaveChanges();
+            return true;
+        }
+
+        public bool AddRoom(Room dbRoom)
+        {
+            calendarDatabase.Rooms.Add(dbRoom);
+            calendarDatabase.SaveChanges();
+            return true;
+        }
+
+        public bool AddGroup(Group dbGroup)
+        {
+            calendarDatabase.Groups.Add(dbGroup);
+            calendarDatabase.SaveChanges();
+            return true;
+        }
     }
 
     public class CalendarContext : DbContext
