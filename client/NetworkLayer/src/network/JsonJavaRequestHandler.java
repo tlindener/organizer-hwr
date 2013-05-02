@@ -70,31 +70,31 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@Override
 	public <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj) {
 		
-		Object result = null;
-		
-		if(obj instanceof CalendarEntry){
-			result = data.getCalendarEntryById(obj.getID());
-		}if(obj instanceof Calendar){
-			result = data.getCalendarById(obj.getID());
-		}if(obj instanceof Room){
-			result = data.getRoomById(obj.getID());
-		}if(obj instanceof User){
-			result = data.getUserById(obj.getID());
-		}
-		if(result!=null){
-			return (T)result;
-		}else{
-			return null;
-		}
-				
-//		String getCmd = Utils.buildGetByOwnIdCommand(obj);
-//		String json = sendRequestToServer(getCmd);
-//		try{
-//			return (T) gson.fromJson(json, obj.getClass());
-//		}catch(JsonSyntaxException ex){
-//			ex.printStackTrace();
+//		Object result = null;
+//		
+//		if(obj instanceof CalendarEntry){
+//			result = data.getCalendarEntryById(obj.getID());
+//		}if(obj instanceof Calendar){
+//			result = data.getCalendarById(obj.getID());
+//		}if(obj instanceof Room){
+//			result = data.getRoomById(obj.getID());
+//		}if(obj instanceof User){
+//			result = data.getUserById(obj.getID());
 //		}
-//		return null;
+//		if(result!=null){
+//			return (T)result;
+//		}else{
+//			return null;
+//		}
+				
+		String getCmd = Utils.buildGetByOwnIdCommand(obj);
+		String json = sendRequestToServer(getCmd);
+		try{
+			return (T) gson.fromJson(json, obj.getClass());
+		}catch(JsonSyntaxException ex){
+			ex.printStackTrace();
+		}
+		return null;
 	}
 	
 	private String sendRequestToServer(String request) {
@@ -104,17 +104,17 @@ public class JsonJavaRequestHandler extends RequestHandler {
 //		String jsonString2 = "[{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1366979015630+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968215630+0200)\\/\",\"Title\":null},{\"CalendarId\":2,\"Description\":null,\"Duration\":1440,\"EndDate\":\"\\/Date(1367054619440+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968219440+0200)\\/\",\"Title\":null}]";
 //		return jsonString;
 		
-//		 try {
-//			connection =  (HttpURLConnection) (new URL("http://test:1234/OrganizerService.svc/"+request)).openConnection();
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//			String jsonString = reader.readLine();
-//			connection.disconnect();
-//			return jsonString;
-//		} catch (MalformedURLException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		 try {
+			connection =  (HttpURLConnection) (new URL("http://test:1234/OrganizerService.svc/"+request)).openConnection();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String jsonString = reader.readLine();
+			connection.disconnect();
+			return jsonString;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
@@ -125,40 +125,40 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@Override
 	public <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj) {
 		
-		Object result = null;
-		
-		if(obj instanceof CalendarEntry){
-			result = data.getAllCalendarEntries();
-		}if(obj instanceof Calendar){
-			result = data.getAllCalendar();
-		}if(obj instanceof Room){
-			result = data.getAllRooms();
-		}if(obj instanceof User){
-			result = data.getAllUser();
-		}
-		if(result!=null){
-			return (List<T>)result;
-		}else{
-			return null;
-		}
-		
-		
-//		try{
-//			String getCmd = Utils.buildGetAllCommand(obj);
-//			String json = sendRequestToServer(getCmd);
-//			
-//			List<JsonElement> tmp = gson.fromJson(json, new TypeToken<List<JsonElement>>(){}.getType());
-//			List<T> result = new ArrayList<>();
-//			for(int i = 0; i < tmp.size(); i++){
-//				result.add((T) gson.fromJson(tmp.get(i), obj.getClass()));
-//			}		
-//			return  result;
-//		}catch(IllegalArgumentException ex){
-//			ex.printStackTrace();
-//		}catch(JsonSyntaxException ex){
-//			ex.printStackTrace();
+//		Object result = null;
+//		
+//		if(obj instanceof CalendarEntry){
+//			result = data.getAllCalendarEntries();
+//		}if(obj instanceof Calendar){
+//			result = data.getAllCalendar();
+//		}if(obj instanceof Room){
+//			result = data.getAllRooms();
+//		}if(obj instanceof User){
+//			result = data.getAllUser();
 //		}
-//		return null;
+//		if(result!=null){
+//			return (List<T>)result;
+//		}else{
+//			return null;
+//		}
+		
+		
+		try{
+			String getCmd = Utils.buildGetAllCommand(obj);
+			String json = sendRequestToServer(getCmd);
+			
+			List<JsonElement> tmp = gson.fromJson(json, new TypeToken<List<JsonElement>>(){}.getType());
+			List<T> result = new ArrayList<>();
+			for(int i = 0; i < tmp.size(); i++){
+				result.add((T) gson.fromJson(tmp.get(i), obj.getClass()));
+			}		
+			return  result;
+		}catch(IllegalArgumentException ex){
+			ex.printStackTrace();
+		}catch(JsonSyntaxException ex){
+			ex.printStackTrace();
+		}
+		return null;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -166,34 +166,34 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	public <T extends AbstractOrganizerObject> List<T> requestObjects(T obj,
 			ByProperty by) {
 		
-		if(!Utils.isFieldOf(obj, by.getFieldName())) return null;
-		
-		Object result = null;
-		
-		if(obj instanceof CalendarEntry){
-			result = data.getAllCalendarEntries();
-		}if(obj instanceof Calendar){
-			result = data.getAllCalendar();
-		}if(obj instanceof Room){
-			result = data.getAllRooms();
-		}if(obj instanceof User){
-			result = data.getUserByProperty(by.getFieldName(), by.getValue());
-		}
-		if(result!=null){
-			return (List<T>)result;
-		}else{
-			return null;
-		}
-		
-//		try{
-//			String getCmd = Utils.buildGetCommand(obj, by);
-//			String json = sendRequestToServer(getCmd);
-//			return (T) gson.fromJson(json, obj.getClass());
-//		}catch(IllegalArgumentException ex){
-//			ex.printStackTrace();
-//		}catch(JsonSyntaxException ex){
-//			ex.printStackTrace();
+//		if(!Utils.isFieldOf(obj, by.getFieldName())) return null;
+//		
+//		Object result = null;
+//		
+//		if(obj instanceof CalendarEntry){
+//			result = data.getAllCalendarEntries();
+//		}if(obj instanceof Calendar){
+//			result = data.getAllCalendar();
+//		}if(obj instanceof Room){
+//			result = data.getAllRooms();
+//		}if(obj instanceof User){
+//			result = data.getUserByProperty(by.getFieldName(), by.getValue());
 //		}
-//		return null;
+//		if(result!=null){
+//			return (List<T>)result;
+//		}else{
+//			return null;
+//		}
+		
+		try{
+			String getCmd = Utils.buildGetCommand(obj, by);
+			String json = sendRequestToServer(getCmd);
+			return (List<T>) gson.fromJson(json, obj.getClass());
+		}catch(IllegalArgumentException ex){
+			ex.printStackTrace();
+		}catch(JsonSyntaxException ex){
+			ex.printStackTrace();
+		}
+		return null;
 	}
 }
