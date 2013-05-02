@@ -7,30 +7,23 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class Renderer extends DefaultTableCellRenderer{
 	
-	  Color color = new Color(240,240,240);
+	  Color color = new Color(252,255,170);
     @Override
     public Component getTableCellRendererComponent(JTable table, Object obj, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel label = (JLabel)super.getTableCellRendererComponent(table, obj, isSelected,hasFocus, row, column);
        
         
         
-        	if(!label.getText().equals("")&& column==1){
-//        	System.out.println("hier");
-//        	
-        		label.setBackground(Color.YELLOW);
-//        	 
+        	if(!label.getText().equals("")&& column>0){
+      	
+        		label.setBackground(color);
+        	 
         	}
         	else
         	{
         		label.setBackground(color.WHITE);
         	}
-      
-//        if((row % 2) == 1 && !isSelected){
-//            label.setBackground(color);
-//        }
-//        else if((row % 2) == 0 && !isSelected){
-//            label.setBackground(Color.WHITE);
-//        }
+
         
         return label;
     }
