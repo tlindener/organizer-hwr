@@ -22,7 +22,7 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddNewCalendar(string name,string description,int ownerId);      
+        bool AddNewCalendar(WebCalendar calendar);      
 
 
 
@@ -41,7 +41,7 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddCalendarEntryToCalendar(int calendarId, DateTime startDate,DateTime endDate,String description,int ownerId, int roomId);
+        bool AddCalendarEntryToCalendar(int calendarId,WebCalendarEntry calendarEntry);
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -57,6 +57,10 @@ namespace Organizer.WebService
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         WebUser GetUserById(int userId);
+
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool AddUser(WebUser user);
         #endregion
 
         #region Room
@@ -67,6 +71,10 @@ namespace Organizer.WebService
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         WebRoom GetRoomById(int roomId);
+
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool AddRoom(WebRoom room);
         #endregion
 
 
@@ -80,6 +88,9 @@ namespace Organizer.WebService
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         ICollection<WebGroup> GetGroupsByUserId(int userId);
 
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool AddGroup(WebGroup group);
         #endregion Group
  
 
