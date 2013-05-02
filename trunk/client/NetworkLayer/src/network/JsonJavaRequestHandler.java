@@ -105,7 +105,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 //		return jsonString;
 		
 		 try {
-			connection =  (HttpURLConnection) (new URL("http://test:1234/OrganizerService.svc/"+request)).openConnection();
+			connection =  (HttpURLConnection) (new URL("http://localhost:48585/OrganizerService.svc/"+request)).openConnection();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String jsonString = reader.readLine();
 			connection.disconnect();
