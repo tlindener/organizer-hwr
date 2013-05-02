@@ -15,7 +15,37 @@ namespace Organizer.WebService
    [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
     public class OrganizerService : IOrganizerService
     {
-       
+       public void InsertTestData()
+       {
+           var calendarEntries = new List<CalendarEntry>();
+
+           var owner = new Organizer.Interfaces.User()
+           {
+               GivenName = "Tobias",
+               Surname = "Lindener",
+               MailAddress = "tobias.lindener@gmail.com",
+               PhoneNumber = "01773071234",
+               Password = "Test",
+               UserName = "Tobias"
+
+
+           };
+           calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
+           Calendar cal = new Calendar()
+           {
+               Owner = owner,
+               Name = "MyCalendar",
+               CalendarEntries = calendarEntries
+
+
+           };
+
+           timeplanner.AddNewCalendar(cal);
+
+           var entry = new CalendarEntry() { Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
+           timeplanner.AddEntryToCalendar(timeplanner.GetAllCalendar().First().CalendarId, entry);
+
+       }
      
 
         Organizer.TimePlanner timeplanner;
@@ -30,37 +60,7 @@ namespace Organizer.WebService
             var calendar = timeplanner.GetAllCalendar();
             return calendar.Select(p => p.ToWebCalendar()).ToList();
         }
-        public void InsertTestData()
-        {
-            var calendarEntries = new List<CalendarEntry>();
-
-            var owner = new Organizer.Interfaces.User()
-            {
-                GivenName = "Tobias",
-                Surname = "Lindener",
-                MailAddress = "tobias.lindener@gmail.com",
-                PhoneNumber = "01773071234",
-                Password = "Test",
-                UserName = "Tobias"
-
-
-            };
-            calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
-            Calendar cal = new Calendar()
-            {
-                Owner = owner,
-                Name = "MyCalendar",
-                CalendarEntries = calendarEntries
-
-
-            };
-
-            timeplanner.AddNewCalendar(cal);
-
-            var entry = new CalendarEntry() { Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
-            timeplanner.AddEntryToCalendar(timeplanner.GetAllCalendar().First().CalendarId, entry);
-
-        }
+    
 
         public ICollection<WebUser> GetAllUser()
         {
@@ -111,7 +111,7 @@ namespace Organizer.WebService
 
         public WebCalendarEntry GetCalendarEntryById(int calendarEntryId)
         {
-            return GetCalendarEntryById(calendarEntryId);
+            return timeplanner.GetCalendarEntryById(calendarEntryId).ToWebCalendarEntry();
         }
 
         public ICollection<WebRoom> GetAllRooms()
@@ -197,8 +197,12 @@ namespace Organizer.WebService
                 Description = calendarEntry.Description,
                 StartDate = calendarEntry.StartDate,
                 EndDate = calendarEntry.EndDate,
-                Duration = calendarEntry.Duration
-
+                Duration = calendarEntry.Duration,
+                Title = calendarEntry.Title,
+                Id = calendarEntry.CalendarEntryId,
+                RoomId = calendarEntry.Room.RoomId,
+                Invitees = calendarEntry.Invitees.Select(p => p.UserId).ToList()
+                
             };
    
 
@@ -219,7 +223,7 @@ namespace Organizer.WebService
                 PhoneNumber = user.PhoneNumber,
                 CalendarIds = user.Calendar.Select(p => p.CalendarId).ToList(),
                 GroupIds = user.Groups.Select(p => p.GroupId).ToList()
-
+                
             };
             
         }
@@ -237,7 +241,7 @@ namespace Organizer.WebService
                 Description = group.Description,
                 Id = group.GroupId,
                 Members = group.Members
-
+                
             };
 
         }
@@ -256,6 +260,7 @@ namespace Organizer.WebService
                 Description = room.Description,
                 Location = room.Location,
                 Seats = room.Seats
+                
             };
         }
     }

@@ -30,7 +30,37 @@ namespace Organizer
             }
             return false;
         }
+        public void InsertTestData()
+        {
+            var calendarEntries = new List<CalendarEntry>();
 
+            var owner = new Organizer.Interfaces.User()
+            {
+                GivenName = "Tobias",
+                Surname = "Lindener",
+                MailAddress = "tobias.lindener@gmail.com",
+                PhoneNumber = "01773071234",
+                Password = "Test",
+                UserName = "Tobias"
+
+
+            };
+            calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
+            Calendar cal = new Calendar()
+            {
+                Owner = owner,
+                Name = "MyCalendar",
+                CalendarEntries = calendarEntries
+
+
+            };
+
+            AddNewCalendar(cal);
+
+            var entry = new CalendarEntry() { Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
+            AddEntryToCalendar(GetAllCalendar().First().CalendarId, entry);
+
+        }
         public ICollection<Calendar> GetAllCalendar()
         {
             return calendarDatabase.Calendar.ToList();
@@ -42,6 +72,10 @@ namespace Organizer
         #endregion
 
         #region CalendarEntry
+        public CalendarEntry GetCalendarEntryById(int calendarEntryId)
+        {
+            return calendarDatabase.CalendarEntries.Find(calendarEntryId);
+        }
         public bool AddEntryToCalendar(int calendarId, CalendarEntry entry)
         {
 
@@ -139,7 +173,9 @@ namespace Organizer
             hash = Encoding.UTF8.GetString(result);
             return hash;
         }
-    
+
+
+  
     }
 
     public class CalendarContext : DbContext
