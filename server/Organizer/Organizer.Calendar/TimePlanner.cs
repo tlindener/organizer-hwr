@@ -207,7 +207,7 @@ namespace Organizer
             try
             {
                 return calendarDatabase.User.ToList();
-            
+
             }
             catch (Exception ex)
             {
@@ -244,38 +244,66 @@ namespace Organizer
 
         #endregion
         #region Groups
+
+        /// <summary>
+        /// Returns a collection of groups
+        /// </summary>
+        /// <returns></returns>
         public ICollection<Group> GetAllGroups()
         {
-            return calendarDatabase.Groups.ToList();
+            try
+            {
+                return calendarDatabase.Groups.ToList();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return null;
         }
+        /// <summary>
+        /// Returns a group by specified Id
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         public Group GetGroupById(int groupId)
         {
-            return calendarDatabase.Groups.Find(groupId);
+            try
+            {
+                return calendarDatabase.Groups.Find(groupId);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return null;
         }
+
+        /// <summary>
+        /// Returns a collection of groups by specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public ICollection<Group> GetGroupsByUserId(int userId)
         {
-            var member = calendarDatabase.User.Find(userId);
-            if (member == null)
+            try
             {
-                return null;
+                var member = calendarDatabase.User.Find(userId);
+                if (member == null)
+                {
+                    return null;
+                }
+                return calendarDatabase.Groups.Where(p => p.Members == member).ToList();
             }
-            return calendarDatabase.Groups.Where(p => p.Members == member).ToList();
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return null;
         }
         #endregion
 
-        public bool ValidateUser(String userName, string password)
-        {
-
-            var user = calendarDatabase.User.Where(p => p.UserName == userName && p.Password == password);
-            if (user != null && user.First() != null)
-            {
-                return true;
-            }
-            return false;
-
-        }
-
-
+     
 
 
         /// <summary>
@@ -335,6 +363,21 @@ namespace Organizer
             }
             return true;
         }
+
+
+        //public bool ValidateUser(String userName, string password)
+        //{
+
+        //    var user = calendarDatabase.User.Where(p => p.UserName == userName && p.Password == password);
+        //    if (user != null && user.First() != null)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+
+        //}
+
+
     }
 
     public class CalendarContext : DbContext
