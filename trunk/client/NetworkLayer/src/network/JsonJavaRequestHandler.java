@@ -6,6 +6,7 @@ package network;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,6 +29,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
@@ -47,11 +49,18 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	private Gson gson = null;
 	TestData data = null;
 	private HttpURLConnection connection = null;
+	private String hostname = "";
+	private int port = -1;
+	public static final int GET = 1;
+	public static final int POST = 2;
+	
 	
 	/**
 	 * Verbindungsdetails für Socket hinterlegen
 	 */
-	public JsonJavaRequestHandler() {
+	public JsonJavaRequestHandler(String hostname, int port) {
+		this.hostname = hostname;
+		this.port = port;
 		data = new TestData();
 		init();
 	}
@@ -88,7 +97,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 //		}
 				
 		String getCmd = Utils.buildGetByOwnIdCommand(obj);
-		String json = sendRequestToServer(getCmd);
+		String json = sendRequestToServer(getCmd, GET);
 		try{
 			return (T) gson.fromJson(json, obj.getClass());
 		}catch(JsonSyntaxException ex){
@@ -97,15 +106,28 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		return null;
 	}
 	
-	private String sendRequestToServer(String request) {
+	private String sendRequestToServer(String request, int type) {
 		
 //		System.out.println(request);
 //		String jsonString = "{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1366979015630+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968215630+0200)\\/\",\"Title\":null}";
 //		String jsonString2 = "[{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1366979015630+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968215630+0200)\\/\",\"Title\":null},{\"CalendarId\":2,\"Description\":null,\"Duration\":1440,\"EndDate\":\"\\/Date(1367054619440+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968219440+0200)\\/\",\"Title\":null}]";
 //		return jsonString;
 		
+//		String obj = gson.toJson(new Date());
+//		System.out.println("TEST: " + obj);
+		
 		 try {
-			connection =  (HttpURLConnection) (new URL("http://localhost:48585/OrganizerService.svc/"+request)).openConnection();
+			connection =  (HttpURLConnection) (new URL("http://"+hostname+":"+port+"/OrganizerService.svc/")).openConnection();
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			switch(type){
+			case GET: connection.setRequestMethod("GET");
+				break;
+			case POST: connection.setRequestMethod("POST");
+				break;
+			}
+			PrintWriter writer = new PrintWriter(connection.getOutputStream());
+			writer.print(request);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String jsonString = reader.readLine();
 			connection.disconnect();
@@ -145,7 +167,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		
 		try{
 			String getCmd = Utils.buildGetAllCommand(obj);
-			String json = sendRequestToServer(getCmd);
+			String json = sendRequestToServer(getCmd, GET);
 			
 			List<JsonElement> tmp = gson.fromJson(json, new TypeToken<List<JsonElement>>(){}.getType());
 			List<T> result = new ArrayList<>();
@@ -187,7 +209,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		
 		try{
 			String getCmd = Utils.buildGetCommand(obj, by);
-			String json = sendRequestToServer(getCmd);
+			String json = sendRequestToServer(getCmd, GET);
 			return (List<T>) gson.fromJson(json, obj.getClass());
 		}catch(IllegalArgumentException ex){
 			ex.printStackTrace();
@@ -195,5 +217,19 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			ex.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public <T extends AbstractOrganizerObject> boolean addElement(T obj) {
+		try{
+			String getCmd = Utils.buildAddCommand(obj);
+			String json = sendRequestToServer(getCmd, GET);
+			return gson.fromJson(json, boolean.class);
+		}catch(IllegalArgumentException ex){
+			ex.printStackTrace();
+		}catch(JsonSyntaxException ex){
+			ex.printStackTrace();
+		}
+		return false;
 	}
 }

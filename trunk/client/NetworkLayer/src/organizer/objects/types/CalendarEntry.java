@@ -2,9 +2,11 @@ package organizer.objects.types;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import organizer.objects.AbstractOrganizerObject;
 
@@ -27,6 +29,8 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	private int roomId = -1;
 
 	private double duration = -1.0;
+			
+	private List<User> invitees = new ArrayList<>();
 
 	/**
 	 * @return the startDate
@@ -199,6 +203,20 @@ public class CalendarEntry extends AbstractOrganizerObject {
 		cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(splitt[0]));
 		cal.set(Calendar.MINUTE, Integer.parseInt(splitt[1]));
 		return cal.getTime();
+	}
+
+	/**
+	 * @return the invitees
+	 */
+	public List<User> getInvitees() {
+		return invitees;
+	}
+
+	/**
+	 * @param invitees the invitees to set
+	 */
+	public void setInvitees(List<User> invitees) {
+		this.invitees = invitees;
 	}
 	
 }
