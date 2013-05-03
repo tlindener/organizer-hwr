@@ -1,4 +1,5 @@
-﻿using Organizer.Interfaces;
+﻿using log4net;
+using Organizer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -9,116 +10,224 @@ using System.Threading.Tasks;
 
 namespace Organizer
 {
-    public class TimePlanner 
+    public class TimePlanner
     {
         CalendarContext calendarDatabase;
-
+        ILog logger = null;
         public TimePlanner()
         {
+            log4net.Config.XmlConfigurator.Configure();
+            logger = LogManager.GetLogger(typeof(TimePlanner));
+
             calendarDatabase = new CalendarContext();
         }
 
         #region Calendar
+        /// <summary>
+        /// Adds a new calendar item to database
+        /// </summary>
+        /// <param name="calendar"></param>
+        /// <returns>Boolean value which indicates the success of the action</returns>
         public bool AddNewCalendar(Calendar calendar)
         {
 
-            if (ValidationMethods.isCalendarValid(calendar))
+            if (Utils.isCalendarValid(calendar))
             {
-                calendarDatabase.Calendar.Add(calendar);
-                calendarDatabase.SaveChanges();
-                return true;
+                try
+                {
+                    calendarDatabase.Calendar.Add(calendar);
+                    calendarDatabase.SaveChanges();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    return false;
+                }
             }
             return false;
         }
-        public void InsertTestData()
-        {
-            var calendarEntries = new List<CalendarEntry>();
-
-            var owner = new Organizer.Interfaces.User()
-            {
-                GivenName = "Tobias",
-                Surname = "Lindener",
-                MailAddress = "tobias.lindener@gmail.com",
-                PhoneNumber = "01773071234",
-                Password = "Test",
-                UserName = "Tobias"
-
-
-            };
-            calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
-            Calendar cal = new Calendar()
-            {
-                Owner = owner,
-                Name = "MyCalendar",
-                CalendarEntries = calendarEntries
-
-
-            };
-
-            AddNewCalendar(cal);
-
-            var entry = new CalendarEntry() {CalendarId=GetAllCalendar().First().CalendarId, Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
-            AddEntryToCalendar(entry);
-
-        }
+        /// <summary>
+        /// Returns a collection of calendar items
+        /// </summary>
+        /// <returns></returns>
         public ICollection<Calendar> GetAllCalendar()
         {
-            return calendarDatabase.Calendar.ToList();
+            try
+            {
+                return calendarDatabase.Calendar.ToList();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return null;
         }
+        /// <summary>
+        /// Returns a single calendar item based on the chosen id
+        /// </summary>
+        /// <param name="calendarId"></param>
+        /// <returns></returns>
         public Calendar GetCalendarById(int calendarId)
         {
-            return calendarDatabase.Calendar.Find(calendarId);
+            try
+            {
+                return calendarDatabase.Calendar.Find(calendarId);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return null;
         }
         #endregion
 
         #region CalendarEntry
+        /// <summary>
+        /// Returns a calendar entry based on calenEntryId.
+        /// </summary>
+        /// <param name="calendarEntryId"></param>
+        /// <returns></returns>
         public CalendarEntry GetCalendarEntryById(int calendarEntryId)
         {
-            return calendarDatabase.CalendarEntries.Find(calendarEntryId);
+            try
+            {
+                return calendarDatabase.CalendarEntries.Find(calendarEntryId);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return null;
         }
+        /// <summary>
+        /// Adds a calendar entry to the specified calendar
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         public bool AddEntryToCalendar(CalendarEntry entry)
         {
-
-            var calendar = calendarDatabase.Calendar.Find(entry.CalendarId);
-            if (calendar == null)
+            try
             {
-                return false;
+                var calendar = calendarDatabase.Calendar.Find(entry.CalendarId);
+                if (calendar == null)
+                {
+                    return false;
+                }
+                calendar.CalendarEntries.Add(entry);
+                calendarDatabase.SaveChanges();
+                return true;
             }
-            calendar.CalendarEntries.Add(entry);
-            calendarDatabase.SaveChanges();
-            return true;
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return false;
 
         }
+
+        /// <summary>
+        /// Returns all calendar entries of specified owner
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <returns></returns>
         public ICollection<CalendarEntry> GetAllEntriesByOwner(int ownerId)
         {
-            return calendarDatabase.CalendarEntries.Where(p => p.Owner.UserId == ownerId).ToList();
-        }
-        public ICollection<CalendarEntry> GetEntriesByRoom(int roomId)
-        { 
-            var room = calendarDatabase.Rooms.Find(roomId);
-    
-            if (room == null)
+            try
             {
-                return null;
+                return calendarDatabase.CalendarEntries.Where(p => p.Owner.UserId == ownerId).ToList();
             }
-            return calendarDatabase.CalendarEntries.Where(p => p.Room == room).ToList();
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return null;
         }
+        /// <summary>
+        /// Returns all calendar entries in specified room
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
+        public ICollection<CalendarEntry> GetEntriesByRoom(int roomId)
+        {
+            try
+            {
+                // Check if given roomId is available
+                var room = calendarDatabase.Rooms.Find(roomId);
+                if (room == null)
+                {
+                    return null;
+                }
+                return calendarDatabase.CalendarEntries.Where(p => p.Room == room).ToList();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Removes entry from calendar
+        /// </summary>
+        /// <param name="calendarId"></param>
+        /// <param name="entryId"></param>
+        /// <returns></returns>
         public bool RemoveEntryFromCalendar(int calendarId, int entryId)
         {
-            var entry = calendarDatabase.CalendarEntries.Find(entryId);
-            return calendarDatabase.Calendar.Find(calendarId).CalendarEntries.Remove(entry);
+
+            try
+            {
+                //checks if calendar and entry is available
+                var entry = calendarDatabase.CalendarEntries.Find(entryId);
+                var calendar = calendarDatabase.Calendar.Find(calendarId);
+                if (entry == null && calendar == null)
+                {
+                    return false;
+                }
+                return calendar.CalendarEntries.Remove(entry);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return false;
+
+
         }
         #endregion
 
         #region User
-
+        /// <summary>
+        /// Returns all users
+        /// </summary>
+        /// <returns></returns>
         public ICollection<User> GetAllUser()
         {
-            return calendarDatabase.User.ToList();
+            try
+            {
+                return calendarDatabase.User.ToList();
+            
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return null;
+
         }
         public User GetUserById(int userId)
         {
-            return calendarDatabase.User.Find(userId);
+            try
+            {
+                return calendarDatabase.User.Find(userId);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+            return null;
+
         }
 
         #endregion
@@ -165,36 +274,65 @@ namespace Organizer
             return false;
 
         }
-        private static string getSHA512Hash(string text)
-        {
-            string hash = "";
-            SHA512 alg = SHA512.Create();
-            byte[] result = alg.ComputeHash(Encoding.UTF8.GetBytes(text));
-            hash = Encoding.UTF8.GetString(result);
-            return hash;
-        }
 
 
 
 
+        /// <summary>
+        /// Adds a user to database
+        /// </summary>
+        /// <param name="dbUser"></param>
+        /// <returns></returns>
         public bool AddUser(User dbUser)
         {
-            calendarDatabase.User.Add(dbUser);
-            calendarDatabase.SaveChanges();
+            try
+            {
+                calendarDatabase.User.Add(dbUser);
+                calendarDatabase.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+                return false;
+            }
             return true;
         }
-
+        /// <summary>
+        /// Adds a room to database
+        /// </summary>
+        /// <param name="dbRoom"></param>
+        /// <returns></returns>
         public bool AddRoom(Room dbRoom)
         {
-            calendarDatabase.Rooms.Add(dbRoom);
-            calendarDatabase.SaveChanges();
+            try
+            {
+                calendarDatabase.Rooms.Add(dbRoom);
+                calendarDatabase.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+                return false;
+            }
             return true;
         }
-
+        /// <summary>
+        /// Adds a group to database
+        /// </summary>
+        /// <param name="dbGroup"></param>
+        /// <returns></returns>
         public bool AddGroup(Group dbGroup)
         {
-            calendarDatabase.Groups.Add(dbGroup);
-            calendarDatabase.SaveChanges();
+            try
+            {
+                calendarDatabase.Groups.Add(dbGroup);
+                calendarDatabase.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+                return false;
+            }
             return true;
         }
     }
@@ -203,8 +341,9 @@ namespace Organizer
     {
         public DbSet<Calendar> Calendar { get; set; }
         public DbSet<CalendarEntry> CalendarEntries { get; set; }
-        public DbSet<User> User { get; set; }      
+        public DbSet<User> User { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Group> Groups { get; set; }
+        public DbSet<Invite> Invites { get; set; }
     }
 }

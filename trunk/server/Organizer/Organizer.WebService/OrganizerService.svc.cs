@@ -12,41 +12,41 @@ namespace Organizer.WebService
 {
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service1" in code, svc and config file together.
     // NOTE: In order to launch WCF Test Client for testing this service, please select Service1.svc or Service1.svc.cs at the Solution Explorer and start debugging.
-   [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
+    [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
     public class OrganizerService : IOrganizerService
     {
-       public void InsertTestData()
-       {
-           var calendarEntries = new List<CalendarEntry>();
+        public void InsertTestData()
+        {
+            var calendarEntries = new List<CalendarEntry>();
 
-           var owner = new Organizer.Interfaces.User()
-           {
-               GivenName = "Tobias",
-               Surname = "Lindener",
-               MailAddress = "tobias.lindener@gmail.com",
-               PhoneNumber = "01773071234",
-               Password = "Test",
-               UserName = "Tobias"
-
-
-           };
-           calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
-           Calendar cal = new Calendar()
-           {
-               Owner = owner,
-               Name = "MyCalendar",
-               CalendarEntries = calendarEntries
+            var owner = new Organizer.Interfaces.User()
+            {
+                GivenName = "Tobias",
+                Surname = "Lindener",
+                MailAddress = "tobias.lindener@gmail.com",
+                PhoneNumber = "01773071234",
+                Password = "Test",
+                UserName = "Tobias"
 
 
-           };
+            };
+            calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
+            Calendar cal = new Calendar()
+            {
+                Owner = owner,
+                Name = "MyCalendar",
+                CalendarEntries = calendarEntries
 
-           timeplanner.AddNewCalendar(cal);
 
-           var entry = new CalendarEntry() { CalendarId = timeplanner.GetAllCalendar().First().CalendarId, Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
-           timeplanner.AddEntryToCalendar(entry);
+            };
 
-       }
-     
+            timeplanner.AddNewCalendar(cal);
+
+            var entry = new CalendarEntry() { CalendarId = timeplanner.GetAllCalendar().First().CalendarId, Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
+            timeplanner.AddEntryToCalendar(entry);
+
+        }
+
 
         Organizer.TimePlanner timeplanner;
 
@@ -60,7 +60,7 @@ namespace Organizer.WebService
             var calendar = timeplanner.GetAllCalendar();
             return calendar.Select(p => p.ToWebCalendar()).ToList();
         }
-    
+
 
         public ICollection<WebUser> GetAllUser()
         {
@@ -89,7 +89,7 @@ namespace Organizer.WebService
 
         public ICollection<WebCalendarEntry> GetCalendarEntriesByOwnerId(int ownerId)
         {
-          return  timeplanner.GetAllEntriesByOwner(ownerId).Select(p => p.ToWebCalendarEntry()).ToList();
+            return timeplanner.GetAllEntriesByOwner(ownerId).Select(p => p.ToWebCalendarEntry()).ToList();
         }
 
         public WebCalendarEntry GetCalendarEntryById(int calendarEntryId)
@@ -111,7 +111,7 @@ namespace Organizer.WebService
 
         public ICollection<WebCalendarEntry> GetEntriesByRoom(int roomId)
         {
-            return timeplanner.GetEntriesByRoom(roomId).Select(p=> p.ToWebCalendarEntry()).ToList();
+            return timeplanner.GetEntriesByRoom(roomId).Select(p => p.ToWebCalendarEntry()).ToList();
         }
 
         public WebGroup GetGroupById(int groupId)
@@ -134,7 +134,7 @@ namespace Organizer.WebService
                 Name = name,
                 Description = description,
                 Owner = timeplanner.GetUserById(ownerId)
-                
+
             });
         }
 
@@ -144,9 +144,9 @@ namespace Organizer.WebService
             throw new NotImplementedException();
         }
 
-        public bool AddCalendarEntryToCalendar(int calendarId, WebCalendarEntry calendarEntry)
+        public bool AddCalendarEntryToCalendar(WebCalendarEntry calendarEntry)
         {
-            var calendar = timeplanner.GetCalendarById(calendarId);
+            var calendar = timeplanner.GetCalendarById(calendarEntry.CalendarId);
 
             var owner = timeplanner.GetUserById(calendarEntry.OwnerId);
             var room = timeplanner.GetRoomById(calendarEntry.RoomId);
@@ -160,8 +160,8 @@ namespace Organizer.WebService
                 Calendar = calendar
 
             };
-            return timeplanner.AddEntryToCalendar(entry);       
-            
+            return timeplanner.AddEntryToCalendar(entry);
+
         }
 
         public bool AddUser(WebUser user)
@@ -180,6 +180,12 @@ namespace Organizer.WebService
         {
             Group dbGroup = new Group();
             return timeplanner.AddGroup(dbGroup);
+        }
+
+
+        public ICollection<WebInvite> GetAllInvitesByUserId(int userId)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -202,7 +208,7 @@ namespace Organizer.WebService
                 CalendarEntries = calendar.CalendarEntries.Select(p => p.ToWebCalendarEntry()).ToList()
 
             };
-          
+
 
         }
         public static WebCalendarEntry ToWebCalendarEntry(this CalendarEntry calendarEntry)
@@ -211,11 +217,23 @@ namespace Organizer.WebService
             {
                 return null;
 
+            }            
+            int ownerId = 0;
+            int roomId = 0;
+       
+            if(calendarEntry.Owner != null) 
+            {
+                ownerId =calendarEntry.Owner.UserId;
             }
+            if(calendarEntry.Room != null)
+            {
+                roomId = calendarEntry.Room.RoomId;
+            }   
+            
 
             return new WebCalendarEntry()
             {
-                OwnerId = calendarEntry.Owner.UserId,
+               
                 CalendarId = calendarEntry.CalendarEntryId,
                 Description = calendarEntry.Description,
                 StartDate = calendarEntry.StartDate,
@@ -223,11 +241,11 @@ namespace Organizer.WebService
                 Duration = calendarEntry.Duration,
                 Title = calendarEntry.Title,
                 Id = calendarEntry.CalendarEntryId,
-                RoomId = calendarEntry.Room.RoomId,
-                Invitees = calendarEntry.Invitees.Select(p => p.UserId).ToList()
-                
+                RoomId = roomId,
+                OwnerId = ownerId,
+                Invitees = calendarEntry.Invitees.Select(p => p.ToWebUser()).ToList()           
             };
-   
+
 
         }
         public static WebUser ToWebUser(this User user)
@@ -245,10 +263,11 @@ namespace Organizer.WebService
                 MailAddress = user.MailAddress,
                 PhoneNumber = user.PhoneNumber,
                 CalendarIds = user.Calendar.Select(p => p.CalendarId).ToList(),
-                GroupIds = user.Groups.Select(p => p.GroupId).ToList()
-                
+                GroupIds = user.Groups.Select(p => p.GroupId).ToList(),
+                InviteIds = user.Invites.Select(p=> p.InviteId).ToList()
+
             };
-            
+
         }
 
         public static WebGroup ToWebGroup(this Group group)
@@ -264,7 +283,7 @@ namespace Organizer.WebService
                 Description = group.Description,
                 Id = group.GroupId,
                 Members = group.Members
-                
+
             };
 
         }
@@ -283,7 +302,7 @@ namespace Organizer.WebService
                 Description = room.Description,
                 Location = room.Location,
                 Seats = room.Seats
-                
+
             };
         }
     }
