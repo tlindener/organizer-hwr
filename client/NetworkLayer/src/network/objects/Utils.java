@@ -72,6 +72,12 @@ public class Utils {
 		String command = "GetAll" + plurals.get(obj.getClass());
 		return command;
 	}
+	
+	public static <T extends AbstractOrganizerObject> String buildAddCommand(
+			T obj){
+		String command = "Add" + obj.getClass().getSimpleName()+"?";
+		return command;
+	}
 
 	public static <T extends AbstractOrganizerObject> boolean isFieldOf(T obj,
 			String fieldName) {
