@@ -23,7 +23,7 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebInvoke(RequestFormat = WebMessageFormat.Json)]
-        bool AddCalendar(WebCalendar calendar);
+        bool AddCalendarByObject(WebCalendar calendar);
 
         [OperationContract]
         [WebGet(RequestFormat = WebMessageFormat.Json)]
@@ -45,11 +45,11 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebInvoke(RequestFormat = WebMessageFormat.Json)]
-        bool AddCalendarEntry(WebCalendarEntry calendarEntry);
+        bool AddCalendarEntryByObject(WebCalendarEntry calendarEntry);
 
         [OperationContract]
         [WebGet(RequestFormat = WebMessageFormat.Json)]
-        bool AddCalendarEntry(String title,String description,DateTime startDate,DateTime endDate,int ownerId,int roomId, int calendarId);
+        bool AddCalendarEntry(String title, String description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId);
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -68,11 +68,11 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebInvoke(ResponseFormat = WebMessageFormat.Json)]
-        bool AddUser(WebUser user);
+        bool AddUserByObject(WebUser user);
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddUser(String givenName,String surname,String mailAddress,String phoneNumber,String userName,String password);
+        bool AddUser(String givenName, String surname, String mailAddress, String phoneNumber, String userName, String password);
         #endregion
 
         #region Room
@@ -86,11 +86,11 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebInvoke(ResponseFormat = WebMessageFormat.Json)]
-        bool AddRoom(WebRoom room);
+        bool AddRoomByObject(WebRoom room);
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddRoom(String description,String location, int seats);
+        bool AddRoom(String description, String location, int seats);
         #endregion
 
 
@@ -110,13 +110,14 @@ namespace Organizer.WebService
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddGroup(String description);
+        bool AddGroupByObject(String description);
+
         #endregion Group
         #region Invite
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         ICollection<WebInvite> GetAllInvitesByUserId(int userId);
-       
+
         #endregion
 
         #region Invite

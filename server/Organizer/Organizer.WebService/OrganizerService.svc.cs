@@ -40,10 +40,10 @@ namespace Organizer.WebService
 
             };
 
-            timeplanner.AddNewCalendar(cal);
+            timeplanner.AddCalendar(cal);
 
             var entry = new CalendarEntry() { CalendarId = timeplanner.GetAllCalendar().First().CalendarId, Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
-            timeplanner.AddEntryToCalendar(entry);
+            timeplanner.AddCalendarEntry(entry);
 
         }
 
@@ -127,9 +127,9 @@ namespace Organizer.WebService
 
 
 
-        public bool AddNewCalendar(string name, string description, int ownerId)
+        public int AddCalendar(string name, string description, int ownerId)
         {
-            return timeplanner.AddNewCalendar(new Calendar()
+            return timeplanner.AddCalendar(new Calendar()
             {
                 Name = name,
                 Description = description,
@@ -139,12 +139,9 @@ namespace Organizer.WebService
         }
 
 
-        public bool AddNewCalendar(WebCalendar calendar)
-        {
-            throw new NotImplementedException();
-        }
 
-        public bool AddCalendarEntry(WebCalendarEntry calendarEntry)
+
+        public int AddCalendarEntryByObject(WebCalendarEntry calendarEntry)
         {
             var calendar = timeplanner.GetCalendarById(calendarEntry.CalendarId);
 
@@ -160,23 +157,23 @@ namespace Organizer.WebService
                 Calendar = calendar
 
             };
-            return timeplanner.AddEntryToCalendar(entry);
+            return timeplanner.AddCalendarEntry(entry);
 
         }
 
-        public bool AddUser(WebUser user)
+        public int AddUserByObject(WebUser user)
         {
             User dbUser = new User();
             return timeplanner.AddUser(dbUser);
         }
 
-        public bool AddRoom(WebRoom room)
+        public int AddRoomByObject(WebRoom room)
         {
             Room dbRoom = new Room();
             return timeplanner.AddRoom(dbRoom);
         }
 
-        public bool AddGroup(WebGroup group)
+        public int AddGroup(WebGroup group)
         {
             Group dbGroup = new Group();
             return timeplanner.AddGroup(dbGroup);
@@ -189,7 +186,7 @@ namespace Organizer.WebService
         }
 
 
-        public bool AddCalendar(WebCalendar calendar)
+        public bool AddCalendarByObject(WebCalendar calendar)
         {
             throw new NotImplementedException();
         }
@@ -199,17 +196,12 @@ namespace Organizer.WebService
             throw new NotImplementedException();
         }
 
-        public bool AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, List<int> invitees)
+        public int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId)
         {
             var owner = timeplanner.GetUserById(ownerId);
             var room = timeplanner.GetRoomById(roomId);
             var calendar = timeplanner.GetCalendarById(calendarId);
-            List<User> invitedUser = new List<User>();
-
-            foreach(var user in invitees)
-            {
-                invitedUser.Add(timeplanner.GetUserById(user));
-            }
+           
             CalendarEntry calendarEntry = new CalendarEntry()
             {
                 Description = description,
@@ -219,14 +211,14 @@ namespace Organizer.WebService
                 Calendar = calendar,
                 CalendarId = calendarId,
                 Owner = owner,
-                Room = room,
-                Invitees = invitedUser
+                Room = room
+               
 
             };
-            return timeplanner.AddEntryToCalendar(calendarEntry);
+            return timeplanner.AddCalendarEntry(calendarEntry);
         }
 
-        public bool AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string userName, string password)
+        public int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string userName, string password)
         {
             User user = new User()
             {
@@ -241,7 +233,7 @@ namespace Organizer.WebService
         }
 
 
-        public bool AddRoom(string description, string location, int seats)
+        public int AddRoom(string description, string location, int seats)
         {
             Room room = new Room()
             {
@@ -252,7 +244,7 @@ namespace Organizer.WebService
             return timeplanner.AddRoom(room);
         }
 
-        public bool AddGroup(string description)
+        public int AddGroupByObject(string description)
         {
             Group group = new Group()
             {
