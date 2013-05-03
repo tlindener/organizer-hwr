@@ -144,7 +144,7 @@ namespace Organizer.WebService
             throw new NotImplementedException();
         }
 
-        public bool AddCalendarEntryToCalendar(WebCalendarEntry calendarEntry)
+        public bool AddCalendarEntry(WebCalendarEntry calendarEntry)
         {
             var calendar = timeplanner.GetCalendarById(calendarEntry.CalendarId);
 
@@ -187,6 +187,80 @@ namespace Organizer.WebService
         {
             throw new NotImplementedException();
         }
+
+
+        public bool AddCalendar(WebCalendar calendar)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddCalendar(int ownerId, string name, string description)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, List<int> invitees)
+        {
+            var owner = timeplanner.GetUserById(ownerId);
+            var room = timeplanner.GetRoomById(roomId);
+            var calendar = timeplanner.GetCalendarById(calendarId);
+            List<User> invitedUser = new List<User>();
+
+            foreach(var user in invitees)
+            {
+                invitedUser.Add(timeplanner.GetUserById(user));
+            }
+            CalendarEntry calendarEntry = new CalendarEntry()
+            {
+                Description = description,
+                Title = title,
+                StartDate = startDate,
+                EndDate = endDate,
+                Calendar = calendar,
+                CalendarId = calendarId,
+                Owner = owner,
+                Room = room,
+                Invitees = invitedUser
+
+            };
+            return timeplanner.AddEntryToCalendar(calendarEntry);
+        }
+
+        public bool AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string userName, string password)
+        {
+            User user = new User()
+            {
+                GivenName = givenName,
+                Surname = surname,
+                MailAddress = mailAddress,
+                PhoneNumber = phoneNumber,
+                UserName = userName,
+                Password = password
+            };
+            return timeplanner.AddUser(user);
+        }
+
+
+        public bool AddRoom(string description, string location, int seats)
+        {
+            Room room = new Room()
+            {
+                Description = description,
+                Location = location,
+                Seats = seats
+            };
+            return timeplanner.AddRoom(room);
+        }
+
+        public bool AddGroup(string description)
+        {
+            Group group = new Group()
+            {
+                Description = description
+            };
+
+            return timeplanner.AddGroup(group);
+        }
     }
 
 
@@ -217,23 +291,23 @@ namespace Organizer.WebService
             {
                 return null;
 
-            }            
+            }
             int ownerId = 0;
             int roomId = 0;
-       
-            if(calendarEntry.Owner != null) 
+
+            if (calendarEntry.Owner != null)
             {
-                ownerId =calendarEntry.Owner.UserId;
+                ownerId = calendarEntry.Owner.UserId;
             }
-            if(calendarEntry.Room != null)
+            if (calendarEntry.Room != null)
             {
                 roomId = calendarEntry.Room.RoomId;
-            }   
-            
+            }
+
 
             return new WebCalendarEntry()
             {
-               
+
                 CalendarId = calendarEntry.CalendarEntryId,
                 Description = calendarEntry.Description,
                 StartDate = calendarEntry.StartDate,
@@ -243,7 +317,7 @@ namespace Organizer.WebService
                 Id = calendarEntry.CalendarEntryId,
                 RoomId = roomId,
                 OwnerId = ownerId,
-                Invitees = calendarEntry.Invitees.Select(p => p.ToWebUser()).ToList()           
+                Invitees = calendarEntry.Invitees.Select(p => p.ToWebUser()).ToList()
             };
 
 
@@ -264,7 +338,7 @@ namespace Organizer.WebService
                 PhoneNumber = user.PhoneNumber,
                 CalendarIds = user.Calendar.Select(p => p.CalendarId).ToList(),
                 GroupIds = user.Groups.Select(p => p.GroupId).ToList(),
-                InviteIds = user.Invites.Select(p=> p.InviteId).ToList()
+                InviteIds = user.Invites.Select(p => p.InviteId).ToList()
 
             };
 
