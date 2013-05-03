@@ -21,7 +21,7 @@ namespace Organizer.WebService
         WebCalendar GetCalendarById(int calendarId);
 
         [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(RequestFormat = WebMessageFormat.Json)]
         bool AddNewCalendar(WebCalendar calendar);      
 
 
@@ -39,9 +39,9 @@ namespace Organizer.WebService
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         ICollection<WebCalendarEntry> GetEntriesByRoom(int roomId);
 
-        [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddCalendarEntryToCalendar(int calendarId,WebCalendarEntry calendarEntry);
+          [OperationContract]
+[WebInvoke(RequestFormat = WebMessageFormat.Json)]
+        bool AddCalendarEntryToCalendar(WebCalendarEntry calendarEntry);
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -58,9 +58,9 @@ namespace Organizer.WebService
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         WebUser GetUserById(int userId);
 
-        [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddUser(WebUser user);
+        //[OperationContract]
+        //[WebGet(ResponseFormat = WebMessageFormat.Json)]
+        //bool AddUser(WebUser user);
         #endregion
 
         #region Room
@@ -72,9 +72,9 @@ namespace Organizer.WebService
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         WebRoom GetRoomById(int roomId);
 
-        [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddRoom(WebRoom room);
+        //[OperationContract]
+        //[WebGet(ResponseFormat = WebMessageFormat.Json)]
+        //bool AddRoom(WebRoom room);
         #endregion
 
 
@@ -88,11 +88,15 @@ namespace Organizer.WebService
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         ICollection<WebGroup> GetGroupsByUserId(int userId);
 
+        //[OperationContract]
+        //[WebGet(ResponseFormat = WebMessageFormat.Json)]
+        //bool AddGroup(WebGroup group);
+        #endregion Group
+        #region Invite
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddGroup(WebGroup group);
-        #endregion Group
- 
+        ICollection<WebInvite> GetAllInvitesByUserId(int userId);
+        #endregion
 
 
 

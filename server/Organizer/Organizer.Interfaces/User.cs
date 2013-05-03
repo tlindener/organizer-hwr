@@ -31,13 +31,25 @@ namespace Organizer.Interfaces
         public String UserName { get; set; }
 
         //SHA512Hashed
-        public String Password { get; set; }
 
+        private String _password = null;
+        public String Password
+        {
+            get
+            {
+                return _password;
+            }
+            set
+            {
+                _password = getSHA512Hash(value);
+            }
+        }
         public int CalendarId { get; set; }
         public virtual ICollection<Calendar> Calendar { get; set; }
         public virtual ICollection<Group> Groups { get; set; }
+        public virtual ICollection<Invite> Invites { get; set; }
 
-        public static string getSHA512Hash(string text)
+        public static String getSHA512Hash(String text)
         {
             string hash = "";
             SHA512 alg = SHA512.Create();
