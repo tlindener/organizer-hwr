@@ -3,6 +3,7 @@ using Organizer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -27,8 +28,8 @@ namespace Organizer
         /// Adds a new calendar item to database
         /// </summary>
         /// <param name="calendar"></param>
-        /// <returns>Boolean value which indicates the success of the action</returns>
-        public bool AddNewCalendar(Calendar calendar)
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
+        public int AddCalendar(Calendar calendar)
         {
 
             if (Utils.isCalendarValid(calendar))
@@ -37,15 +38,14 @@ namespace Organizer
                 {
                     calendarDatabase.Calendar.Add(calendar);
                     calendarDatabase.SaveChanges();
-                    return true;
+                    return calendar.CalendarId;
                 }
                 catch (Exception ex)
                 {
                     logger.Error(ex.ToString());
-                    return false;
                 }
             }
-            return false;
+            return 0;
         }
         /// <summary>
         /// Returns a collection of calendar items
@@ -104,25 +104,26 @@ namespace Organizer
         /// Adds a calendar entry to the specified calendar
         /// </summary>
         /// <param name="entry"></param>
-        /// <returns></returns>
-        public bool AddEntryToCalendar(CalendarEntry entry)
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
+        public int AddCalendarEntry(CalendarEntry entry)
         {
             try
             {
                 var calendar = calendarDatabase.Calendar.Find(entry.CalendarId);
                 if (calendar == null)
                 {
-                    return false;
+                    return 0;
                 }
                 calendar.CalendarEntries.Add(entry);
                 calendarDatabase.SaveChanges();
-                return true;
+                return entry.CalendarEntryId;
             }
             catch (Exception ex)
             {
                 logger.Error(ex.ToString());
             }
-            return false;
+            return 0;
+
 
         }
 
@@ -303,65 +304,69 @@ namespace Organizer
         }
         #endregion
 
-     
+
 
 
         /// <summary>
         /// Adds a user to database
         /// </summary>
         /// <param name="dbUser"></param>
-        /// <returns></returns>
-        public bool AddUser(User dbUser)
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
+        public int AddUser(User dbUser)
         {
             try
             {
                 calendarDatabase.User.Add(dbUser);
                 calendarDatabase.SaveChanges();
+                return dbUser.UserId;
             }
             catch (Exception ex)
             {
                 logger.Error(ex.ToString());
-                return false;
             }
-            return true;
+            return 0;
+
         }
         /// <summary>
         /// Adds a room to database
         /// </summary>
         /// <param name="dbRoom"></param>
-        /// <returns></returns>
-        public bool AddRoom(Room dbRoom)
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
+        public int AddRoom(Room dbRoom)
         {
             try
             {
                 calendarDatabase.Rooms.Add(dbRoom);
                 calendarDatabase.SaveChanges();
+                return dbRoom.RoomId;
             }
             catch (Exception ex)
             {
                 logger.Error(ex.ToString());
-                return false;
             }
-            return true;
+            return 0;
+
         }
         /// <summary>
         /// Adds a group to database
         /// </summary>
         /// <param name="dbGroup"></param>
-        /// <returns></returns>
-        public bool AddGroup(Group dbGroup)
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
+        public int AddGroup(Group dbGroup)
         {
             try
             {
                 calendarDatabase.Groups.Add(dbGroup);
                 calendarDatabase.SaveChanges();
+                return dbGroup.GroupId;
+
             }
             catch (Exception ex)
             {
                 logger.Error(ex.ToString());
-                return false;
             }
-            return true;
+            return 0;
+
         }
 
 
@@ -388,5 +393,7 @@ namespace Organizer
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Invite> Invites { get; set; }
+
+
     }
 }

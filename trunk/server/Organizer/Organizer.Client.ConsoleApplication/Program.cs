@@ -31,7 +31,7 @@ namespace Organizer.Client.ConsoleApplication
 
             };
 
-            tp.AddNewCalendar(cal);
+            tp.AddCalendar(cal);
 
             foreach (Calendar calendar in tp.GetAllCalendar())
             {
