@@ -13,6 +13,7 @@ namespace Organizer.Interfaces.Json
     {
 
         public int Id { get; set; }
+        public String UserName { get; set; }
         public String GivenName { get; set; }
         public String Surname { get; set; }
         public String MailAddress { get; set; }
