@@ -15,6 +15,7 @@ namespace Organizer.WebService
     [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
     public class OrganizerService : IOrganizerService
     {
+
         public void InsertTestData()
         {
             var calendarEntries = new List<CalendarEntry>();
@@ -30,6 +31,20 @@ namespace Organizer.WebService
 
 
             };
+
+            var user = new Organizer.Interfaces.User()
+            {
+                GivenName = "Hans",
+                Surname = "Dieter",
+                MailAddress = "tobias.lindener@gmail.com",
+                PhoneNumber = "01773071234",
+                Password = "Test",
+                UserName = "Dieter"
+
+
+            };
+            List<User> invitees = new List<User>();
+            invitees.Add(user);
             calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
             Calendar cal = new Calendar()
             {
@@ -42,50 +57,63 @@ namespace Organizer.WebService
 
             timeplanner.AddCalendar(cal);
 
-            var entry = new CalendarEntry() { CalendarId = timeplanner.GetAllCalendar().First().CalendarId, Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
+            var entry = new CalendarEntry() { Invitees = invitees, CalendarId = timeplanner.GetAllCalendar().First().CalendarId, Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
             timeplanner.AddCalendarEntry(entry);
 
         }
-
-
         Organizer.TimePlanner timeplanner;
-
         public OrganizerService()
         {
             timeplanner = new TimePlanner();
         }
 
+
+        #region Calendar
         public ICollection<WebCalendar> GetAllCalendar()
         {
             var calendar = timeplanner.GetAllCalendar();
             return calendar.Select(p => p.ToWebCalendar()).ToList();
         }
 
-
-        public ICollection<WebUser> GetAllUser()
-        {
-            var users = timeplanner.GetAllUser();
-            return users.Select(p => p.ToWebUser()).ToList();
-        }
-
-
-
         public WebCalendar GetCalendarById(int calendarId)
         {
             return timeplanner.GetCalendarById(calendarId).ToWebCalendar();
         }
 
+        public int AddCalendar(int ownerId, string name, string description)
+        {
+            return timeplanner.AddCalendar(new Calendar()
+            {
+                Name = name,
+                Description = description,
+                Owner = timeplanner.GetUserById(ownerId)
+
+            });
+        }
+
+        public int AddCalendarByObject(WebCalendar calendar)
+        {
+            return timeplanner.AddCalendar(new Calendar()
+            {
+                Name = calendar.Name,
+                Description = calendar.Description,
+                Owner = timeplanner.GetUserById(calendar.OwnerId)
+
+            });
+        }
 
         public bool RemoveEntryFromCalendar(int calendarId, int calendarEntryId)
         {
             return timeplanner.RemoveEntryFromCalendar(calendarId, calendarEntryId);
         }
 
-        public WebUser GetUserById(int userId)
+        public bool RemoveCalendar(int calendarId)
         {
-            return timeplanner.GetUserById(userId).ToWebUser();
+            return timeplanner.RemoveCalendar(calendarId);
         }
+        #endregion
 
+        #region CalendarEntries
 
         public ICollection<WebCalendarEntry> GetCalendarEntriesByOwnerId(int ownerId)
         {
@@ -97,49 +125,10 @@ namespace Organizer.WebService
             return timeplanner.GetCalendarEntryById(calendarEntryId).ToWebCalendarEntry();
         }
 
-        public ICollection<WebRoom> GetAllRooms()
-        {
-            return timeplanner.GetAllRooms().Select(p => p.ToWebRoom()).ToList();
-        }
-
-        public WebRoom GetRoomById(int roomId)
-        {
-            return timeplanner.GetRoomById(roomId).ToWebRoom();
-        }
-
-
-
         public ICollection<WebCalendarEntry> GetEntriesByRoom(int roomId)
         {
             return timeplanner.GetEntriesByRoom(roomId).Select(p => p.ToWebCalendarEntry()).ToList();
         }
-
-        public WebGroup GetGroupById(int groupId)
-        {
-            return timeplanner.GetGroupById(groupId).ToWebGroup();
-        }
-
-        public ICollection<WebGroup> GetGroupsByUserId(int userId)
-        {
-            var groups = timeplanner.GetGroupsByUserId(userId);
-            return groups.Select(p => p.ToWebGroup()).ToList();
-        }
-
-
-
-        public int AddCalendar(string name, string description, int ownerId)
-        {
-            return timeplanner.AddCalendar(new Calendar()
-            {
-                Name = name,
-                Description = description,
-                Owner = timeplanner.GetUserById(ownerId)
-
-            });
-        }
-
-
-
 
         public int AddCalendarEntryByObject(WebCalendarEntry calendarEntry)
         {
@@ -160,48 +149,12 @@ namespace Organizer.WebService
             return timeplanner.AddCalendarEntry(entry);
 
         }
-
-        public int AddUserByObject(WebUser user)
-        {
-            User dbUser = new User();
-            return timeplanner.AddUser(dbUser);
-        }
-
-        public int AddRoomByObject(WebRoom room)
-        {
-            Room dbRoom = new Room();
-            return timeplanner.AddRoom(dbRoom);
-        }
-
-        public int AddGroup(WebGroup group)
-        {
-            Group dbGroup = new Group();
-            return timeplanner.AddGroup(dbGroup);
-        }
-
-
-        public ICollection<WebInvite> GetAllInvitesByUserId(int userId)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public bool AddCalendarByObject(WebCalendar calendar)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool AddCalendar(int ownerId, string name, string description)
-        {
-            throw new NotImplementedException();
-        }
-
         public int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId)
         {
             var owner = timeplanner.GetUserById(ownerId);
             var room = timeplanner.GetRoomById(roomId);
             var calendar = timeplanner.GetCalendarById(calendarId);
-           
+
             CalendarEntry calendarEntry = new CalendarEntry()
             {
                 Description = description,
@@ -212,10 +165,40 @@ namespace Organizer.WebService
                 CalendarId = calendarId,
                 Owner = owner,
                 Room = room
-               
+
 
             };
             return timeplanner.AddCalendarEntry(calendarEntry);
+        }
+
+
+        #endregion
+
+
+        #region User
+        public ICollection<WebUser> GetAllUser()
+        {
+            var users = timeplanner.GetAllUser();
+            return users.Select(p => p.ToWebUser()).ToList();
+        }
+
+        public WebUser GetUserById(int userId)
+        {
+            return timeplanner.GetUserById(userId).ToWebUser();
+        }
+
+        public int AddUserByObject(WebUser user, String password)
+        {
+
+            return timeplanner.AddUser(new User()
+            {
+                UserName = user.UserName,
+                Surname = user.Surname,
+                GivenName = user.GivenName,
+                PhoneNumber = user.PhoneNumber,
+                MailAddress = user.MailAddress,
+                Password = password
+            });
         }
 
         public int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string userName, string password)
@@ -232,7 +215,27 @@ namespace Organizer.WebService
             return timeplanner.AddUser(user);
         }
 
+        public bool RemoveUser(int userId, string adminAuth)
+        {
+            if (ValidateAdmin(adminAuth))
+            {
+                return timeplanner.RemoveUser(userId);
+            }
+            return false;
+        }
 
+        #endregion
+
+        #region Room
+        public ICollection<WebRoom> GetAllRooms()
+        {
+            return timeplanner.GetAllRooms().Select(p => p.ToWebRoom()).ToList();
+        }
+
+        public WebRoom GetRoomById(int roomId)
+        {
+            return timeplanner.GetRoomById(roomId).ToWebRoom();
+        }
         public int AddRoom(string description, string location, int seats)
         {
             Room room = new Room()
@@ -243,8 +246,39 @@ namespace Organizer.WebService
             };
             return timeplanner.AddRoom(room);
         }
+        public int AddRoomByObject(WebRoom room)
+        {
+            Room dbRoom = new Room();
+            return timeplanner.AddRoom(dbRoom);
+        }
 
-        public int AddGroupByObject(string description)
+        public bool RemoveRoom(int roomId,String adminAuth)
+        {
+            if (ValidateAdmin(adminAuth))
+            {
+                return timeplanner.RemoveRoom(roomId);
+            }
+            return false;
+        }
+
+        public bool ChangeRoomForCalendarEntry(int roomId, int calendarEntryId)
+        {
+            return timeplanner.ChangeRoomForCalendarEntry(roomId, calendarEntryId);
+        }
+        #endregion
+
+        #region Group
+        public WebGroup GetGroupById(int groupId)
+        {
+            return timeplanner.GetGroupById(groupId).ToWebGroup();
+        }
+
+        public ICollection<WebGroup> GetGroupsByUserId(int userId)
+        {
+            var groups = timeplanner.GetGroupsByUserId(userId);
+            return groups.Select(p => p.ToWebGroup()).ToList();
+        }
+        public int AddGroup(string description)
         {
             Group group = new Group()
             {
@@ -253,6 +287,73 @@ namespace Organizer.WebService
 
             return timeplanner.AddGroup(group);
         }
+        public int AddGroupByObject(WebGroup group)
+        {
+
+            return timeplanner.AddGroup(new Group()
+            {
+                Description = group.Description
+            });
+        }
+        public bool AddUserToGroup(int groupId, int userId)
+        {
+          return  timeplanner.AddUserToGroup(groupId, userId);
+        }
+
+        public bool RemoveUserFromGroup(int groupId, int userId)
+        {
+            return timeplanner.RemoveUserFromGroup(groupId, userId);
+        }
+
+        public bool RemoveGroup(int groupId)
+        {
+            return timeplanner.RemoveGroup(groupId);
+        }
+
+
+        #endregion
+
+
+
+        #region Invites
+
+        public ICollection<WebInvite> GetAllInvitesByUserId(int userId)
+        {
+            return timeplanner.GetAllInvitesByUserId(userId).Select(p => p.ToWebInvite()).ToList();
+        }
+
+        public int AcceptInvite(int inviteId)
+        {
+            return timeplanner.AcceptInvite(inviteId);
+        }
+
+        public int AddInvite(int calendarEntryId, int userId)
+        {
+            return timeplanner.AddInvite(calendarEntryId, userId);
+        }
+
+        public bool RemoveInvite(int calendarEntryId, int userId)
+        {
+            return timeplanner.RemoveInvite(calendarEntryId, userId);
+        }
+        #endregion
+
+
+
+
+        public bool ValidateAdmin(string adminAuth)
+        {
+            return true;
+        }
+
+
+
+
+
+
+
+
+
     }
 
 
@@ -324,6 +425,7 @@ namespace Organizer.WebService
             return new WebUser()
             {
                 Id = user.UserId,
+                UserName = user.UserName,
                 GivenName = user.GivenName,
                 Surname = user.Surname,
                 MailAddress = user.MailAddress,
@@ -370,6 +472,22 @@ namespace Organizer.WebService
                 Seats = room.Seats
 
             };
+        }
+
+        public static WebInvite ToWebInvite(this Invite invite)
+        {
+            if (invite == null)
+            {
+                return null;
+            }
+            return new WebInvite()
+            {
+                Id = invite.InviteId,
+                CalendarEntryId = invite.CalendarEntry.CalendarEntryId,
+                Accepted = invite.Accepted,
+                OwnerId = invite.Owner.UserId
+            };
+                
         }
     }
 }

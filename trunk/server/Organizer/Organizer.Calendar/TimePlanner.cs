@@ -369,20 +369,215 @@ namespace Organizer
 
         }
 
+        /// <summary>
+        /// Accepts the invitation from the invited user and returns the calendarEntryId for the accepting user
+        /// </summary>
+        /// <param name="inviteId"></param>
+        /// <returns></returns>
+        public int AcceptInvite(int inviteId)
+        {
 
-        //public bool ValidateUser(String userName, string password)
-        //{
+            var invite = calendarDatabase.Invites.Find(inviteId);
+            invite.CalendarEntry.Owner = invite.Owner;
+            invite.Accepted = true;
+            calendarDatabase.CalendarEntries.Add(invite.CalendarEntry);
+            calendarDatabase.SaveChanges();
+            return invite.CalendarEntry.CalendarEntryId;
+        }
+        /// <summary>
+        /// Removes specified calendar
+        /// </summary>
+        /// <param name="calendarId"></param>
+        /// <returns></returns>
+        public bool RemoveCalendar(int calendarId)
+        {
+            var calendar = calendarDatabase.Calendar.Find(calendarId);
+            if (calendar == null)
+            {
+                return false;
+            }
+            calendarDatabase.Calendar.Remove(calendar);
+            calendarDatabase.SaveChanges();
+            return true;
+        }
 
-        //    var user = calendarDatabase.User.Where(p => p.UserName == userName && p.Password == password);
-        //    if (user != null && user.First() != null)
-        //    {
-        //        return true;
-        //    }
-        //    return false;
+        /// <summary>
+        /// Removes specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool RemoveUser(int userId)
+        {
+            var user = calendarDatabase.User.Find(userId);
+            if (user == null)
+            {
+                return false;
+            }
+            calendarDatabase.User.Remove(user);
+            calendarDatabase.SaveChanges();
+            return true;
+        }
+        /// <summary>
+        /// Removes specified room
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
+        public bool RemoveRoom(int roomId)
+        {
+            var room = calendarDatabase.Rooms.Find(roomId);
+            if (room == null)
+            {
+                return false;
+            }
+            calendarDatabase.Rooms.Remove(room);
+            calendarDatabase.SaveChanges();
+            return true;
+        }
 
-        //}
+        /// <summary>
+        /// Change specified room in calendar entry
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="calendarEntryId"></param>
+        /// <returns></returns>
+        public bool ChangeRoomForCalendarEntry(int roomId, int calendarEntryId)
+        {
+            var room = calendarDatabase.Rooms.Find(roomId);
+            var calendarEntry = calendarDatabase.CalendarEntries.Find(calendarEntryId);
+            if (room == null || calendarEntry == null)
+            {
+                return false;
+            }
+            calendarEntry.Room = room;
+            calendarDatabase.SaveChanges();
+            return true;
+        }
 
+        /// <summary>
+        /// Adds specified user to specified group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool AddUserToGroup(int groupId, int userId)
+        {
+            var group = calendarDatabase.Groups.Find(groupId);
+            var user = calendarDatabase.User.Find(userId);
+            if (group == null || user == null)
+            {
+                return false;
+            }
+            group.Members.Add(user);
+            calendarDatabase.SaveChanges();
+            return true;
+        }
 
+        /// <summary>
+        /// Removes specified user from group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool RemoveUserFromGroup(int groupId, int userId)
+        {
+            var group = calendarDatabase.Groups.Find(groupId);
+            var user = calendarDatabase.User.Find(userId);
+            if (group == null || user == null)
+            {
+
+                return false;
+            }
+            group.Members.Remove(user);
+            calendarDatabase.SaveChanges();
+            return true;
+        }
+
+        /// <summary>
+        /// Removes specified group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public bool RemoveGroup(int groupId)
+        {
+            var group = calendarDatabase.Groups.Find(groupId);
+            if (group == null)
+            {
+
+                return false;
+            }
+            calendarDatabase.Groups.Remove(group);
+            calendarDatabase.SaveChanges();
+            return true;
+
+        }
+
+        /// <summary>
+        /// Get all invites of one user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public ICollection<Invite> GetAllInvitesByUserId(int userId)
+        {
+            var user = calendarDatabase.User.Find(userId);
+            if (user == null)
+            {
+                return null;
+            }
+            return calendarDatabase.Invites.Where(p => p.Owner == user).ToList();
+        }
+
+        /// <summary>
+        /// Adds a person to invite list of a calendar entry and to table invites
+        /// </summary>
+        /// <param name="calendarEntryId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public int AddInvite(int calendarEntryId, int userId)
+        {
+            var calendarEntry = calendarDatabase.CalendarEntries.Find(calendarEntryId);
+            var user = calendarDatabase.User.Find(userId);
+            if (calendarEntry == null || user == null)
+            {
+                return 0;
+            }
+            calendarEntry.Invitees.Add(user);
+            Invite invite = new Invite()
+            {
+                Accepted = false,
+                CalendarEntry = calendarEntry,
+                Owner = user,
+            };
+            calendarDatabase.Invites.Add(invite);
+            calendarDatabase.SaveChanges();
+            return invite.InviteId;
+        }
+
+        /// <summary>
+        /// Removes a person from list invited people in calendar entry and from table Invites
+        /// </summary>
+        /// <param name="calendarEntryId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool RemoveInvite(int calendarEntryId, int userId)
+        {
+            var calendarEntry = calendarDatabase.CalendarEntries.Find(calendarEntryId);
+            var user = calendarDatabase.User.Find(userId);
+            if (calendarEntry == null || user == null)
+            {
+                return false;
+            }
+            calendarEntry.Invitees.Remove(user);
+            var invitees = calendarDatabase.Invites.Where(p => p.CalendarEntry == calendarEntry && p.Owner == user).ToList();
+
+            if (invitees.Count != 1)
+            {
+                return false;
+            }
+            calendarDatabase.Invites.Remove(invitees.First());
+            calendarDatabase.SaveChanges();
+            return true;
+
+        }
     }
 
     public class CalendarContext : DbContext
