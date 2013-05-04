@@ -1,11 +1,15 @@
-﻿using System;
+﻿#region License
+// Copyright: Tobias Lindener
+// Author: Tobias Lindener
+// Date: 04/24/2013
+#endregion
+#region Usings
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace Organizer.Interfaces
 {
@@ -38,8 +42,8 @@ namespace Organizer.Interfaces
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime EndDate { get; set; }
-        public String Title { get; set; }
-        public String Description { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         public double Duration
         {
             get

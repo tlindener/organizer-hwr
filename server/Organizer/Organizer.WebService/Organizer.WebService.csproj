@@ -84,7 +84,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UserNameValidator.cs" />
     <Compile Include="OrganizerService.svc.cs">
       <DependentUpon>OrganizerService.svc</DependentUpon>
     </Compile>
@@ -96,15 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="SWeb.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <None Include="SWeb.Debug.config">
-      <DependentUpon>SWeb.config</DependentUpon>
-    </None>
-    <None Include="SWeb.Release.config">
-      <DependentUpon>SWeb.config</DependentUpon>
-    </None>
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

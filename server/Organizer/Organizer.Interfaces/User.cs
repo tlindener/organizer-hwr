@@ -1,11 +1,16 @@
-﻿using System;
+﻿#region License
+// Copyright: Tobias Lindener
+// Author: Tobias Lindener
+// Date: 04/24/2013
+#endregion
+#region Usings
+
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace Organizer.Interfaces
 {
@@ -17,23 +22,23 @@ namespace Organizer.Interfaces
         public int UserId { get; set; }
         [Required]
        
-        public String GivenName { get; set; }
+        public string GivenName { get; set; }
         [Required]
     
-        public String Surname { get; set; }
+        public string Surname { get; set; }
         [Required]
        
-        public String MailAddress { get; set; }
+        public string MailAddress { get; set; }
         [Required]
   
-        public String PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
-        public String UserName { get; set; }
+        public string UserName { get; set; }
 
         //SHA512Hashed
 
-        private String _password = null;
-        public String Password
+        private string _password = null;
+        public string Password
         {
             get
             {
@@ -49,12 +54,12 @@ namespace Organizer.Interfaces
         public virtual ICollection<Group> Groups { get; set; }
         public virtual ICollection<Invite> Invites { get; set; }
 
-        public static String getSHA512Hash(String text)
+        public static string getSHA512Hash(string text)
         {
             string hash = "";
             SHA512 alg = SHA512.Create();
             byte[] result = alg.ComputeHash(Encoding.UTF8.GetBytes(text));
-            hash = Encoding.UTF8.GetString(result);
+            hash = Encoding.UTF8.Getstring(result);
             return hash;
         }
 

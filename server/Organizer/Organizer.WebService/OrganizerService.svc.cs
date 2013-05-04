@@ -1,12 +1,18 @@
-﻿using Organizer.Interfaces;
-using Organizer.Interfaces.Json;
+﻿#region License
+// Copyright: Tobias Lindener
+// Author: Tobias Lindener
+// Date: 04/24/2013
+#endregion
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.ServiceModel.Web;
-using System.Text;
+using Organizer.Interfaces;
+using Organizer.Interfaces.Json;
+
+#endregion
 
 namespace Organizer.WebService
 {
@@ -187,7 +193,7 @@ namespace Organizer.WebService
             return timeplanner.GetUserById(userId).ToWebUser();
         }
 
-        public int AddUserByObject(WebUser user, String password)
+        public int AddUserByObject(WebUser user, string password)
         {
 
             return timeplanner.AddUser(new User()
@@ -252,7 +258,7 @@ namespace Organizer.WebService
             return timeplanner.AddRoom(dbRoom);
         }
 
-        public bool RemoveRoom(int roomId,String adminAuth)
+        public bool RemoveRoom(int roomId, string adminAuth)
         {
             if (ValidateAdmin(adminAuth))
             {
@@ -464,6 +470,7 @@ namespace Organizer.WebService
             {
                 return null;
             }
+
             return new WebRoom()
             {
                 Id = room.RoomId,
