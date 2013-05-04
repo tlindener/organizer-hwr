@@ -7,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,9 +19,12 @@ import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.ListModel;
 
+import organizer.objects.types.CalendarEntry;
+
 import Logik.DataPusher;
 import Logik.Model;
 import View.window_Hauptmenue;
+import View.window_LogScreen;
 import View.window_TerminBearbeiten;
 
 import network.JsonJavaRequestHandler;
@@ -33,20 +38,33 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 	 */
 
 	private Model myModel;
-	private window_Hauptmenue myHauptmenue;
+	
 	private Object[][] beschreibungsDaten;
 	private Object[][] terminDauer;
+	
 	private window_TerminBearbeiten myTerminBearbeiten;
+	private window_Hauptmenue myHauptmenue;
+	private window_LogScreen myLogScreen;
+	
 	private RequestHandler myRequester;
 	private Date aktDate;
 	private int start=0;
+	private organizer.objects.types.Calendar steffensCal;
 
 	public Controller() {
-		myRequester = new JsonJavaRequestHandler();
+		/**
+		 * Wenn Logscreen geöffnet wird müssen die VerbindungsDaten übermittelt werden (String--> Hostname, Int--> Port)
+		 * 
+		 */
+		myRequester = new JsonJavaRequestHandler("",-1);
 		myModel = new Model(aktDate);
-		erstelleDOBeschreibungen();
+		updateData();
 		myHauptmenue = new window_Hauptmenue(this, this,this,this);
+		myHauptmenue.setVisible(false);
 		myTerminBearbeiten = new window_TerminBearbeiten(this, this);
+		myTerminBearbeiten.setVisible(false);
+		myLogScreen= new window_LogScreen(this);
+		myLogScreen.setVisible(true);
 	}
 
 	public static void main(String[] args) {
@@ -97,7 +115,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 				beschreibungsDaten[i][0] = myTime;
 				beschreibungsDaten[i][1] = myModel.returnBeschreibung(myTime);
 
-			} else if (myTimeMinute == 1) {
+			} else if (myTimeMinute == 1|| myTimeMinute==31) {
 
 				beschreibungsDaten[i][0] = myTime;
 				beschreibungsDaten[i][1] = "";
@@ -183,7 +201,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 	}
 
 	public Object[][] konvertiereBeschreibungsDaten() {
-		Object[][] beschreibungsDatenKonv = new Object[48][3];
+		Object[][] beschreibungsDatenKonv = new Object[48*2][3];
 		int j = 0;
 		for (int i = 0; i < 1439; i++) {
 			if (beschreibungsDaten[i][1] != null) {
@@ -202,11 +220,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 	
 	
 
-	public String getDetails(String aktZeit) {
-		String details = null;
-		details = (String) myModel.returnDetail(aktZeit);
-		return details;
-	}
+
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -228,7 +242,41 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 			 * Über Model Verbindung zum Server Übergabe des Termines und
 			 * Speicherung in Datenbank
 			 */
-		} else {
+		} 
+		if (e.getSource() == myLogScreen.getBtnAnmelden()) {
+			/*
+ * Authentifizierung mit Server
+ * SPeicherung der ID Daten in das Modell
+ * Speicherung der Daten in das Modell
+ * 
+ */
+			myHauptmenue.setVisible(true);
+			
+			steffensCal = new organizer.objects.types.Calendar();
+			/*
+			 * hier muss eine KalenderID aus einem Personenobjekt übergeben werden
+			 */
+			steffensCal.setID(1);
+			organizer.objects.types.Calendar tmpCal = myRequester.requestObjectByOwnId(steffensCal);
+			//null Abfrage
+			if(tmpCal!=null)
+			{
+				steffensCal=tmpCal;
+				try {
+					befuelleModel();
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				// zugriff auf KalenderEintragsdaten
+//				steffensCal.getCalendarEntries().get(0).g
+			}
+			else
+			{
+//				JOption
+			}
+			myLogScreen.setVisible(false);
+		}else {
 		}
 
 	}
@@ -244,7 +292,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 				 */
 				JTable zwTab = (JTable)e.getSource();
 				zwTab.getSelectedRow();
-				String details=getDetails((String) myHauptmenue.getTable_1().getValueAt(zwTab.getSelectedRow(),0 ));
+				String details=(String) myModel.returnDetail((String) myHauptmenue.getTable_1().getValueAt(zwTab.getSelectedRow(),0 ));
 				myHauptmenue.getTextArea().setText(details);
 				/*
 				 * Terminteilnehmer werden in die JList eingefügt
@@ -312,20 +360,75 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 		{
 			aktDate=myHauptmenue.getAktDateCali();
 			myModel.setAktDate(aktDate);
+			try {
+				befuelleModel();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			updateData();	
+			myHauptmenue.repaint();
+			
+			/*
+			 * Updaten der Daten im Modell
+			 */
 			
 		}
 		
 	}
 
 	@Override
-	public List getPersonen(String zeit) {
-		
-		return myModel.returnPersonen(zeit);
-	}
-
-	@Override
 	public void setDauer() {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	public void befuelleModel() throws ParseException
+	{
+		List myCes=steffensCal.getCalendarEntries();
+		for (int i=myCes.size()-1;i>=0; i--)
+		{
+			CalendarEntry myCe=(CalendarEntry) myCes.get(i);
+//			System.out.println("Steffens Datum: "+ parseDate(myCe.getStartDate()));
+//			
+//			System.out.println("Mein Datum: "+ myHauptmenue.getCali().getDate());
+			if(parseDate(myCe.getStartDate()).equals(parseDate(myHauptmenue.getCali().getDate())))
+			{
+				System.out.println("hier");
+				String zeit="";
+				zeit = myCe.getStartHour()+":"+myCe.getStartMinute();
+				myModel.setAktDate(aktDate);
+				
+				myModel.getBeschreibungen().clear();
+				myModel.setBeschreibungen(zeit, myCe.getTitle());
+				
+				myModel.getDauer().clear();
+				myModel.setDauer(zeit,myCe.getDuration());
+				
+				myModel.getPersonen().clear();
+				myModel.setPersonen(zeit, myCe.getInvitees());
+				
+				myModel.getDetails().clear();
+				myModel.setDetails(zeit, myCe.getDescription());
+//				
+				myModel.getRaeume().clear();
+//				myModel.setRaeume(zeit, myCe.getRoomId());
+			}
+		}
+		
+		
+	}
+	
+	public String parseDate(Date date)
+	{
+		String datum="";
+		datum = date.toString().substring(0, 11)+date.toString().substring(20);
+		return datum;
+	}
+	
+	public void updateData()
+	{
+		erstelleDOBeschreibungen();
 		
 	}
 

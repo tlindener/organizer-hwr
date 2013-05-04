@@ -37,8 +37,8 @@ public class Model {
  * <String Uhrzeit im Format xx:xx, String Beschreibung>
  * @param beschreibungen
  */
-	public void setBeschreibungen(HashMap beschreibungen) {
-		this.beschreibungen = beschreibungen;
+	public void setBeschreibungen(String zeit, String beschreibung) {
+		beschreibungen.put(zeit, beschreibung);
 	}
 
 	public HashMap getDetails() {
@@ -48,8 +48,8 @@ public class Model {
  * <String Uhrzeit im Format xx:xx, String Detail>
  * @param details
  */
-	public void setDetails(HashMap details) {
-		this.details = details;
+	public void setDetails(String zeit, String detail) {
+		details.put(zeit,detail);
 	}
 
 	public HashMap getPersonen() {
@@ -59,8 +59,8 @@ public class Model {
  * <String Uhrzeit im Format xx:xx, List Personen>
  * @param personen
  */
-	public void setPersonen(HashMap personen) {
-		this.personen = personen;
+	public void setPersonen(String zeit, List teilnehmer) {
+		personen.put(zeit, teilnehmer);
 	}
 
 	public HashMap getRaeume() {
@@ -70,8 +70,8 @@ public class Model {
  * <String Uhrzeit im Format xx:xx, String Raum>
  * @param raeume
  */
-	public void setRaeume(HashMap raeume) {
-		this.raeume = raeume;
+	public void setRaeume(String zeit, String raum) {
+		raeume.put(zeit, raum);
 	}
 
 	public HashMap getDauer() {
@@ -81,8 +81,8 @@ public class Model {
  * <String Uhrzeit im Format xx:xx, Double als Dauer in Minuten>
  * @param dauer
  */
-	public void setDauer(HashMap dauer) {
-		this.dauer = dauer;
+	public void setDauer(String zeit, double duration) {
+		dauer.put(zeit, duration);
 	}
 
 	public Date getAktDate() {
