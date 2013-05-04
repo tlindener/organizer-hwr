@@ -20,6 +20,7 @@ import javax.swing.JTable;
 import javax.swing.ListModel;
 
 import organizer.objects.types.CalendarEntry;
+import organizer.objects.types.Room;
 
 import Logik.DataPusher;
 import Logik.Model;
@@ -385,34 +386,48 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 	
 	public void befuelleModel() throws ParseException
 	{
+		myModel.getBeschreibungen().clear();
+		myModel.getDauer().clear();
+		myModel.getPersonen().clear();
+		myModel.getDetails().clear();
+		myModel.getRaeume().clear();
+		
 		List myCes=steffensCal.getCalendarEntries();
 		for (int i=myCes.size()-1;i>=0; i--)
 		{
 			CalendarEntry myCe=(CalendarEntry) myCes.get(i);
-//			System.out.println("Steffens Datum: "+ parseDate(myCe.getStartDate()));
-//			
-//			System.out.println("Mein Datum: "+ myHauptmenue.getCali().getDate());
 			if(parseDate(myCe.getStartDate()).equals(parseDate(myHauptmenue.getCali().getDate())))
 			{
 				System.out.println("hier");
 				String zeit="";
-				zeit = myCe.getStartHour()+":"+myCe.getStartMinute();
+				int minuten=0;
+				int stunden=0;
+				stunden=myCe.getStartHour();
+				minuten=myCe.getStartMinute();
+				if(minuten<10)
+				{
+					zeit=stunden+":0"+minuten;
+				}
+				else
+				{
+					zeit=stunden+":"+minuten;
+				}
 				myModel.setAktDate(aktDate);
-				
-				myModel.getBeschreibungen().clear();
-				myModel.setBeschreibungen(zeit, myCe.getTitle());
-				
-				myModel.getDauer().clear();
+				myModel.setBeschreibungen(zeit, myCe.getTitle());	
 				myModel.setDauer(zeit,myCe.getDuration());
-				
-				myModel.getPersonen().clear();
 				myModel.setPersonen(zeit, myCe.getInvitees());
-				
-				myModel.getDetails().clear();
 				myModel.setDetails(zeit, myCe.getDescription());
-//				
-				myModel.getRaeume().clear();
-//				myModel.setRaeume(zeit, myCe.getRoomId());
+				Room r =new Room();
+				r.setID(myCe.getRoomId());
+				Room tmp = myRequester.requestObjectByOwnId(r);
+				if (tmp !=null)
+				{
+				myModel.setRaeume(zeit, tmp.getDescription());
+				}
+				else
+				{
+					myModel.setRaeume(zeit, "");
+				}
 			}
 		}
 		
