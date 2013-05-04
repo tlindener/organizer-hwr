@@ -1,9 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region License
+// Copyright: Tobias Lindener
+// Author: Tobias Lindener
+// Date: 05/03/2013
+#endregion
+#region Usings
+
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace Organizer.Interfaces
 {

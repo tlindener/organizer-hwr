@@ -1,11 +1,14 @@
-﻿using System;
+﻿#region License
+// Copyright: Tobias Lindener
+// Author: Tobias Lindener
+// Date: 04/24/2013
+#endregion
+#region Usings
+
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace Organizer.Interfaces
 {
@@ -16,8 +19,8 @@ namespace Organizer.Interfaces
         public int CalendarId { get; set; }
         [Required]
         public virtual User Owner { get; set; }
-        public String Name { get; set; }
-        public String Description { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
         public virtual ICollection<CalendarEntry> CalendarEntries { get; set; }
         
 

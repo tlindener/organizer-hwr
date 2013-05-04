@@ -1,8 +1,14 @@
-﻿using System;
+﻿#region License
+// Copyright: Tobias Lindener
+// Author: Tobias Lindener
+// Date: 04/26/2013
+#endregion
+#region Usings
+
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
+
+#endregion
 
 namespace Organizer.Interfaces
 {
@@ -10,7 +16,7 @@ namespace Organizer.Interfaces
     {
         [Key]
         public int GroupId { get; set; }
-        public String Description { get; set; }
+        public string Description { get; set; }
         public virtual ICollection<User> Members { get; set; }
 
     }

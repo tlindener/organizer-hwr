@@ -1,24 +1,42 @@
-﻿using Organizer.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿#region License
+// Copyright: Tobias Lindener
+// Author: Tobias Lindener
+// Date: 04/26/2013
+#endregion
+#region Usings
+
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using Organizer.Interfaces;
+
+#endregion
 
 namespace Organizer
 {
+    /// <summary>
+    /// Class for a variaty of utility methods
+    /// </summary>
     public static class Utils
     {
-        public static bool isCalendarValid(Calendar calendar)
+        /// <summary>
+        /// Checks if a calendar has valid user data
+        /// </summary>
+        /// <param name="calendar"></param>
+        /// <returns></returns>
+        public static bool IsCalendarValid(Calendar calendar)
         {
 
-            if (!String.IsNullOrEmpty(calendar.Owner.Surname) && !String.IsNullOrEmpty(calendar.Owner.GivenName))
+            if (!string.IsNullOrEmpty(calendar.Owner.Surname) && !string.IsNullOrEmpty(calendar.Owner.GivenName))
             {
                 return true;
             }
             return false;
         }
+        /// <summary>
+        /// Generates SHA512 Hash for security purposes
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static string getSHA512Hash(string text)
         {
             string hash = "";

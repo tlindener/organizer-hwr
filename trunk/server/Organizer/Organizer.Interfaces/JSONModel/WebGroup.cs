@@ -1,15 +1,20 @@
-﻿using System;
+﻿#region License
+// Copyright: Tobias Lindener
+// Author: Tobias Lindener
+// Date: 04/26/2013
+#endregion
+#region Usings
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace Organizer.Interfaces.Json
 {
     public class WebGroup
     {
         public int Id { get; set; }
-        public String Description { get; set; }
+        public string Description { get; set; }
         public ICollection<User> Members { get; set; }
     }
 }

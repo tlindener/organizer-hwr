@@ -1,70 +1,85 @@
-﻿using log4net;
-using Organizer.Interfaces;
+﻿#region License
+// Copyright: Tobias Lindener
+// Author: Tobias Lindener
+// Date: 04/15/2013
+#endregion
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using Organizer.Interfaces;
+using log4net;
+using log4net.Config;
+
+#endregion
 
 namespace Organizer
 {
+    /// <summary>
+    ///     Included DatabaseContext for Organizer Database. Offers CRUD methods.
+    /// </summary>
     public class TimePlanner
     {
-        CalendarContext calendarDatabase;
-        ILog logger = null;
+        private readonly CalendarContext _calendarDatabase;
+        private readonly ILog _logger;
+
+        /// <summary>
+        ///     Default constructor
+        /// </summary>
         public TimePlanner()
         {
-            log4net.Config.XmlConfigurator.Configure();
-            logger = LogManager.GetLogger(typeof(TimePlanner));
+            XmlConfigurator.Configure();
+            _logger = LogManager.GetLogger(typeof (TimePlanner));
 
-            calendarDatabase = new CalendarContext();
+            _calendarDatabase = new CalendarContext();
         }
 
         #region Calendar
+
         /// <summary>
-        /// Adds a new calendar item to database
+        ///     Adds a new calendar item to database
         /// </summary>
         /// <param name="calendar"></param>
         /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         public int AddCalendar(Calendar calendar)
         {
-
-            if (Utils.isCalendarValid(calendar))
+            if (Utils.IsCalendarValid(calendar))
             {
                 try
                 {
-                    calendarDatabase.Calendar.Add(calendar);
-                    calendarDatabase.SaveChanges();
+                    _calendarDatabase.Calendar.Add(calendar);
+                    _calendarDatabase.SaveChanges();
                     return calendar.CalendarId;
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex.ToString());
+                    _logger.Error(ex.ToString());
                 }
             }
             return 0;
         }
+
         /// <summary>
-        /// Returns a collection of calendar items
+        ///     Returns a collection of calendar items
         /// </summary>
         /// <returns></returns>
         public ICollection<Calendar> GetAllCalendar()
         {
             try
             {
-                return calendarDatabase.Calendar.ToList();
+                return _calendarDatabase.Calendar.ToList();
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return null;
         }
+
         /// <summary>
-        /// Returns a single calendar item based on the chosen id
+        ///     Returns a single calendar item based on the chosen id
         /// </summary>
         /// <param name="calendarId"></param>
         /// <returns></returns>
@@ -72,19 +87,21 @@ namespace Organizer
         {
             try
             {
-                return calendarDatabase.Calendar.Find(calendarId);
+                return _calendarDatabase.Calendar.Find(calendarId);
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return null;
         }
+
         #endregion
 
         #region CalendarEntry
+
         /// <summary>
-        /// Returns a calendar entry based on calenEntryId.
+        ///     Returns a calendar entry based on calenEntryId.
         /// </summary>
         /// <param name="calendarEntryId"></param>
         /// <returns></returns>
@@ -92,16 +109,17 @@ namespace Organizer
         {
             try
             {
-                return calendarDatabase.CalendarEntries.Find(calendarEntryId);
+                return _calendarDatabase.CalendarEntries.Find(calendarEntryId);
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return null;
         }
+
         /// <summary>
-        /// Adds a calendar entry to the specified calendar
+        ///     Adds a calendar entry to the specified calendar
         /// </summary>
         /// <param name="entry"></param>
         /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
@@ -109,26 +127,24 @@ namespace Organizer
         {
             try
             {
-                var calendar = calendarDatabase.Calendar.Find(entry.CalendarId);
+                Calendar calendar = _calendarDatabase.Calendar.Find(entry.CalendarId);
                 if (calendar == null)
                 {
                     return 0;
                 }
                 calendar.CalendarEntries.Add(entry);
-                calendarDatabase.SaveChanges();
+                _calendarDatabase.SaveChanges();
                 return entry.CalendarEntryId;
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return 0;
-
-
         }
 
         /// <summary>
-        /// Returns all calendar entries of specified owner
+        ///     Returns all calendar entries of specified owner
         /// </summary>
         /// <param name="ownerId"></param>
         /// <returns></returns>
@@ -136,16 +152,17 @@ namespace Organizer
         {
             try
             {
-                return calendarDatabase.CalendarEntries.Where(p => p.Owner.UserId == ownerId).ToList();
+                return _calendarDatabase.CalendarEntries.Where(p => p.Owner.UserId == ownerId).ToList();
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return null;
         }
+
         /// <summary>
-        /// Returns all calendar entries in specified room
+        ///     Returns all calendar entries in specified room
         /// </summary>
         /// <param name="roomId"></param>
         /// <returns></returns>
@@ -154,34 +171,33 @@ namespace Organizer
             try
             {
                 // Check if given roomId is available
-                var room = calendarDatabase.Rooms.Find(roomId);
+                Room room = _calendarDatabase.Rooms.Find(roomId);
                 if (room == null)
                 {
                     return null;
                 }
-                return calendarDatabase.CalendarEntries.Where(p => p.Room == room).ToList();
+                return _calendarDatabase.CalendarEntries.Where(p => p.Room == room).ToList();
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return null;
         }
 
         /// <summary>
-        /// Removes entry from calendar
+        ///     Removes entry from calendar
         /// </summary>
         /// <param name="calendarId"></param>
         /// <param name="entryId"></param>
         /// <returns></returns>
         public bool RemoveEntryFromCalendar(int calendarId, int entryId)
         {
-
             try
             {
                 //checks if calendar and entry is available
-                var entry = calendarDatabase.CalendarEntries.Find(entryId);
-                var calendar = calendarDatabase.Calendar.Find(calendarId);
+                CalendarEntry entry = _calendarDatabase.CalendarEntries.Find(entryId);
+                Calendar calendar = _calendarDatabase.Calendar.Find(calendarId);
                 if (entry == null && calendar == null)
                 {
                     return false;
@@ -190,80 +206,96 @@ namespace Organizer
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return false;
-
-
         }
+
         #endregion
 
         #region User
+
         /// <summary>
-        /// Returns all users
+        ///     Returns all users
         /// </summary>
         /// <returns></returns>
         public ICollection<User> GetAllUser()
         {
             try
             {
-                return calendarDatabase.User.ToList();
-
+                return _calendarDatabase.User.ToList();
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return null;
-
         }
+
+        /// <summary>
+        ///     Retunrs specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public User GetUserById(int userId)
         {
             try
             {
-                return calendarDatabase.User.Find(userId);
+                return _calendarDatabase.User.Find(userId);
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return null;
-
         }
 
         #endregion
 
         #region Rooms
+
+        /// <summary>
+        ///     Returns all existing rooms
+        /// </summary>
+        /// <returns></returns>
         public ICollection<Room> GetAllRooms()
         {
-            return calendarDatabase.Rooms.ToList();
+            return _calendarDatabase.Rooms.ToList();
         }
+
+        /// <summary>
+        ///     Returns specified room
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         public Room GetRoomById(int roomId)
         {
-            return calendarDatabase.Rooms.Find(roomId);
+            return _calendarDatabase.Rooms.Find(roomId);
         }
 
         #endregion
+
         #region Groups
 
         /// <summary>
-        /// Returns a collection of groups
+        ///     Returns a collection of groups
         /// </summary>
         /// <returns></returns>
         public ICollection<Group> GetAllGroups()
         {
             try
             {
-                return calendarDatabase.Groups.ToList();
+                return _calendarDatabase.Groups.ToList();
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return null;
         }
+
         /// <summary>
-        /// Returns a group by specified Id
+        ///     Returns a group by specified Id
         /// </summary>
         /// <param name="groupId"></param>
         /// <returns></returns>
@@ -271,17 +303,17 @@ namespace Organizer
         {
             try
             {
-                return calendarDatabase.Groups.Find(groupId);
+                return _calendarDatabase.Groups.Find(groupId);
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return null;
         }
 
         /// <summary>
-        /// Returns a collection of groups by specified user
+        ///     Returns a collection of groups by specified user
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -289,26 +321,24 @@ namespace Organizer
         {
             try
             {
-                var member = calendarDatabase.User.Find(userId);
+                User member = _calendarDatabase.User.Find(userId);
                 if (member == null)
                 {
                     return null;
                 }
-                return calendarDatabase.Groups.Where(p => p.Members == member).ToList();
+                return _calendarDatabase.Groups.Where(p => p.Members == member).ToList();
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return null;
         }
+
         #endregion
 
-
-
-
         /// <summary>
-        /// Adds a user to database
+        ///     Adds a user to database
         /// </summary>
         /// <param name="dbUser"></param>
         /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
@@ -316,19 +346,19 @@ namespace Organizer
         {
             try
             {
-                calendarDatabase.User.Add(dbUser);
-                calendarDatabase.SaveChanges();
+                _calendarDatabase.User.Add(dbUser);
+                _calendarDatabase.SaveChanges();
                 return dbUser.UserId;
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return 0;
-
         }
+
         /// <summary>
-        /// Adds a room to database
+        ///     Adds a room to database
         /// </summary>
         /// <param name="dbRoom"></param>
         /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
@@ -336,19 +366,19 @@ namespace Organizer
         {
             try
             {
-                calendarDatabase.Rooms.Add(dbRoom);
-                calendarDatabase.SaveChanges();
+                _calendarDatabase.Rooms.Add(dbRoom);
+                _calendarDatabase.SaveChanges();
                 return dbRoom.RoomId;
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return 0;
-
         }
+
         /// <summary>
-        /// Adds a group to database
+        ///     Adds a group to database
         /// </summary>
         /// <param name="dbGroup"></param>
         /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
@@ -356,239 +386,259 @@ namespace Organizer
         {
             try
             {
-                calendarDatabase.Groups.Add(dbGroup);
-                calendarDatabase.SaveChanges();
+                _calendarDatabase.Groups.Add(dbGroup);
+                _calendarDatabase.SaveChanges();
                 return dbGroup.GroupId;
-
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
             return 0;
-
         }
 
         /// <summary>
-        /// Accepts the invitation from the invited user and returns the calendarEntryId for the accepting user
+        ///     Accepts the invitation from the invited user and returns the calendarEntryId for the accepting user
         /// </summary>
         /// <param name="inviteId"></param>
         /// <returns></returns>
         public int AcceptInvite(int inviteId)
         {
-
-            var invite = calendarDatabase.Invites.Find(inviteId);
+            Invite invite = _calendarDatabase.Invites.Find(inviteId);
             invite.CalendarEntry.Owner = invite.Owner;
             invite.Accepted = true;
-            calendarDatabase.CalendarEntries.Add(invite.CalendarEntry);
-            calendarDatabase.SaveChanges();
+            _calendarDatabase.CalendarEntries.Add(invite.CalendarEntry);
+            _calendarDatabase.SaveChanges();
             return invite.CalendarEntry.CalendarEntryId;
         }
+
         /// <summary>
-        /// Removes specified calendar
+        ///     Removes specified calendar
         /// </summary>
         /// <param name="calendarId"></param>
         /// <returns></returns>
         public bool RemoveCalendar(int calendarId)
         {
-            var calendar = calendarDatabase.Calendar.Find(calendarId);
+            Calendar calendar = _calendarDatabase.Calendar.Find(calendarId);
             if (calendar == null)
             {
                 return false;
             }
-            calendarDatabase.Calendar.Remove(calendar);
-            calendarDatabase.SaveChanges();
+            _calendarDatabase.Calendar.Remove(calendar);
+            _calendarDatabase.SaveChanges();
             return true;
         }
 
         /// <summary>
-        /// Removes specified user
+        ///     Removes specified user
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
         public bool RemoveUser(int userId)
         {
-            var user = calendarDatabase.User.Find(userId);
+            User user = _calendarDatabase.User.Find(userId);
             if (user == null)
             {
                 return false;
             }
-            calendarDatabase.User.Remove(user);
-            calendarDatabase.SaveChanges();
+            _calendarDatabase.User.Remove(user);
+            _calendarDatabase.SaveChanges();
             return true;
         }
+
         /// <summary>
-        /// Removes specified room
+        ///     Removes specified room
         /// </summary>
         /// <param name="roomId"></param>
         /// <returns></returns>
         public bool RemoveRoom(int roomId)
         {
-            var room = calendarDatabase.Rooms.Find(roomId);
+            Room room = _calendarDatabase.Rooms.Find(roomId);
             if (room == null)
             {
                 return false;
             }
-            calendarDatabase.Rooms.Remove(room);
-            calendarDatabase.SaveChanges();
+            _calendarDatabase.Rooms.Remove(room);
+            _calendarDatabase.SaveChanges();
             return true;
         }
 
         /// <summary>
-        /// Change specified room in calendar entry
+        ///     Change specified room in calendar entry
         /// </summary>
         /// <param name="roomId"></param>
         /// <param name="calendarEntryId"></param>
         /// <returns></returns>
         public bool ChangeRoomForCalendarEntry(int roomId, int calendarEntryId)
         {
-            var room = calendarDatabase.Rooms.Find(roomId);
-            var calendarEntry = calendarDatabase.CalendarEntries.Find(calendarEntryId);
+            Room room = _calendarDatabase.Rooms.Find(roomId);
+            CalendarEntry calendarEntry = _calendarDatabase.CalendarEntries.Find(calendarEntryId);
             if (room == null || calendarEntry == null)
             {
                 return false;
             }
             calendarEntry.Room = room;
-            calendarDatabase.SaveChanges();
+            _calendarDatabase.SaveChanges();
             return true;
         }
 
         /// <summary>
-        /// Adds specified user to specified group
+        ///     Adds specified user to specified group
         /// </summary>
         /// <param name="groupId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
         public bool AddUserToGroup(int groupId, int userId)
         {
-            var group = calendarDatabase.Groups.Find(groupId);
-            var user = calendarDatabase.User.Find(userId);
+            Group group = _calendarDatabase.Groups.Find(groupId);
+            User user = _calendarDatabase.User.Find(userId);
             if (group == null || user == null)
             {
                 return false;
             }
             group.Members.Add(user);
-            calendarDatabase.SaveChanges();
+            _calendarDatabase.SaveChanges();
             return true;
         }
 
         /// <summary>
-        /// Removes specified user from group
+        ///     Removes specified user from group
         /// </summary>
         /// <param name="groupId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
         public bool RemoveUserFromGroup(int groupId, int userId)
         {
-            var group = calendarDatabase.Groups.Find(groupId);
-            var user = calendarDatabase.User.Find(userId);
+            Group group = _calendarDatabase.Groups.Find(groupId);
+            User user = _calendarDatabase.User.Find(userId);
             if (group == null || user == null)
             {
-
                 return false;
             }
             group.Members.Remove(user);
-            calendarDatabase.SaveChanges();
+            _calendarDatabase.SaveChanges();
             return true;
         }
 
         /// <summary>
-        /// Removes specified group
+        ///     Removes specified group
         /// </summary>
         /// <param name="groupId"></param>
         /// <returns></returns>
         public bool RemoveGroup(int groupId)
         {
-            var group = calendarDatabase.Groups.Find(groupId);
+            Group group = _calendarDatabase.Groups.Find(groupId);
             if (group == null)
             {
-
                 return false;
             }
-            calendarDatabase.Groups.Remove(group);
-            calendarDatabase.SaveChanges();
+            _calendarDatabase.Groups.Remove(group);
+            _calendarDatabase.SaveChanges();
             return true;
-
         }
 
         /// <summary>
-        /// Get all invites of one user
+        ///     Get all invites of one user
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
         public ICollection<Invite> GetAllInvitesByUserId(int userId)
         {
-            var user = calendarDatabase.User.Find(userId);
+            User user = _calendarDatabase.User.Find(userId);
             if (user == null)
             {
                 return null;
             }
-            return calendarDatabase.Invites.Where(p => p.Owner == user).ToList();
+            return _calendarDatabase.Invites.Where(p => p.Owner == user).ToList();
         }
 
         /// <summary>
-        /// Adds a person to invite list of a calendar entry and to table invites
+        ///     Adds a person to invite list of a calendar entry and to table invites
         /// </summary>
         /// <param name="calendarEntryId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
         public int AddInvite(int calendarEntryId, int userId)
         {
-            var calendarEntry = calendarDatabase.CalendarEntries.Find(calendarEntryId);
-            var user = calendarDatabase.User.Find(userId);
+            CalendarEntry calendarEntry = _calendarDatabase.CalendarEntries.Find(calendarEntryId);
+            User user = _calendarDatabase.User.Find(userId);
             if (calendarEntry == null || user == null)
             {
                 return 0;
             }
             calendarEntry.Invitees.Add(user);
-            Invite invite = new Invite()
-            {
-                Accepted = false,
-                CalendarEntry = calendarEntry,
-                Owner = user,
-            };
-            calendarDatabase.Invites.Add(invite);
-            calendarDatabase.SaveChanges();
+            var invite = new Invite
+                {
+                    Accepted = false,
+                    CalendarEntry = calendarEntry,
+                    Owner = user,
+                };
+            _calendarDatabase.Invites.Add(invite);
+            _calendarDatabase.SaveChanges();
             return invite.InviteId;
         }
 
         /// <summary>
-        /// Removes a person from list invited people in calendar entry and from table Invites
+        ///     Removes a person from list invited people in calendar entry and from table Invites
         /// </summary>
         /// <param name="calendarEntryId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
         public bool RemoveInvite(int calendarEntryId, int userId)
         {
-            var calendarEntry = calendarDatabase.CalendarEntries.Find(calendarEntryId);
-            var user = calendarDatabase.User.Find(userId);
+            CalendarEntry calendarEntry = _calendarDatabase.CalendarEntries.Find(calendarEntryId);
+            User user = _calendarDatabase.User.Find(userId);
             if (calendarEntry == null || user == null)
             {
                 return false;
             }
             calendarEntry.Invitees.Remove(user);
-            var invitees = calendarDatabase.Invites.Where(p => p.CalendarEntry == calendarEntry && p.Owner == user).ToList();
+            List<Invite> invitees =
+                _calendarDatabase.Invites.Where(p => p.CalendarEntry == calendarEntry && p.Owner == user).ToList();
 
             if (invitees.Count != 1)
             {
                 return false;
             }
-            calendarDatabase.Invites.Remove(invitees.First());
-            calendarDatabase.SaveChanges();
+            _calendarDatabase.Invites.Remove(invitees.First());
+            _calendarDatabase.SaveChanges();
             return true;
-
         }
     }
 
+    /// <summary>
+    ///     EF 5 CodeFirst DatabaseContext for Organizer.
+    /// </summary>
     public class CalendarContext : DbContext
     {
+        /// <summary>
+        ///     DBSet of all calendars
+        /// </summary>
         public DbSet<Calendar> Calendar { get; set; }
+
+        /// <summary>
+        ///     DBSet of all CalendarEntries
+        /// </summary>
         public DbSet<CalendarEntry> CalendarEntries { get; set; }
+
+        /// <summary>
+        ///     DBSet of all users
+        /// </summary>
         public DbSet<User> User { get; set; }
+
+        /// <summary>
+        ///     DBSet of all rooms
+        /// </summary>
         public DbSet<Room> Rooms { get; set; }
+
+        /// <summary>
+        ///     DBSet of all groups
+        /// </summary>
         public DbSet<Group> Groups { get; set; }
+
+        /// <summary>
+        ///     DBSet of all Invites
+        /// </summary>
         public DbSet<Invite> Invites { get; set; }
-
-
     }
 }

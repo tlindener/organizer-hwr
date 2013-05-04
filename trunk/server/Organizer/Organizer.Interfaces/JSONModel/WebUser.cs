@@ -1,10 +1,13 @@
-﻿using System;
+﻿#region License
+// Copyright: Tobias Lindener
+// Author: Tobias Lindener
+// Date: 04/24/2013
+#endregion
+#region Usings
+
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace Organizer.Interfaces.Json
 {
@@ -13,11 +16,11 @@ namespace Organizer.Interfaces.Json
     {
 
         public int Id { get; set; }
-        public String UserName { get; set; }
-        public String GivenName { get; set; }
-        public String Surname { get; set; }
-        public String MailAddress { get; set; }
-        public String PhoneNumber { get; set; }
+        public string UserName { get; set; }
+        public string GivenName { get; set; }
+        public string Surname { get; set; }
+        public string MailAddress { get; set; }
+        public string PhoneNumber { get; set; }
         public ICollection<int> CalendarIds { get; set; }
         public ICollection<int> GroupIds { get; set; }
         public ICollection<int> InviteIds { get; set; }
