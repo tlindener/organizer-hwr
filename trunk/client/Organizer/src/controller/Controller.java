@@ -22,14 +22,15 @@ import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.ListModel;
 
+import logik.DataPusher;
+import logik.Model;
+
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Room;
+import view.window_Hauptmenue;
+import view.window_LogScreen;
+import view.window_TerminBearbeiten;
 
-import Logik1.DataPusher;
-import Logik1.Model;
-import View1.window_Hauptmenue;
-import View1.window_LogScreen;
-import View1.window_TerminBearbeiten;
 
 import network.JsonJavaRequestHandler;
 import network.RequestHandler;
