@@ -24,7 +24,6 @@ namespace Organizer.Interfaces.Json
         public int OwnerId { get; set; }
         public int CalendarId { get; set; }
         public int RoomId { get; set; }
-        public double Duration { get; set; }
         public ICollection<WebUser> Invitees { get; set; }
   
 

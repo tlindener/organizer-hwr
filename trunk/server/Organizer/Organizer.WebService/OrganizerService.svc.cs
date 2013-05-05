@@ -303,7 +303,7 @@ namespace Organizer.WebService
         }
         public bool AddUserToGroup(int groupId, int userId)
         {
-          return  timeplanner.AddUserToGroup(groupId, userId);
+            return timeplanner.AddUserToGroup(groupId, userId);
         }
 
         public bool RemoveUserFromGroup(int groupId, int userId)
@@ -411,7 +411,6 @@ namespace Organizer.WebService
                 Description = calendarEntry.Description,
                 StartDate = calendarEntry.StartDate,
                 EndDate = calendarEntry.EndDate,
-                Duration = calendarEntry.Duration,
                 Title = calendarEntry.Title,
                 Id = calendarEntry.CalendarEntryId,
                 RoomId = roomId,
@@ -494,7 +493,7 @@ namespace Organizer.WebService
                 Accepted = invite.Accepted,
                 OwnerId = invite.Owner.UserId
             };
-                
+
         }
     }
 }
