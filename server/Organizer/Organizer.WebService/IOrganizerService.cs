@@ -157,15 +157,15 @@ namespace Organizer.WebService
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         WebUser GetUserById(int userId);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        [OperationContract]
-        [WebInvoke(ResponseFormat = WebMessageFormat.Json)]
-        int AddUserByObject(WebUser user, string password);
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="user"></param>
+        ///// <param name="password"></param>
+        ///// <returns></returns>
+        //[OperationContract]
+        //[WebInvoke(ResponseFormat = WebMessageFormat.Json)]
+        //int AddUserByObject(WebUser user, string password);
 
         /// <summary>
         /// 
@@ -286,7 +286,7 @@ namespace Organizer.WebService
         /// <param name="description"></param>
         /// <returns></returns>
         [OperationContract]
-        [WebInvoke(ResponseFormat = WebMessageFormat.Json)]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int AddGroup(string description);
 
         /// <summary>

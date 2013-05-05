@@ -63,8 +63,8 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="TimePlannerDiagram.cd" />
     <None Include="packages.config" />
+    <None Include="TimePlannerDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Documentation\" />
