@@ -51,4 +51,9 @@ public class Room extends AbstractOrganizerObject {
 	public void setSeats(int seats) {
 		this.seats = seats;
 	}
+	
+	@Override
+	public String getProperty() throws IllegalArgumentException {
+		throw new IllegalArgumentException("No available Property for " + getClass().getSimpleName());
+	}
 }

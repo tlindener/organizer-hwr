@@ -4,17 +4,18 @@
 package network;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import network.objects.ByProperty;
 import network.objects.NetDateTimeAdapter;
 import network.objects.TestData;
 import network.objects.Utils;
@@ -29,7 +30,6 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
@@ -48,12 +48,10 @@ public class JsonJavaRequestHandler extends RequestHandler {
 
 	private Gson gson = null;
 	TestData data = null;
+	
 	private HttpURLConnection connection = null;
 	private String hostname = "";
 	private int port = -1;
-	public static final int GET = 1;
-	public static final int POST = 2;
-	
 	
 	/**
 	 * Verbindungsdetails für Socket hinterlegen
@@ -97,7 +95,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 //		}
 				
 		String getCmd = Utils.buildGetByOwnIdCommand(obj);
-		String json = sendRequestToServer(getCmd, GET);
+		String json = sendGetToServer(getCmd);
 		try{
 			return (T) gson.fromJson(json, obj.getClass());
 		}catch(JsonSyntaxException ex){
@@ -106,28 +104,18 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		return null;
 	}
 	
-	private String sendRequestToServer(String request, int type) {
+	private String sendGetToServer(String request) {
 		
-//		System.out.println(request);
+
 //		String jsonString = "{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1366979015630+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968215630+0200)\\/\",\"Title\":null}";
 //		String jsonString2 = "[{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1366979015630+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968215630+0200)\\/\",\"Title\":null},{\"CalendarId\":2,\"Description\":null,\"Duration\":1440,\"EndDate\":\"\\/Date(1367054619440+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968219440+0200)\\/\",\"Title\":null}]";
-//		return jsonString;
-		
+//		String jsonString3 = "[{\"CalendarEntries\":[{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1367602369353+0200)\\/\",\"Id\":1,\"Invitees\":[],\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1367591569353+0200)\\/\",\"Title\":\"Arbeit\"},{\"CalendarId\":2,\"Description\":null,\"Duration\":1440,\"EndDate\":\"\\/Date(1367677970180+0200)\\/\",\"Id\":2,\"Invitees\":[{\"CalendarIds\":[],\"GivenName\":\"Hans\",\"GroupIds\":[],\"Id\":2,\"InviteIds\":[],\"MailAddress\":\"tobias.lindener@gmail.com\",\"PhoneNumber\":\"01773071234\",\"Surname\":\"Dieter\"}],\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1367591570180+0200)\\/\",\"Title\":null}],\"Description\":null,\"Id\":1,\"Name\":\"MyCalendar\",\"OwnerId\":1}]";
+//		return jsonString3;
 //		String obj = gson.toJson(new Date());
 //		System.out.println("TEST: " + obj);
 		
-		 try {
-			connection =  (HttpURLConnection) (new URL("http://"+hostname+":"+port+"/OrganizerService.svc/")).openConnection();
-			connection.setDoOutput(true);
-			connection.setDoInput(true);
-			switch(type){
-			case GET: connection.setRequestMethod("GET");
-				break;
-			case POST: connection.setRequestMethod("POST");
-				break;
-			}
-			PrintWriter writer = new PrintWriter(connection.getOutputStream());
-			writer.print(request);
+		try {
+			connection =  (HttpURLConnection) (new URL("http://"+hostname+":"+port+"/OrganizerService.svc/"+request)).openConnection();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String jsonString = reader.readLine();
 			connection.disconnect();
@@ -138,7 +126,35 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			e.printStackTrace();
 		}
 		return null;
+//		System.out.println(request);
+//		return "";
 	}
+//	
+//	private String sendPostToServer(String request, String jsonParameter){
+//		try {
+//				connection =  (HttpURLConnection) (new URL("http://"+hostname+":"+port+"/OrganizerService.svc/"+request)).openConnection();
+//				connection.setDoInput (true);
+//				connection.setDoOutput (true);
+//				connection.setUseCaches (false);
+//				connection.connect();
+//				
+//				PrintWriter printout = new PrintWriter(new DataOutputStream(connection.getOutputStream ()));
+//				printout.write(URLEncoder.encode(jsonParameter.toString(),"UTF-8"));
+//				printout.flush ();
+//				printout.close ();
+//				
+//				BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//				String jsonString = reader.readLine();
+//				connection.disconnect();
+//				return jsonString;
+//			} catch (MalformedURLException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			return null;		
+//	}
+	
 	
 	/**
 	 * Abfrage mehrerer Objekte, die die Vorgaben des Eingabeobjekts erfüllen.
@@ -167,9 +183,11 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		
 		try{
 			String getCmd = Utils.buildGetAllCommand(obj);
-			String json = sendRequestToServer(getCmd, GET);
-			
+			String json = sendGetToServer(getCmd);
 			List<JsonElement> tmp = gson.fromJson(json, new TypeToken<List<JsonElement>>(){}.getType());
+			
+			if(tmp == null) return new ArrayList<T>();
+			
 			List<T> result = new ArrayList<>();
 			for(int i = 0; i < tmp.size(); i++){
 				result.add((T) gson.fromJson(tmp.get(i), obj.getClass()));
@@ -183,34 +201,49 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		return null;
 	}
 	
+	@Override
+	public <T extends AbstractOrganizerObject> T requestObjectByProperty(T obj) {
+		
+		List<T> result = requestAllObjectsByProperty(obj);
+		if(result != null && !result.isEmpty()){
+			return result.get(0);
+		}
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends AbstractOrganizerObject> List<T> requestObjects(T obj,
-			ByProperty by) {
-		
-//		if(!Utils.isFieldOf(obj, by.getFieldName())) return null;
-//		
-//		Object result = null;
-//		
-//		if(obj instanceof CalendarEntry){
-//			result = data.getAllCalendarEntries();
-//		}if(obj instanceof Calendar){
-//			result = data.getAllCalendar();
-//		}if(obj instanceof Room){
-//			result = data.getAllRooms();
-//		}if(obj instanceof User){
-//			result = data.getUserByProperty(by.getFieldName(), by.getValue());
-//		}
-//		if(result!=null){
-//			return (List<T>)result;
-//		}else{
-//			return null;
-//		}
-		
+	public <T extends AbstractOrganizerObject> List<T> requestAllObjectsByProperty(
+			T obj) {
 		try{
-			String getCmd = Utils.buildGetCommand(obj, by);
-			String json = sendRequestToServer(getCmd, GET);
-			return (List<T>) gson.fromJson(json, obj.getClass());
+			String getCmd = Utils.buildGetByPropertyCommand(obj);
+			String json = sendGetToServer(getCmd);
+			
+			List<JsonElement> tmp = gson.fromJson(json, new TypeToken<List<JsonElement>>(){}.getType());
+			if(tmp == null) return new ArrayList<T>();
+			List<T> result = new ArrayList<>();
+			for(int i = 0; i < tmp.size(); i++){
+				result.add((T) gson.fromJson(tmp.get(i), obj.getClass()));
+			}		
+			return  result;
+		}catch (IllegalArgumentException ex){
+			ex.printStackTrace();
+		}catch(JsonSyntaxException ex){
+			ex.printStackTrace();
+		}
+		
+		return null;
+	}
+	@Override
+	public User registerNewUser(User user, String name, String password) {
+		try{
+			String getCmd = Utils.buildAddCommand(user);
+			getCmd += "&username=\""+name+"\"&password=\""+password+"\"";
+			String json = sendGetToServer(getCmd);
+			Integer id = gson.fromJson(json, int.class);
+			if(id == null || id == -1) return null;
+			user.setID(id);
+			return user;
 		}catch(IllegalArgumentException ex){
 			ex.printStackTrace();
 		}catch(JsonSyntaxException ex){
@@ -218,18 +251,22 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		}
 		return null;
 	}
-
+	
 	@Override
-	public <T extends AbstractOrganizerObject> boolean addElement(T obj) {
+	public <T extends AbstractOrganizerObject> T addObject(T obj) {
+		if(obj instanceof User) throw new UnsupportedOperationException("User must be added by method \"registerNewUser\"");
 		try{
 			String getCmd = Utils.buildAddCommand(obj);
-			String json = sendRequestToServer(getCmd, GET);
-			return gson.fromJson(json, boolean.class);
+			String json = sendGetToServer(getCmd);
+			Integer id = gson.fromJson(json, int.class);
+			if(id == null || id == -1) return null;
+			obj.setID(id);
+			return obj;
 		}catch(IllegalArgumentException ex){
 			ex.printStackTrace();
 		}catch(JsonSyntaxException ex){
 			ex.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 }

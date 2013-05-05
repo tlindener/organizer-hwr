@@ -1,6 +1,7 @@
 package organizer.objects;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 
 import network.RequestHandler;
@@ -16,6 +17,9 @@ import network.RequestHandler;
  * 
  */
 public abstract class AbstractOrganizerObject {
+	
+	protected String byProperty = null;
+	protected String byValue = null;
 	
 	private int id = -1;
 	
@@ -43,6 +47,7 @@ public abstract class AbstractOrganizerObject {
 	
 	private StringBuilder addFieldValuePairs(StringBuilder builder, Field[] fields){
 		for(Field f: fields){
+			if(f.getModifiers() != Modifier.PRIVATE) continue;
 			try {
 				f.setAccessible(true);
 				String value = checkType(f);
@@ -77,6 +82,10 @@ public abstract class AbstractOrganizerObject {
 			return type.getSimpleName();
 		}
 	}
-	
+	public abstract  String getProperty() throws IllegalArgumentException;
+	public void setRequestProperty(String property, String value){
+		this.byValue = value;
+		this.byProperty = property;
+	}
 	
 }
