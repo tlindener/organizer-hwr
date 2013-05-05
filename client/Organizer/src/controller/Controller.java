@@ -452,10 +452,10 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					endZeit = stunden + ":" + minuten;
 				}
 				myModel.setAktDate(aktDate);
-				myModel.setBeschreibungen(anfangZeit, myCe.getTitle());
+				myModel.setBeschreibungen(anfangZeit, myCe.getDescription());
 				myModel.setDauer(anfangZeit, myCe.getDuration());
 				myModel.setPersonen(anfangZeit, myCe.getInvitees());
-				myModel.setDetails(anfangZeit, myCe.getDescription());
+				myModel.setDetails(anfangZeit, myCe.getTitle());
 				myModel.setAnfangEnde(anfangZeit, endZeit);
 				Room r = new Room();
 				r.setID(myCe.getRoomId());
