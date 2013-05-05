@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListModel;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
@@ -36,6 +37,8 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 
 import logik.DataPusher;
+import javax.swing.UIManager.*;
+
 
 public class window_Hauptmenue extends JFrame {
 
@@ -71,6 +74,7 @@ public class window_Hauptmenue extends JFrame {
 		myPCL = pCL;
 		this.myDataPusher = myDataPusher;
 		myRenderer = new Renderer();
+		
 
 		init();
 	}
@@ -91,7 +95,16 @@ public class window_Hauptmenue extends JFrame {
 	 */
 
 	public void init() {
-		
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Metal".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
+		}
 		setBounds(100, 100, 789, 572);
 
 		JPanel panel = new JPanel();
