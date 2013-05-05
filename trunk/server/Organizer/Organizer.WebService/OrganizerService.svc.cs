@@ -78,6 +78,10 @@ namespace Organizer.WebService
         public ICollection<WebCalendar> GetAllCalendar()
         {
             var calendar = timeplanner.GetAllCalendar();
+            if (calendar == null)
+            {
+                return null;
+            }
             return calendar.Select(p => p.ToWebCalendar()).ToList();
         }
 
@@ -282,6 +286,10 @@ namespace Organizer.WebService
         public ICollection<WebGroup> GetAllGroupsByUserId(int userId)
         {
             var groups = timeplanner.GetGroupsByUserId(userId);
+            if (groups == null)
+            {
+                return null;
+            }
             return groups.Select(p => p.ToWebGroup()).ToList();
         }
         public int AddGroup(string description)
