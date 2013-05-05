@@ -7,6 +7,7 @@ import organizer.objects.AbstractOrganizerObject;
 
 public class Calendar extends AbstractOrganizerObject{
 	private int ownerId = -1;
+	private String name = "";
 	private String description = "";
 	private List<CalendarEntry> calendarEntries = new ArrayList<>();
 	
@@ -22,6 +23,18 @@ public class Calendar extends AbstractOrganizerObject{
 	 */
 	public void setOwnerId(int ownerId) {
 		this.ownerId = ownerId;
+	}
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 	/**
 	 * @return the description
@@ -46,5 +59,10 @@ public class Calendar extends AbstractOrganizerObject{
 	 */
 	public void setCalendarEntries(List<CalendarEntry> calendarEntries) {
 		this.calendarEntries = calendarEntries;
+	}
+	
+	@Override
+	public String getProperty() throws IllegalArgumentException {
+		throw new IllegalArgumentException("No available Property for " + getClass().getSimpleName());
 	}
 }

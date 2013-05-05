@@ -15,12 +15,13 @@ import organizer.objects.AbstractOrganizerObject;
 public class User extends AbstractOrganizerObject {
 	
 	private String surname = "";
-	private String givenname = "";
+	private String givenName = "";
 	private String mailAddress = "";
 	private String phoneNumber = "";
 	
 	private List<Integer> groupIds = new ArrayList<>();
 	private List<Integer> calendarIds = new ArrayList<>();
+	private List<Integer> inviteIds = new ArrayList<>();
 	
 	/**
 	 * @return the surname
@@ -35,16 +36,16 @@ public class User extends AbstractOrganizerObject {
 		this.surname = surname;
 	}
 	/**
-	 * @return the givenname
+	 * @return the givenName
 	 */
-	public String getGivenname() {
-		return givenname;
+	public String getGivenName() {
+		return givenName;
 	}
 	/**
-	 * @param givenname the givenname to set
+	 * @param givenname the givenName to set
 	 */
-	public void setGivenname(String givenname) {
-		this.givenname = givenname;
+	public void setGivenname(String givenName) {
+		this.givenName = givenName;
 	}
 	/**
 	 * @return the mailAddress
@@ -93,6 +94,22 @@ public class User extends AbstractOrganizerObject {
 	 */
 	public void setCalendarIds(List<Integer> calendarIds) {
 		this.calendarIds = calendarIds;
+	}
+	/**
+	 * @return the inviteIds
+	 */
+	public List<Integer> getInviteIds() {
+		return inviteIds;
+	}
+	/**
+	 * @param inviteIds the inviteIds to set
+	 */
+	public void setInviteIds(List<Integer> inviteIds) {
+		this.inviteIds = inviteIds;
+	}
+	@Override
+	public String getProperty() throws IllegalArgumentException {
+		throw new IllegalArgumentException("No available Property for " + getClass().getSimpleName());
 	}
 
 }

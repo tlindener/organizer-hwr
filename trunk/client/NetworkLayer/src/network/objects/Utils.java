@@ -1,7 +1,11 @@
 package network.objects;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
@@ -13,7 +17,6 @@ import organizer.objects.types.User;
 public class Utils {
 
 	private static HashMap<Class<? extends AbstractOrganizerObject>, String> plurals;
-	private static HashMap<String, String> property;
 	
 	static {
 		plurals = new HashMap<>();
@@ -22,36 +25,11 @@ public class Utils {
 		plurals.put(Calendar.class, "Calendar");
 		plurals.put(CalendarEntry.class, "CalendarEntries");
 		plurals.put(Room.class, "Rooms");
-
-		property = new HashMap<>();
-		property.put("roomid", "RoomId");
-		property.put("ownerid", "OwnerId");
-		property.put("calendarid", "CalendarId");
 	}
 
-	public static <T extends AbstractOrganizerObject> String buildGetCommand(
-			T obj, ByProperty by) throws IllegalArgumentException{
-		
-		if (!isFieldOf(obj, by.getFieldName())) {
-			throw new IllegalArgumentException("ByProperty \""
-					+ by.getFieldName() + "\" is not a field of "
-					+ obj.getClass().getSimpleName());
-		}
-		if (property.get(by.getFieldName()) == null) {
-			throw new IllegalArgumentException("No ByProperty for "
-					+ by.getFieldName());
-		}
-
-		String fieldName = property.get(by.getFieldName());
-		
-		String command = "Get" + obj.getClass().getSimpleName() + "By"
-				+ fieldName + "?" + fieldName + "=";
-
-		if (by.getValue() instanceof String) {
-			command += "\"" + by.getValue() + "\"";
-		} else {
-			command += by.getValue();
-		}
+	public static <T extends AbstractOrganizerObject> String buildGetByPropertyCommand(
+			T obj) throws IllegalArgumentException{
+		String command = buildGetAllCommand(obj)+ obj.getProperty();
 		return command;
 	}
 
@@ -74,8 +52,40 @@ public class Utils {
 	}
 	
 	public static <T extends AbstractOrganizerObject> String buildAddCommand(
-			T obj){
-		String command = "Add" + obj.getClass().getSimpleName()+"?";
+			T obj) throws IllegalArgumentException{
+		String command = "Add" + obj.getClass().getSimpleName() + "?";
+		Field[] fields = obj.getClass().getDeclaredFields();
+		ArrayList<String> parameters = new ArrayList<>();
+		
+		for (Field f : fields){
+			if(f.getModifiers() != Modifier.PRIVATE) continue;
+			f.setAccessible(true);
+			try {
+				Object value = f.get(obj);
+//				if(value == null){
+//					//TODO Fehler anpassen
+//					throw new IllegalArgumentException("Darf nicht null sein");
+//				}
+				if(value instanceof List<?>){
+					continue;
+				}else if(value instanceof String){
+					parameters.add(f.getName() + "=" + "\"" + value + "\"");
+				}else if(value instanceof Date){
+					parameters.add(f.getName() + "=" + parseDateToNetDateTime((Date) value));
+				}else {
+					parameters.add(f.getName() + "=" + value);
+				}
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+			f.setAccessible(false);
+		}
+		
+		for(int i = 0; i < parameters.size(); i++){
+			command+=parameters.get(i);
+			if(i < parameters.size() -1) command += "&";
+		}
+		
 		return command;
 	}
 
@@ -94,5 +104,7 @@ public class Utils {
 		}
 		return false;
 	}
-	
+	private static String parseDateToNetDateTime(Date date){
+		return "\\/Date("+date.getTime()+"+0000)\\/";
+	}
 }

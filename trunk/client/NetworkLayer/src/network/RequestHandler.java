@@ -2,9 +2,8 @@ package network;
 
 import java.util.List;
 
-import network.objects.ByProperty;
-
 import organizer.objects.AbstractOrganizerObject;
+import organizer.objects.types.User;
 
 /**
  * Schnittstelle zum Abfragen von Objekten. Der Type des Eingabeobjekts
@@ -19,8 +18,10 @@ import organizer.objects.AbstractOrganizerObject;
  * 
  */
 public abstract class RequestHandler {
-	public abstract <T extends AbstractOrganizerObject> List<T> requestObjects(T obj, ByProperty by);
+	public abstract <T extends AbstractOrganizerObject> T requestObjectByProperty(T obj);
 	public abstract <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj);
 	public abstract <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj);
-	public abstract <T extends AbstractOrganizerObject> boolean  addElement(T obj);
+	public abstract <T extends AbstractOrganizerObject> List<T> requestAllObjectsByProperty(T obj);
+	public abstract <T extends AbstractOrganizerObject> T addObject(T obj) throws UnsupportedOperationException;
+	public abstract User registerNewUser(User user, String name, String password); 
 }

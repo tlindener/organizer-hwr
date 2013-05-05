@@ -14,8 +14,10 @@ import organizer.objects.AbstractOrganizerObject;
  */
 public class Group extends AbstractOrganizerObject {
 	
+	public static final String USER_ID = "UserId";
+	
 	private String description = "";
-	private List<Integer> users = new ArrayList<Integer>();
+	private List<Integer> members = new ArrayList<Integer>();
 	
 	/**
 	 * @return the description
@@ -34,14 +36,23 @@ public class Group extends AbstractOrganizerObject {
 	/**
 	 * @return the users
 	 */
-	public List<Integer> getUsers() {
-		return users;
+	public List<Integer> getMembers() {
+		return members;
 	}
 
 	/**
 	 * @param users the users to set
 	 */
-	public void setUsers(List<Integer> users) {
-		this.users = users;
+	public void setMembers(List<Integer> members) {
+		this.members = members;
+	}
+
+	@Override
+	public String getProperty() throws IllegalArgumentException {
+		switch(byProperty){
+		case USER_ID: return "By"+USER_ID+"?"+USER_ID+"="+byValue;
+		default: throw new IllegalArgumentException("No available Property for " + getClass().getSimpleName());
+		}
+		
 	}
 }

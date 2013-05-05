@@ -19,6 +19,9 @@ import organizer.objects.AbstractOrganizerObject;
  */
 public class CalendarEntry extends AbstractOrganizerObject {
 
+	public static final String OWNER_ID = "OwnerId";
+	public static final String ROOM_ID = "RoomId";
+	
 	private Date startDate = null;
 	private Date endDate = null;
 	private String title = "";
@@ -217,6 +220,16 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	 */
 	public void setInvitees(List<User> invitees) {
 		this.invitees = invitees;
+	}
+
+	@Override
+	public String getProperty() {
+		switch(byProperty){
+		case OWNER_ID: return "By"+OWNER_ID+"?"+OWNER_ID+"="+byValue;
+		case ROOM_ID: return "By"+ROOM_ID+"?"+ROOM_ID+"="+byValue;
+		default:
+			throw new IllegalArgumentException(byProperty + " is an unkown Property for " + this.getClass().getSimpleName());
+		}
 	}
 	
 }
