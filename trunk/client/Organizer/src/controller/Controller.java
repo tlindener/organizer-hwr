@@ -1,4 +1,4 @@
-package Controller1;
+package controller;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -25,11 +25,11 @@ import javax.swing.ListModel;
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Room;
 
-import Logik.DataPusher;
-import Logik.Model;
-import View.window_Hauptmenue;
-import View.window_LogScreen;
-import View.window_TerminBearbeiten;
+import Logik1.DataPusher;
+import Logik1.Model;
+import View1.window_Hauptmenue;
+import View1.window_LogScreen;
+import View1.window_TerminBearbeiten;
 
 import network.JsonJavaRequestHandler;
 import network.RequestHandler;
