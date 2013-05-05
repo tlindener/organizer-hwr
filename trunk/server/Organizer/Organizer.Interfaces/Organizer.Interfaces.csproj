@@ -50,13 +50,13 @@
     <Compile Include="CalendarEntry.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Invite.cs" />
-    <Compile Include="JSONModel\WebCalendar.cs" />
-    <Compile Include="JSONModel\WebCalendarEntry.cs" />
-    <Compile Include="JSONModel\WebGroup.cs" />
-    <Compile Include="JSONModel\WebInvite.cs" />
-    <Compile Include="JSONModel\WebRoom.cs" />
+    <Compile Include="Json\WebCalendar.cs" />
+    <Compile Include="Json\WebCalendarEntry.cs" />
+    <Compile Include="Json\WebGroup.cs" />
+    <Compile Include="Json\WebInvite.cs" />
+    <Compile Include="Json\WebRoom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="JSONModel\WebUser.cs" />
+    <Compile Include="Json\WebUser.cs" />
     <Compile Include="Room.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
