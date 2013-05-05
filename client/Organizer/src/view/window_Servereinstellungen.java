@@ -25,14 +25,55 @@ public class window_Servereinstellungen extends JFrame {
 	private JLabel lblServeradresse;
 	private JLabel lblPort;
 	private JButton btnSpeichern;
-	private JFormattedTextField numberField;
+	private ActionListener myAL;
+	
+	
+
+
+
+
+	private JTextField txtPort;
 	private NumberFormat formatport;
 
 	
+
+	
+	public window_Servereinstellungen(ActionListener myCon) {
+		myCon=myAL;
+		init();
+	}
+
+	public JTextField getTxtPort() {
+		return txtPort;
+	}
+
+
+	public void setTxtPort(JTextField txtPort) {
+		this.txtPort = txtPort;
+	}
+
+
+	public JTextField getTxtAdresse() {
+		return txtAdresse;
+	}
+
+
+	public void setTxtAdresse(JTextField txtAdresse) {
+		this.txtAdresse = txtAdresse;
+	}
+
+	public JButton getBtnSpeichern() {
+		return btnSpeichern;
+	}
+
+	public void setBtnSpeichern(JButton btnSpeichern) {
+		this.btnSpeichern = btnSpeichern;
+	}
+
 	/**
 	 * Create the frame.
 	 */
-	public window_Servereinstellungen() {
+	public void init() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 438, 192);
 		contentPane = new JPanel();
@@ -75,24 +116,23 @@ public class window_Servereinstellungen extends JFrame {
 //        JFormattedTextField field = new JFormattedTextField(format);
 //        ((NumberFormatter)field.getFormatter()).setAllowsInvalid(false);
 		
-		formatport =NumberFormat.getNumberInstance();
-		numberField = new JFormattedTextField(formatport);	
-		numberField.setColumns(5);
+//		formatport =NumberFormat.getNumberInstance();
+		txtPort = new JTextField(5);
+//				JFormattedTextField(formatport);	
+//		numberField.setColumns(5);
 		
 //		numberField.setMaximumSize(5);
+		
 		GridBagConstraints gbc_txtPort = new GridBagConstraints();
 		gbc_txtPort.insets = new Insets(0, 0, 5, 5);
 		gbc_txtPort.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtPort.gridx = 3;
 		gbc_txtPort.gridy = 2;
-		contentPane.add(numberField, gbc_txtPort);
-		numberField.setColumns(10);
+		contentPane.add(txtPort, gbc_txtPort);
+		txtPort.setColumns(10);
 		
 		btnSpeichern = new JButton("Speichern");
-		btnSpeichern.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		btnSpeichern.addActionListener(myAL);
 		GridBagConstraints gbc_btnSpeichern = new GridBagConstraints();
 		gbc_btnSpeichern.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSpeichern.gridx = 3;

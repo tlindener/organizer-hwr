@@ -31,6 +31,14 @@ public class window_LogScreen extends JFrame {
 	private JMenu mnEinstellungen;
 	private JMenuItem mntmServerkonfigurationen;
 	
+	public JMenuItem getMntmServerkonfigurationen() {
+		return mntmServerkonfigurationen;
+	}
+
+	public void setMntmServerkonfigurationen(JMenuItem mntmServerkonfigurationen) {
+		this.mntmServerkonfigurationen = mntmServerkonfigurationen;
+	}
+
 	private ActionListener myAL;
 
 	/**
@@ -55,6 +63,7 @@ public class window_LogScreen extends JFrame {
 		menuBar.add(mnEinstellungen);
 		
 		mntmServerkonfigurationen = new JMenuItem("Serverkonfigurationen");
+		mntmServerkonfigurationen.addActionListener(myAL);
 		mnEinstellungen.add(mntmServerkonfigurationen);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
