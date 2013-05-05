@@ -90,7 +90,7 @@ public class window_Hauptmenue extends JFrame {
 	 */
 
 	public void init() {
-
+		
 		setBounds(100, 100, 789, 572);
 
 		JPanel panel = new JPanel();
@@ -170,7 +170,6 @@ public class window_Hauptmenue extends JFrame {
 		table_1 = new JTable(dataModel);
 
 		table_1.setDefaultRenderer(Object.class, myRenderer);
-		setDauer();
 		table_1.addMouseListener(myML);
 
 		JScrollPane scrollpane = new JScrollPane(table_1);
@@ -283,6 +282,7 @@ public class window_Hauptmenue extends JFrame {
 		gbc_btnAbmelden.gridy = 9;
 		panel.add(btnAbmelden, gbc_btnAbmelden);
 		setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	}
 
@@ -302,49 +302,7 @@ public class window_Hauptmenue extends JFrame {
 		this.cali = cali;
 	}
 
-	public void setDauer() {
-		for (int i = table_1.getRowCount() - 1; i > 0; i--) {
-			if (table_1.getValueAt(i, 0) != null) {
-				if (myDataPusher.getDauer((String) table_1.getValueAt(i, 0)) != null) {
-					double dauer = (Double) myDataPusher
-							.getDauer((String) table_1.getValueAt(i, 0));
-
-					int neueMinuten = 0;
-
-					if (dauer >= 60.0) {
-						if (dauer == 60.0) {
-							table_1.setValueAt(table_1.getValueAt(i + 1, 0), i,
-									1);
-						} else {
-							neueMinuten = (int) Math.round(((dauer / 60) - Math
-									.round(dauer / 60)) * 60);
-						}
-					} else {
-						neueMinuten = (int) Math.round(dauer);
-					}
-					String neueZeit = table_1
-							.getValueAt(i + (int) Math.round(dauer / 60), 0)
-							.toString().substring(0, 3)
-							+ neueMinuten;
-
-					table_1.setValueAt(neueZeit, i, 1);
-					// table_1.setValueAt(table_1.getValueAt(i, 1),
-					// i+(int)Math.round(dauer/60), 1);
-
-					/*
-					 * Alternative Idee: Größe der Spalten verändern-->
-					 * komplexere Anpassung des Datenmodells da keine
-					 * Möglichkeit einfach Zeilen auszublenden
-					 */
-					// table_1.setRowHeight(i, (int)Math.round(20*dauer));
-
-				} else {
-					table_1.setRowHeight(i, 20);
-				}
-			}
-
-		}
-	}
+	
 
 	public JTable getTable_1() {
 		return table_1;
@@ -356,7 +314,6 @@ public class window_Hauptmenue extends JFrame {
 
 	public Date getAktDateCali() {
 		aktDateCali = cali.getDate();
-		System.out.println(aktDateCali);
 		return aktDateCali;
 	}
 

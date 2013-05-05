@@ -13,7 +13,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.JList;
 import javax.swing.JTable;
@@ -353,12 +356,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 	
 	public void propertyChange(PropertyChangeEvent e) {
 		
-		if(start==0)
-		{
-		start=1;	
-		}
-		else
-		{
+			if(e.getOldValue()!=null)
+			{
 			aktDate=myHauptmenue.getAktDateCali();
 			myModel.setAktDate(aktDate);
 			try {
@@ -367,22 +366,15 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			updateData();	
-			myHauptmenue.repaint();
-			
-			/*
-			 * Updaten der Daten im Modell
-			 */
-			
-		}
+			updateData();
+			myHauptmenue.repaint();	
+			setDauer();
+			}		
+
 		
 	}
 
-	@Override
-	public void setDauer() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 	public void befuelleModel() throws ParseException
 	{
@@ -391,6 +383,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 		myModel.getPersonen().clear();
 		myModel.getDetails().clear();
 		myModel.getRaeume().clear();
+		myModel.getAnfangende().clear();
 		
 		List myCes=steffensCal.getCalendarEntries();
 		for (int i=myCes.size()-1;i>=0; i--)
@@ -398,35 +391,46 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 			CalendarEntry myCe=(CalendarEntry) myCes.get(i);
 			if(parseDate(myCe.getStartDate()).equals(parseDate(myHauptmenue.getCali().getDate())))
 			{
-				System.out.println("hier");
-				String zeit="";
+				String anfangZeit="";
 				int minuten=0;
 				int stunden=0;
 				stunden=myCe.getStartHour();
 				minuten=myCe.getStartMinute();
 				if(minuten<10)
 				{
-					zeit=stunden+":0"+minuten;
+					anfangZeit=stunden+":0"+minuten;
 				}
 				else
 				{
-					zeit=stunden+":"+minuten;
+					anfangZeit=stunden+":"+minuten;
+				}
+				String endZeit="";
+				stunden=myCe.getEndHour();
+				minuten=myCe.getEndMinute();
+				if(minuten<10)
+				{
+					endZeit=stunden+":0"+minuten;
+				}
+				else
+				{
+					endZeit=stunden+":"+minuten;
 				}
 				myModel.setAktDate(aktDate);
-				myModel.setBeschreibungen(zeit, myCe.getTitle());	
-				myModel.setDauer(zeit,myCe.getDuration());
-				myModel.setPersonen(zeit, myCe.getInvitees());
-				myModel.setDetails(zeit, myCe.getDescription());
+				myModel.setBeschreibungen(anfangZeit, myCe.getTitle());	
+				myModel.setDauer(anfangZeit,myCe.getDuration());
+				myModel.setPersonen(anfangZeit, myCe.getInvitees());
+				myModel.setDetails(anfangZeit, myCe.getDescription());
+				myModel.setAnfangEnde(anfangZeit, endZeit);
 				Room r =new Room();
 				r.setID(myCe.getRoomId());
 				Room tmp = myRequester.requestObjectByOwnId(r);
 				if (tmp !=null)
 				{
-				myModel.setRaeume(zeit, tmp.getDescription());
+				myModel.setRaeume(anfangZeit, tmp.getDescription());
 				}
 				else
 				{
-					myModel.setRaeume(zeit, "");
+					myModel.setRaeume(anfangZeit, "");
 				}
 			}
 		}
@@ -444,7 +448,22 @@ public class Controller implements DataPusher, ActionListener, MouseListener,Pro
 	public void updateData()
 	{
 		erstelleDOBeschreibungen();
-		
+	}
+
+	/*
+	 * fehlerhaft!!!
+	 */
+	public void setDauer() {
+		for (int i = myHauptmenue.getTable_1().getRowCount() - 1; i > 0; i--) {
+			if (myHauptmenue.getTable_1().getValueAt(i, 0) != null) {
+				String zeit=(String) myHauptmenue.getTable_1().getValueAt(i, 0);
+				if (getDauer(zeit) != null) {
+					myHauptmenue.getTable_1().setValueAt(myModel.returnEndzeit(zeit), i, 1);
+					
+				} 
+			}
+
+		}
 	}
 
 }
