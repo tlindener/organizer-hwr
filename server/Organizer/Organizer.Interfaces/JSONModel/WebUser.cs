@@ -11,10 +11,12 @@ using System.Collections.Generic;
 
 namespace Organizer.Interfaces.Json
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <see cref="Organizer.Interfaces.User"/>
     public class WebUser
     {
-
         public int Id { get; set; }
         public string UserName { get; set; }
         public string GivenName { get; set; }

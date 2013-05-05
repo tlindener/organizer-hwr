@@ -5,6 +5,10 @@
 #endregion
 namespace Organizer.Interfaces.Json
 {
+    /// <summary>
+    /// WebRoom is the JSON interface version of Room
+    /// </summary>
+    /// <see cref="Organizer.Interfaces.Room"/>
     public class WebRoom
     {
         public int Id { get; set; }

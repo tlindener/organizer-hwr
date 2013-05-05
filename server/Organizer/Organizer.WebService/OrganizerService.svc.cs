@@ -121,7 +121,7 @@ namespace Organizer.WebService
 
         #region CalendarEntries
 
-        public ICollection<WebCalendarEntry> GetCalendarEntriesByOwnerId(int ownerId)
+        public ICollection<WebCalendarEntry> GetAllCalendarEntriesByOwnerId(int ownerId)
         {
             return timeplanner.GetAllEntriesByOwner(ownerId).Select(p => p.ToWebCalendarEntry()).ToList();
         }
@@ -131,7 +131,7 @@ namespace Organizer.WebService
             return timeplanner.GetCalendarEntryById(calendarEntryId).ToWebCalendarEntry();
         }
 
-        public ICollection<WebCalendarEntry> GetEntriesByRoom(int roomId)
+        public ICollection<WebCalendarEntry> GetAllCalendarEntriesByRoomId(int roomId)
         {
             return timeplanner.GetEntriesByRoom(roomId).Select(p => p.ToWebCalendarEntry()).ToList();
         }
@@ -279,7 +279,7 @@ namespace Organizer.WebService
             return timeplanner.GetGroupById(groupId).ToWebGroup();
         }
 
-        public ICollection<WebGroup> GetGroupsByUserId(int userId)
+        public ICollection<WebGroup> GetAllGroupsByUserId(int userId)
         {
             var groups = timeplanner.GetGroupsByUserId(userId);
             return groups.Select(p => p.ToWebGroup()).ToList();
