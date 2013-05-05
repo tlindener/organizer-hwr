@@ -15,7 +15,9 @@ using Organizer.Interfaces.Json;
 
 namespace Organizer.WebService
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IService1" in both code and config file together.
+    /// <summary>
+    /// Organizer JSON interface
+    /// </summary>
     [ServiceContract]
     public interface IOrganizerService
     {
@@ -44,7 +46,7 @@ namespace Organizer.WebService
         /// </summary>
         /// <param name="calendar"></param>
         /// <returns>Returns int value which specifies id of added object</returns>
-        /// <seealso cref="Organizer.TimePlanner.AddCalendarByObject"/>
+        /// <seealso cref="Organizer.TimePlanner.AddCalendar"/>
         [OperationContract]
         [WebInvoke(RequestFormat = WebMessageFormat.Json)]
         int AddCalendarByObject(WebCalendar calendar);
@@ -82,7 +84,7 @@ namespace Organizer.WebService
         /// <returns>Returns a collection of WebCalendarEntries</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebCalendarEntry> GetCalendarEntriesByOwnerId(int ownerId);
+        ICollection<WebCalendarEntry> GetAllCalendarEntriesByOwnerId(int ownerId);
 
         /// <summary>
         /// Returns WebCalendarEntry specified by id
@@ -100,7 +102,7 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebCalendarEntry> GetEntriesByRoom(int roomId);
+        ICollection<WebCalendarEntry> GetAllCalendarEntriesByRoomId(int roomId);
 
         /// <summary>
         /// Adds calendar entry by json object
@@ -163,7 +165,7 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(ResponseFormat = WebMessageFormat.Json)]
-        int AddUserByObject(WebUser user,string password);
+        int AddUserByObject(WebUser user, string password);
 
         /// <summary>
         /// 
@@ -187,7 +189,7 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool RemoveUser(int userId,string adminAuth);
+        bool RemoveUser(int userId, string adminAuth);
         #endregion
 
         #region Room
@@ -267,7 +269,7 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebGroup> GetGroupsByUserId(int userId);
+        ICollection<WebGroup> GetAllGroupsByUserId(int userId);
 
         /// <summary>
         /// 
@@ -325,7 +327,7 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebInvite> GetAllInvitesByUserId(int userId);      
+        ICollection<WebInvite> GetAllInvitesByUserId(int userId);
 
         /// <summary>
         /// 
