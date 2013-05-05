@@ -1,4 +1,4 @@
-package View1;
+package view;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -19,7 +19,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import Logik1.DataPusher;
 
 import com.toedter.calendar.JCalendar;
 import javax.swing.JList;
@@ -35,6 +34,8 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
+
+import logik.DataPusher;
 
 public class window_Hauptmenue extends JFrame {
 
