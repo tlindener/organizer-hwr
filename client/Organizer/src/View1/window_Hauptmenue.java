@@ -1,4 +1,4 @@
-package View;
+package View1;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -19,7 +19,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import Logik.DataPusher;
+import Logik1.DataPusher;
 
 import com.toedter.calendar.JCalendar;
 import javax.swing.JList;

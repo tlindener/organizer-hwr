@@ -1,4 +1,4 @@
-package View;
+package View1;
 
 import java.awt.GridBagLayout;
 
@@ -14,7 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
-import Logik.DataPusher;
+import Logik1.DataPusher;
 
 public class window_TerminBearbeiten extends JFrame {
 	private DataPusher myDataPusher;
