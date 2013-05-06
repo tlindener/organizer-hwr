@@ -69,7 +69,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		 * werden (String--> Hostname, Int--> Port)
 		 * 
 		 */
-		myRequester = new JsonJavaRequestHandler("", -1);
+		myRequester = new JsonJavaRequestHandler("locahost", 48585);
 		myModel = new Model(aktDate);
 		updateData();
 		myHauptmenue = new window_Hauptmenue(this, this, this, this);
