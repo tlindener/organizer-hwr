@@ -56,7 +56,7 @@ public class KalenderServlet extends HttpServlet {
 	// private Controller controller;
 
 	/*
-	 * Prüfelemente
+	 * PrÃ¼felemente
 	 */
 	private Boolean timeSet = false;
 
@@ -104,7 +104,7 @@ public class KalenderServlet extends HttpServlet {
 	private void fillDetails() {
 		boolean local = false;
 		if (local) {
-			details = "Das Projekt läuft einwandfrei :)";
+			details = "Das Projekt lÃ¤uft einwandfrei :)";
 			room = "6B.367";
 			personen = new ArrayList<>();
 			personen.add("Steffen");
@@ -125,7 +125,7 @@ public class KalenderServlet extends HttpServlet {
 				System.out.println("\tPersonen sind Null");
 			} else {
 				if (!(personen.size() > 0)) {
-					personen.add("Owner");
+					//personen.add("Owner");
 				}
 				for (String s : personen) {
 					System.out.println(s);
@@ -150,7 +150,7 @@ public class KalenderServlet extends HttpServlet {
 	}
 
 	/**
-	 * TESTPHASE: Methode füllt die Tabelle zu Testzwecken mit Daten zur anzeige
+	 * TESTPHASE: Methode fÃ¼llt die Tabelle zu Testzwecken mit Daten zur anzeige
 	 * in dem JSP.
 	 */
 	private void fillTable() {
@@ -190,7 +190,7 @@ public class KalenderServlet extends HttpServlet {
 	}
 
 	/**
-	 * hinterlegt alle Daten des Servlets in der Session für den nächsten JSP
+	 * hinterlegt alle Daten des Servlets in der Session fÃ¼r den nÃ¤chsten JSP
 	 * aufruf.
 	 */
 	private void setData() {
@@ -209,15 +209,15 @@ public class KalenderServlet extends HttpServlet {
 
 	/**
 	 * Diese Methode zieht sich von dem NetworkLayer ein Kalender anhand der
-	 * übergebenen UserID und listet alle Termine anhand des übergebenen Datums
-	 * auf. Die Liste wird der View übergeben um diese anzeigbar zu machen.
+	 * Ã¼bergebenen UserID und listet alle Termine anhand des Ã¼bergebenen Datums
+	 * auf. Die Liste wird der View Ã¼bergeben um diese anzeigbar zu machen.
 	 */
 	private void fillTableNetwork() {
-		// XXX Hier die Netzwerkadaption durchführen
+		// XXX Hier die Netzwerkadaption durchfÃ¼hren
 		ArrayList<String[]> parts = new ArrayList<>();
 		steffensCal = new Calendar();
 		steffensCal.setID(user);
-		// XXX ist die Methode richtig gewählt ?
+		// XXX ist die Methode richtig gewÃ¤hlt ?
 		Calendar temp = myRequester.requestObjectByOwnId(steffensCal);
 		if (temp != null) {
 			steffensCal = temp;
@@ -248,7 +248,7 @@ public class KalenderServlet extends HttpServlet {
 	}
 
 	/**
-	 * konvertiert zwei Variablen in einen String aus dem übergebenen
+	 * konvertiert zwei Variablen in einen String aus dem Ã¼bergebenen
 	 * CalenderObjekt
 	 * 
 	 * @param hour
@@ -316,12 +316,12 @@ public class KalenderServlet extends HttpServlet {
 			} finally {
 			}
 		} else {
-			System.out.println("Als user wurde NULL übergeben");
+			System.out.println("Als user wurde NULL Ã¼bergeben");
 		}
 	}
 
 	/**
-	 * hinterlegt die zu dem aktuellen Termin zugehörigen Termine in dem Servlet
+	 * hinterlegt die zu dem aktuellen Termin zugehÃ¶rigen Termine in dem Servlet
 	 * 
 	 * @param table
 	 */
@@ -330,7 +330,7 @@ public class KalenderServlet extends HttpServlet {
 	}
 
 	/**
-	 * hinterlegt die zu dem aktuellen Termin zugehörigen Details in dem Servlet
+	 * hinterlegt die zu dem aktuellen Termin zugehÃ¶rigen Details in dem Servlet
 	 * 
 	 * @param details
 	 */
@@ -339,7 +339,7 @@ public class KalenderServlet extends HttpServlet {
 	}
 
 	/**
-	 * hinterlegt die zu dem aktuellen Termin zugehörigen Personen in dem
+	 * hinterlegt die zu dem aktuellen Termin zugehÃ¶rigen Personen in dem
 	 * Servlet
 	 * 
 	 * @param personen
