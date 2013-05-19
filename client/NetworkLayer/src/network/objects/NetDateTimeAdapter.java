@@ -1,6 +1,5 @@
 package network.objects;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
@@ -39,7 +38,7 @@ public class NetDateTimeAdapter extends TypeAdapter<Date> {
     }
 	@Override
 	public void write(JsonWriter out, Date value) throws IOException, UnsupportedOperationException {
-		String date = "\\/Date("+value.getTime()+"+0000)\\/";
+		String date = Utils.parseDateToNetDateTime(value);
 		System.out.println(date);
 		out.value(date);
 	}

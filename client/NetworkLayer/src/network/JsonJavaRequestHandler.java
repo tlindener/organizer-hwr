@@ -238,7 +238,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	public User registerNewUser(User user, String name, String password) {
 		try{
 			String getCmd = Utils.buildAddCommand(user);
-			getCmd += "&username=\""+name+"\"&password=\""+password+"\"";
+			getCmd += "&username=\""+name+"\"&password=\""+Utils.hashPassword(password)+"\"";
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
 			if(id == null || id == -1) return null;
@@ -264,6 +264,30 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			return obj;
 		}catch(IllegalArgumentException ex){
 			ex.printStackTrace();
+		}catch(JsonSyntaxException ex){
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public <T extends AbstractOrganizerObject> boolean removeObject(T obj) {
+		String getCmd = Utils.buildRemoveCommand(obj);
+		String json = sendGetToServer(getCmd);
+		try{
+			return (boolean) gson.fromJson(json, boolean.class);
+		}catch(JsonSyntaxException ex){
+			ex.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public User login(String mail, String password) {
+		String cmd = Utils.buildLoginCommand(mail, password);
+		String json = sendGetToServer(cmd);
+		try{
+			return (User) gson.fromJson(json, User.class);
 		}catch(JsonSyntaxException ex){
 			ex.printStackTrace();
 		}

@@ -23,5 +23,10 @@ public abstract class RequestHandler {
 	public abstract <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj);
 	public abstract <T extends AbstractOrganizerObject> List<T> requestAllObjectsByProperty(T obj);
 	public abstract <T extends AbstractOrganizerObject> T addObject(T obj) throws UnsupportedOperationException;
-	public abstract User registerNewUser(User user, String name, String password); 
+	public abstract User registerNewUser(User user, String name, String password);
+	public abstract <T extends AbstractOrganizerObject> boolean removeObject(T obj) throws UnsupportedOperationException;
+	public abstract User login(String mail, String password);
+	
+	
+	
 }
