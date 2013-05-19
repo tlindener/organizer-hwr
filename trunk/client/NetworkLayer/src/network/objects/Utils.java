@@ -2,6 +2,8 @@ package network.objects;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +29,22 @@ public class Utils {
 		plurals.put(Room.class, "Rooms");
 	}
 
+	public static String buildLoginCommand(String mail, String password){
+		String cmd = "?Mail=" + mail + "Password="+hashPassword(password);
+		return cmd;
+	}
+	
+	public static String hashPassword(String password){
+		try {
+			MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
+			byte[] output = sha512.digest(password.getBytes());
+			System.out.println(new String(output));
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return password;
+	}
+	
 	public static <T extends AbstractOrganizerObject> String buildGetByPropertyCommand(
 			T obj) throws IllegalArgumentException{
 		String command = buildGetAllCommand(obj)+ obj.getProperty();
@@ -37,6 +55,14 @@ public class Utils {
 			T obj) {
 		String className = obj.getClass().getSimpleName();
 		String command = "Get" + className + "ById?" + className + "Id="
+				+ obj.getID();
+		return command;
+	}
+	
+	public static <T extends AbstractOrganizerObject> String buildRemoveCommand(
+			T obj) {
+		String className = obj.getClass().getSimpleName();
+		String command = "remove" + className +"?" + className + "Id="
 				+ obj.getID();
 		return command;
 	}
@@ -104,7 +130,10 @@ public class Utils {
 		}
 		return false;
 	}
-	private static String parseDateToNetDateTime(Date date){
+	public static String parseDateToNetDateTime(Date date){
 		return "\\/Date("+date.getTime()+"+0000)\\/";
+	}
+	public static void main(String[] args) {
+		hashPassword("Test");
 	}
 }
