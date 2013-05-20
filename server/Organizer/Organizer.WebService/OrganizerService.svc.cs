@@ -11,6 +11,7 @@ using System.Linq;
 using System.ServiceModel;
 using Organizer.Interfaces;
 using Organizer.Interfaces.Json;
+using System.Security.Cryptography;
 
 #endregion
 
@@ -32,8 +33,7 @@ namespace Organizer.WebService
                 Surname = "Lindener",
                 MailAddress = "tobias.lindener@gmail.com",
                 PhoneNumber = "01773071234",
-                Password = "Test",
-                UserName = "Tobias"
+                Password = "Test"
 
 
             };
@@ -44,10 +44,7 @@ namespace Organizer.WebService
                 Surname = "Dieter",
                 MailAddress = "tobias.lindener@gmail.com",
                 PhoneNumber = "01773071234",
-                Password = "Test",
-                UserName = "Dieter"
-
-
+                Password = "Test"                
             };
             List<User> invitees = new List<User>();
             invitees.Add(user);
@@ -75,7 +72,7 @@ namespace Organizer.WebService
 
 
         #region Calendar
-        public ICollection<WebCalendar> GetAllCalendar()
+        public ICollection<WebCalendar> GetAllCalendar(string userAuth)
         {
             var calendar = timeplanner.GetAllCalendar();
             if (calendar == null)
@@ -85,12 +82,12 @@ namespace Organizer.WebService
             return calendar.Select(p => p.ToWebCalendar()).ToList();
         }
 
-        public WebCalendar GetCalendarById(int calendarId)
+        public WebCalendar GetCalendarById(int calendarId, string userAuth)
         {
             return timeplanner.GetCalendarById(calendarId).ToWebCalendar();
         }
 
-        public int AddCalendar(int ownerId, string name, string description)
+        public int AddCalendar(int ownerId, string name, string description, string userAuth)
         {
             return timeplanner.AddCalendar(new Calendar()
             {
@@ -101,23 +98,14 @@ namespace Organizer.WebService
             });
         }
 
-        public int AddCalendarByObject(WebCalendar calendar)
-        {
-            return timeplanner.AddCalendar(new Calendar()
-            {
-                Name = calendar.Name,
-                Description = calendar.Description,
-                Owner = timeplanner.GetUserById(calendar.OwnerId)
 
-            });
+
+        public bool RemoveCalendarEntry(int calendarEntryId, string userAuth)
+        {
+            return timeplanner.RemoveCalendarEntry(calendarEntryId);
         }
 
-        public bool RemoveEntryFromCalendar(int calendarId, int calendarEntryId)
-        {
-            return timeplanner.RemoveEntryFromCalendar(calendarId, calendarEntryId);
-        }
-
-        public bool RemoveCalendar(int calendarId)
+        public bool RemoveCalendar(int calendarId, string userAuth)
         {
             return timeplanner.RemoveCalendar(calendarId);
         }
@@ -125,41 +113,22 @@ namespace Organizer.WebService
 
         #region CalendarEntries
 
-        public ICollection<WebCalendarEntry> GetAllCalendarEntriesByOwnerId(int ownerId)
+        public ICollection<WebCalendarEntry> GetAllCalendarEntriesByOwnerId(int ownerId, string userAuth)
         {
             return timeplanner.GetAllEntriesByOwner(ownerId).Select(p => p.ToWebCalendarEntry()).ToList();
         }
 
-        public WebCalendarEntry GetCalendarEntryById(int calendarEntryId)
+        public WebCalendarEntry GetCalendarEntryById(int calendarEntryId, string userAuth)
         {
             return timeplanner.GetCalendarEntryById(calendarEntryId).ToWebCalendarEntry();
         }
 
-        public ICollection<WebCalendarEntry> GetAllCalendarEntriesByRoomId(int roomId)
+        public ICollection<WebCalendarEntry> GetAllCalendarEntriesByRoomId(int roomId, string userAuth)
         {
             return timeplanner.GetEntriesByRoom(roomId).Select(p => p.ToWebCalendarEntry()).ToList();
         }
 
-        public int AddCalendarEntryByObject(WebCalendarEntry calendarEntry)
-        {
-            var calendar = timeplanner.GetCalendarById(calendarEntry.CalendarId);
-
-            var owner = timeplanner.GetUserById(calendarEntry.OwnerId);
-            var room = timeplanner.GetRoomById(calendarEntry.RoomId);
-            CalendarEntry entry = new CalendarEntry()
-            {
-                StartDate = calendarEntry.StartDate,
-                EndDate = calendarEntry.EndDate,
-                Description = calendarEntry.Description,
-                Owner = owner,
-                Room = room,
-                Calendar = calendar
-
-            };
-            return timeplanner.AddCalendarEntry(entry);
-
-        }
-        public int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId)
+        public int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, string userAuth)
         {
             var owner = timeplanner.GetUserById(ownerId);
             var room = timeplanner.GetRoomById(roomId);
@@ -186,32 +155,20 @@ namespace Organizer.WebService
 
 
         #region User
-        public ICollection<WebUser> GetAllUser()
+        public ICollection<WebUser> GetAllUser(string userAuth)
         {
             var users = timeplanner.GetAllUser();
             return users.Select(p => p.ToWebUser()).ToList();
         }
 
-        public WebUser GetUserById(int userId)
+        public WebUser GetUserById(int userId, string userAuth)
         {
             return timeplanner.GetUserById(userId).ToWebUser();
         }
 
-        public int AddUserByObject(WebUser user, string password)
-        {
+       
 
-            return timeplanner.AddUser(new User()
-            {
-                UserName = user.UserName,
-                Surname = user.Surname,
-                GivenName = user.GivenName,
-                PhoneNumber = user.PhoneNumber,
-                MailAddress = user.MailAddress,
-                Password = password
-            });
-        }
-
-        public int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string userName, string password)
+        public int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password, string userAuth)
         {
             User user = new User()
             {
@@ -219,15 +176,14 @@ namespace Organizer.WebService
                 Surname = surname,
                 MailAddress = mailAddress,
                 PhoneNumber = phoneNumber,
-                UserName = userName,
                 Password = password
             };
             return timeplanner.AddUser(user);
         }
 
-        public bool RemoveUser(int userId, string adminAuth)
+        public bool RemoveUser(int userId, string userAuth)
         {
-            if (ValidateAdmin(adminAuth))
+            if (ValidateAdmin(userAuth))
             {
                 return timeplanner.RemoveUser(userId);
             }
@@ -237,16 +193,16 @@ namespace Organizer.WebService
         #endregion
 
         #region Room
-        public ICollection<WebRoom> GetAllRooms()
+        public ICollection<WebRoom> GetAllRooms(string userAuth)
         {
             return timeplanner.GetAllRooms().Select(p => p.ToWebRoom()).ToList();
         }
 
-        public WebRoom GetRoomById(int roomId)
+        public WebRoom GetRoomById(int roomId, string userAuth)
         {
             return timeplanner.GetRoomById(roomId).ToWebRoom();
         }
-        public int AddRoom(string description, string location, int seats)
+        public int AddRoom(string description, string location, int seats, string userAuth)
         {
             Room room = new Room()
             {
@@ -256,34 +212,30 @@ namespace Organizer.WebService
             };
             return timeplanner.AddRoom(room);
         }
-        public int AddRoomByObject(WebRoom room)
-        {
-            Room dbRoom = new Room();
-            return timeplanner.AddRoom(dbRoom);
-        }
+ 
 
-        public bool RemoveRoom(int roomId, string adminAuth)
+        public bool RemoveRoom(int roomId, string userAuth)
         {
-            if (ValidateAdmin(adminAuth))
+            if (ValidateAdmin(userAuth))
             {
                 return timeplanner.RemoveRoom(roomId);
             }
             return false;
         }
 
-        public bool ChangeRoomForCalendarEntry(int roomId, int calendarEntryId)
+        public bool ChangeRoomForCalendarEntry(int roomId, int calendarEntryId, string userAuth)
         {
             return timeplanner.ChangeRoomForCalendarEntry(roomId, calendarEntryId);
         }
         #endregion
 
         #region Group
-        public WebGroup GetGroupById(int groupId)
+        public WebGroup GetGroupById(int groupId, string userAuth)
         {
             return timeplanner.GetGroupById(groupId).ToWebGroup();
         }
 
-        public ICollection<WebGroup> GetAllGroupsByUserId(int userId)
+        public ICollection<WebGroup> GetAllGroupsByUserId(int userId, string userAuth)
         {
             var groups = timeplanner.GetGroupsByUserId(userId);
             if (groups == null)
@@ -292,7 +244,7 @@ namespace Organizer.WebService
             }
             return groups.Select(p => p.ToWebGroup()).ToList();
         }
-        public int AddGroup(string description)
+        public int AddGroup(string description, string userAuth)
         {
             Group group = new Group()
             {
@@ -301,25 +253,18 @@ namespace Organizer.WebService
 
             return timeplanner.AddGroup(group);
         }
-        public int AddGroupByObject(WebGroup group)
-        {
-
-            return timeplanner.AddGroup(new Group()
-            {
-                Description = group.Description
-            });
-        }
-        public bool AddUserToGroup(int groupId, int userId)
+ 
+        public bool AddUserToGroup(int groupId, int userId, string userAuth)
         {
             return timeplanner.AddUserToGroup(groupId, userId);
         }
 
-        public bool RemoveUserFromGroup(int groupId, int userId)
+        public bool RemoveUserFromGroup(int groupId, int userId, string userAuth)
         {
             return timeplanner.RemoveUserFromGroup(groupId, userId);
         }
 
-        public bool RemoveGroup(int groupId)
+        public bool RemoveGroup(int groupId, string userAuth)
         {
             return timeplanner.RemoveGroup(groupId);
         }
@@ -331,22 +276,22 @@ namespace Organizer.WebService
 
         #region Invites
 
-        public ICollection<WebInvite> GetAllInvitesByUserId(int userId)
+        public ICollection<WebInvite> GetAllInvitesByUserId(int userId, string userAuth)
         {
             return timeplanner.GetAllInvitesByUserId(userId).Select(p => p.ToWebInvite()).ToList();
         }
 
-        public int AcceptInvite(int inviteId)
+        public int AcceptInvite(int inviteId, string userAuth)
         {
             return timeplanner.AcceptInvite(inviteId);
         }
 
-        public int AddInvite(int calendarEntryId, int userId)
+        public int AddInvite(int calendarEntryId, int userId, string userAuth)
         {
             return timeplanner.AddInvite(calendarEntryId, userId);
         }
 
-        public bool RemoveInvite(int calendarEntryId, int userId)
+        public bool RemoveInvite(int calendarEntryId, int userId, string userAuth)
         {
             return timeplanner.RemoveInvite(calendarEntryId, userId);
         }
@@ -358,6 +303,28 @@ namespace Organizer.WebService
         public bool ValidateAdmin(string adminAuth)
         {
             return true;
+        }
+        public bool ValidateUser(string userAuth)
+        {
+            return true;
+        }
+        public static string CreatePasswordHash(string _password)
+        {
+            
+            SHA512 sha512 = new System.Security.Cryptography.SHA512Managed();
+
+            byte[] sha512Bytes = System.Text.Encoding.Default.GetBytes(_password);
+
+            byte[] cryString = sha512.ComputeHash(sha512Bytes);
+
+            string hashedPwd = string.Empty;
+
+            for (int i = 0; i < cryString.Length; i++)
+            {
+                hashedPwd += cryString[i].ToString("X2");
+            }
+
+            return hashedPwd;
         }
 
 
@@ -438,7 +405,6 @@ namespace Organizer.WebService
             return new WebUser()
             {
                 Id = user.UserId,
-                UserName = user.UserName,
                 GivenName = user.GivenName,
                 Surname = user.Surname,
                 MailAddress = user.MailAddress,

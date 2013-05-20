@@ -33,8 +33,6 @@ namespace Organizer.Interfaces
   
         public string PhoneNumber { get; set; }
 
-        public string UserName { get; set; }
-
         //SHA512Hashed
 
         private string _password = null;
@@ -46,7 +44,7 @@ namespace Organizer.Interfaces
             }
             set
             {
-                _password = getSHA512Hash(value);
+                _password = value;
             }
         }
         public int CalendarId { get; set; }
@@ -54,14 +52,7 @@ namespace Organizer.Interfaces
         public virtual ICollection<Group> Groups { get; set; }
         public virtual ICollection<Invite> Invites { get; set; }
 
-        public static string getSHA512Hash(string text)
-        {
-            string hash = "";
-            SHA512 alg = SHA512.Create();
-            byte[] result = alg.ComputeHash(Encoding.UTF8.GetBytes(text));
-            hash = Encoding.UTF8.GetString(result);
-            return hash;
-        }
+
 
 
     }
