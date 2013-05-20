@@ -462,11 +462,7 @@ namespace Organizer.Client.ConsoleApplication
 
         }
         public static bool compareUser(User user1, User user2)
-        {
-             if(user1.UserName != user2.UserName)
-             {
-                 return false;
-             }
+        {        
             if(user1.Surname != user2.Surname)
              {
                  return false;

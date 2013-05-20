@@ -23,33 +23,17 @@ namespace Organizer.WebService
     {
         #region Calendar
         /// <summary>
-        /// Returns a list of all Calendars 
-        /// </summary>
-        /// <returns>Collection of items of type WebCalendar</returns>
-        /// <seealso cref="Organizer.TimePlanner.GetAllCalendar"/>
-        [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebCalendar> GetAllCalendar();
-
-        /// <summary>
         /// Returns a specified calendar of type WebCalendar
         /// </summary>
         /// <param name="calendarId"></param>
+        /// <param name="userAuth"></param>
         /// <returns>WebCalendar</returns>
         /// <seealso cref="Organizer.TimePlanner.GetCalendarById"/>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebCalendar GetCalendarById(int calendarId);
+        WebCalendar GetCalendarById(int calendarId, string userAuth);
 
-        /// <summary>
-        /// Adds a new calendar based on json object
-        /// </summary>
-        /// <param name="calendar"></param>
-        /// <returns>Returns int value which specifies id of added object</returns>
-        /// <seealso cref="Organizer.TimePlanner.AddCalendar"/>
-        [OperationContract]
-        [WebInvoke(RequestFormat = WebMessageFormat.Json)]
-        int AddCalendarByObject(WebCalendar calendar);
+
 
         /// <summary>
         /// Adds a new calendar based on parameters
@@ -57,20 +41,22 @@ namespace Organizer.WebService
         /// <param name="ownerId">Specifies id of the calendars owner</param>
         /// <param name="name">Specifies name of new calendar</param>
         /// <param name="description">Specifies description of new calendar</param>
+        /// <param name="userAuth"></param>
         /// <returns>Returns int value which specifies id of added object</returns>
         /// <seealso cref="Organizer.TimePlanner.AddCalendar"/>
         [OperationContract]
-        [WebGet(RequestFormat = WebMessageFormat.Json)]
-        int AddCalendar(int ownerId, string name, string description);
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        int AddCalendar(int ownerId, string name, string description, string userAuth);
 
         /// <summary>
         /// Removes a calendar from database
         /// </summary>
         /// <param name="calendarId">Specifies the chosen calendar</param>
+        /// <param name="userAuth"></param>
         /// <returns>Boolean indicates success of operation</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool RemoveCalendar(int calendarId);
+        bool RemoveCalendar(int calendarId, string userAuth);
 
 
         #endregion
@@ -81,37 +67,33 @@ namespace Organizer.WebService
         /// Returns a collection of calendar entries for specified owner
         /// </summary>
         /// <param name="ownerId">Specifies the owner of the calendar entries</param>
+        /// <param name="userAuth"></param>
         /// <returns>Returns a collection of WebCalendarEntries</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebCalendarEntry> GetAllCalendarEntriesByOwnerId(int ownerId);
+        ICollection<WebCalendarEntry> GetAllCalendarEntriesByOwnerId(int ownerId, string userAuth);
 
         /// <summary>
         /// Returns WebCalendarEntry specified by id
         /// </summary>
         /// <param name="calendarEntryId">Specifies chosen calendar entry</param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebCalendarEntry GetCalendarEntryById(int calendarEntryId);
+        WebCalendarEntry GetCalendarEntryById(int calendarEntryId, string userAuth);
 
         /// <summary>
         /// Returns all events linked to specified room
         /// </summary>
         /// <param name="roomId">Specifies chosen room</param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebCalendarEntry> GetAllCalendarEntriesByRoomId(int roomId);
+        ICollection<WebCalendarEntry> GetAllCalendarEntriesByRoomId(int roomId, string userAuth);
 
-        /// <summary>
-        /// Adds calendar entry by json object
-        /// </summary>
-        /// <param name="calendarEntry"></param>
-        /// <returns></returns>
-        [OperationContract]
-        [WebInvoke(RequestFormat = WebMessageFormat.Json)]
-        int AddCalendarEntryByObject(WebCalendarEntry calendarEntry);
+
 
         /// <summary>
         /// Adds a new calendar entry based on parameters
@@ -123,49 +105,43 @@ namespace Organizer.WebService
         /// <param name="ownerId"></param>
         /// <param name="roomId"></param>
         /// <param name="calendarId"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(RequestFormat = WebMessageFormat.Json)]
-        int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId);
+        int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, string userAuth);
 
         /// <summary>
         /// Removes calendar entry from calendar
         /// </summary>
-        /// <param name="calendarId"></param>
         /// <param name="entryId"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool RemoveEntryFromCalendar(int calendarId, int entryId);
+        bool RemoveCalendarEntry(int calendarEntryId, string userAuth);
         #endregion
 
         #region User
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebUser> GetAllUser();
+        ICollection<WebUser> GetAllUser(string userAuth);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebUser GetUserById(int userId);
+        WebUser GetUserById(int userId, string userAuth);
 
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="user"></param>
-        ///// <param name="password"></param>
-        ///// <returns></returns>
-        //[OperationContract]
-        //[WebInvoke(ResponseFormat = WebMessageFormat.Json)]
-        //int AddUserByObject(WebUser user, string password);
 
         /// <summary>
         /// 
@@ -174,50 +150,45 @@ namespace Organizer.WebService
         /// <param name="surname"></param>
         /// <param name="mailAddress"></param>
         /// <param name="phoneNumber"></param>
-        /// <param name="userName"></param>
         /// <param name="password"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string userName, string password);
+        int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password, string userAuth);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="adminAuth"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool RemoveUser(int userId, string adminAuth);
+        bool RemoveUser(int userId, string userAuth);
         #endregion
 
         #region Room
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebRoom> GetAllRooms();
+        ICollection<WebRoom> GetAllRooms(string userAuth);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="roomId"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebRoom GetRoomById(int roomId);
+        WebRoom GetRoomById(int roomId, string userAuth);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="room"></param>
-        /// <returns></returns>
-        [OperationContract]
-        [WebInvoke(ResponseFormat = WebMessageFormat.Json)]
-        int AddRoomByObject(WebRoom room);
+ 
 
         /// <summary>
         /// 
@@ -225,30 +196,32 @@ namespace Organizer.WebService
         /// <param name="description"></param>
         /// <param name="location"></param>
         /// <param name="seats"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        int AddRoom(string description, string location, int seats);
+        int AddRoom(string description, string location, int seats, string userAuth);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="roomId"></param>
-        /// <param name="adminAuth"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool RemoveRoom(int roomId, string adminAuth);
+        bool RemoveRoom(int roomId, string userAuth);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="roomId"></param>
         /// <param name="calendarEntryId"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool ChangeRoomForCalendarEntry(int roomId, int calendarEntryId);
+        bool ChangeRoomForCalendarEntry(int roomId, int calendarEntryId, string userAuth);
 
         #endregion
 
@@ -260,7 +233,7 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebGroup GetGroupById(int groupId);
+        WebGroup GetGroupById(int groupId, string userAuth);
 
         /// <summary>
         /// 
@@ -269,16 +242,8 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebGroup> GetAllGroupsByUserId(int userId);
+        ICollection<WebGroup> GetAllGroupsByUserId(int userId, string userAuth);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="group"></param>
-        /// <returns></returns>
-        [OperationContract]
-        [WebInvoke(ResponseFormat = WebMessageFormat.Json)]
-        int AddGroupByObject(WebGroup group);
 
         /// <summary>
         /// 
@@ -287,7 +252,7 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        int AddGroup(string description);
+        int AddGroup(string description, string userAuth);
 
         /// <summary>
         /// 
@@ -297,26 +262,28 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool AddUserToGroup(int groupId, int userId);
+        bool AddUserToGroup(int groupId, int userId, string userAuth);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="groupId"></param>
         /// <param name="userId"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool RemoveUserFromGroup(int groupId, int userId);
+        bool RemoveUserFromGroup(int groupId, int userId, string userAuth);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="groupId"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool RemoveGroup(int groupId);
+        bool RemoveGroup(int groupId, string userAuth);
         #endregion Group
 
         #region Invite
@@ -324,19 +291,32 @@ namespace Organizer.WebService
         /// 
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        ICollection<WebInvite> GetAllInvitesByUserId(int userId);
+        ICollection<WebInvite> GetAllInvitesByUserId(int userId, string userAuth);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="inviteId"></param>
+        /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        int AcceptInvite(int inviteId);
+        int AcceptInvite(int inviteId, string userAuth);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="calendarEntryId"></param>
+        /// <param name="userId"></param>
+        /// <param name="userAuth"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        int AddInvite(int calendarEntryId, int userId, string userAuth);
 
         /// <summary>
         /// 
@@ -346,17 +326,7 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        int AddInvite(int calendarEntryId, int userId);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="calendarEntryId"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        bool RemoveInvite(int calendarEntryId, int userId);
+        bool RemoveInvite(int calendarEntryId, int userId, string userAuth);
 
 
 

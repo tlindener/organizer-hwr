@@ -191,13 +191,13 @@ namespace Organizer
         /// <param name="calendarId"></param>
         /// <param name="entryId"></param>
         /// <returns></returns>
-        public bool RemoveEntryFromCalendar(int calendarId, int entryId)
+        public bool RemoveCalendarEntry(int entryId)
         {
             try
             {
                 //checks if calendar and entry is available
                 CalendarEntry entry = _calendarDatabase.CalendarEntries.Find(entryId);
-                Calendar calendar = _calendarDatabase.Calendar.Find(calendarId);
+                Calendar calendar = _calendarDatabase.Calendar.Find(entry.CalendarId);
                 if (entry == null && calendar == null)
                 {
                     return false;
