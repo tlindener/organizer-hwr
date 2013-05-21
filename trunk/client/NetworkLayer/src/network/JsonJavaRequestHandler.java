@@ -78,7 +78,6 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	public <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj) {
 		
 //		Object result = null;
-//		
 //		if(obj instanceof CalendarEntry){
 //			result = data.getCalendarEntryById(obj.getID());
 //		}if(obj instanceof Calendar){
@@ -95,6 +94,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 //		}
 				
 		String getCmd = Utils.buildGetByOwnIdCommand(obj);
+		getCmd = Utils.addUserAuth(getCmd, authString);
 		String json = sendGetToServer(getCmd);
 		try{
 			return (T) gson.fromJson(json, obj.getClass());
@@ -184,6 +184,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		try{
 			String getCmd = Utils.buildGetAllCommand(obj);
 			String json = sendGetToServer(getCmd);
+			getCmd = Utils.addUserAuth(getCmd, authString);
 			List<JsonElement> tmp = gson.fromJson(json, new TypeToken<List<JsonElement>>(){}.getType());
 			
 			if(tmp == null) return new ArrayList<T>();
@@ -217,6 +218,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			T obj) {
 		try{
 			String getCmd = Utils.buildGetByPropertyCommand(obj);
+			getCmd = Utils.addUserAuth(getCmd, authString);
 			String json = sendGetToServer(getCmd);
 			
 			List<JsonElement> tmp = gson.fromJson(json, new TypeToken<List<JsonElement>>(){}.getType());
@@ -235,10 +237,12 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		return null;
 	}
 	@Override
-	public User registerNewUser(User user, String name, String password) {
+	public User registerNewUser(User user, String password) {
+		if(user.getMailAddress() == null || user.getMailAddress().isEmpty()) throw new IllegalArgumentException("The mail address must not be empty or null");
 		try{
 			String getCmd = Utils.buildAddCommand(user);
-			getCmd += "&username=\""+name+"\"&password=\""+Utils.hashPassword(password)+"\"";
+			getCmd += "&password=\""+Utils.hashString(password)+"\"";
+			getCmd = Utils.addUserAuth(getCmd, authString);
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
 			if(id == null || id == -1) return null;
@@ -257,6 +261,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		if(obj instanceof User) throw new UnsupportedOperationException("User must be added by method \"registerNewUser\"");
 		try{
 			String getCmd = Utils.buildAddCommand(obj);
+			getCmd = Utils.addUserAuth(getCmd, authString);
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
 			if(id == null || id == -1) return null;
@@ -271,8 +276,9 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	}
 
 	@Override
-	public <T extends AbstractOrganizerObject> boolean removeObject(T obj) {
+	public <T extends AbstractOrganizerObject> boolean removeObjectByOwnId(T obj) {
 		String getCmd = Utils.buildRemoveCommand(obj);
+		getCmd = Utils.addUserAuth(getCmd, authString);
 		String json = sendGetToServer(getCmd);
 		try{
 			return (boolean) gson.fromJson(json, boolean.class);
@@ -284,6 +290,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 
 	@Override
 	public User login(String mail, String password) {
+		authString = generateAuthentificationString(mail, password);
 		String cmd = Utils.buildLoginCommand(mail, password);
 		String json = sendGetToServer(cmd);
 		try{
@@ -293,4 +300,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		}
 		return null;
 	}
+	
+	
+	
 }
