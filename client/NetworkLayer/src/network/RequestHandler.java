@@ -2,6 +2,8 @@ package network;
 
 import java.util.List;
 
+import network.objects.Utils;
+
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.User;
 
@@ -18,15 +20,19 @@ import organizer.objects.types.User;
  * 
  */
 public abstract class RequestHandler {
+	
+	protected String authString = "";
+	
 	public abstract <T extends AbstractOrganizerObject> T requestObjectByProperty(T obj);
 	public abstract <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj);
 	public abstract <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj);
 	public abstract <T extends AbstractOrganizerObject> List<T> requestAllObjectsByProperty(T obj);
 	public abstract <T extends AbstractOrganizerObject> T addObject(T obj) throws UnsupportedOperationException;
-	public abstract User registerNewUser(User user, String name, String password);
-	public abstract <T extends AbstractOrganizerObject> boolean removeObject(T obj) throws UnsupportedOperationException;
+	public abstract User registerNewUser(User user, String password);
+	public abstract <T extends AbstractOrganizerObject> boolean removeObjectByOwnId(T obj) throws UnsupportedOperationException;
 	public abstract User login(String mail, String password);
 	
-	
-	
+	protected String generateAuthentificationString(String mail, String password){
+		return Utils.hashString(mail) + Utils.hashString(password);
+	}
 }

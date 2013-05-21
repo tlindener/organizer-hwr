@@ -30,19 +30,23 @@ public class Utils {
 	}
 
 	public static String buildLoginCommand(String mail, String password){
-		String cmd = "?Mail=" + mail + "Password="+hashPassword(password);
+		String cmd = "?Mail=" + mail + "Password="+hashString(password);
 		return cmd;
 	}
 	
-	public static String hashPassword(String password){
+	public static String hashString(String string){
 		try {
 			MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
-			byte[] output = sha512.digest(password.getBytes());
+			byte[] output = sha512.digest(string.getBytes());
 			System.out.println(new String(output));
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		return password;
+		return string;
+	}
+	
+	public static String addUserAuth(String cmd, String authString){
+		return cmd+"&userAuth="+authString;
 	}
 	
 	public static <T extends AbstractOrganizerObject> String buildGetByPropertyCommand(
@@ -134,6 +138,6 @@ public class Utils {
 		return "\\/Date("+date.getTime()+"+0000)\\/";
 	}
 	public static void main(String[] args) {
-		hashPassword("Test");
+		hashString("Test");
 	}
 }

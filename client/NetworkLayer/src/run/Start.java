@@ -89,7 +89,7 @@ public class Start {
 		}
 		
 		System.out.println("Register user");
-		user = requester.registerNewUser(user, "Steffen", "123456789");
+		user = requester.registerNewUser(user,  "123456789");
 		System.out.println(user);
 		
 		System.out.println("Add");
