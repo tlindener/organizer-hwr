@@ -159,7 +159,7 @@ namespace Organizer.WebService
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password, string userAuth);
+        int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password);
 
         /// <summary>
         /// 

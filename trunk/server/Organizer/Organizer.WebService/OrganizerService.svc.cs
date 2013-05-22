@@ -182,7 +182,7 @@ namespace Organizer.WebService
 
 
 
-        public int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password, string userAuth)
+        public int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password)
         {
             User user = new User()
             {
