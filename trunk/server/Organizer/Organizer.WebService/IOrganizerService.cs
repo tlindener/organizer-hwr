@@ -21,6 +21,10 @@ namespace Organizer.WebService
     [ServiceContract]
     public interface IOrganizerService
     {
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        WebUser Login(string mail, string password);
+
         #region Calendar
         /// <summary>
         /// Returns a specified calendar of type WebCalendar
@@ -188,7 +192,7 @@ namespace Organizer.WebService
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         WebRoom GetRoomById(int roomId, string userAuth);
 
- 
+
 
         /// <summary>
         /// 
