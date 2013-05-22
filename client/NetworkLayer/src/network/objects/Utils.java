@@ -30,7 +30,7 @@ public class Utils {
 	}
 
 	public static String buildLoginCommand(String mail, String password){
-		String cmd = "?Mail=" + mail + "Password="+hashString(password);
+		String cmd = "Login?Mail=" + mail + "&Password="+hashString(password);
 		return cmd;
 	}
 	
@@ -38,7 +38,7 @@ public class Utils {
 		try {
 			MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
 			byte[] output = sha512.digest(string.getBytes());
-			System.out.println(new String(output));
+			string = new String(output);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
