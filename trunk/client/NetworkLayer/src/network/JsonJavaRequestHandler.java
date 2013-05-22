@@ -242,7 +242,6 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		try{
 			String getCmd = Utils.buildAddCommand(user);
 			getCmd += "&password=\""+Utils.hashString(password)+"\"";
-			getCmd = Utils.addUserAuth(getCmd, authString);
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
 			if(id == null || id == -1) return null;
