@@ -22,6 +22,20 @@ namespace Organizer.WebService
     [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
     public class OrganizerService : IOrganizerService
     {
+        public WebUser Login(string mail, string password)
+        {
+            var users = timeplanner.GetAllUser();
+            if (users != null && users.Count > 0)
+            {
+                var user = users.Where(p => p.MailAddress == mail && p.Password == password);
+                if (user != null)
+                {
+                    return user.First().ToWebUser();
+                }
+            }
+            return null;
+        }
+
 
         public void InsertTestData()
         {
@@ -44,7 +58,7 @@ namespace Organizer.WebService
                 Surname = "Dieter",
                 MailAddress = "tobias.lindener@gmail.com",
                 PhoneNumber = "01773071234",
-                Password = "Test"                
+                Password = "Test"
             };
             List<User> invitees = new List<User>();
             invitees.Add(user);
@@ -166,7 +180,7 @@ namespace Organizer.WebService
             return timeplanner.GetUserById(userId).ToWebUser();
         }
 
-       
+
 
         public int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password, string userAuth)
         {
@@ -212,7 +226,7 @@ namespace Organizer.WebService
             };
             return timeplanner.AddRoom(room);
         }
- 
+
 
         public bool RemoveRoom(int roomId, string userAuth)
         {
@@ -253,7 +267,7 @@ namespace Organizer.WebService
 
             return timeplanner.AddGroup(group);
         }
- 
+
         public bool AddUserToGroup(int groupId, int userId, string userAuth)
         {
             return timeplanner.AddUserToGroup(groupId, userId);
@@ -310,7 +324,7 @@ namespace Organizer.WebService
         }
         public static string CreatePasswordHash(string _password)
         {
-            
+
             SHA512 sha512 = new System.Security.Cryptography.SHA512Managed();
 
             byte[] sha512Bytes = System.Text.Encoding.Default.GetBytes(_password);
