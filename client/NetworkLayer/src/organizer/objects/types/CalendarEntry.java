@@ -11,7 +11,7 @@ import java.util.List;
 import organizer.objects.AbstractOrganizerObject;
 
 /**
- * Beispielobjekt Termin
+ * This class represents an entry from the database with all attributes.
  * 
  * @author Steffen Baumann
  * @version 1.0
@@ -22,17 +22,21 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	public static final String OWNER_ID = "OwnerId";
 	public static final String ROOM_ID = "RoomId";
 	
+	/** start date of this entry*/
 	private Date startDate = null;
+	/** end date of this entry*/
 	private Date endDate = null;
+	/** title of this entry*/
 	private String title = "";
+	/** description of this entry*/
 	private String description = "";
-
+	/** the user id owning this entry */
 	private int ownerId = -1;
+	/** the calendar id containing this entry*/
 	private int calendarId = -1;
+	/** the room id for this entry*/
 	private int roomId = -1;
-
-	private double duration = -1.0;
-			
+	/** list of invited users for this entry*/			
 	private List<User> invitees = new ArrayList<>();
 
 	/**
@@ -169,20 +173,17 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	}
 
 	/**
-	 * @return the duration
+	 * @return the duration in minutes
 	 */
-	public double getDuration() {
-		return duration;
+	public long getDuration() {
+		return ((endDate.getTime() - startDate.getTime()) / 1000 / 60);
 	}
-
 	/**
-	 * @param duration
-	 *            the duration to set
+	 * Parses the String to a {@link Date}
+	 * @param day in the format dd.mm.yyyy
+	 * @param time in the format hh:mm
+	 * @return the equivalent {@link Date}
 	 */
-	public void setDuration(double duration) {
-		this.duration = duration;
-	}
-	
 	public static Date parseStringToDate(String day, String time){
 		Date date = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
@@ -193,13 +194,23 @@ public class CalendarEntry extends AbstractOrganizerObject {
 		}		
 		return date;
 	}
-	
+	/**
+	 * Converts a {@link Date} to {@link Calendar}
+	 * @param date
+	 * @return
+	 */
 	public static Calendar convertDateToCalendar(Date date) {
 		Calendar tmp = new GregorianCalendar();
 		tmp.setTime(date);
 		return tmp;
 	}
 	
+	/**
+	 * Sets the given time to the given {@link Date}
+	 * @param date to update
+	 * @param time to set to the date
+	 * @return modified {@link Date}
+	 */
 	public Date setTimeToDate(Date date, String time){
 		String[] splitt = time.split(":");
 		Calendar cal = convertDateToCalendar(date);

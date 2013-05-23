@@ -9,15 +9,14 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * Parsing DateTime from C# to long
+ * Parsing DateTime from C# to {@link Date} and backwards
  * @author Steffen Baumann
  * @version 1.0 
  *
  */
 public class NetDateTimeAdapter extends TypeAdapter<Date> {
-	
-	public NetDateTimeAdapter() {
-	}
+	/** Default Constructor*/
+	public NetDateTimeAdapter() {}
 	
     @Override
     public Date read(JsonReader reader) throws IOException {

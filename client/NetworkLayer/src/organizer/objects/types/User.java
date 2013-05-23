@@ -9,18 +9,23 @@ import java.util.List;
 import organizer.objects.AbstractOrganizerObject;
 
 /**
+ * This class represents an user from the database with all attributes except the password
  * @author Steffen Baumann
- *
  */
 public class User extends AbstractOrganizerObject {
-	
+	/** the surname of the user */
 	private String surname = "";
+	/** the given name of the user */
 	private String givenName = "";
+	/** the mail address of the user */
 	private String mailAddress = "";
+	/** the phone number of the user */
 	private String phoneNumber = "";
-	
+	/** a list of all group IDs the user participates */
 	private List<Integer> groupIds = new ArrayList<>();
+	/** a list of all calendar IDs the user has */
 	private List<Integer> calendarIds = new ArrayList<>();
+	/** a list of all invite IDs the user has */
 	private List<Integer> inviteIds = new ArrayList<>();
 	
 	/**

@@ -1,10 +1,18 @@
 package organizer.objects.types;
 
 import organizer.objects.AbstractOrganizerObject;
-
+/**
+ * This class represents a room from the database with all attributes.
+ * @author Steffen Baumann
+ * @version 1.0 
+ *
+ */
 public class Room extends AbstractOrganizerObject {
+	/** the description of the room*/
 	private String description = "";
+	/** the location of the room*/
 	private String location = "";
+	/** the number of seats of the room*/
 	private int seats = -1;
 
 	/**

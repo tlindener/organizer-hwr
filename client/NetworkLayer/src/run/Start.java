@@ -75,7 +75,6 @@ public class Start {
 		calendarEntry.setRoomId(1);
 		calendarEntry.setOwnerId(1);
 		calendarEntry.setEndDate(new Date());
-		calendarEntry.setDuration(600.0);
 		
 		Group group = new Group();
 		group.setDescription("Testgruppe");

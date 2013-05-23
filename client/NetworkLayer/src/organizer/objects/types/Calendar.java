@@ -4,11 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import organizer.objects.AbstractOrganizerObject;
-
+/**
+ * This class represents a calendar from the database with all attributes.
+ * 
+ * @author Steffen Baumann
+ * @version 1.0 
+ *
+ */
 public class Calendar extends AbstractOrganizerObject{
+	/** the user IDs owning the calendar*/
 	private int ownerId = -1;
+	/** the name of the calendar*/
 	private String name = "";
+	/** the description of the calendar*/
 	private String description = "";
+	/** list of all entry IDs contained by the calendar*/
 	private List<CalendarEntry> calendarEntries = new ArrayList<>();
 	
 	

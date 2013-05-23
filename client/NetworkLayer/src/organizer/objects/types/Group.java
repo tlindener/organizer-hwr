@@ -9,14 +9,16 @@ import java.util.List;
 import organizer.objects.AbstractOrganizerObject;
 
 /**
+ * This class represents a group from the database with all attributes.
  * @author Steffen Baumann
  *
  */
 public class Group extends AbstractOrganizerObject {
 	
 	public static final String USER_ID = "UserId";
-	
+	/** the description of the group*/
 	private String description = "";
+	/** list of all user IDs contained by the group*/
 	private List<Integer> members = new ArrayList<Integer>();
 	
 	/**
