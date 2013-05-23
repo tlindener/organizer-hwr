@@ -9,5 +9,8 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/NetworkLayer/gson-2.2.3-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/IBM_ADMIN/Documents/MyEclipse/NetworkLayer/commons-codec-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/IBM_ADMIN/Documents/MyEclipse/NetworkLayer/commons-codec-1.8-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/IBM_ADMIN/Documents/MyEclipse/NetworkLayer/commons-codec-1.8-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

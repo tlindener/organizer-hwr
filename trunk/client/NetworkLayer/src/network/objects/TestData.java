@@ -65,7 +65,6 @@ public class TestData {
 		ce.setDescription(description);
 		ce.setStartDate(CalendarEntry.parseStringToDate(startday, starttime));
 		ce.setEndDate(CalendarEntry.parseStringToDate(endday, endtime));
-		ce.setDuration(duration);
 		
 		ce.setCalendarId(calendarId);
 		ce.setOwnerId(ownerId);
