@@ -30,8 +30,10 @@ import logik.Model;
 
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Room;
+import organizer.objects.types.User;
 import view.window_Hauptmenue;
 import view.window_LogScreen;
+import view.window_RegisterUser;
 import view.window_Servereinstellungen;
 import view.window_TerminBearbeiten;
 
@@ -55,6 +57,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private window_Hauptmenue myHauptmenue;
 	private window_LogScreen myLogScreen;
 	private window_Servereinstellungen myServereinstellungen;
+	private window_RegisterUser myRegistration;
 
 	private RequestHandler myRequester;
 	private Date aktDate;
@@ -62,6 +65,10 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private organizer.objects.types.Calendar steffensCal;
 	private int port;
 	private String adresse;
+	private String benutzername;
+	private String passwort;
+	private User aktUser;
+	private CalendarEntry aktEntry;
 
 	public Controller() {
 		/**
@@ -69,7 +76,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		 * werden (String--> Hostname, Int--> Port)
 		 * 
 		 */
-		myRequester = new JsonJavaRequestHandler("locahost", 48585);
+		// myRequester = new JsonJavaRequestHandler("localhost", 48585);
 		myModel = new Model(aktDate);
 		updateData();
 		myHauptmenue = new window_Hauptmenue(this, this, this, this);
@@ -78,8 +85,15 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		myTerminBearbeiten.setVisible(false);
 		myLogScreen = new window_LogScreen(this);
 		myLogScreen.setVisible(true);
+		myRegistration = new window_RegisterUser(this);
+		myRegistration.setVisible(false);
 		myServereinstellungen = new window_Servereinstellungen(this);
 		myServereinstellungen.setVisible(false);
+		aktUser = new User();
+		List l=new ArrayList();
+		l.add(1);
+		aktUser.setCalendarIds(l);
+		aktUser.setID(1);
 	}
 
 	public static void main(String[] args) {
@@ -230,30 +244,33 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource()== myLogScreen.getMntmServerkonfigurationen())
-		{
+		if (e.getSource() == myLogScreen.getMntmServerkonfigurationen()) {
 			myServereinstellungen.setVisible(true);
 		}
-		if (e.getSource() == myServereinstellungen.getBtnSpeichern())
-		{
-			if (myServereinstellungen.getTxtPort().getText()==null || myServereinstellungen.getTxtAdresse().getText()==null) {
+		if (e.getSource() == myServereinstellungen.getBtnSpeichern()) {
+			if (myServereinstellungen.getTxtPort().getText().equals("")
+					|| myServereinstellungen.getTxtAdresse().getText()
+							.equals("")) {
+
 				JOptionPane.showMessageDialog(null,
 						"Bitte wählen Sie gültige Servereinstellungen",
 						"Ungültige Servereinstellungen",
 						JOptionPane.INFORMATION_MESSAGE);
 				myServereinstellungen.setVisible(true);
-			}
-			else
-			{
-				port=Integer.parseInt(myServereinstellungen.getTxtPort().getText());
-				adresse=myServereinstellungen.getTxtAdresse().getText();
+			} else {
+
+				port = Integer.parseInt(myServereinstellungen.getTxtPort()
+						.getText());
+				adresse = myServereinstellungen.getTxtAdresse().getText();
 				myServereinstellungen.setVisible(false);
-				myLogScreen.setVisible(true);
+				myRequester = new JsonJavaRequestHandler(adresse, port);
+
 			}
-			System.out.println("hier");
+
 		}
 		if (e.getSource() == myHauptmenue.getBtnTerminBearbeiten()) {
-			myHauptmenue.getAktDateCali();
+			aktDate=myHauptmenue.getAktDateCali();
+			
 			myTerminBearbeiten.setVisible(true);
 		}
 		if (e.getSource() == myHauptmenue.getBtnAbmelden()) {
@@ -266,6 +283,17 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 */
 		}
 		if (e.getSource() == myTerminBearbeiten.getBtnTerminEintragen()) {
+			
+			/*
+			 * befüllen des Fensters mit den Daten Personen und Räume
+			 */
+			
+			
+			aktEntry=new CalendarEntry();
+			aktEntry.setCalendarId(aktUser.getID());
+			aktEntry.setDescription(myTerminBearbeiten.getTxtADetails().getText());
+			aktEntry.setTitle(myTerminBearbeiten.getTxtBeschreibung().getText());
+			
 			/*
 			 * Über Model Verbindung zum Server Übergabe des Termines und
 			 * Speicherung in Datenbank
@@ -276,66 +304,131 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 * Authentifizierung mit Server SPeicherung der ID Daten in das
 			 * Modell Speicherung der Daten in das Modell
 			 */
-			
-
-			steffensCal = new organizer.objects.types.Calendar();
-			myHauptmenue.setVisible(true);
-			aktDate = myHauptmenue.getAktDateCali();
-			myModel.setAktDate(aktDate);
-			try {
-				befuelleModel();
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			updateData();
-			myHauptmenue.setVisible(true);
-			myHauptmenue.repaint();
-			setDauer();
-//			int port = Integer.parseInt(myServereinstellungen.getTxtPort()
-//					.getText());
-//			String adresse = myServereinstellungen.getTxtAdresse().getText();
-
-			System.out.println(myServereinstellungen.getTxtPort().getText());
-			if (myServereinstellungen.getTxtPort().getText()==" ") {
+//
+			pruefeServereinstellungen();
+//
+//			/*
+//			 * hier muss eine KalenderID aus einem Personenobjekt übergeben
+//			 * werden
+//			 */
+//			benutzername = myLogScreen.getTextField().getText();
+//			passwort = myLogScreen.getPasswort().getText();
+//			if (benutzername.equals("") || passwort.equals("")) {
+//				JOptionPane
+//						.showMessageDialog(
+//								myLogScreen,
+//								"Bitte geben Sie einen gültigen Benutzernamen und ein gültiges Passwort ein",
+//								"Benutzername oder Passwort falsch",
+//								JOptionPane.INFORMATION_MESSAGE);
+//			} else {
+				steffensCal = new organizer.objects.types.Calendar();
+//				/*
+//				 * Abfrage der Id für den Benutzernamen
+//				 */
+//				if (myRequester.login(benutzername, passwort) != null) {
+//
+//					aktUser = myRequester.login(benutzername, passwort);
+					steffensCal.setID(aktUser.getID());
 				
-				JOptionPane.showMessageDialog(myLogScreen,
-						"Bitte wählen Sie gültige Servereinstellungen",
-						"Ungültige Servereinstellungen",
-						JOptionPane.INFORMATION_MESSAGE);
-				myHauptmenue.setVisible(false);
-				myServereinstellungen.setVisible(true);
+					organizer.objects.types.Calendar tmpCal = myRequester.requestObjectByOwnId(steffensCal);
+//					// null Abfrage
+					if (tmpCal != null) {
+						steffensCal = tmpCal;
+						connectServerModel();
+
+					} else {
+						JOptionPane
+								.showMessageDialog(
+										myLogScreen,
+										"Es konnte keine Verbindung zum Server hergestellt werden, bitte starten Sie das Programm neu",
+										"Verbindungsfehler",
+										JOptionPane.INFORMATION_MESSAGE);
+
+					}
+//
+					myLogScreen.setVisible(false);
+					myHauptmenue.setVisible(true);
+//				} else {
+//					JOptionPane
+//							.showMessageDialog(
+//									myLogScreen,
+//									"Leider sind Sie noch nicht registriert. Bitte Registrieren Sie sich um die MyOrganizer Funktionen nutzen zu können.",
+//									"User nicht vorhanden",
+//									JOptionPane.INFORMATION_MESSAGE);
+//				}
+//
+//			}
+		}
+		if (e.getSource() == myLogScreen.getBtnRegistrieren()) {
+			myRegistration.setVisible(true);
+
+		}
+		if (e.getSource() == myRegistration.getBtnRegistrieren()) {
+			
+			System.out.println(myRegistration.getTxtPasswort().getPassword());
+			
+			 if(!myRegistration.getTxtEmailadresse().getText().equals(" ")||!myRegistration.getTxtNachname().getText().equals(" ")
+			 ||!myRegistration.getTxtVorname().getText().equals(" ")||!myRegistration.getTxtPasswort().getPassword().equals(" ")||
+			 !myRegistration.getTxtPasswortBest().getPassword().equals(" ")){
+				 
+			char[] passwort1 = myRegistration.getTxtPasswort().getPassword();
+			char[] passwort2 = myRegistration.getTxtPasswortBest().getPassword();
+			String pwd1="";
+			String pwd2="";
+			for (int i=0;i<passwort1.length;i++)
+			{
+				pwd1=pwd1+passwort1[i];
 			}
-			/*
-			 * hier muss eine KalenderID aus einem Personenobjekt übergeben
-			 * werden
-			 */
-			steffensCal.setID(1);
-			organizer.objects.types.Calendar tmpCal = myRequester
-					.requestObjectByOwnId(steffensCal);
-			// null Abfrage
-			if (tmpCal != null) {
-				steffensCal = tmpCal;
-				try {
-					befuelleModel();
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+			for (int i=0;i<passwort2.length;i++)
+			{
+				pwd2=pwd2+passwort2[i];
+			}
+			
+			System.out.println(pwd1+";"+pwd2);
+			if (pwd1.equals(pwd2)) {
+				pruefeServereinstellungen();
+				if (myRequester == null) {
+					return;
 				}
-				// zugriff auf KalenderEintragsdaten
-				// steffensCal.getCalendarEntries().get(0).g
+				passwort = "";
+				aktUser = new User();
+				aktUser.setMailAddress(myRegistration.getTxtEmailadresse()
+						.getText());
+				aktUser.setSurname(myRegistration.getTxtNachname().getText());
+				aktUser.setGivenname(myRegistration.getTxtVorname().getText());
+				myRequester.registerNewUser(aktUser, passwort);
+//				organizer.objects.types.Calendar aktUserCa = new organizer.objects.types.Calendar();
+//				aktUserCa.setOwnerId(aktUser.getID());
+//				myRequester.addObject(aktUserCa);
+				myRegistration.setVisible(false);
+				myLogScreen.setVisible(true);
+
 			} else {
-				// JOption
+				JOptionPane.showMessageDialog(myLogScreen,
+						"Das Passwort stimmt nicht überein!",
+						"Passwort falsch", JOptionPane.INFORMATION_MESSAGE);
+				myRegistration.getTxtPasswort().setText("");
+				myRegistration.getTxtPasswortBest().setText("");
 			}
-			myLogScreen.setVisible(false);
-		} else {
+			 }
+			 else
+			 {
+			 JOptionPane
+			 .showMessageDialog(
+			 myLogScreen,
+			 "Bitte füllen Sie alle Felder aus!",
+			 "Felder frei",
+			 JOptionPane.INFORMATION_MESSAGE);
+			 
+			 }
+			 
 		}
 
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 		if (e.getSource() == myHauptmenue.getTable_1()) {
 			/*
 			 * Details für Termin werden eingefüllt leere Details werden in
@@ -399,25 +492,16 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
-		System.out.println(e.getPropertyName());
-		if(e.getOldValue() == null && e.getNewValue()!=null){
-			
+		// System.out.println(e.getPropertyName());
+		if (e.getOldValue() == null && e.getNewValue() != null) {
+			//
 			aktDate = new Date();
 		}
 		if (e.getOldValue() != null) {
 			aktDate = myHauptmenue.getAktDateCali();
-			myModel.setAktDate(aktDate);
-			try {
-				befuelleModel();
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			updateData();
-			myHauptmenue.setVisible(true);
-			myHauptmenue.repaint();
-			setDauer();
+			connectServerModel();
 		}
+
 	}
 
 	public void befuelleModel() throws ParseException {
@@ -427,9 +511,24 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		myModel.getDetails().clear();
 		myModel.getRaeume().clear();
 		myModel.getAnfangende().clear();
-
+		
+		myModel.getAllePersonen().clear();
+		myModel.getAlleRaeume().clear();
+		
+//		CalendarEntry entry =new CalendarEntry();
+//		entry.setCalendarId(aktUser.getCalendarIds().get(0));
+//		entry.setRequestProperty(CalendarEntry.OWNER_ID, ""+1);
+//		List <CalendarEntry> entries = myRequester.requestAllObjectsByProperty(entry);
+//		
+//		myModel.setAllePersonen(entries);
+		List<Room> lr = myRequester.requestAllObjects(new Room());
+		myModel.setAlleRaeume(lr);
+		
+		
+		System.out.println(myModel.getAlleRaeume());
+		
 		List myCes = steffensCal.getCalendarEntries();
-		for (int i = myCes.size() - 1; i >= 0; i--) {
+		for (int i = myCes.size() - 1; i > 0; i--) {
 			CalendarEntry myCe = (CalendarEntry) myCes.get(i);
 			if (parseDate(myCe.getStartDate()).equals(
 					parseDate(myHauptmenue.getCali().getDate()))) {
@@ -452,10 +551,10 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					endZeit = stunden + ":" + minuten;
 				}
 				myModel.setAktDate(aktDate);
-				myModel.setBeschreibungen(anfangZeit, myCe.getTitle());
+				myModel.setBeschreibungen(anfangZeit, myCe.getDescription());
 				myModel.setDauer(anfangZeit, myCe.getDuration());
 				myModel.setPersonen(anfangZeit, myCe.getInvitees());
-				myModel.setDetails(anfangZeit, myCe.getDescription());
+				myModel.setDetails(anfangZeit, myCe.getTitle());
 				myModel.setAnfangEnde(anfangZeit, endZeit);
 				Room r = new Room();
 				r.setID(myCe.getRoomId());
@@ -467,7 +566,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				}
 			}
 		}
-
 	}
 
 	public String parseDate(Date date) {
@@ -499,4 +597,36 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 	}
 
+	public void connectServerModel() {
+		myModel.setAktDate(aktDate);
+		try {
+			befuelleModel();
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		updateData();
+		myHauptmenue.setVisible(true);
+		myHauptmenue.repaint();
+		setDauer();
+	}
+
+	public void pruefeServereinstellungen() {
+		if (myServereinstellungen.getTxtPort().getText().equals("")
+				|| myServereinstellungen.getTxtAdresse().getText().equals("")) {
+			JOptionPane.showMessageDialog(myLogScreen,
+					"Bitte wählen Sie gültige Servereinstellungen",
+					"Ungültige Servereinstellungen",
+					JOptionPane.INFORMATION_MESSAGE);
+			myHauptmenue.setVisible(false);
+			myServereinstellungen.setVisible(true);
+			return;
+		} else {
+			port = Integer.parseInt(myServereinstellungen.getTxtPort()
+					.getText());
+			adresse = myServereinstellungen.getTxtAdresse().getText();
+			myRequester = new JsonJavaRequestHandler(adresse, port);
+		}
+
+	}
 }

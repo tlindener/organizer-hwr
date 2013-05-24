@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import organizer.objects.types.Room;
+import organizer.objects.types.User;
+
 
 public class Model {
 
@@ -18,90 +21,11 @@ public class Model {
 	private HashMap <String, List> personen;
 	private HashMap <String, String> raeume;
 	private HashMap <String, Double> dauer;
+	private List allePersonen;
+	private List alleRaeume;
 	private Date aktDate;
 	
-	public HashMap getKalenderdaten() {
-		return Kalenderdaten;
-	}
-
-	public void setKalenderdaten(HashMap kalenderdaten) {
-		Kalenderdaten = kalenderdaten;
-	}
-
-	public HashMap getBeschreibungen() {
-		return beschreibungen;
-	}
-/**
- * <String Uhrzeit im Format xx:xx, String Beschreibung>
- * @param beschreibungen
- */
-	public void setBeschreibungen(String zeit, String beschreibung) {
-		beschreibungen.put(zeit, beschreibung);
-	}
-
-	public HashMap getDetails() {
-		return details;
-	}
-/**
- * <String Uhrzeit im Format xx:xx, String Detail>
- * @param details
- */
-	public void setDetails(String zeit, String detail) {
-		details.put(zeit,detail);
-	}
-
-	public HashMap getPersonen() {
-		return personen;
-	}
-/**
- * <String Uhrzeit im Format xx:xx, List Personen>
- * @param personen
- */
-	public void setPersonen(String zeit, List teilnehmer) {
-		personen.put(zeit, teilnehmer);
-	}
-
-	public HashMap getRaeume() {
-		return raeume;
-	}
-/**
- * <String Uhrzeit im Format xx:xx, String Raum>
- * @param raeume
- */
-	public void setRaeume(String zeit, String raum) {
-		raeume.put(zeit, raum);
-	}
-
-	public HashMap getDauer() {
-		return dauer;
-	}
-/**
- * <String Uhrzeit im Format xx:xx, Double als Dauer in Minuten>
- * @param dauer
- */
-	public void setDauer(String zeit, double duration) {
-		dauer.put(zeit, duration);
-	}
 	
-	public HashMap getAnfangende() {
-		return anfangende;
-	}
-/**
- * <String Uhrzeit im Format xx:xx, Double als Dauer in Minuten>
- * @param dauer
- */
-	public void setAnfangEnde(String anfang, String ende) {
-
-			anfangende.put(anfang, ende);
-	}
-
-	public Date getAktDate() {
-		return aktDate;
-	}
-
-	public void setAktDate(Date aktDate) {
-		this.aktDate = aktDate;
-	}
 
 	public Model(Date date)
 	{
@@ -112,7 +36,21 @@ public class Model {
 		createPersonen();
 		createRaeume();
 		createAnfangende();
+		createAlleRaeume();
+		createAllePersonen();
 		
+	}
+	
+	public List createAlleRaeume()
+	{
+		alleRaeume =new ArrayList();
+		return alleRaeume;
+	}
+	
+	public List createAllePersonen()
+	{
+		allePersonen=new ArrayList();
+		return allePersonen;
 	}
 	
 	public <String, Double> HashMap createDauer()
@@ -207,6 +145,104 @@ public class Model {
 		}
 		else
 		return null;
+	}
+	public HashMap getKalenderdaten() {
+		return Kalenderdaten;
+	}
+
+	public void setKalenderdaten(HashMap kalenderdaten) {
+		Kalenderdaten = kalenderdaten;
+	}
+
+	public HashMap getBeschreibungen() {
+		return beschreibungen;
+	}
+/**
+ * <String Uhrzeit im Format xx:xx, String Beschreibung>
+ * @param beschreibungen
+ */
+	public void setBeschreibungen(String zeit, String beschreibung) {
+		beschreibungen.put(zeit, beschreibung);
+	}
+
+	public HashMap getDetails() {
+		return details;
+	}
+/**
+ * <String Uhrzeit im Format xx:xx, String Detail>
+ * @param details
+ */
+	public void setDetails(String zeit, String detail) {
+		details.put(zeit,detail);
+	}
+
+	public HashMap getPersonen() {
+		return personen;
+	}
+/**
+ * <String Uhrzeit im Format xx:xx, List Personen>
+ * @param personen
+ */
+	public void setPersonen(String zeit, List teilnehmer) {
+		personen.put(zeit, teilnehmer);
+	}
+
+	public HashMap getRaeume() {
+		return raeume;
+	}
+/**
+ * <String Uhrzeit im Format xx:xx, String Raum>
+ * @param raeume
+ */
+	public void setRaeume(String zeit, String raum) {
+		raeume.put(zeit, raum);
+	}
+
+	public HashMap getDauer() {
+		return dauer;
+	}
+/**
+ * <String Uhrzeit im Format xx:xx, Double als Dauer in Minuten>
+ * @param dauer
+ */
+	public void setDauer(String zeit, double duration) {
+		dauer.put(zeit, duration);
+	}
+	
+	public HashMap getAnfangende() {
+		return anfangende;
+	}
+/**
+ * <String Uhrzeit im Format xx:xx, Double als Dauer in Minuten>
+ * @param dauer
+ */
+	public void setAnfangEnde(String anfang, String ende) {
+
+			anfangende.put(anfang, ende);
+	}
+
+	public Date getAktDate() {
+		return aktDate;
+	}
+
+	public void setAktDate(Date aktDate) {
+		this.aktDate = aktDate;
+	}
+
+	public List getAllePersonen() {
+		return allePersonen;
+	}
+
+	public void setAllePersonen(List personen) {
+		allePersonen=personen;
+	}
+
+	public List getAlleRaeume() {
+		return alleRaeume;
+	}
+
+	public void setAlleRaeume(List raeume) {
+		alleRaeume=raeume;
 	}
 
 }

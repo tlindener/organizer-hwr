@@ -39,7 +39,7 @@ public class window_Servereinstellungen extends JFrame {
 
 	
 	public window_Servereinstellungen(ActionListener myCon) {
-		myCon=myAL;
+		myAL=myCon;
 		init();
 	}
 
