@@ -305,7 +305,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 * Modell Speicherung der Daten in das Modell
 			 */
 //
-			pruefeServereinstellungen();
+		
+			if(pruefeServereinstellungen()==0)
+			{
+				return;
+			}
 //
 //			/*
 //			 * hier muss eine KalenderID aus einem Personenobjekt übergeben
@@ -611,7 +615,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		setDauer();
 	}
 
-	public void pruefeServereinstellungen() {
+	public int pruefeServereinstellungen() {
 		if (myServereinstellungen.getTxtPort().getText().equals("")
 				|| myServereinstellungen.getTxtAdresse().getText().equals("")) {
 			JOptionPane.showMessageDialog(myLogScreen,
@@ -620,12 +624,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					JOptionPane.INFORMATION_MESSAGE);
 			myHauptmenue.setVisible(false);
 			myServereinstellungen.setVisible(true);
-			return;
+			return 0;
 		} else {
 			port = Integer.parseInt(myServereinstellungen.getTxtPort()
 					.getText());
 			adresse = myServereinstellungen.getTxtAdresse().getText();
 			myRequester = new JsonJavaRequestHandler(adresse, port);
+			return 1;
 		}
 
 	}
