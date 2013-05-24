@@ -21,9 +21,15 @@ namespace Organizer.WebService
     [ServiceContract]
     public interface IOrganizerService
     {
+        /// <summary>
+        /// Returns a WebUser object based on given mailadress and password
+        /// </summary>
+        /// <param name="mailAdress"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        WebUser Login(string mail, string password);
+        WebUser Login(string mailAddress, string password);
 
         #region Calendar
         /// <summary>
@@ -112,7 +118,7 @@ namespace Organizer.WebService
         /// <param name="userAuth"></param>
         /// <returns></returns>
         [OperationContract]
-        [WebGet(RequestFormat = WebMessageFormat.Json)]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, string userAuth);
 
         /// <summary>
@@ -128,7 +134,7 @@ namespace Organizer.WebService
 
         #region User
         /// <summary>
-        /// 
+        /// Returns a list of all users in database
         /// </summary>
         /// <param name="userAuth"></param>
         /// <returns></returns>
@@ -137,7 +143,7 @@ namespace Organizer.WebService
         ICollection<WebUser> GetAllUser(string userAuth);
 
         /// <summary>
-        /// 
+        /// Returns a user object by specified userid
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="userAuth"></param>
@@ -148,7 +154,7 @@ namespace Organizer.WebService
 
 
         /// <summary>
-        /// 
+        /// Adds a new user to the database. 
         /// </summary>
         /// <param name="givenName"></param>
         /// <param name="surname"></param>
