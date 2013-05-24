@@ -22,13 +22,38 @@ namespace Organizer.WebService
     [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
     public class OrganizerService : IOrganizerService
     {
-        public WebUser Login(string mail, string password)
+        private bool ValidateUser(string userAuth)
+        {
+            var authentication = userAuth.Split('_');
+            int userId = 0;
+            Int32.TryParse(authentication[0], out userId);
+            if (userId == 0)
+            {
+                return false;
+            }
+            var user = timeplanner.GetUserById(userId);
+            if (user != null)
+            {
+                var hash = Utils.getSHA512Hash(user.MailAddress);
+                var base64String = Utils.EncodeTo64(hash);
+                if (authentication[1] == (base64String + user.Password))
+                {
+                    return true;
+                }
+
+            }
+            return false;
+        }
+
+
+        public WebUser Login(string mailAddress, string password)
         {
             var users = timeplanner.GetAllUser();
             if (users != null && users.Count > 0)
             {
-                var user = users.Where(p => p.MailAddress == mail && p.Password == password);
-                if (user != null)
+                var user = users.Where(p => p.MailAddress == mailAddress && p.Password == password);
+                
+                if (user != null && user.Count() > 0)
                 {
                     return user.First().ToWebUser();
                 }
@@ -88,6 +113,9 @@ namespace Organizer.WebService
         #region Calendar
         public ICollection<WebCalendar> GetAllCalendar(string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             var calendar = timeplanner.GetAllCalendar();
             if (calendar == null)
             {
@@ -98,11 +126,17 @@ namespace Organizer.WebService
 
         public WebCalendar GetCalendarById(int calendarId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             return timeplanner.GetCalendarById(calendarId).ToWebCalendar();
         }
 
         public int AddCalendar(int ownerId, string name, string description, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return 0;
+
             return timeplanner.AddCalendar(new Calendar()
             {
                 Name = name,
@@ -116,11 +150,17 @@ namespace Organizer.WebService
 
         public bool RemoveCalendarEntry(int calendarEntryId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return false;
+
             return timeplanner.RemoveCalendarEntry(calendarEntryId);
         }
 
         public bool RemoveCalendar(int calendarId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return false;
+
             return timeplanner.RemoveCalendar(calendarId);
         }
         #endregion
@@ -129,21 +169,33 @@ namespace Organizer.WebService
 
         public ICollection<WebCalendarEntry> GetAllCalendarEntriesByOwnerId(int ownerId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             return timeplanner.GetAllEntriesByOwner(ownerId).Select(p => p.ToWebCalendarEntry()).ToList();
         }
 
         public WebCalendarEntry GetCalendarEntryById(int calendarEntryId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             return timeplanner.GetCalendarEntryById(calendarEntryId).ToWebCalendarEntry();
         }
 
         public ICollection<WebCalendarEntry> GetAllCalendarEntriesByRoomId(int roomId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             return timeplanner.GetEntriesByRoom(roomId).Select(p => p.ToWebCalendarEntry()).ToList();
         }
 
         public int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return 0;
+
             var owner = timeplanner.GetUserById(ownerId);
             var room = timeplanner.GetRoomById(roomId);
             var calendar = timeplanner.GetCalendarById(calendarId);
@@ -171,12 +223,18 @@ namespace Organizer.WebService
         #region User
         public ICollection<WebUser> GetAllUser(string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             var users = timeplanner.GetAllUser();
             return users.Select(p => p.ToWebUser()).ToList();
         }
 
         public WebUser GetUserById(int userId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             return timeplanner.GetUserById(userId).ToWebUser();
         }
 
@@ -184,6 +242,8 @@ namespace Organizer.WebService
 
         public int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password)
         {
+       
+
             User user = new User()
             {
                 GivenName = givenName,
@@ -209,15 +269,24 @@ namespace Organizer.WebService
         #region Room
         public ICollection<WebRoom> GetAllRooms(string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             return timeplanner.GetAllRooms().Select(p => p.ToWebRoom()).ToList();
         }
 
         public WebRoom GetRoomById(int roomId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             return timeplanner.GetRoomById(roomId).ToWebRoom();
         }
         public int AddRoom(string description, string location, int seats, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return 0;
+
             Room room = new Room()
             {
                 Description = description,
@@ -239,6 +308,9 @@ namespace Organizer.WebService
 
         public bool ChangeRoomForCalendarEntry(int roomId, int calendarEntryId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return false;
+
             return timeplanner.ChangeRoomForCalendarEntry(roomId, calendarEntryId);
         }
         #endregion
@@ -246,11 +318,17 @@ namespace Organizer.WebService
         #region Group
         public WebGroup GetGroupById(int groupId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             return timeplanner.GetGroupById(groupId).ToWebGroup();
         }
 
         public ICollection<WebGroup> GetAllGroupsByUserId(int userId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             var groups = timeplanner.GetGroupsByUserId(userId);
             if (groups == null)
             {
@@ -270,16 +348,25 @@ namespace Organizer.WebService
 
         public bool AddUserToGroup(int groupId, int userId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return false;
+
             return timeplanner.AddUserToGroup(groupId, userId);
         }
 
         public bool RemoveUserFromGroup(int groupId, int userId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return false;
+
             return timeplanner.RemoveUserFromGroup(groupId, userId);
         }
 
         public bool RemoveGroup(int groupId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return false;
+
             return timeplanner.RemoveGroup(groupId);
         }
 
@@ -292,21 +379,33 @@ namespace Organizer.WebService
 
         public ICollection<WebInvite> GetAllInvitesByUserId(int userId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return null;
+
             return timeplanner.GetAllInvitesByUserId(userId).Select(p => p.ToWebInvite()).ToList();
         }
 
         public int AcceptInvite(int inviteId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return 0;
+
             return timeplanner.AcceptInvite(inviteId);
         }
 
         public int AddInvite(int calendarEntryId, int userId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return 0;
+
             return timeplanner.AddInvite(calendarEntryId, userId);
         }
 
         public bool RemoveInvite(int calendarEntryId, int userId, string userAuth)
         {
+            if (!ValidateUser(userAuth))
+                return false;
+
             return timeplanner.RemoveInvite(calendarEntryId, userId);
         }
         #endregion
@@ -318,37 +417,6 @@ namespace Organizer.WebService
         {
             return true;
         }
-        public bool ValidateUser(string userAuth)
-        {
-            return true;
-        }
-        public static string CreatePasswordHash(string _password)
-        {
-
-            SHA512 sha512 = new System.Security.Cryptography.SHA512Managed();
-
-            byte[] sha512Bytes = System.Text.Encoding.Default.GetBytes(_password);
-
-            byte[] cryString = sha512.ComputeHash(sha512Bytes);
-
-            string hashedPwd = string.Empty;
-
-            for (int i = 0; i < cryString.Length; i++)
-            {
-                hashedPwd += cryString[i].ToString("X2");
-            }
-
-            return hashedPwd;
-        }
-
-
-
-
-
-
-
-
-
     }
 
 

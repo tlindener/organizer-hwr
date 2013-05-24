@@ -344,6 +344,12 @@ namespace Organizer
         /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         public int AddUser(User dbUser)
         {
+            var users = this.GetAllUser();
+            if (users.Where(p => p.MailAddress == dbUser.MailAddress).Count() > 0)
+            {
+                return 0;
+            }
+
             try
             {
                 _calendarDatabase.User.Add(dbUser);
