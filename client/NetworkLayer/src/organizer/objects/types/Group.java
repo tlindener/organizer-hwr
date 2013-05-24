@@ -43,16 +43,16 @@ public class Group extends AbstractOrganizerObject {
 	}
 
 	/**
-	 * @param users the users to set
+	 * @param members the user IDs to set
 	 */
 	public void setMembers(List<Integer> members) {
 		this.members = members;
 	}
 
 	@Override
-	public String getProperty() throws IllegalArgumentException {
+	public String[] getProperty() throws IllegalArgumentException {
 		switch(byProperty){
-		case USER_ID: return "By"+USER_ID+"?"+USER_ID+"="+byValue;
+		case USER_ID: return new String[]{USER_ID, byValue};
 		default: throw new IllegalArgumentException("No available Property for " + getClass().getSimpleName());
 		}
 		

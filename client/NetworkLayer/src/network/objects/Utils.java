@@ -102,9 +102,14 @@ public class Utils {
 	 */
 	public static <T extends AbstractOrganizerObject> String buildGetByPropertyCommand(
 			T obj) throws IllegalArgumentException {
-		String command = buildGetAllCommand(obj) + obj.getProperty();
+		String command = buildGetAllCommand(obj) + convertPropertyValueArray(obj.getProperty());
 		return command;
 	}
+	
+	private static String convertPropertyValueArray(String[] propertyValuePair){
+		return "By"+propertyValuePair[0]+"?"+propertyValuePair[0]+"="+propertyValuePair[1];
+	}
+	
 	/**
 	 * Creates the command for requesting a single object by its ID
 	 *

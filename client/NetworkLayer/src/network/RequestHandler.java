@@ -8,12 +8,7 @@ import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.User;
 
 /**
- * Schnittstelle zum Abfragen von Objekten. Der Type des Eingabeobjekts
- * entspricht dem Ausgabeobjekt - Java Generics. Dadurch wird ein Cast-Befehl
- * auf Seiten des Aufrufers vermieden.
- * 
- * Der RequestHandler stellt eine Anfrage gemäß des Eingabeobjekts. Über Input
- * wird das Eingabeobjekt verändert und zurückgegeben.
+ * Abstract interface to request objects from a source, that must be specified by the exact implementation.
  * 
  * @author Steffen Baumann
  * @version 1.0
