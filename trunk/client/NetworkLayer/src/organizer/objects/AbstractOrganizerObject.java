@@ -118,7 +118,7 @@ public abstract class AbstractOrganizerObject {
 	 *         exist.
 	 * @throws IllegalArgumentException
 	 */
-	public abstract String getProperty() throws IllegalArgumentException;
+	public abstract String[] getProperty() throws IllegalArgumentException;
 
 	/**
 	 * Sets the given property and value

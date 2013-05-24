@@ -197,7 +197,7 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	/**
 	 * Converts a {@link Date} to {@link Calendar}
 	 * @param date
-	 * @return
+	 * @return the {@link Calendar} representing the {@link Date}
 	 */
 	public static Calendar convertDateToCalendar(Date date) {
 		Calendar tmp = new GregorianCalendar();
@@ -234,10 +234,10 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	}
 
 	@Override
-	public String getProperty() {
+	public String[] getProperty() {
 		switch(byProperty){
-		case OWNER_ID: return "By"+OWNER_ID+"?"+OWNER_ID+"="+byValue;
-		case ROOM_ID: return "By"+ROOM_ID+"?"+ROOM_ID+"="+byValue;
+		case OWNER_ID: return new String[]{OWNER_ID, byValue};
+		case ROOM_ID: return new String[]{ROOM_ID, byValue};
 		default:
 			throw new IllegalArgumentException(byProperty + " is an unkown Property for " + this.getClass().getSimpleName());
 		}

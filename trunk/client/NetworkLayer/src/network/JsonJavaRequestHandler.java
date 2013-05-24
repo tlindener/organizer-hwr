@@ -34,11 +34,12 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * Verbindungsschnittstelle um Daten abzufragen. Eingabeobjekte werden verändert
- * und zurückgeliefert. Die Verwendung der generischen Vaterklasse ermöglicht,
- * dass clientseitig keine Cast-Befehle nötig sind. Die Schnittstelle benötigt
- * Informationen zu den JSON Objects und der Java Objects um ein Mapping
- * vornehmen zu können
+ * Interface to communicate with the server by using the REST/JSON API. Objects
+ * will be requested and filled by using the parameter objects set values (ID or
+ * Property). It is required, that the names of attributes in the implemented
+ * instances are named like the ones in the server objects. Just then the
+ * JSON-Parser will work. </br>
+ * Because of the abstract parent class and the usage of Java generic
  * 
  * @author Steffen Baumann
  * @version 1.0
@@ -98,21 +99,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@Override
 	public <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj) {
 
-		// Object result = null;
-		// if(obj instanceof CalendarEntry){
-		// result = data.getCalendarEntryById(obj.getID());
-		// }if(obj instanceof Calendar){
-		// result = data.getCalendarById(obj.getID());
-		// }if(obj instanceof Room){
-		// result = data.getRoomById(obj.getID());
-		// }if(obj instanceof User){
-		// result = data.getUserById(obj.getID());
-		// }
-		// if(result!=null){
-		// return (T)result;
-		// }else{
-		// return null;
-		// }
+		
 
 		String getCmd = Utils.buildGetByOwnIdCommand(obj);
 		getCmd = Utils.addUserAuth(getCmd, authString);
@@ -205,24 +192,6 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj) {
-
-		// Object result = null;
-		//
-		// if(obj instanceof CalendarEntry){
-		// result = data.getAllCalendarEntries();
-		// }if(obj instanceof Calendar){
-		// result = data.getAllCalendar();
-		// }if(obj instanceof Room){
-		// result = data.getAllRooms();
-		// }if(obj instanceof User){
-		// result = data.getAllUser();
-		// }
-		// if(result!=null){
-		// return (List<T>)result;
-		// }else{
-		// return null;
-		// }
-
 		try {
 			String getCmd = Utils.buildGetAllCommand(obj);
 			String json = sendGetToServer(getCmd);
@@ -398,12 +367,19 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		}
 		return false;
 	}
+
 	/**
 	 * Requests a {@link User} for the given mail address and password. <br>
-	 * The credentials will be stored to ensure an authentication by a combination of the mail address and password. 
-	 * @param mail plain text
-	 * @param password plain text password, which will be hashed, ASCII-based and Base64 encoded for the transmission
-	 * @return the {@link User} linked to the given credentials or null, if such a user does not exist.
+	 * The credentials will be stored to ensure an authentication by a
+	 * combination of the mail address and password.
+	 * 
+	 * @param mail
+	 *            plain text
+	 * @param password
+	 *            plain text password, which will be hashed, ASCII-based and
+	 *            Base64 encoded for the transmission
+	 * @return the {@link User} linked to the given credentials or null, if such
+	 *         a user does not exist.
 	 */
 	@Override
 	public User login(String mail, String password) {

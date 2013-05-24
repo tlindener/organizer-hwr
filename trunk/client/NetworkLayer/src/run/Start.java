@@ -101,6 +101,11 @@ public class Start {
 		calendarEntry = requester.addObject(calendarEntry);
 		System.out.println(calendarEntry);
 		
+		CalendarEntry entry = new CalendarEntry();
+		entry.setRequestProperty(CalendarEntry.OWNER_ID, ""+1);
+		
+		List<CalendarEntry> entries = requester.requestAllObjectsByProperty(entry);
+		
 		
 		
 		

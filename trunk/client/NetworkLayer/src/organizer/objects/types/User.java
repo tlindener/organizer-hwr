@@ -47,7 +47,7 @@ public class User extends AbstractOrganizerObject {
 		return givenName;
 	}
 	/**
-	 * @param givenname the givenName to set
+	 * @param givenName the givenName to set
 	 */
 	public void setGivenname(String givenName) {
 		this.givenName = givenName;
@@ -113,7 +113,7 @@ public class User extends AbstractOrganizerObject {
 		this.inviteIds = inviteIds;
 	}
 	@Override
-	public String getProperty() throws IllegalArgumentException {
+	public String[] getProperty() throws IllegalArgumentException {
 		throw new IllegalArgumentException("No available Property for " + getClass().getSimpleName());
 	}
 

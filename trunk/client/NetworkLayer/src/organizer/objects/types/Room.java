@@ -61,7 +61,7 @@ public class Room extends AbstractOrganizerObject {
 	}
 	
 	@Override
-	public String getProperty() throws IllegalArgumentException {
+	public String[] getProperty() throws IllegalArgumentException {
 		throw new IllegalArgumentException("No available Property for " + getClass().getSimpleName());
 	}
 }
