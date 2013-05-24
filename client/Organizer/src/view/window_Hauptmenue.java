@@ -120,6 +120,7 @@ public class window_Hauptmenue extends JFrame {
 		// Kalender Konfiguration
 		cali = new JCalendar();
 		cali.addPropertyChangeListener(myPCL);
+	
 		GridBagConstraints gbc_cali = new GridBagConstraints();
 		gbc_cali.anchor = GridBagConstraints.NORTHWEST;
 		gbc_cali.insets = new Insets(0, 0, 5, 5);

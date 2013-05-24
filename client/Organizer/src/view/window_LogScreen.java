@@ -25,8 +25,26 @@ public class window_LogScreen extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
+	
+	public JTextField getTextField() {
+		return textField;
+	}
+
+	public void setTextField(JTextField textField) {
+		this.textField = textField;
+	}
+
+	public JPasswordField getPasswort() {
+		return passwort;
+	}
+
+	public void setPasswort(JPasswordField passwort) {
+		this.passwort = passwort;
+	}
+
 	private JPasswordField passwort;
 	private JButton btnAnmelden;
+	
 	private JMenuBar menuBar;
 	private JMenu mnEinstellungen;
 	private JMenuItem mntmServerkonfigurationen;
@@ -40,6 +58,15 @@ public class window_LogScreen extends JFrame {
 	}
 
 	private ActionListener myAL;
+	private JButton btnRegistrieren;
+
+	public JButton getBtnRegistrieren() {
+		return btnRegistrieren;
+	}
+
+	public void setBtnRegistrieren(JButton btnRegistrieren) {
+		this.btnRegistrieren = btnRegistrieren;
+	}
 
 	/**
 	 * Launch the application.
@@ -54,7 +81,7 @@ public class window_LogScreen extends JFrame {
 	 */
 	public void init() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 456, 308);
 		
 		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -69,14 +96,15 @@ public class window_LogScreen extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{78, 248, 0, 0};
+		gbl_contentPane.columnWidths = new int[]{78, 135, 136,78, 0};
 		gbl_contentPane.rowHeights = new int[]{56, 0, 0, 0, 0, 0, 0, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
-		JLabel lblBenutzername = new JLabel("Benutzername");
+		JLabel lblBenutzername = new JLabel("Email-Adresse");
 		GridBagConstraints gbc_lblBenutzername = new GridBagConstraints();
+		gbc_lblBenutzername.gridwidth = 2;
 		gbc_lblBenutzername.anchor = GridBagConstraints.WEST;
 		gbc_lblBenutzername.insets = new Insets(0, 0, 5, 5);
 		gbc_lblBenutzername.gridx = 1;
@@ -85,6 +113,7 @@ public class window_LogScreen extends JFrame {
 		
 		textField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
+		gbc_textField.gridwidth = 2;
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 1;
@@ -94,6 +123,7 @@ public class window_LogScreen extends JFrame {
 		
 		JLabel lblPasswort = new JLabel("Passwort");
 		GridBagConstraints gbc_lblPasswort = new GridBagConstraints();
+		gbc_lblPasswort.gridwidth = 2;
 		gbc_lblPasswort.anchor = GridBagConstraints.WEST;
 		gbc_lblPasswort.insets = new Insets(0, 0, 5, 5);
 		gbc_lblPasswort.gridx = 1;
@@ -102,6 +132,7 @@ public class window_LogScreen extends JFrame {
 		
 		passwort = new JPasswordField();
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
+		gbc_textField_1.gridwidth = 2;
 		gbc_textField_1.insets = new Insets(0, 0, 5, 5);
 		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_1.gridx = 1;
@@ -111,9 +142,17 @@ public class window_LogScreen extends JFrame {
 		
 		btnAnmelden = new JButton("Anmelden");
 		btnAnmelden.addActionListener(myAL);
+		
+		btnRegistrieren = new JButton("Registrieren");
+		btnRegistrieren.addActionListener(myAL);
+		GridBagConstraints gbc_btnRegistrieren = new GridBagConstraints();
+		gbc_btnRegistrieren.insets = new Insets(0, 0, 0, 5);
+		gbc_btnRegistrieren.gridx = 1;
+		gbc_btnRegistrieren.gridy = 6;
+		contentPane.add(btnRegistrieren, gbc_btnRegistrieren);
 		GridBagConstraints gbc_btnAnmelden = new GridBagConstraints();
 		gbc_btnAnmelden.insets = new Insets(0, 0, 0, 5);
-		gbc_btnAnmelden.gridx = 1;
+		gbc_btnAnmelden.gridx = 2;
 		gbc_btnAnmelden.gridy = 6;
 		contentPane.add(btnAnmelden, gbc_btnAnmelden);
 	}
