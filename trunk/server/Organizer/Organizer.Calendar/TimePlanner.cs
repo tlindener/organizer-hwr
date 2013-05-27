@@ -31,7 +31,7 @@ namespace Organizer
         public TimePlanner()
         {
             XmlConfigurator.Configure();
-            _logger = LogManager.GetLogger(typeof (TimePlanner));
+            _logger = LogManager.GetLogger(typeof(TimePlanner));
 
             _calendarDatabase = new CalendarContext();
         }
@@ -224,15 +224,14 @@ namespace Organizer
         /// <summary>
         ///     Removes entry from calendar
         /// </summary>
-        /// <param name="calendarId"></param>
-        /// <param name="entryId"></param>
+        /// <param name="calendarEntryId"></param>
         /// <returns></returns>
-        public bool RemoveCalendarEntry(int entryId)
+        public bool RemoveCalendarEntry(int calendarEntryId)
         {
             try
             {
                 //checks if calendar and entry is available
-                CalendarEntry entry = _calendarDatabase.CalendarEntries.Find(entryId);
+                CalendarEntry entry = _calendarDatabase.CalendarEntries.Find(calendarEntryId);
                 Calendar calendar = _calendarDatabase.Calendar.Find(entry.CalendarId);
                 if (entry == null && calendar == null)
                 {
@@ -557,7 +556,7 @@ namespace Organizer
             _calendarDatabase.SaveChanges();
             return invite.CalendarEntry.CalendarEntryId;
         }
-        
+
         /// <summary>
         ///     Accepts the invitation from the invited user and returns the calendarEntryId for the accepting user
         /// </summary>
@@ -602,26 +601,19 @@ namespace Organizer
         /// <summary>
         ///     Removes a person from list invited people in calendar entry and from table Invites
         /// </summary>
-        /// <param name="calendarEntryId"></param>
-        /// <param name="userId"></param>
+        /// <param name="inviteId"></param>
         /// <returns></returns>
-        public bool RemoveInvite(int calendarEntryId, int userId)
+        public bool RemoveInvite(int inviteId)
         {
-            CalendarEntry calendarEntry = _calendarDatabase.CalendarEntries.Find(calendarEntryId);
-            User user = _calendarDatabase.User.Find(userId);
-            if (calendarEntry == null || user == null)
-            {
-                return false;
-            }
-            calendarEntry.Invitees.Remove(user);
-            List<Invite> invitees =
-                _calendarDatabase.Invites.Where(p => p.CalendarEntry == calendarEntry && p.Owner == user).ToList();
 
-            if (invitees.Count != 1)
+            var invite = _calendarDatabase.Invites.Find(inviteId);
+
+            if (invite == null)
             {
                 return false;
             }
-            _calendarDatabase.Invites.Remove(invitees.First());
+
+            _calendarDatabase.Invites.Remove(invite);
             _calendarDatabase.SaveChanges();
             return true;
         }
@@ -647,7 +639,7 @@ namespace Organizer
 
 
 
- 
+
     }
 
     /// <summary>

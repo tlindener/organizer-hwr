@@ -45,6 +45,11 @@ namespace Organizer
             hash = Encoding.ASCII.GetString(result);
             return hash;
         }
+        /// <summary>
+        /// Decodes Base64 string
+        /// </summary>
+        /// <param name="encodedData"></param>
+        /// <returns></returns>
         public static string DecodeFrom64(string encodedData)
         {
             byte[] encodedDataAsBytes
@@ -53,6 +58,11 @@ namespace Organizer
                System.Text.ASCIIEncoding.ASCII.GetString(encodedDataAsBytes);
             return returnValue;
         }
+        /// <summary>
+        /// Encode string to Base64
+        /// </summary>
+        /// <param name="toEncode"></param>
+        /// <returns></returns>
         static public string EncodeTo64(string toEncode)
         {
             byte[] toEncodeAsBytes
