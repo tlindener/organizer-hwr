@@ -96,6 +96,23 @@ namespace Organizer
             return null;
         }
 
+        /// <summary>
+        ///     Removes specified calendar
+        /// </summary>
+        /// <param name="calendarId"></param>
+        /// <returns></returns>
+        public bool RemoveCalendar(int calendarId)
+        {
+            Calendar calendar = _calendarDatabase.Calendar.Find(calendarId);
+            if (calendar == null)
+            {
+                return false;
+            }
+            _calendarDatabase.Calendar.Remove(calendar);
+            _calendarDatabase.SaveChanges();
+            return true;
+        }
+
         #endregion
 
         #region CalendarEntry
@@ -186,6 +203,25 @@ namespace Organizer
         }
 
         /// <summary>
+        ///     Change specified room in calendar entry
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="calendarEntryId"></param>
+        /// <returns></returns>
+        public bool ChangeRoomForCalendarEntry(int roomId, int calendarEntryId)
+        {
+            Room room = _calendarDatabase.Rooms.Find(roomId);
+            CalendarEntry calendarEntry = _calendarDatabase.CalendarEntries.Find(calendarEntryId);
+            if (room == null || calendarEntry == null)
+            {
+                return false;
+            }
+            calendarEntry.Room = room;
+            _calendarDatabase.SaveChanges();
+            return true;
+        }
+
+        /// <summary>
         ///     Removes entry from calendar
         /// </summary>
         /// <param name="calendarId"></param>
@@ -249,7 +285,48 @@ namespace Organizer
             }
             return null;
         }
+        /// <summary>
+        ///     Adds a user to database
+        /// </summary>
+        /// <param name="dbUser"></param>
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
+        public int AddUser(User dbUser)
+        {
+            var users = this.GetAllUser();
+            if (users.Where(p => p.MailAddress == dbUser.MailAddress).Count() > 0)
+            {
+                return 0;
+            }
 
+            try
+            {
+                _calendarDatabase.User.Add(dbUser);
+                _calendarDatabase.SaveChanges();
+                return dbUser.UserId;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return 0;
+        }
+
+        /// <summary>
+        ///     Removes specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool RemoveUser(int userId)
+        {
+            User user = _calendarDatabase.User.Find(userId);
+            if (user == null)
+            {
+                return false;
+            }
+            _calendarDatabase.User.Remove(user);
+            _calendarDatabase.SaveChanges();
+            return true;
+        }
         #endregion
 
         #region Rooms
@@ -271,6 +348,43 @@ namespace Organizer
         public Room GetRoomById(int roomId)
         {
             return _calendarDatabase.Rooms.Find(roomId);
+        }
+
+        /// <summary>
+        ///     Adds a room to database
+        /// </summary>
+        /// <param name="dbRoom"></param>
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
+        public int AddRoom(Room dbRoom)
+        {
+            try
+            {
+                _calendarDatabase.Rooms.Add(dbRoom);
+                _calendarDatabase.SaveChanges();
+                return dbRoom.RoomId;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return 0;
+        }
+
+        /// <summary>
+        ///     Removes specified room
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
+        public bool RemoveRoom(int roomId)
+        {
+            Room room = _calendarDatabase.Rooms.Find(roomId);
+            if (room == null)
+            {
+                return false;
+            }
+            _calendarDatabase.Rooms.Remove(room);
+            _calendarDatabase.SaveChanges();
+            return true;
         }
 
         #endregion
@@ -335,54 +449,6 @@ namespace Organizer
             return null;
         }
 
-        #endregion
-
-        /// <summary>
-        ///     Adds a user to database
-        /// </summary>
-        /// <param name="dbUser"></param>
-        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
-        public int AddUser(User dbUser)
-        {
-            var users = this.GetAllUser();
-            if (users.Where(p => p.MailAddress == dbUser.MailAddress).Count() > 0)
-            {
-                return 0;
-            }
-
-            try
-            {
-                _calendarDatabase.User.Add(dbUser);
-                _calendarDatabase.SaveChanges();
-                return dbUser.UserId;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.ToString());
-            }
-            return 0;
-        }
-
-        /// <summary>
-        ///     Adds a room to database
-        /// </summary>
-        /// <param name="dbRoom"></param>
-        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
-        public int AddRoom(Room dbRoom)
-        {
-            try
-            {
-                _calendarDatabase.Rooms.Add(dbRoom);
-                _calendarDatabase.SaveChanges();
-                return dbRoom.RoomId;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.ToString());
-            }
-            return 0;
-        }
-
         /// <summary>
         ///     Adds a group to database
         /// </summary>
@@ -401,91 +467,6 @@ namespace Organizer
                 _logger.Error(ex.ToString());
             }
             return 0;
-        }
-
-        /// <summary>
-        ///     Accepts the invitation from the invited user and returns the calendarEntryId for the accepting user
-        /// </summary>
-        /// <param name="inviteId"></param>
-        /// <returns></returns>
-        public int AcceptInvite(int inviteId)
-        {
-            Invite invite = _calendarDatabase.Invites.Find(inviteId);
-            invite.CalendarEntry.Owner = invite.Owner;
-            invite.Accepted = true;
-            _calendarDatabase.CalendarEntries.Add(invite.CalendarEntry);
-            _calendarDatabase.SaveChanges();
-            return invite.CalendarEntry.CalendarEntryId;
-        }
-
-        /// <summary>
-        ///     Removes specified calendar
-        /// </summary>
-        /// <param name="calendarId"></param>
-        /// <returns></returns>
-        public bool RemoveCalendar(int calendarId)
-        {
-            Calendar calendar = _calendarDatabase.Calendar.Find(calendarId);
-            if (calendar == null)
-            {
-                return false;
-            }
-            _calendarDatabase.Calendar.Remove(calendar);
-            _calendarDatabase.SaveChanges();
-            return true;
-        }
-
-        /// <summary>
-        ///     Removes specified user
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public bool RemoveUser(int userId)
-        {
-            User user = _calendarDatabase.User.Find(userId);
-            if (user == null)
-            {
-                return false;
-            }
-            _calendarDatabase.User.Remove(user);
-            _calendarDatabase.SaveChanges();
-            return true;
-        }
-
-        /// <summary>
-        ///     Removes specified room
-        /// </summary>
-        /// <param name="roomId"></param>
-        /// <returns></returns>
-        public bool RemoveRoom(int roomId)
-        {
-            Room room = _calendarDatabase.Rooms.Find(roomId);
-            if (room == null)
-            {
-                return false;
-            }
-            _calendarDatabase.Rooms.Remove(room);
-            _calendarDatabase.SaveChanges();
-            return true;
-        }
-
-        /// <summary>
-        ///     Change specified room in calendar entry
-        /// </summary>
-        /// <param name="roomId"></param>
-        /// <param name="calendarEntryId"></param>
-        /// <returns></returns>
-        public bool ChangeRoomForCalendarEntry(int roomId, int calendarEntryId)
-        {
-            Room room = _calendarDatabase.Rooms.Find(roomId);
-            CalendarEntry calendarEntry = _calendarDatabase.CalendarEntries.Find(calendarEntryId);
-            if (room == null || calendarEntry == null)
-            {
-                return false;
-            }
-            calendarEntry.Room = room;
-            _calendarDatabase.SaveChanges();
-            return true;
         }
 
         /// <summary>
@@ -525,7 +506,6 @@ namespace Organizer
             _calendarDatabase.SaveChanges();
             return true;
         }
-
         /// <summary>
         ///     Removes specified group
         /// </summary>
@@ -543,6 +523,11 @@ namespace Organizer
             return true;
         }
 
+
+        #endregion
+
+
+        #region Invites
         /// <summary>
         ///     Get all invites of one user
         /// </summary>
@@ -556,6 +541,36 @@ namespace Organizer
                 return null;
             }
             return _calendarDatabase.Invites.Where(p => p.Owner == user).ToList();
+        }
+
+        /// <summary>
+        /// Declines the invite
+        /// </summary>
+        /// <param name="inviteId"></param>
+        /// <returns></returns>
+        public int DeclineInvite(int inviteId)
+        {
+            Invite invite = _calendarDatabase.Invites.Find(inviteId);
+            invite.CalendarEntry.Owner = invite.Owner;
+            invite.Accepted = -1;
+            _calendarDatabase.CalendarEntries.Add(invite.CalendarEntry);
+            _calendarDatabase.SaveChanges();
+            return invite.CalendarEntry.CalendarEntryId;
+        }
+        
+        /// <summary>
+        ///     Accepts the invitation from the invited user and returns the calendarEntryId for the accepting user
+        /// </summary>
+        /// <param name="inviteId"></param>
+        /// <returns></returns>
+        public int AcceptInvite(int inviteId)
+        {
+            Invite invite = _calendarDatabase.Invites.Find(inviteId);
+            invite.CalendarEntry.Owner = invite.Owner;
+            invite.Accepted = 1;
+            _calendarDatabase.CalendarEntries.Add(invite.CalendarEntry);
+            _calendarDatabase.SaveChanges();
+            return invite.CalendarEntry.CalendarEntryId;
         }
 
         /// <summary>
@@ -574,11 +589,11 @@ namespace Organizer
             }
             calendarEntry.Invitees.Add(user);
             var invite = new Invite
-                {
-                    Accepted = false,
-                    CalendarEntry = calendarEntry,
-                    Owner = user,
-                };
+            {
+                Accepted = 0,
+                CalendarEntry = calendarEntry,
+                Owner = user
+            };
             _calendarDatabase.Invites.Add(invite);
             _calendarDatabase.SaveChanges();
             return invite.InviteId;
@@ -610,6 +625,29 @@ namespace Organizer
             _calendarDatabase.SaveChanges();
             return true;
         }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
     }
 
     /// <summary>

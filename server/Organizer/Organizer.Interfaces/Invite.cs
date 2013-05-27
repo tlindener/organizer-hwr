@@ -17,7 +17,7 @@ namespace Organizer.Interfaces
        [Key]
        public int InviteId { get; set; }
        public virtual CalendarEntry CalendarEntry { get; set; }
-       public bool Accepted { get; set; }
+       public int Accepted { get; set; }
        public virtual User Owner {get; set;}
 
     }
