@@ -401,12 +401,12 @@ namespace Organizer.WebService
             return timeplanner.AddInvite(calendarEntryId, userId);
         }
 
-        public bool RemoveInvite(int calendarEntryId, int userId, string userAuth)
+        public bool RemoveInvite(int inviteId, string userAuth)
         {
             if (!ValidateUser(userAuth))
                 return false;
 
-            return timeplanner.RemoveInvite(calendarEntryId, userId);
+            return timeplanner.RemoveInvite(inviteId);
         }
         #endregion
 
