@@ -7,6 +7,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Group;
+import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
@@ -57,7 +59,7 @@ public class Utils {
 	 * @return the GET-Command for a login
 	 */
 	public static String buildLoginCommand(String mail, String password) {
-		String cmd = "Login?Mail=" + mail + "&Password="
+		String cmd = "Login?MailAddress=" + mail + "&Password="
 				+ encodeString(password);
 		return cmd;
 	}
@@ -169,6 +171,9 @@ public class Utils {
 			f.setAccessible(true);
 			try {
 				Object value = f.get(obj);
+				if(f.getName().equals("accepted")){
+					continue;
+				}
 				// if(value == null){
 				// //TODO Fehler anpassen
 				// throw new IllegalArgumentException("Darf nicht null sein");
@@ -176,7 +181,8 @@ public class Utils {
 				if (value instanceof List<?>) {
 					continue;
 				} else if (value instanceof String) {
-					parameters.add(f.getName() + "=" + "\"" + value + "\"");
+					parameters.add(f.getName() + "="
+							+ parseStringToHTTP((String)value));
 				} else if (value instanceof Date) {
 					parameters.add(f.getName() + "="
 							+ parseDateToNetDateTime((Date) value));
@@ -197,6 +203,9 @@ public class Utils {
 
 		return command;
 	}
+	
+	
+	
 //	/**
 //	 * 
 //	 * @param obj
@@ -213,24 +222,56 @@ public class Utils {
 //
 //	}
 
-//	private static boolean iterateThroughFields(Field[] fields, String fieldName) {
-//		for (Field f : fields) {
-//			if (f.getName().equalsIgnoreCase(fieldName)) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
+	private static String parseStringToHTTP(String value) {
+		value = value.replaceAll(" ", "%20");
+		return value;
+	}
+
+	public static String buildAcceptCommand(int inviteId){
+		return "AcceptInvite?inviteId="+inviteId;
+	}
+	
 	/**
 	 * Parses the Java-Date into a JSON value representing an C#-DateTime object
 	 * @param date
 	 * @return String representation of C#-DateTime
 	 */
 	public static String parseDateToNetDateTime(Date date) {
-		return "\\/Date(" + date.getTime() + "+0000)\\/";
+		java.util.Calendar c = new GregorianCalendar();
+		c.setTime(date);
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append(c.get(java.util.Calendar.YEAR));
+		builder.append("-");
+		builder.append(doubleDigitInt(c.get(java.util.Calendar.MONTH)));
+		builder.append("-");
+		builder.append(doubleDigitInt(c.get(java.util.Calendar.DAY_OF_MONTH)));
+		builder.append("T");
+		builder.append(doubleDigitInt(c.get(java.util.Calendar.HOUR_OF_DAY)));
+		builder.append(":");
+		builder.append(doubleDigitInt(c.get(java.util.Calendar.MINUTE)));
+		builder.append(":");
+		builder.append(doubleDigitInt(c.get(java.util.Calendar.SECOND)));
+		builder.append(".");
+		builder.append(c.get(java.util.Calendar.MILLISECOND));
+		//TODO FIX TIME-OFFSET
+		builder.append("-");
+		builder.append("00:00");
+		
+//		2008-11-01T19:35:00.0000000-07:00
+		
+		return builder.toString();
 	}
 
+	private static String doubleDigitInt(int i){
+		if(i < 10){
+			return "0"+i;
+		}else return ""+i;
+	}
+	
 	public static void main(String[] args) {
+		System.out.println(parseStringToHTTP("Das ist ein Test"));
 		System.out.println(encodeString("Test"));
+		System.out.println(parseDateToNetDateTime(new Date())); 
 	}
 }

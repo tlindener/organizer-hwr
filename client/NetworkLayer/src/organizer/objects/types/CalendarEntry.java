@@ -22,13 +22,13 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	public static final String OWNER_ID = "OwnerId";
 	public static final String ROOM_ID = "RoomId";
 	
-	/** start date of this entry*/
+	/** start date of this entry */
 	private Date startDate = null;
-	/** end date of this entry*/
+	/** end date of this entry */
 	private Date endDate = null;
-	/** title of this entry*/
+	/** title of this entry */
 	private String title = "";
-	/** description of this entry*/
+	/** description of this entry */
 	private String description = "";
 	/** the user id owning this entry */
 	private int ownerId = -1;

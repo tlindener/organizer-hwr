@@ -5,10 +5,12 @@ import java.util.List;
 
 import network.JsonJavaRequestHandler;
 import network.RequestHandler;
+import network.objects.Utils;
 
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Group;
+import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
@@ -22,131 +24,112 @@ import organizer.objects.types.User;
 public class Start {
 	
 	public Start() {
-		
-		
-//		Schnittstelle für Jenny um Objekte zu erfragen
+//		
+//		
+////		Schnittstelle für Jenny um Objekte zu erfragen
 		RequestHandler requester = new JsonJavaRequestHandler("localhost", 48585);
 		
-		List<Calendar> ces = requester.requestAllObjects(new Calendar());
-		for(Calendar ce: ces){
-			System.out.println(ce);
-		}
-		
-		System.out.println("CalendarEntries");
-		CalendarEntry requestEntry = new CalendarEntry();
-		requestEntry.setOwnerId(1);
-		requestEntry.setRequestProperty(CalendarEntry.OWNER_ID, ""+requestEntry.getOwnerId());
-		List<CalendarEntry> es = requester.requestAllObjectsByProperty(requestEntry);
-		for(CalendarEntry e:es){
-			System.out.println(e);
-		}
-		
-		//Gruppe Abfragen mit
-		System.out.println("Groups");
-		Group requestGroup = new Group();
-		requestGroup.setRequestProperty(Group.USER_ID, "1");
-		List<Group> gs = requester.requestAllObjectsByProperty(requestGroup);
-		for(Group g:gs){
-			System.out.println(g);
-		}
-
-		//Add Objects
 		User user = new User();
+		user.setMailAddress("steffen.baumann@localhost.de");
 		user.setGivenname("Steffen");
 		user.setSurname("Baumann");
-		user.setMailAddress("test@gmx.de");
-		user.setPhoneNumber("030/1234567");
+		user.setPhoneNumber("666666666");
 		
-		Calendar calendar = new Calendar();
-		calendar.setDescription("privater Test");
-		calendar.setName("Steffens Kalender");
-		calendar.setOwnerId(1);
+		User user2 = new User();
+		user2.setMailAddress("tobias.lindener@localhost.de");
+		user2.setGivenname("Tobias");
+		user2.setSurname("Lindener");
+		user2.setPhoneNumber("555555555");
 		
-		Room room = new Room();
-		room.setDescription("Raum1");
-		room.setLocation("Berlin");
-		room.setSeats(17);
-				
-		CalendarEntry calendarEntry = new CalendarEntry();
-		calendarEntry.setCalendarId(1);
-		calendarEntry.setStartDate(new Date());
-		calendarEntry.setDescription("Test");
-		calendarEntry.setTitle("TestTermin");
-		calendarEntry.setRoomId(1);
-		calendarEntry.setOwnerId(1);
-		calendarEntry.setEndDate(new Date());
+		User user3 = new User();
+		user3.setMailAddress("svenja.möhring@localhost.de");
+		user3.setGivenname("Svenja");
+		user3.setSurname("Möhring");
+		user3.setPhoneNumber("777777777");
 		
-		Group group = new Group();
-		group.setDescription("Testgruppe");
+		User u = requester.registerNewUser(user, "123456");
+		User u2 = requester.registerNewUser(user2, "123456");
+		User u3 = requester.registerNewUser(user3, "123456");
 		
-		System.out.println("Add");
-		try{
-			requester.addObject(user);
-		}catch(UnsupportedOperationException ex){
-			System.err.println("GEPLANTE EXCEPTION");
-			ex.printStackTrace();
+		
+		System.out.println("Log in " +u.getID());
+		User loggedInUser = requester.login(u.getMailAddress(), "123456");
+		
+		Calendar ca = new Calendar();
+		ca.setOwnerId(loggedInUser.getID());
+		ca.setDescription("Infos%20von%20undfuer" + loggedInUser.getGivenName());
+		ca.setName(loggedInUser.getGivenName()+"sCalendar");
+
+		Calendar c = requester.addObject(ca);
+		
+		System.out.println("Log in " +u2.getID());
+		loggedInUser = requester.login(u2.getMailAddress(), "123456");
+		
+		Calendar ca2 = new Calendar();
+		ca2.setOwnerId(loggedInUser.getID());
+		ca2.setDescription("Infos%20von%20undfuer" + loggedInUser.getGivenName());
+		ca2.setName(loggedInUser.getGivenName()+"sCalendar");
+		
+		Calendar c2 = requester.addObject(ca2);
+		
+		System.out.println("Log in " +u3.getID());
+		loggedInUser = requester.login(u3.getMailAddress(), "123456");
+		
+		Calendar ca3 = new Calendar();
+		ca3.setOwnerId(loggedInUser.getID());
+		ca3.setDescription("Infos%20von%20undfuer" + loggedInUser.getGivenName());
+		ca3.setName(loggedInUser.getGivenName()+"sCalendar");
+
+		Calendar c3 = requester.addObject(ca3);
+		
+		System.out.println("Log in " +u.getID());
+		loggedInUser = requester.login(u.getMailAddress(), "123456");	
+		
+		CalendarEntry ce = new CalendarEntry();
+		ce.setStartDate(new Date());
+		ce.setDescription(loggedInUser.getGivenName() +"sTermin");
+		ce.setTitle("Testterminvon%20" + loggedInUser.getGivenName());
+		ce.setRoomId(1);
+		ce.setOwnerId(loggedInUser.getID());
+		ce.setCalendarId(c.getID());
+		ce.setEndDate(new Date());
+		
+		CalendarEntry ce1 = requester.addObject(ce);
+		
+		Invite i = new Invite();
+		i.setCalendarEntryId(ce1.getID());
+		i.setOwnerId(u2.getID());
+		
+		i = requester.addObject(i);
+		
+		Invite i2 = new Invite();
+		i2.setCalendarEntryId(ce1.getID());
+		i2.setOwnerId(u3.getID());
+		
+		i2 = requester.addObject(i2);
+		
+		System.out.println("Log in user 2");
+		loggedInUser = requester.login(u2.getMailAddress(), "123456");
+		
+		System.out.println("Accept Invites");
+		for(int invite: loggedInUser.getInviteIds()){
+			requester.acceptInvite(invite);
 		}
 		
-		System.out.println("Register user");
-		user = requester.registerNewUser(user,  "123456789");
-		System.out.println(user);
-		
-		System.out.println("Add");
-		group = requester.addObject(group);
-		System.out.println(group);
-		room = requester.addObject(room);
-		System.out.println(room);
-		calendar = requester.addObject(calendar);
-		System.out.println(calendar);
-		calendarEntry = requester.addObject(calendarEntry);
-		System.out.println(calendarEntry);
-		
-		CalendarEntry entry = new CalendarEntry();
-		entry.setRequestProperty(CalendarEntry.OWNER_ID, ""+1);
-		
-		List<CalendarEntry> entries = requester.requestAllObjectsByProperty(entry);
+		System.out.println("Remove Entries with RoomID=1 from current User");
+		CalendarEntry room1Entry = new CalendarEntry();
+		room1Entry.setRequestProperty(CalendarEntry.ROOM_ID, ""+1);
+		List<CalendarEntry> entries = requester.requestAllObjectsByProperty(room1Entry);
+		boolean result = false;
+		for(CalendarEntry e: entries){
+			System.out.println("TerminID "+e.getID());
+			if(e.getOwnerId() == loggedInUser.getID()){
+				result = requester.removeObjectByOwnId(e);
+			}
+		}
+		System.out.println("Result remove CalendarEntry: " +result);
 		
 		
-		
-		
-		
-//		Calendar c = new Calendar();
-//		c.setID(1);
-//		c = requester.requestObjectByOwnId(c);
-//		System.out.println(c);
-//		
-//		CalendarEntry ce = new CalendarEntry();
-//		ce.setID(1);
-//		ce = requester.requestObjectByOwnId(ce);
-//		System.out.println(c);
-//		
-//		
-//		CalendarEntry ce_add = new CalendarEntry();
-//		ce_add.setCalendarId(1);
-//		ce_add.setDescription("Test");
-//		ce_add.setDuration(30.0);
-//		ce_add.setOwnerId(1);
-//		ce_add.setRoomId(1);
-//		ce_add.setTitle("Testtitel");
-//		ce_add.setStartDate(new Date());
-//		ce_add.setEndDate(new Date());
-//		
-//		requester.addElement(ce_add);
-		
-//		CalendarEntry request_ce = new CalendarEntry();
-//		request_ce.setID(1);
-//
-//		CalendarEntry ce = requester.requestObjectByOwnId(request_ce);
-//		System.out.println(ce);
-//		
-//		List<Room> rooms = requester.requestAllObjects(new Room());
-//		System.out.println(rooms);
-//		
-//		List<User> user = requester.requestObjects(new User(), new ByProperty("id",2));
-//		System.out.println(user);
-//		
-//		List<CalendarEntry> entries = requester.requestObjects(new CalendarEntry(), new ByProperty("title","Testtermin"));
-//		System.out.println(entries);
 	}
 
 	/**

@@ -98,9 +98,6 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj) {
-
-		
-
 		String getCmd = Utils.buildGetByOwnIdCommand(obj);
 		getCmd = Utils.addUserAuth(getCmd, authString);
 		String json = sendGetToServer(getCmd);
@@ -298,7 +295,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 					"The mail address must not be empty or null");
 		try {
 			String getCmd = Utils.buildAddCommand(user);
-			getCmd += "&password=\"" + Utils.encodeString(password) + "\"";
+			getCmd += "&password=" + Utils.encodeString(password)+"";
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
 			if (id == null || id == -1)
@@ -383,15 +380,30 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 */
 	@Override
 	public User login(String mail, String password) {
-		authString = generateAuthenticationString(mail, password);
+		
 		String cmd = Utils.buildLoginCommand(mail, password);
 		String json = sendGetToServer(cmd);
 		try {
-			return (User) gson.fromJson(json, User.class);
+			User user = (User) gson.fromJson(json, User.class);
+			authString = generateAuthenticationString(user.getID(), mail, password);
+			return user;
 		} catch (JsonSyntaxException ex) {
 			ex.printStackTrace();
 		}
 		return null;
 	}
 
+	@Override
+	public int acceptInvite(int inviteId) {
+		String getCmd = Utils.buildAcceptCommand(inviteId);
+		getCmd = Utils.addUserAuth(getCmd, authString);
+		String json = sendGetToServer(getCmd);
+		try {
+			return (int) gson.fromJson(json, int.class);
+		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
+		}
+		return -1;
+	}
+	
 }
