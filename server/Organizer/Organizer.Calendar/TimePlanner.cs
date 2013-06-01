@@ -43,22 +43,33 @@ namespace Organizer
         /// </summary>
         /// <param name="calendar"></param>
         /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
-        public int AddCalendar(Calendar calendar)
+        public int AddCalendar(int ownerId, string name, string description)
         {
-            if (Utils.IsCalendarValid(calendar))
-            {
+            
                 try
                 {
-                    _calendarDatabase.Calendar.Add(calendar);
+                    User owner = _calendarDatabase.User.Find(ownerId);
+                    if(owner == null)
+                    return 0;
+
+
+                    Calendar cal = new Calendar()
+                    {
+                        Owner = owner,
+                        Name = name,
+                        Description = description
+                    };
+
+                    _calendarDatabase.Calendar.Add(cal);
                     _calendarDatabase.SaveChanges();
-                    return calendar.CalendarId;
+                    return cal.CalendarId;
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex.ToString());
                 }
-            }
-            return 0;
+                return 0;
+            
         }
 
         /// <summary>
@@ -292,7 +303,8 @@ namespace Organizer
         public int AddUser(User dbUser)
         {
             var users = this.GetAllUser();
-            if (users.Where(p => p.MailAddress == dbUser.MailAddress).Count() > 0)
+
+            if (users != null && users.Where(p => p.MailAddress == dbUser.MailAddress).Count() > 0)
             {
                 return 0;
             }
