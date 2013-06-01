@@ -36,7 +36,8 @@ namespace Organizer.WebService
             {
                 var hash = Utils.getSHA512Hash(user.MailAddress);
                 var base64String = Utils.EncodeTo64(hash);
-                if (authentication[1] == (base64String + user.Password))
+                var authenticationString = base64String + user.Password;
+                if (authentication[1] == authenticationString)
                 {
                     return true;
                 }

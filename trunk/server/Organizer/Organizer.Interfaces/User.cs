@@ -20,16 +20,12 @@ namespace Organizer.Interfaces
         [Key]
      
         public int UserId { get; set; }
-        [Required]
-       
+        [Required]       
         public string GivenName { get; set; }
-        [Required]
-    
+        [Required]    
         public string Surname { get; set; }
-        [Required]
-       
+        [Required]       
         public string MailAddress { get; set; }
-        [Required]  
         public string PhoneNumber { get; set; }
 
 
