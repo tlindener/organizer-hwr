@@ -51,8 +51,10 @@ namespace Organizer.Interfaces
                 return EndDate.Subtract(StartDate).TotalMinutes;
             }
         }
+
+        public int OwnerId { get; set; }
         public virtual User Owner { get; set; }
-        public int? CalendarId { get; set; }
+        public int CalendarId { get; set; }
         public virtual Calendar Calendar { get; set; }
         public virtual Room Room { get; set; }
     }

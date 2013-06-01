@@ -28,6 +28,8 @@ namespace Organizer.Interfaces
         public string MailAddress { get; set; }
         public string PhoneNumber { get; set; }
 
+        public virtual Calendar Calendar { get; set; }
+        public int? CalendarId { get; set; }
 
         //SHA512Hashed
 

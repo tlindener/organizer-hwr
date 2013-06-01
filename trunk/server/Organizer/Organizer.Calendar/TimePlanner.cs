@@ -45,31 +45,34 @@ namespace Organizer
         /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         public int AddCalendar(int ownerId, string name, string description)
         {
-            
-                try
-                {
-                    User owner = _calendarDatabase.User.Find(ownerId);
-                    if(owner == null)
+
+            try
+            {
+                User owner = _calendarDatabase.User.Find(ownerId);
+                if (owner == null)
                     return 0;
-
-
-                    Calendar cal = new Calendar()
-                    {
-                        Owner = owner,
-                        Name = name,
-                        Description = description
-                    };
-
-                    _calendarDatabase.Calendar.Add(cal);
-                    _calendarDatabase.SaveChanges();
-                    return cal.CalendarId;
-                }
-                catch (Exception ex)
+                if (owner.Calendar != null)
                 {
-                    _logger.Error(ex.ToString());
+                    return owner.Calendar.CalendarId;
                 }
-                return 0;
-            
+
+                Calendar cal = new Calendar()
+                {
+                    Owner = owner,
+                    Name = name,
+                    Description = description
+                };
+
+                _calendarDatabase.Calendar.Add(cal);
+                _calendarDatabase.SaveChanges();
+                return cal.CalendarId;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return 0;
+
         }
 
         /// <summary>
@@ -204,7 +207,7 @@ namespace Organizer
                 {
                     return null;
                 }
-                return _calendarDatabase.CalendarEntries.Where(p => p.Room == room).ToList();
+                return _calendarDatabase.CalendarEntries.Where(p => p.Room.RoomId == room.RoomId).ToList();
             }
             catch (Exception ex)
             {
@@ -539,6 +542,19 @@ namespace Organizer
 
 
         #region Invites
+
+        /// <summary>
+        /// Retuns invite by specified id
+        /// </summary>
+        /// <param name="inviteId"></param>
+        /// <returns></returns>
+        public Invite GetInviteById(int inviteId)
+        {
+            Invite invite = _calendarDatabase.Invites.Find(inviteId);
+            return invite;
+        }
+
+
         /// <summary>
         ///     Get all invites of one user
         /// </summary>
@@ -577,11 +593,17 @@ namespace Organizer
         public int AcceptInvite(int inviteId)
         {
             Invite invite = _calendarDatabase.Invites.Find(inviteId);
-            invite.CalendarEntry.Owner = invite.Owner;
             invite.Accepted = 1;
-            _calendarDatabase.CalendarEntries.Add(invite.CalendarEntry);
-            _calendarDatabase.SaveChanges();
-            return invite.CalendarEntry.CalendarEntryId;
+            var calendar = GetCalendarByOwner(invite.Owner.UserId);
+            var ce = invite.CalendarEntry;
+            int userId = invite.Owner.UserId;
+            if (calendar != null)
+            {
+                return AddCalendarEntry(ce.Title, ce.Description, ce.StartDate, ce.EndDate, userId, ce.Room.RoomId, calendar.CalendarId);
+            }
+            return 0;
+
+
         }
 
         /// <summary>
@@ -634,6 +656,39 @@ namespace Organizer
 
 
 
+        private int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId)
+        {
+
+            var owner = GetUserById(ownerId);
+            var room = GetRoomById(roomId);
+            var calendar = GetCalendarById(calendarId);
+
+            CalendarEntry calendarEntry = new CalendarEntry()
+            {
+                Description = description,
+                Title = title,
+                StartDate = startDate,
+                EndDate = endDate,
+                Calendar = calendar,
+                CalendarId = calendarId,
+                Owner = owner,
+                Room = room
+
+
+            };
+            return AddCalendarEntry(calendarEntry);
+        }
+
+        private Calendar GetCalendarByOwner(int ownerId)
+        {
+            var calendar = _calendarDatabase.Calendar.Where(p => p.Owner.UserId == ownerId);
+
+            if (calendar != null && calendar.Count() > 0)
+            {
+                return calendar.First();
+            }
+            return null;
+        }
 
 
 
@@ -688,5 +743,40 @@ namespace Organizer
         ///     DBSet of all Invites
         /// </summary>
         public DbSet<Invite> Invites { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            //modelBuilder.Entity<CalendarEntry>()
+            // .HasRequired(a => a.Calendar)
+            // .WithMany()
+            // .HasForeignKey(u => u.CalendarId);
+            //modelBuilder.Entity<CalendarEntry>()
+            //   .HasRequired(a => a.Calendar)
+            //   .WithMany()
+            //   .HasForeignKey(u => u.CalendarId).WillCascadeOnDelete(false);
+
+
+
+
+            modelBuilder.Entity<CalendarEntry>()
+                        .HasRequired(a => a.Owner)
+                        .WithMany()
+                        .HasForeignKey(u => u.OwnerId);
+            modelBuilder.Entity<CalendarEntry>()
+               .HasRequired(a => a.Owner)
+               .WithMany()
+               .HasForeignKey(u => u.OwnerId).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<User>()
+            .HasOptional(a => a.Calendar)
+            .WithMany()
+            .HasForeignKey(u => u.CalendarId);
+            modelBuilder.Entity<User>()
+               .HasOptional(a => a.Calendar)
+               .WithMany()
+               .HasForeignKey(u => u.CalendarId).WillCascadeOnDelete(false);
+
+
+        }
     }
 }
