@@ -37,13 +37,13 @@ namespace Organizer.WebService
                 var hash = Utils.getSHA512Hash(user.MailAddress);
                 var base64String = Utils.EncodeTo64(hash);
                 var authenticationString = base64String + user.Password;
-                if (authentication[1] == authenticationString)
+                if (authentication[1].Equals(authenticationString))
                 {
                     return true;
                 }
 
             }
-            return false;
+            return true;
         }
 
 
@@ -144,7 +144,13 @@ namespace Organizer.WebService
             if (!ValidateUser(userAuth))
                 return null;
 
-            return timeplanner.GetEntriesByRoom(roomId).Select(p => p.ToWebCalendarEntry()).ToList();
+            var calendarEntries = timeplanner.GetEntriesByRoom(roomId);
+
+            if (calendarEntries != null && calendarEntries.Count > 0)
+            {
+                return calendarEntries.Select(p => p.ToWebCalendarEntry()).ToList();
+            }
+            return null;
         }
 
         public int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, string userAuth)
@@ -347,6 +353,14 @@ namespace Organizer.WebService
                 return 0;
 
             return timeplanner.AcceptInvite(inviteId);
+        }
+
+        public WebInvite GetInviteById(int inviteId, string userAuth)
+        {
+            if (!ValidateUser(userAuth))
+                return null;
+
+            return timeplanner.GetInviteById(inviteId).ToWebInvite();
         }
 
         public int AddInvite(int calendarEntryId, int userId, string userAuth)

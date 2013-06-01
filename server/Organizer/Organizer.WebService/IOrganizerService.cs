@@ -298,6 +298,17 @@ namespace Organizer.WebService
 
         #region Invite
 
+
+        /// <summary>
+        /// Returns invitation by specified id
+        /// </summary>
+        /// <param name="inviteId"></param>
+        /// <param name="userAuth">Used to authenticate a user against the requested action</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        WebInvite GetInviteById(int inviteId, string userAuth);
+
         /// <summary>
         /// Accepts invitation
         /// </summary>
