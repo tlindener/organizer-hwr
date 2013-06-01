@@ -17,6 +17,7 @@ namespace Organizer.Interfaces
     {
         [Key]
         public int CalendarId { get; set; }
+
         [Required]
         public virtual User Owner { get; set; }
         public string Name { get; set; }

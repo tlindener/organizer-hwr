@@ -23,7 +23,7 @@ namespace Organizer.Interfaces.Json
         public string Surname { get; set; }
         public string MailAddress { get; set; }
         public string PhoneNumber { get; set; }
-        public ICollection<int> CalendarIds { get; set; }
+        public int CalendarId { get; set; }
         public ICollection<int> GroupIds { get; set; }
         public ICollection<int> InviteIds { get; set; }
 

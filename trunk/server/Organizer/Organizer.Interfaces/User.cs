@@ -29,9 +29,9 @@ namespace Organizer.Interfaces
         [Required]
        
         public string MailAddress { get; set; }
-        [Required]
-  
+        [Required]  
         public string PhoneNumber { get; set; }
+
 
         //SHA512Hashed
 
@@ -47,8 +47,8 @@ namespace Organizer.Interfaces
                 _password = value;
             }
         }
-        public int CalendarId { get; set; }
-        public virtual ICollection<Calendar> Calendar { get; set; }
+        
+       
         public virtual ICollection<Group> Groups { get; set; }
         public virtual ICollection<Invite> Invites { get; set; }
 

@@ -62,47 +62,7 @@ namespace Organizer.WebService
         }
 
 
-        public void InsertTestData()
-        {
-            var calendarEntries = new List<CalendarEntry>();
-
-            var owner = new Organizer.Interfaces.User()
-            {
-                GivenName = "Tobias",
-                Surname = "Lindener",
-                MailAddress = "tobias.lindener@gmail.com",
-                PhoneNumber = "01773071234",
-                Password = "Test"
-
-
-            };
-
-            var user = new Organizer.Interfaces.User()
-            {
-                GivenName = "Hans",
-                Surname = "Dieter",
-                MailAddress = "tobias.lindener@gmail.com",
-                PhoneNumber = "01773071234",
-                Password = "Test"
-            };
-            List<User> invitees = new List<User>();
-            invitees.Add(user);
-            calendarEntries.Add(new CalendarEntry() { Owner = owner, Title = "Arbeit", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(3) });
-            Calendar cal = new Calendar()
-            {
-                Owner = owner,
-                Name = "MyCalendar",
-                CalendarEntries = calendarEntries
-
-
-            };
-
-            timeplanner.AddCalendar(cal);
-
-            var entry = new CalendarEntry() { Invitees = invitees, CalendarId = timeplanner.GetAllCalendar().First().CalendarId, Owner = owner, StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(24) };
-            timeplanner.AddCalendarEntry(entry);
-
-        }
+    
         Organizer.TimePlanner timeplanner;
         public OrganizerService()
         {
@@ -135,15 +95,10 @@ namespace Organizer.WebService
         public int AddCalendar(int ownerId, string name, string description, string userAuth)
         {
             if (!ValidateUser(userAuth))
-                return 0;
+                return -1;
 
-            return timeplanner.AddCalendar(new Calendar()
-            {
-                Name = name,
-                Description = description,
-                Owner = timeplanner.GetUserById(ownerId)
-
-            });
+            return timeplanner.AddCalendar(ownerId,name,description);
+              
         }
 
 
@@ -484,14 +439,14 @@ namespace Organizer.WebService
             {
                 return null;
             }
+
             return new WebUser()
             {
                 Id = user.UserId,
                 GivenName = user.GivenName,
                 Surname = user.Surname,
                 MailAddress = user.MailAddress,
-                PhoneNumber = user.PhoneNumber,
-                CalendarIds = user.Calendar.Select(p => p.CalendarId).ToList(),
+                PhoneNumber = user.PhoneNumber,               
                 GroupIds = user.Groups.Select(p => p.GroupId).ToList(),
                 InviteIds = user.Invites.Select(p => p.InviteId).ToList()
 

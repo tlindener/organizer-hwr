@@ -333,12 +333,7 @@ namespace Organizer.WebService
 
         #endregion
 
-        /// <summary>
-        /// Deprecated
-        /// </summary>
-        [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        void InsertTestData();
+
 
     }
 
