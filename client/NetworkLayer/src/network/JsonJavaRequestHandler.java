@@ -332,7 +332,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			getCmd = Utils.addUserAuth(getCmd, authString);
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
-			if (id == null || id == -1)
+			if (id == null || id == 0)
 				return null;
 			obj.setID(id);
 			return obj;

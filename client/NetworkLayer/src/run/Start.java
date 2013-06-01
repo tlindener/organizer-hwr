@@ -47,22 +47,38 @@ public class Start {
 		user3.setSurname("Möhring");
 		user3.setPhoneNumber("777777777");
 		
+		System.out.println("AddUser");
 		User u = requester.registerNewUser(user, "123456");
+		System.out.println("UserID: " +u.getID());
 		User u2 = requester.registerNewUser(user2, "123456");
+		System.out.println("UserID: " +u2.getID());
 		User u3 = requester.registerNewUser(user3, "123456");
+		System.out.println("UserID: " +u3.getID());
 		
 		
-		System.out.println("Log in " +u.getID());
+		System.out.println("Log in " +u.getMailAddress());
 		User loggedInUser = requester.login(u.getMailAddress(), "123456");
+		
+		
+		Room room = new Room();
+		room.setDescription("TestRaum1");
+		room.setLocation("HierUndDa");
+		room.setSeats(1478);
+		
+		System.out.println("AddRoom");
+		Room r = requester.addObject(room);
+		System.out.println("RoomID: " +r.getID());
 		
 		Calendar ca = new Calendar();
 		ca.setOwnerId(loggedInUser.getID());
 		ca.setDescription("Infos%20von%20undfuer" + loggedInUser.getGivenName());
 		ca.setName(loggedInUser.getGivenName()+"sCalendar");
 
+		System.out.println("AddCalendar");
 		Calendar c = requester.addObject(ca);
+		System.out.println("CalendarID: " +c.getID());
 		
-		System.out.println("Log in " +u2.getID());
+		System.out.println("Log in " +u2.getMailAddress());
 		loggedInUser = requester.login(u2.getMailAddress(), "123456");
 		
 		Calendar ca2 = new Calendar();
@@ -71,8 +87,9 @@ public class Start {
 		ca2.setName(loggedInUser.getGivenName()+"sCalendar");
 		
 		Calendar c2 = requester.addObject(ca2);
+		System.out.println("CalendarID: " +c2.getID());
 		
-		System.out.println("Log in " +u3.getID());
+		System.out.println("Log in " +u3.getMailAddress());
 		loggedInUser = requester.login(u3.getMailAddress(), "123456");
 		
 		Calendar ca3 = new Calendar();
@@ -81,8 +98,9 @@ public class Start {
 		ca3.setName(loggedInUser.getGivenName()+"sCalendar");
 
 		Calendar c3 = requester.addObject(ca3);
+		System.out.println("CalendarID: " +c3.getID());
 		
-		System.out.println("Log in " +u.getID());
+		System.out.println("Log in " +u.getMailAddress());
 		loggedInUser = requester.login(u.getMailAddress(), "123456");	
 		
 		CalendarEntry ce = new CalendarEntry();
@@ -94,26 +112,39 @@ public class Start {
 		ce.setCalendarId(c.getID());
 		ce.setEndDate(new Date());
 		
+		System.out.println("AddEntry");
 		CalendarEntry ce1 = requester.addObject(ce);
+		System.out.println("EntryId: " +ce1.getID());
 		
+		System.out.println("AddInvite");
 		Invite i = new Invite();
 		i.setCalendarEntryId(ce1.getID());
-		i.setOwnerId(u2.getID());
+		i.setOwnerId(2);
 		
 		i = requester.addObject(i);
+		System.out.println("InviteId: " +i.getID());
 		
 		Invite i2 = new Invite();
 		i2.setCalendarEntryId(ce1.getID());
-		i2.setOwnerId(u3.getID());
+		i2.setOwnerId(3);
 		
 		i2 = requester.addObject(i2);
+		System.out.println("InviteId: " +i2.getID());
 		
-		System.out.println("Log in user 2");
+		System.out.println("Log in " +u2.getMailAddress());
 		loggedInUser = requester.login(u2.getMailAddress(), "123456");
 		
 		System.out.println("Accept Invites");
 		for(int invite: loggedInUser.getInviteIds()){
-			requester.acceptInvite(invite);
+			Invite tmp = new Invite();
+			tmp.setID(invite);
+			Invite in = requester.requestObjectByOwnId(tmp);
+			if(in.isAccepted() != 1){
+				int result = requester.acceptInvite(invite);
+				System.out.println("Invite "+invite + "--> neue EntryID: " + result);
+			}else{
+				System.out.println("Already Confirmed / Declined");
+			}
 		}
 		
 		System.out.println("Remove Entries with RoomID=1 from current User");
@@ -129,7 +160,16 @@ public class Start {
 		}
 		System.out.println("Result remove CalendarEntry: " +result);
 		
-		
+		System.out.println("Request Calendar of " + loggedInUser.getMailAddress());
+		Calendar ca4 = new Calendar();
+		if(ca4.getCalendarEntries().isEmpty()){
+			System.out.println("No Elements in List");
+		}
+		else{
+			ca4.setID(loggedInUser.getCalendarIds().get(0));
+			ca4 = requester.requestObjectByOwnId(ca4);
+			System.out.println("ID: "+ ca4.getID() + " | Name: "+ca4.getName());
+		}
 	}
 
 	/**

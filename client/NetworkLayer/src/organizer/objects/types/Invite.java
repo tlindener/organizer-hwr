@@ -15,7 +15,7 @@ public class Invite extends AbstractOrganizerObject {
 	public static final String OWNER_ID = "OwnerId";
 	public static final String CALENDAR_ENTRY_ID = "CalendarEntryId";
 	
-	private int ownerId = 0;
+	private int userId = 0;
 	private int accepted = 0;
 	private int calendarEntryId = 0;
 
@@ -23,14 +23,14 @@ public class Invite extends AbstractOrganizerObject {
 	 * @return the ownerId
 	 */
 	public int getOwnerId() {
-		return ownerId;
+		return userId;
 	}
 
 	/**
 	 * @param ownerId the ownerId to set
 	 */
 	public void setOwnerId(int ownerId) {
-		this.ownerId = ownerId;
+		this.userId = ownerId;
 	}
 
 	/**
