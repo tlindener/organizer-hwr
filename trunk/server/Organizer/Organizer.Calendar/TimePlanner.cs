@@ -51,9 +51,12 @@ namespace Organizer
                 User owner = _calendarDatabase.User.Find(ownerId);
                 if (owner == null)
                     return 0;
-                if (owner.Calendar != null)
+
+                var calendar = GetCalendarByOwner(owner.UserId);
+
+                if (calendar != null)
                 {
-                    return owner.Calendar.CalendarId;
+                    return calendar.CalendarId;
                 }
 
                 Calendar cal = new Calendar()
