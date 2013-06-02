@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,10 +19,12 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListModel;
+import javax.swing.border.Border;
 
 import com.toedter.calendar.JCalendar;
 
@@ -29,6 +32,7 @@ import logik.DataPusher;
 import logik.Model;
 
 import organizer.objects.types.CalendarEntry;
+
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 import view.window_Hauptmenue;
@@ -68,6 +72,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private String benutzername;
 	private String passwort;
 	private User aktUser;
+	private organizer.objects.types.Calendar aktUserCa;
 	private CalendarEntry aktEntry;
 
 	public Controller() {
@@ -171,58 +176,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		return beschreibungsDaten;
 	}
 
-	public Object[][] getBeschreibungenStatisch() {
-		beschreibungsDaten = new Object[][] {
-				{ "0.00", myModel.returnBeschreibung("0.00") },
-				{ "0.30", myModel.returnBeschreibung("0.30") },
-				{ "1.00", myModel.returnBeschreibung("1.00") },
-				{ "1.30", myModel.returnBeschreibung("1.30") },
-				{ "2.00", myModel.returnBeschreibung("2.00") },
-				{ "2.30", myModel.returnBeschreibung("2.30") },
-				{ "3.00", myModel.returnBeschreibung("3.00") },
-				{ "3.30", myModel.returnBeschreibung("3.30") },
-				{ "4.00", myModel.returnBeschreibung("4.00") },
-				{ "4.30", myModel.returnBeschreibung("4.30") },
-				{ "5.00", myModel.returnBeschreibung("5.00") },
-				{ "5.30", myModel.returnBeschreibung("5.30") },
-				{ "6.00", myModel.returnBeschreibung("6.00") },
-				{ "6.30", myModel.returnBeschreibung("6.30") },
-				{ "7.00", myModel.returnBeschreibung("7.00") },
-				{ "7.30", myModel.returnBeschreibung("7.30") },
-				{ "8.00", myModel.returnBeschreibung("8.00") },
-				{ "8.30", myModel.returnBeschreibung("8.30") },
-				{ "9.00", myModel.returnBeschreibung("9.00") },
-				{ "9.30", myModel.returnBeschreibung("9.30") },
-				{ "10.00", myModel.returnBeschreibung("10.00") },
-				{ "10.30", myModel.returnBeschreibung("10.30") },
-				{ "11.00", myModel.returnBeschreibung("11.00") },
-				{ "11.30", myModel.returnBeschreibung("11.30") },
-				{ "12.00", myModel.returnBeschreibung("12.00") },
-				{ "12.30", myModel.returnBeschreibung("12.30") },
-				{ "13.00", myModel.returnBeschreibung("13.00") },
-				{ "13.30", myModel.returnBeschreibung("13.30") },
-				{ "14.00", myModel.returnBeschreibung("14.00") },
-				{ "14.30", myModel.returnBeschreibung("14.30") },
-				{ "15.00", myModel.returnBeschreibung("15.00") },
-				{ "15.30", myModel.returnBeschreibung("15.30") },
-				{ "16.00", myModel.returnBeschreibung("16.00") },
-				{ "16.30", myModel.returnBeschreibung("16.30") },
-				{ "17.00", myModel.returnBeschreibung("17.00") },
-				{ "17.30", myModel.returnBeschreibung("17.30") },
-				{ "18.00", myModel.returnBeschreibung("18.00") },
-				{ "18.30", myModel.returnBeschreibung("18.30") },
-				{ "19.00", myModel.returnBeschreibung("19.00") },
-				{ "19.30", myModel.returnBeschreibung("19.30") },
-				{ "20.00", myModel.returnBeschreibung("20.00") },
-				{ "20.30", myModel.returnBeschreibung("20.30") },
-				{ "21.00", myModel.returnBeschreibung("21.00") },
-				{ "21.30", myModel.returnBeschreibung("21.30") },
-				{ "22.00", myModel.returnBeschreibung("22.00") },
-				{ "22.30", myModel.returnBeschreibung("22.30") },
-				{ "23.00", myModel.returnBeschreibung("23.00") },
-				{ "23.30", myModel.returnBeschreibung("23.30") }, };
-		return beschreibungsDaten;
-	}
 
 	public Object[][] konvertiereBeschreibungsDaten() {
 		Object[][] beschreibungsDatenKonv = new Object[48 * 2][3];
@@ -315,26 +268,36 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 //			 * hier muss eine KalenderID aus einem Personenobjekt übergeben
 //			 * werden
 //			 */
-//			benutzername = myLogScreen.getTextField().getText();
-//			passwort = myLogScreen.getPasswort().getText();
-//			if (benutzername.equals("") || passwort.equals("")) {
-//				JOptionPane
-//						.showMessageDialog(
-//								myLogScreen,
-//								"Bitte geben Sie einen gültigen Benutzernamen und ein gültiges Passwort ein",
-//								"Benutzername oder Passwort falsch",
-//								JOptionPane.INFORMATION_MESSAGE);
-//			} else {
+			
+			benutzername = myLogScreen.getTextField().getText();
+			char[] tmppasswort = myLogScreen.getPasswort().getPassword();
+			passwort="";
+			for (int i=0;i<tmppasswort.length;i++)
+			{
+				passwort=passwort+tmppasswort[i];
+			}
+			
+			if (benutzername.equals("") || passwort.equals("")) {
+				JOptionPane
+						.showMessageDialog(
+								myLogScreen,
+								"Bitte geben Sie einen gültigen Benutzernamen und ein gültiges Passwort ein",
+								"Benutzername oder Passwort falsch",
+								JOptionPane.INFORMATION_MESSAGE);
+			} else {
 				steffensCal = new organizer.objects.types.Calendar();
 //				/*
 //				 * Abfrage der Id für den Benutzernamen
 //				 */
-//				if (myRequester.login(benutzername, passwort) != null) {
-//
-//					aktUser = myRequester.login(benutzername, passwort);
+				User tmpu=myRequester.login(benutzername, passwort);
+				System.out.println(tmpu+" ; "+ benutzername+" ; "+passwort);
+				if (tmpu!= null) {
+
+					aktUser = tmpu;
 					steffensCal.setID(aktUser.getID());
-				
+
 					organizer.objects.types.Calendar tmpCal = myRequester.requestObjectByOwnId(steffensCal);
+					System.out.println(tmpCal);
 //					// null Abfrage
 					if (tmpCal != null) {
 						steffensCal = tmpCal;
@@ -352,16 +315,16 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 //
 					myLogScreen.setVisible(false);
 					myHauptmenue.setVisible(true);
-//				} else {
-//					JOptionPane
-//							.showMessageDialog(
-//									myLogScreen,
-//									"Leider sind Sie noch nicht registriert. Bitte Registrieren Sie sich um die MyOrganizer Funktionen nutzen zu können.",
-//									"User nicht vorhanden",
-//									JOptionPane.INFORMATION_MESSAGE);
-//				}
-//
-//			}
+				} else {
+					JOptionPane
+							.showMessageDialog(
+									myLogScreen,
+									"Leider sind Sie noch nicht registriert. Bitte Registrieren Sie sich um die MyOrganizer Funktionen nutzen zu können.",
+									"User nicht vorhanden",
+									JOptionPane.INFORMATION_MESSAGE);
+				}
+
+			}
 		}
 		if (e.getSource() == myLogScreen.getBtnRegistrieren()) {
 			myRegistration.setVisible(true);
@@ -369,12 +332,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 		if (e.getSource() == myRegistration.getBtnRegistrieren()) {
 			
-			System.out.println(myRegistration.getTxtPasswort().getPassword());
-			
-			 if(!myRegistration.getTxtEmailadresse().getText().equals(" ")||!myRegistration.getTxtNachname().getText().equals(" ")
-			 ||!myRegistration.getTxtVorname().getText().equals(" ")||!myRegistration.getTxtPasswort().getPassword().equals(" ")||
-			 !myRegistration.getTxtPasswortBest().getPassword().equals(" ")){
-				 
 			char[] passwort1 = myRegistration.getTxtPasswort().getPassword();
 			char[] passwort2 = myRegistration.getTxtPasswortBest().getPassword();
 			String pwd1="";
@@ -388,22 +345,58 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				pwd2=pwd2+passwort2[i];
 			}
 			
-			System.out.println(pwd1+";"+pwd2);
-			if (pwd1.equals(pwd2)) {
-				pruefeServereinstellungen();
+			 if(!myRegistration.getTxtEmailadresse().getText().equals("")||!myRegistration.getTxtNachname().getText().equals("")
+			 ||!myRegistration.getTxtVorname().getText().equals("")||!pwd1.equals("")||!pwd2.equals("")){
+					
+				 if (pwd1.equals(pwd2)) {
+				
+				passwort=pwd1;
 				if (myRequester == null) {
-					return;
+					pruefeServereinstellungen();
 				}
-				passwort = "";
-				aktUser = new User();
+			
+//				aktUser= new User();
 				aktUser.setMailAddress(myRegistration.getTxtEmailadresse()
 						.getText());
 				aktUser.setSurname(myRegistration.getTxtNachname().getText());
 				aktUser.setGivenname(myRegistration.getTxtVorname().getText());
-				myRequester.registerNewUser(aktUser, passwort);
-//				organizer.objects.types.Calendar aktUserCa = new organizer.objects.types.Calendar();
-//				aktUserCa.setOwnerId(aktUser.getID());
-//				myRequester.addObject(aktUserCa);
+//				aktUser.setPhoneNumber("111");
+				
+				User utmp=myRequester.registerNewUser(aktUser, passwort);
+				
+				if(utmp==null)
+				{
+					System.out.println("Konnte nicht registrieren");
+					
+				}
+				else
+				{
+					
+					aktUser= utmp;
+					aktUserCa = new organizer.objects.types.Calendar();
+					aktUserCa.setOwnerId(aktUser.getID());
+					System.out.println(aktUser.getID());
+					aktUserCa.setDescription("persönlicher Kalendar");
+					aktUserCa.setName("Kalendar" );
+			
+					Object tmp=myRequester.addObject(aktUserCa);
+					
+				if(tmp==null)
+				{
+					System.out.println("Es konnte kein Kalendar hinzugefügt werden");
+				}
+				else
+				{
+					System.out.println("Es wurde ein Kalendar hinzugefügt");
+				}
+				}
+				
+				/*
+				 * Feld schaffen für selber Name aussuchen
+				 */
+				
+				
+				
 				myRegistration.setVisible(false);
 				myLogScreen.setVisible(true);
 
@@ -424,6 +417,36 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 "Felder frei",
 			 JOptionPane.INFORMATION_MESSAGE);
 			 
+			 Color c= new Color(255,86,63);
+			 Border redline = BorderFactory.createLineBorder(c);
+			 if(myRegistration.getTxtEmailadresse().getText().equals(""))
+			 {
+				 myRegistration.getTxtEmailadresse().setBorder(redline); 
+				myRegistration.repaint();
+			 }
+			 if(myRegistration.getTxtNachname().getText().equals(""))
+			 {
+				 myRegistration.getTxtNachname().setBorder(redline); 
+					myRegistration.repaint();
+			 }
+			 if(myRegistration.getTxtVorname().getText().equals(""))
+			 {
+				 myRegistration.getTxtVorname().setBorder(redline); 
+					myRegistration.repaint();
+			 }
+			 if(pwd1.equals(""))
+			 {
+				 myRegistration.getTxtPasswort().setBorder(redline); 
+				 
+					myRegistration.repaint();
+			 }
+			 if(pwd2.equals(""))
+			 {
+				 myRegistration.getTxtPasswortBest().setBorder(redline); 
+					myRegistration.repaint(); 
+			 }
+//			 
+//			 
 			 }
 			 
 		}
@@ -448,7 +471,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 * Terminteilnehmer werden in die JList eingefügt
 			 */
 			List myList = new ArrayList<String>();
-			myList = myModel.returnPersonen((String) myHauptmenue.getTable_1()
+			myList = myModel.returnEingeladene((String) myHauptmenue.getTable_1()
 					.getValueAt(zwTab.getSelectedRow(), 0));
 			if (myList != null) {
 				myHauptmenue.getListModel().removeAllElements();
