@@ -454,12 +454,21 @@ namespace Organizer.WebService
             {
                 return null;
             }
+            
+            List<int> calendarIds = new List<int>();
+            var calendarId = user.CalendarId;
+            if (calendarId.HasValue)
+            {
+                calendarIds.Add(calendarId.Value);
+            }
 
             return new WebUser()
             {
+
                 Id = user.UserId,
                 GivenName = user.GivenName,
                 Surname = user.Surname,
+                CalendarIds = calendarIds,
                 MailAddress = user.MailAddress,
                 PhoneNumber = user.PhoneNumber,               
                 GroupIds = user.Groups.Select(p => p.GroupId).ToList(),
