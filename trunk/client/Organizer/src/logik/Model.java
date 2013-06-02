@@ -201,9 +201,9 @@ public class Model {
 	}
 	
 	/**
-	 * Return the descriptions hashmap.
+	 * Returns the description of the calendarentrie at the submitted time.
 	 * @param time
-	 * @return beschreibungen
+	 * @return beschreibung 
 	 */
 	public Object returnBeschreibung(String time)
 	{
@@ -211,7 +211,7 @@ public class Model {
 	}
 	
 	/**
-	 * Return the durations hashmap.
+	 * Returns the duration of the calendarentrie at the submitted time.
 	 * 
 	 * @param time
 	 * @return dauer or null if there is no duration at the specified time
@@ -226,10 +226,19 @@ public class Model {
 		return null;
 	}
 	
+	/**
+	 * Returns the hashmap calendardata.
+	 * 
+	 * @return kalendardaten
+	 */
 	public HashMap getKalenderdaten() {
 		return Kalenderdaten;
 	}
 
+	/**
+	 * Sets the hashmap Kalendardaten
+	 * @param kalenderdaten
+	 */
 	public void setKalenderdaten(HashMap kalenderdaten) {
 		Kalenderdaten = kalenderdaten;
 	}
@@ -238,42 +247,59 @@ public class Model {
 		return beschreibungen;
 	}
 /**
- * <String Uhrzeit im Format xx:xx, String Beschreibung>
- * @param beschreibungen
+ * Puts the submitted description with the submitted time as key into the hashmap descriptions.
+ * 
+ * @param time, beschreibung
  */
 	public void setBeschreibungen(String time, String beschreibung) {
 		beschreibungen.put(time, beschreibung);
 	}
 
+	/**
+	 * Returns the details hasmap.
+	 * 
+	 * @return details
+	 */
 	public HashMap getDetails() {
 		return details;
 	}
 /**
- * <String Uhrtime im Format xx:xx, String Detail>
- * @param details
+ * Puts the submitted detail with the submitted time as key into the hashmap details.
+ * 
+ * @param detail, time
  */
 	public void setDetails(String time, String detail) {
 		details.put(time,detail);
 	}
-
+/**
+ * Returns the invitee hasmap.
+ * 
+ * @return eingeladene
+ */
 	public HashMap getPersonen() {
-		return eingeladene;
+		return eingeladene;  
 	}
 /**
- * <String Uhrzeit im Format xx:xx, List Personen>
- * @param personen
+ * Puts the submitted invitee list with the submitted time as key into the hashmap eingeladene.
+ * 
+ * @param personen, time
  */
 	public void setPersonen(String time, List teilnehmer) {
 		eingeladene.put(time, teilnehmer);
 	}
 
+	/**
+	 * Returns the rooms hashmap.
+	 * 
+	 * @return raeume
+	 */
 	public HashMap getRaeume() {
 		return raeume;
 	}
 	
 	/**
-	 * <String time in format xx:xx, String room>
-	 * @param time, duration
+	 * Puts the submitted room with the submitted time as key into the hashmap rooms.
+	 * @param time, room
 	 */
 	public void setRaeume(String time, String room) {
 		raeume.put(time, room);
@@ -283,42 +309,83 @@ public class Model {
 		return dauer;
 	}
 /**
- * <String time in format xx:xx, duration as double in minutes>
+ * Puts the submitted duration with the submitted time as key into the hashmap durations.
  * @param time, duration
  */
 	public void setDauer(String time, double duration) {
 		dauer.put(time, duration);
 	}
 	
+	/**
+	 * Returns the hashmap startend.
+	 * 
+	 * @return anfangende
+	 */
 	public HashMap getAnfangende() {
 		return anfangende;
 	}
 
+	/**
+	 * Puts the submitted endtime with the submitted starttime as key into the hashmap startend.
+	 * 
+	 * @param anfang, ende
+	 */
 	public void setAnfangEnde(String anfang, String ende) {
 
 	anfangende.put(anfang, ende);
 	}
 
+	/**
+	 * Returns the current Date from the model.
+	 * 
+	 * @return aktDate
+	 */
 	public Date getAktDate() {
 		return aktDate;
 	}
 
+	/**
+	 * Replaces the current date with the submitted current date. 
+	 * 
+	 * @param aktDate
+	 */
 	public void setAktDate(Date aktDate) {
 		this.aktDate = aktDate;
 	}
 
+	/**
+	 * Returns the list with all persons.
+	 * 
+	 * @return allePersonen
+	 */
 	public List getAllePersonen() {
 		return allePersonen;
 	}
 
+	/**
+	 * Replaces the list with all persons with the submitted list.
+	 * 
+	 * @param personen
+	 */
 	public void setAllePersonen(List personen) {
 		allePersonen=personen;
 	}
 
+	/**
+	 * Returns the list with all available rooms.
+	 * 
+	 * @return alleRaueme
+	 */
 	public List getAlleRaeume() {
 		return alleRaeume;
 	}
 
+	
+/**
+ * Replaces the list of all rooms with the submitted list.
+ * 
+ * @param raeume
+ */
 	public void setAlleRaeume(List raeume) {
 		alleRaeume=raeume;
 	}
