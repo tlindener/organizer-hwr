@@ -26,17 +26,8 @@ public class window_Servereinstellungen extends JFrame {
 	private JLabel lblPort;
 	private JButton btnSpeichern;
 	private ActionListener myAL;
-	
-	
-
-
-
-
 	private JTextField txtPort;
 	private NumberFormat formatport;
-
-	
-
 	
 	public window_Servereinstellungen(ActionListener myCon) {
 		myAL=myCon;
@@ -102,7 +93,7 @@ public class window_Servereinstellungen extends JFrame {
 		gbc_lblPort.gridy = 1;
 		contentPane.add(lblPort, gbc_lblPort);
 		
-		txtAdresse = new JTextField();
+		txtAdresse = new JTextField("localhost");
 		GridBagConstraints gbc_txtAdresse = new GridBagConstraints();
 		gbc_txtAdresse.insets = new Insets(0, 0, 5, 5);
 		gbc_txtAdresse.fill = GridBagConstraints.HORIZONTAL;
@@ -117,7 +108,7 @@ public class window_Servereinstellungen extends JFrame {
 //        ((NumberFormatter)field.getFormatter()).setAllowsInvalid(false);
 		
 //		formatport =NumberFormat.getNumberInstance();
-		txtPort = new JTextField(5);
+		txtPort = new JTextField("48585",5);
 //				JFormattedTextField(formatport);	
 //		numberField.setColumns(5);
 		

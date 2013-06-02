@@ -7,18 +7,26 @@ import java.util.List;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
+/**
+ * The Model handels data input from Server (via Networklayer), stores and organizes the data in hashmaps and lists.
+ * The attributes of the calendarentries are stored in the hashmaps and are connected via the key "time".
+ * Time is a unique value, because every hours:minutes combination can have only one calendarentry.
+ * Provides various methods for Controller e.g. getting / setting hashmaps, get elements out of hashmap. 
+ * 
+ * @author Jenny
+ * @version 1.0
+ *
+ */
 
 public class Model {
 
-	/**
-	 * @param args
-	 */
+
 	private HashMap Kalenderdaten;
 	
 	private HashMap <String, String> beschreibungen;
 	private HashMap <String, String> anfangende;
 	private HashMap <String, String> details;
-	private HashMap <String, List> personen;
+	private HashMap <String, List> eingeladene;
 	private HashMap <String, String> raeume;
 	private HashMap <String, Double> dauer;
 	private List allePersonen;
@@ -26,14 +34,19 @@ public class Model {
 	private Date aktDate;
 	
 	
-
+/**
+ * Default constructor which creates a new Model.
+ * Initializes the aktDate as the current date and creates the hashmaps for the submitted date.
+ *  
+ * @param date
+ */
 	public Model(Date date)
 	{
 		aktDate=date;
 		createBeschreibung();
 		createDetails();
 		createDauer();
-		createPersonen();
+		createEingeladene();
 		createRaeume();
 		createAnfangende();
 		createAlleRaeume();
@@ -41,61 +54,98 @@ public class Model {
 		
 	}
 	
+	/**
+	 * Creates the list "alleRaeume" which contains all rooms which are in the database.
+	 * @return alleRaueme
+	 */
 	public List createAlleRaeume()
 	{
 		alleRaeume =new ArrayList();
 		return alleRaeume;
 	}
 	
+	/**
+	 * Creates the list "allePersonen" which contains all persons which are in the database.
+	 * @return allePersonen
+	 */
 	public List createAllePersonen()
 	{
 		allePersonen=new ArrayList();
 		return allePersonen;
 	}
 	
+	/**
+	 * Creates the hashmap which contains the durations of the calendarentries for the defined date.
+	 * @return dauer;
+	 */
 	public <String, Double> HashMap createDauer()
 	{
 		dauer = new HashMap();
-		
 		return dauer;	
 	}
+	
+	/**
+	 * Creates the hashmap which contains the start- and enddates of the calendarentries for the defined date.
+	 * @return anfangende;
+	 */
 	public <String> HashMap createAnfangende()
 	{
 		anfangende = new HashMap();
 		return anfangende;	
 	}
 	
+	/**
+	 * Creates the hashmap which contains the description of the calendarentries for the defined date.
+	 * @return beschreibungen;
+	 */
 	public HashMap createBeschreibung()
 	{
-		
 		beschreibungen = new HashMap();
 		return beschreibungen;	
 	}
+	
+	/**
+	 * Creates the hashmap which contains the details of the calendarentries for the defined date.
+	 * @return details;
+	 */
 	public HashMap createDetails()
 	{
 		details = new HashMap();
 		return details;	
 	}
 	
-	public HashMap createPersonen()
+	/**
+	 * Creates the hashmap which contains the invitees of the calendarentries for the defined date.
+	 * @return eingeladene;
+	 */
+	public HashMap createEingeladene()
 	{
-		personen = new HashMap();
-		return personen;	
+		eingeladene = new HashMap();
+		return eingeladene;	
 	}
 	
+	/**
+	 * Creates the hashmap which contains the rooms of the calendarentries for the defined date.
+	 * @return raeume;
+	 */
 	public HashMap createRaeume()
 	{
 		raeume = new HashMap();
-		
 		return raeume;
 	}
 	
-	public String returnRaum(String zeit)
+	
+	/**
+	 * Returns the room of the calendarentrie at the submitted time. 
+	 * @param time
+	 * @return room or String "kein Raum zugeteilt" if there is no room for the calendarentrie
+	 */
+	public String returnRaum(String time)
 	{
-		if(raeume.get(zeit)!=null)
+		if(raeume.get(time)!=null)
 		{
 			
-		return raeume.get(zeit);
+		return raeume.get(time);
 		}
 		else
 			{
@@ -103,29 +153,46 @@ public class Model {
 			}
 		
 	}
-	public String returnEndzeit(String zeit)
+	
+	/**
+	 * Returns the endtime of the calendarentrie at the submitted time.
+	 * @param time
+	 * @return endtime or null if there is no endtime
+	 */
+	public String returnEndzeit(String time)
 	{
-		if(anfangende.get(zeit)!=null)
+		if(anfangende.get(time)!=null)
 		{
 			
-		return anfangende.get(zeit);
+		return anfangende.get(time);
 		}
 		return null;
 	}
 	
-	public List returnPersonen(String zeit)
+	/**
+	 * Returns the a list of invitees for the calendarentrie at the submitted time.
+	 * @param time
+	 * @return list of invitees
+	 */
+	public List returnEingeladene(String time)
 	{
 		List lreturn=new ArrayList<String>();
-		lreturn = personen.get(zeit);
+		lreturn = eingeladene.get(time);
 		return lreturn;
 	}
-	public Object returnDetail(String zeit)
+
+	/**
+	 * Returns the detail of the calendarentrie at the submitted time.
+	 * @param time
+	 * @return detail or a default string that there are no details available at the specified time
+	 */
 	
-	{
-		if(details.get(zeit)!=null)
+	public Object returnDetail(String time)
+		{
+		if(details.get(time)!=null)
 		{
 			
-		return details.get(zeit);
+		return details.get(time);
 		}
 		else
 			{
@@ -133,19 +200,32 @@ public class Model {
 			}
 	}
 	
-	public Object returnBeschreibung(String zeit)
+	/**
+	 * Return the descriptions hashmap.
+	 * @param time
+	 * @return beschreibungen
+	 */
+	public Object returnBeschreibung(String time)
 	{
-		return beschreibungen.get(zeit);
+		return beschreibungen.get(time);
 	}
-	public Object returnDauer(String zeit)
+	
+	/**
+	 * Return the durations hashmap.
+	 * 
+	 * @param time
+	 * @return dauer or null if there is no duration at the specified time
+	 */
+	public Object returnDauer(String time)
 	{
-		if(dauer.containsKey(zeit))
+		if(dauer.containsKey(time))
 		{
-		return dauer.get(zeit);
+		return dauer.get(time);
 		}
 		else
 		return null;
 	}
+	
 	public HashMap getKalenderdaten() {
 		return Kalenderdaten;
 	}
@@ -161,64 +241,62 @@ public class Model {
  * <String Uhrzeit im Format xx:xx, String Beschreibung>
  * @param beschreibungen
  */
-	public void setBeschreibungen(String zeit, String beschreibung) {
-		beschreibungen.put(zeit, beschreibung);
+	public void setBeschreibungen(String time, String beschreibung) {
+		beschreibungen.put(time, beschreibung);
 	}
 
 	public HashMap getDetails() {
 		return details;
 	}
 /**
- * <String Uhrzeit im Format xx:xx, String Detail>
+ * <String Uhrtime im Format xx:xx, String Detail>
  * @param details
  */
-	public void setDetails(String zeit, String detail) {
-		details.put(zeit,detail);
+	public void setDetails(String time, String detail) {
+		details.put(time,detail);
 	}
 
 	public HashMap getPersonen() {
-		return personen;
+		return eingeladene;
 	}
 /**
  * <String Uhrzeit im Format xx:xx, List Personen>
  * @param personen
  */
-	public void setPersonen(String zeit, List teilnehmer) {
-		personen.put(zeit, teilnehmer);
+	public void setPersonen(String time, List teilnehmer) {
+		eingeladene.put(time, teilnehmer);
 	}
 
 	public HashMap getRaeume() {
 		return raeume;
 	}
-/**
- * <String Uhrzeit im Format xx:xx, String Raum>
- * @param raeume
- */
-	public void setRaeume(String zeit, String raum) {
-		raeume.put(zeit, raum);
+	
+	/**
+	 * <String time in format xx:xx, String room>
+	 * @param time, duration
+	 */
+	public void setRaeume(String time, String room) {
+		raeume.put(time, room);
 	}
 
 	public HashMap getDauer() {
 		return dauer;
 	}
 /**
- * <String Uhrzeit im Format xx:xx, Double als Dauer in Minuten>
- * @param dauer
+ * <String time in format xx:xx, duration as double in minutes>
+ * @param time, duration
  */
-	public void setDauer(String zeit, double duration) {
-		dauer.put(zeit, duration);
+	public void setDauer(String time, double duration) {
+		dauer.put(time, duration);
 	}
 	
 	public HashMap getAnfangende() {
 		return anfangende;
 	}
-/**
- * <String Uhrzeit im Format xx:xx, Double als Dauer in Minuten>
- * @param dauer
- */
+
 	public void setAnfangEnde(String anfang, String ende) {
 
-			anfangende.put(anfang, ende);
+	anfangende.put(anfang, ende);
 	}
 
 	public Date getAktDate() {
