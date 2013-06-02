@@ -387,7 +387,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				}
 				else
 				{
-					System.out.println("Es wurde ein Kalendar hinzugefügt");
+					System.out.println("Es wurde ein Kalendar hinzugefügt "+ tmp);
 				}
 				}
 				
