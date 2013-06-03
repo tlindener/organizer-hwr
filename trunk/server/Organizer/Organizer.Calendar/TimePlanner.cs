@@ -66,8 +66,12 @@ namespace Organizer
                     Description = description
                 };
 
+
                 _calendarDatabase.Calendar.Add(cal);
                 _calendarDatabase.SaveChanges();
+                owner.CalendarId = cal.CalendarId;
+                                _calendarDatabase.SaveChanges();  
+                
                 return cal.CalendarId;
             }
             catch (Exception ex)
