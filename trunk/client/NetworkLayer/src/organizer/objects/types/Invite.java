@@ -12,8 +12,8 @@ import organizer.objects.AbstractOrganizerObject;
  */
 public class Invite extends AbstractOrganizerObject {
 
-	public static final String OWNER_ID = "OwnerId";
-	public static final String CALENDAR_ENTRY_ID = "CalendarEntryId";
+//	public static final String OWNER_ID = "OwnerId";
+//	public static final String CALENDAR_ENTRY_ID = "CalendarEntryId";
 	
 	private int userId = 0;
 	private int accepted = 0;
