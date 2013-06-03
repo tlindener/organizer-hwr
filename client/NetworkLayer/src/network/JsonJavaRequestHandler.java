@@ -192,8 +192,10 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	public <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj) {
 		try {
 			String getCmd = Utils.buildGetAllCommand(obj);
-			String json = sendGetToServer(getCmd);
 			getCmd = Utils.addUserAuth(getCmd, authString);
+			//TODO replace by better code
+			getCmd = getCmd.replaceAll("&", "?");
+			String json = sendGetToServer(getCmd);
 			List<JsonElement> tmp = gson.fromJson(json,
 					new TypeToken<List<JsonElement>>() {
 					}.getType());
