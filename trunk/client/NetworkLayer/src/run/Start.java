@@ -55,10 +55,8 @@ public class Start {
 		User u3 = requester.registerNewUser(user3, "123456");
 		System.out.println("UserID: " +u3.getID());
 		
-		
 		System.out.println("Log in " +u.getMailAddress());
 		User loggedInUser = requester.login(u.getMailAddress(), "123456");
-		
 		
 		Room room = new Room();
 		room.setDescription("TestRaum1");
@@ -103,20 +101,41 @@ public class Start {
 		System.out.println("Log in " +u.getMailAddress());
 		loggedInUser = requester.login(u.getMailAddress(), "123456");	
 		
+		System.out.println("Request calendar of " + loggedInUser.getGivenName());
+		List<Integer> caIDs = loggedInUser.getCalendarIds();
+		int caID = -1;
+		if(caIDs.isEmpty()){
+			System.err.println("Error: No CalendarID was found in User-Object of " +loggedInUser.getGivenName());
+			return;
+		}else{
+			caID = caIDs.get(0);
+			System.out.println("Picked Calendar ID " + caID);
+		}
+		
+		System.out.println("Request all rooms");
+		List<Room> rooms = requester.requestAllObjects(new Room());
+		if(rooms.isEmpty()){
+			System.err.println("Error: No Room was found");
+			return;
+		}else{
+			room = rooms.get(0);
+			System.out.println("Rooms were found: Select room with ID " + room.getID());
+		}
+		
 		CalendarEntry ce = new CalendarEntry();
 		ce.setStartDate(new Date());
 		ce.setDescription(loggedInUser.getGivenName() +"sTermin");
 		ce.setTitle("Testterminvon%20" + loggedInUser.getGivenName());
-		ce.setRoomId(1);
+		ce.setRoomId(room.getID());
 		ce.setOwnerId(loggedInUser.getID());
-		ce.setCalendarId(c.getID());
+		ce.setCalendarId(caID);
 		ce.setEndDate(new Date());
 		
 		System.out.println("AddEntry");
 		CalendarEntry ce1 = requester.addObject(ce);
 		System.out.println("EntryId: " +ce1.getID());
 		
-		System.out.println("AddInvite");
+		System.out.println("AddInvite for User 2");
 		Invite i = new Invite();
 		i.setCalendarEntryId(ce1.getID());
 		i.setOwnerId(2);
@@ -124,6 +143,7 @@ public class Start {
 		i = requester.addObject(i);
 		System.out.println("InviteId: " +i.getID());
 		
+		System.out.println("AddInvite for User 3");
 		Invite i2 = new Invite();
 		i2.setCalendarEntryId(ce1.getID());
 		i2.setOwnerId(3);

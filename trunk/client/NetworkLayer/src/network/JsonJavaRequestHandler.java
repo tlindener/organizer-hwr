@@ -23,6 +23,7 @@ import network.objects.Utils;
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
+import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
@@ -38,8 +39,8 @@ import com.google.gson.reflect.TypeToken;
  * will be requested and filled by using the parameter objects set values (ID or
  * Property). It is required, that the names of attributes in the implemented
  * instances are named like the ones in the server objects. Just then the
- * JSON-Parser will work. </br>
- * Because of the abstract parent class and the usage of Java generic
+ * JSON-Parser will work. </br> Because of the abstract parent class and the
+ * usage of Java generic
  * 
  * @author Steffen Baumann
  * @version 1.0
@@ -295,7 +296,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 					"The mail address must not be empty or null");
 		try {
 			String getCmd = Utils.buildAddCommand(user);
-			getCmd += "&password=" + Utils.encodeString(password)+"";
+			getCmd += "&password=" + Utils.encodeString(password) + "";
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
 			if (id == null || id == -1)
@@ -380,12 +381,13 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 */
 	@Override
 	public User login(String mail, String password) {
-		
+
 		String cmd = Utils.buildLoginCommand(mail, password);
 		String json = sendGetToServer(cmd);
 		try {
 			User user = (User) gson.fromJson(json, User.class);
-			authString = generateAuthenticationString(user.getID(), mail, password);
+			authString = generateAuthenticationString(user.getID(), mail,
+					password);
 			return user;
 		} catch (JsonSyntaxException ex) {
 			ex.printStackTrace();
@@ -393,6 +395,15 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		return null;
 	}
 
+	/**
+	 * Sends a confirmation of an {@link Invite} to the Server. As result the ID
+	 * of the generated {@link CalendarEntry} is returned.
+	 * 
+	 * @param inviteId
+	 *            the ID of the {@link Invite} that should be confirmed
+	 * @return the ID of the created {@link CalendarEntry} in the own
+	 *         {@link Calendar} or -1, if there was an Error.
+	 */
 	@Override
 	public int acceptInvite(int inviteId) {
 		String getCmd = Utils.buildAcceptCommand(inviteId);
@@ -405,5 +416,5 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		}
 		return -1;
 	}
-	
+
 }
