@@ -24,25 +24,31 @@ namespace Organizer.WebService
     {
         private bool ValidateUser(string userAuth)
         {
-            var authentication = userAuth.Split('_');
-            int userId = 0;
-            Int32.TryParse(authentication[0], out userId);
-            if (userId == 0)
+        
+            if (userAuth != null)
             {
-                return false;
-            }
-            var user = timeplanner.GetUserById(userId);
-            if (user != null)
-            {
-                var hash = Utils.getSHA512Hash(user.MailAddress);
-                var base64String = Utils.EncodeTo64(hash);
-                var authenticationString = base64String + user.Password;
-                if (authentication[1].Equals(authenticationString))
-                {
-                    return true;
-                }
 
+                var authentication = userAuth.Split('_');
+                int userId = 0;
+                Int32.TryParse(authentication[0], out userId);
+                if (userId == 0)
+                {
+                    return false;
+                }
+                var user = timeplanner.GetUserById(userId);
+                if (user != null)
+                {
+                    var hash = Utils.getSHA512Hash(user.MailAddress);
+                    var base64String = Utils.EncodeTo64(hash);
+                    var authenticationString = base64String + user.Password;
+                    if (authentication[1].Equals(authenticationString))
+                    {
+                        return true;
+                    }
+
+                }
             }
+            //has to be changed to false!
             return true;
         }
 
@@ -456,10 +462,10 @@ namespace Organizer.WebService
             }
             
             List<int> calendarIds = new List<int>();
-            var calendarId = user.CalendarId;
-            if (calendarId.HasValue)
+
+            if (user.Calendar != null)
             {
-                calendarIds.Add(calendarId.Value);
+                calendarIds.Add(user.Calendar.CalendarId);
             }
 
             return new WebUser()
