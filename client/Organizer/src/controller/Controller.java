@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -27,6 +28,8 @@ import javax.swing.JTable;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.toedter.calendar.JCalendar;
 
@@ -38,7 +41,7 @@ import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 import view.checklistitem;
-import view.listRenderer;
+import view.MyCheckBoxListRenderer;
 import view.window_Hauptmenue;
 import view.window_LogScreen;
 import view.window_RegisterUser;
@@ -49,7 +52,7 @@ import network.JsonJavaRequestHandler;
 import network.RequestHandler;
 
 public class Controller implements DataPusher, ActionListener, MouseListener,
-		PropertyChangeListener {
+		PropertyChangeListener, MyChangeListener {
 
 	/**
 	 * @param args
@@ -100,8 +103,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		myServereinstellungen = new window_Servereinstellungen(this);
 		myServereinstellungen.setVisible(false);
 		aktUser = new User();
-		aktUserCa= new organizer.objects.types.Calendar();
-		
+		aktUserCa = new organizer.objects.types.Calendar();
+
 	}
 
 	public static void main(String[] args) {
@@ -179,7 +182,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		return beschreibungsDaten;
 	}
 
-
 	public Object[][] konvertiereBeschreibungsDaten() {
 		Object[][] beschreibungsDatenKonv = new Object[48 * 2][3];
 		int j = 0;
@@ -225,33 +227,40 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		}
 		if (e.getSource() == myHauptmenue.getBtnTerminBearbeiten()) {
-			aktDate=myHauptmenue.getAktDateCali();
-			if(aktTermin==null)
-			{
+			aktDate = myHauptmenue.getAktDateCali();
+			if (aktTermin == null) {
 				myTerminBearbeiten.getStartUhrzeit().setText("8:00");
 				myTerminBearbeiten.getEndUhrzeit().setText("9:00");
-			}
-			else
-			{
+			} else {
 				myTerminBearbeiten.getStartUhrzeit().setText(aktTermin);
-				myTerminBearbeiten.getEndUhrzeit().setText(myModel.returnEndzeit(aktTermin));
-				myTerminBearbeiten.getTxtADetails().setText((String) myModel.returnDetail(aktTermin));
-				myTerminBearbeiten.getTxtBeschreibung().setText((String) myModel.returnBeschreibung(aktTermin));
-				
+				myTerminBearbeiten.getEndUhrzeit().setText(
+						myModel.returnEndzeit(aktTermin));
+				myTerminBearbeiten.getTxtADetails().setText(
+						(String) myModel.returnDetail(aktTermin));
+				myTerminBearbeiten.getTxtBeschreibung().setText(
+						(String) myModel.returnBeschreibung(aktTermin));
+
 			}
-			
-			checklistitem[] tmpcl= new checklistitem[100000];
-			int j=0;
-			for(int i=myModel.getAllePersonen().size(); i>0;i--)
-			{
-				User u= (User) myModel.getAllePersonen().get(i-1);
-				tmpcl[j]=new checklistitem(u.getGivenName()+" "+ u.getSurname());
-				j++;
+
+			Vector<User> listUser = new Vector<User>();
+			for (Object refObj : myModel.createAllePersonen()) {
+				User u = (User) refObj;
+				listUser.add(u);
 			}
-			JList tmplist=new JList(tmpcl);
-			System.out.println(tmpcl[1]);
+
+			// checklistitem[] tmpcl= new checklistitem[100000];
+			// int j=0;
+			// for(int i=myModel.getAllePersonen().size(); i>0;i--)
+			// {
+			// User u= (User) myModel.getAllePersonen().get(i-1);
+			// tmpcl[j]=new checklistitem(u.getGivenName()+" "+ u.getSurname());
+			// j++;
+			// }
+			JList<User> tmplist = new JList<User>(listUser);
+			// JList tmplist=new JList(tmpcl);
+			// System.out.println(tmpcl[1]);
 			tmplist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			tmplist.setCellRenderer(new listRenderer());
+			tmplist.setCellRenderer(new MyCheckBoxListRenderer(this));
 			System.out.println(tmplist);
 			myTerminBearbeiten.setLstRaum(tmplist);
 			myTerminBearbeiten.setVisible(true);
@@ -266,17 +275,17 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 */
 		}
 		if (e.getSource() == myTerminBearbeiten.getBtnTerminEintragen()) {
-			
+
 			/*
 			 * befüllen des Fensters mit den Daten Personen und Räume
 			 */
-			
-			
-			aktEntry=new CalendarEntry();
+
+			aktEntry = new CalendarEntry();
 			aktEntry.setCalendarId(aktUser.getID());
-			aktEntry.setDescription(myTerminBearbeiten.getTxtADetails().getText());
+			aktEntry.setDescription(myTerminBearbeiten.getTxtADetails()
+					.getText());
 			aktEntry.setTitle(myTerminBearbeiten.getTxtBeschreibung().getText());
-			
+
 			/*
 			 * Über Model Verbindung zum Server Übergabe des Termines und
 			 * Speicherung in Datenbank
@@ -287,26 +296,24 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 * Authentifizierung mit Server SPeicherung der ID Daten in das
 			 * Modell Speicherung der Daten in das Modell
 			 */
-//
-		
-			if(pruefeServereinstellungen()==0)
-			{
+			//
+
+			if (pruefeServereinstellungen() == 0) {
 				return;
 			}
-//
-//			/*
-//			 * hier muss eine KalenderID aus einem Personenobjekt übergeben
-//			 * werden
-//			 */
-			
+			//
+			// /*
+			// * hier muss eine KalenderID aus einem Personenobjekt übergeben
+			// * werden
+			// */
+
 			benutzername = myLogScreen.getTextField().getText();
 			char[] tmppasswort = myLogScreen.getPasswort().getPassword();
-			passwort="";
-			for (int i=0;i<tmppasswort.length;i++)
-			{
-				passwort=passwort+tmppasswort[i];
+			passwort = "";
+			for (int i = 0; i < tmppasswort.length; i++) {
+				passwort = passwort + tmppasswort[i];
 			}
-			
+
 			if (benutzername.equals("") || passwort.equals("")) {
 				JOptionPane
 						.showMessageDialog(
@@ -316,33 +323,31 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 								JOptionPane.INFORMATION_MESSAGE);
 			} else {
 				steffensCal = new organizer.objects.types.Calendar();
-//				/*
-//				 * Abfrage der Id für den Benutzernamen
-//				 */
-				User tmpu=myRequester.login(benutzername, passwort);
-				
-				if (tmpu!= null) {
-					
+				// /*
+				// * Abfrage der Id für den Benutzernamen
+				// */
+				User tmpu = myRequester.login(benutzername, passwort);
+
+				if (tmpu != null) {
+
 					aktUser = tmpu;
-					List <Integer> calendarIDs= aktUser.getCalendarIds();
-					if(!calendarIDs.isEmpty())
-					{
+					List<Integer> calendarIDs = aktUser.getCalendarIds();
+					if (!calendarIDs.isEmpty()) {
 						aktUserCa.setID(calendarIDs.get(0));
-					}
-					else
-					{
+					} else {
 						JOptionPane
-						.showMessageDialog(
-								myLogScreen,
-								"Es ist noch kein Kalendar für Sie erstellt worden",
-								"Verbindungsfehler",
-								JOptionPane.INFORMATION_MESSAGE);
+								.showMessageDialog(
+										myLogScreen,
+										"Es ist noch kein Kalendar für Sie erstellt worden",
+										"Verbindungsfehler",
+										JOptionPane.INFORMATION_MESSAGE);
 					}
 					aktUserCa.setID(1);
-					
-					organizer.objects.types.Calendar tmpCal = myRequester.requestObjectByOwnId(aktUserCa);
-					
-//					// null Abfrage
+
+					organizer.objects.types.Calendar tmpCal = myRequester
+							.requestObjectByOwnId(aktUserCa);
+
+					// // null Abfrage
 					if (tmpCal != null) {
 						aktUserCa = tmpCal;
 						connectServerModel();
@@ -356,7 +361,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 										JOptionPane.INFORMATION_MESSAGE);
 
 					}
-//
+					//
 					myLogScreen.setVisible(false);
 					myHauptmenue.setVisible(true);
 				} else {
@@ -375,129 +380,117 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		}
 		if (e.getSource() == myRegistration.getBtnRegistrieren()) {
-			
-			char[] passwort1 = myRegistration.getTxtPasswort().getPassword();
-			char[] passwort2 = myRegistration.getTxtPasswortBest().getPassword();
-			String pwd1="";
-			String pwd2="";
-			for (int i=0;i<passwort1.length;i++)
-			{
-				pwd1=pwd1+passwort1[i];
-			}
-			for (int i=0;i<passwort2.length;i++)
-			{
-				pwd2=pwd2+passwort2[i];
-			}
-			
-			 if(!myRegistration.getTxtEmailadresse().getText().equals("")||!myRegistration.getTxtNachname().getText().equals("")
-			 ||!myRegistration.getTxtVorname().getText().equals("")||!pwd1.equals("")||!pwd2.equals("")){
-					
-				 if (pwd1.equals(pwd2)) {
-				
-				passwort=pwd1;
-				if (myRequester == null) {
-					pruefeServereinstellungen();
-				}
-			
-//				aktUser= new User();
-				aktUser.setMailAddress(myRegistration.getTxtEmailadresse()
-						.getText());
-				aktUser.setSurname(myRegistration.getTxtNachname().getText());
-				aktUser.setGivenname(myRegistration.getTxtVorname().getText());
-//				aktUser.setPhoneNumber("111");
-				
-				User utmp=myRequester.registerNewUser(aktUser, passwort);
-				
-				if(utmp==null)
-				{
-					System.out.println("Konnte nicht registrieren");
-					
-				}
-				else
-				{
-					
-					aktUser= utmp;
-					aktUserCa = new organizer.objects.types.Calendar();
-					aktUserCa.setOwnerId(aktUser.getID());
-					aktUserCa.setDescription("persönlicher Kalendar von "+aktUser.getGivenName());
-					aktUserCa.setName("Kalendar von "+aktUser.getGivenName() );
-					myRequester.login(aktUser.getMailAddress(), passwort);
-					Object tmp=myRequester.addObject(aktUserCa);
-					
-				if(tmp==null)
-				{
-					// Fenster
-					System.out.println("Es konnte kein Kalendar hinzugefügt werden");
-				
-				}
-				else
-				{
-					aktUserCa=(organizer.objects.types.Calendar) tmp;
-					List l=aktUser.getCalendarIds();
-					l.add(aktUserCa.getID());
-					aktUser.setCalendarIds(l);
-					
-				}
-				}
-				
-				/*
-				 * Feld schaffen für selber Name aussuchen
-				 */
-				
-				
-				
-				myRegistration.setVisible(false);
-				myLogScreen.setVisible(true);
 
+			char[] passwort1 = myRegistration.getTxtPasswort().getPassword();
+			char[] passwort2 = myRegistration.getTxtPasswortBest()
+					.getPassword();
+			String pwd1 = "";
+			String pwd2 = "";
+			for (int i = 0; i < passwort1.length; i++) {
+				pwd1 = pwd1 + passwort1[i];
+			}
+			for (int i = 0; i < passwort2.length; i++) {
+				pwd2 = pwd2 + passwort2[i];
+			}
+
+			if (!myRegistration.getTxtEmailadresse().getText().equals("")
+					|| !myRegistration.getTxtNachname().getText().equals("")
+					|| !myRegistration.getTxtVorname().getText().equals("")
+					|| !pwd1.equals("") || !pwd2.equals("")) {
+
+				if (pwd1.equals(pwd2)) {
+
+					passwort = pwd1;
+					if (myRequester == null) {
+						pruefeServereinstellungen();
+					}
+
+					// aktUser= new User();
+					aktUser.setMailAddress(myRegistration.getTxtEmailadresse()
+							.getText());
+					aktUser.setSurname(myRegistration.getTxtNachname()
+							.getText());
+					aktUser.setGivenname(myRegistration.getTxtVorname()
+							.getText());
+					// aktUser.setPhoneNumber("111");
+
+					User utmp = myRequester.registerNewUser(aktUser, passwort);
+
+					if (utmp == null) {
+						System.out.println("Konnte nicht registrieren");
+
+					} else {
+
+						aktUser = utmp;
+						aktUserCa = new organizer.objects.types.Calendar();
+						aktUserCa.setOwnerId(aktUser.getID());
+						aktUserCa.setDescription("persönlicher Kalendar von "
+								+ aktUser.getGivenName());
+						aktUserCa.setName("Kalendar von "
+								+ aktUser.getGivenName());
+						myRequester.login(aktUser.getMailAddress(), passwort);
+						Object tmp = myRequester.addObject(aktUserCa);
+
+						if (tmp == null) {
+							// Fenster
+							System.out
+									.println("Es konnte kein Kalendar hinzugefügt werden");
+
+						} else {
+							aktUserCa = (organizer.objects.types.Calendar) tmp;
+							List l = aktUser.getCalendarIds();
+							l.add(aktUserCa.getID());
+							aktUser.setCalendarIds(l);
+
+						}
+					}
+
+					/*
+					 * Feld schaffen für selber Name aussuchen
+					 */
+
+					myRegistration.setVisible(false);
+					myLogScreen.setVisible(true);
+
+				} else {
+					JOptionPane.showMessageDialog(myLogScreen,
+							"Das Passwort stimmt nicht überein!",
+							"Passwort falsch", JOptionPane.INFORMATION_MESSAGE);
+					myRegistration.getTxtPasswort().setText("");
+					myRegistration.getTxtPasswortBest().setText("");
+				}
 			} else {
 				JOptionPane.showMessageDialog(myLogScreen,
-						"Das Passwort stimmt nicht überein!",
-						"Passwort falsch", JOptionPane.INFORMATION_MESSAGE);
-				myRegistration.getTxtPasswort().setText("");
-				myRegistration.getTxtPasswortBest().setText("");
+						"Bitte füllen Sie alle Felder aus!", "Felder frei",
+						JOptionPane.INFORMATION_MESSAGE);
+
+				Color c = new Color(255, 86, 63);
+				Border redline = BorderFactory.createLineBorder(c);
+				if (myRegistration.getTxtEmailadresse().getText().equals("")) {
+					myRegistration.getTxtEmailadresse().setBorder(redline);
+					myRegistration.repaint();
+				}
+				if (myRegistration.getTxtNachname().getText().equals("")) {
+					myRegistration.getTxtNachname().setBorder(redline);
+					myRegistration.repaint();
+				}
+				if (myRegistration.getTxtVorname().getText().equals("")) {
+					myRegistration.getTxtVorname().setBorder(redline);
+					myRegistration.repaint();
+				}
+				if (pwd1.equals("")) {
+					myRegistration.getTxtPasswort().setBorder(redline);
+
+					myRegistration.repaint();
+				}
+				if (pwd2.equals("")) {
+					myRegistration.getTxtPasswortBest().setBorder(redline);
+					myRegistration.repaint();
+				}
+				//
+				//
 			}
-			 }
-			 else
-			 {
-			 JOptionPane
-			 .showMessageDialog(
-			 myLogScreen,
-			 "Bitte füllen Sie alle Felder aus!",
-			 "Felder frei",
-			 JOptionPane.INFORMATION_MESSAGE);
-			 
-			 Color c= new Color(255,86,63);
-			 Border redline = BorderFactory.createLineBorder(c);
-			 if(myRegistration.getTxtEmailadresse().getText().equals(""))
-			 {
-				 myRegistration.getTxtEmailadresse().setBorder(redline); 
-				myRegistration.repaint();
-			 }
-			 if(myRegistration.getTxtNachname().getText().equals(""))
-			 {
-				 myRegistration.getTxtNachname().setBorder(redline); 
-					myRegistration.repaint();
-			 }
-			 if(myRegistration.getTxtVorname().getText().equals(""))
-			 {
-				 myRegistration.getTxtVorname().setBorder(redline); 
-					myRegistration.repaint();
-			 }
-			 if(pwd1.equals(""))
-			 {
-				 myRegistration.getTxtPasswort().setBorder(redline); 
-				 
-					myRegistration.repaint();
-			 }
-			 if(pwd2.equals(""))
-			 {
-				 myRegistration.getTxtPasswortBest().setBorder(redline); 
-					myRegistration.repaint(); 
-			 }
-//			 
-//			 
-			 }
-			 
+
 		}
 
 	}
@@ -511,8 +504,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 * myModel umgangen (Alternativtext)
 			 */
 			JTable zwTab = (JTable) e.getSource();
-			aktTermin=(String) myHauptmenue.getTable_1()
-					.getValueAt(zwTab.getSelectedRow(), 0);
+			aktTermin = (String) myHauptmenue.getTable_1().getValueAt(
+					zwTab.getSelectedRow(), 0);
 			zwTab.getSelectedRow();
 			String details = (String) myModel
 					.returnDetail((String) myHauptmenue.getTable_1()
@@ -522,8 +515,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 * Terminteilnehmer werden in die JList eingefügt
 			 */
 			List myList = new ArrayList<String>();
-			myList = myModel.returnEingeladene((String) myHauptmenue.getTable_1()
-					.getValueAt(zwTab.getSelectedRow(), 0));
+			myList = myModel.returnEingeladene((String) myHauptmenue
+					.getTable_1().getValueAt(zwTab.getSelectedRow(), 0));
 			if (myList != null) {
 				myHauptmenue.getListModel().removeAllElements();
 				for (int i = myList.size() - 1; i > 0; i--) {
@@ -589,25 +582,23 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		myModel.getDetails().clear();
 		myModel.getRaeume().clear();
 		myModel.getAnfangende().clear();
-		
+
 		myModel.getAllePersonen().clear();
 		myModel.getAlleRaeume().clear();
-		
-//		CalendarEntry entry =new CalendarEntry();
-//		entry.setCalendarId(aktUser.getCalendarIds().get(0));
-//		entry.setRequestProperty(CalendarEntry.OWNER_ID, ""+1);
-//		List <CalendarEntry> entries = myRequester.requestAllObjectsByProperty(entry);
-//		
-//		myModel.setAllePersonen(entries);
+
+		// CalendarEntry entry =new CalendarEntry();
+		// entry.setCalendarId(aktUser.getCalendarIds().get(0));
+		// entry.setRequestProperty(CalendarEntry.OWNER_ID, ""+1);
+		// List <CalendarEntry> entries =
+		// myRequester.requestAllObjectsByProperty(entry);
+		//
+		// myModel.setAllePersonen(entries);
 		List<Room> lr = myRequester.requestAllObjects(new Room());
 		myModel.setAlleRaeume(lr);
-		
-		List <User> lp=myRequester.requestAllObjects(new User());
+
+		List<User> lp = myRequester.requestAllObjects(new User());
 		myModel.setAllePersonen(lp);
-		
-	
-		
-		
+
 		List myCes = steffensCal.getCalendarEntries();
 		for (int i = myCes.size() - 1; i > 0; i--) {
 			CalendarEntry myCe = (CalendarEntry) myCes.get(i);
@@ -709,6 +700,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			myRequester = new JsonJavaRequestHandler(adresse, port);
 			return 1;
 		}
+
+	}
+
+	@Override
+	public void stateChangedForUser(boolean state, User user) {
+		// TODO hier werden alle Änderungen der User geschehen - du kriegst den
+		// Status ob gerade ausgewählt oder wieder weggenommen
 
 	}
 }
