@@ -97,7 +97,7 @@ public abstract class RequestHandler{
 	public abstract User login(String mail, String password);
 
 	public abstract int acceptInvite(int inviteId);
-	
+	public abstract int declineInvite(int inviteId); 
 	/**
 	 * Generates an authentication String containing of mail and password.
 	 * Therefore the mail address and the password are encoded by

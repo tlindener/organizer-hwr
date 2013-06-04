@@ -14,7 +14,6 @@ import java.util.List;
 import network.RequestHandler;
 
 import org.apache.commons.codec.binary.Base64;
-
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
@@ -47,6 +46,7 @@ public class Utils {
 		plurals.put(Calendar.class, "Calendar");
 		plurals.put(CalendarEntry.class, "CalendarEntries");
 		plurals.put(Room.class, "Rooms");
+		plurals.put(Invite.class, "Invites");
 	}
 
 	/**
@@ -230,6 +230,10 @@ public class Utils {
 	public static String buildAcceptCommand(int inviteId){
 		return "AcceptInvite?inviteId="+inviteId;
 	}
+	public static String buildDeclineCommand(int inviteId){
+		return "DeclineInvite?inviteId="+inviteId;
+	}
+	
 	
 	/**
 	 * Parses the Java-Date into a JSON value representing an C#-DateTime object
