@@ -20,10 +20,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 
 import com.toedter.calendar.JCalendar;
@@ -35,6 +37,8 @@ import organizer.objects.types.CalendarEntry;
 
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
+import view.checklistitem;
+import view.listRenderer;
 import view.window_Hauptmenue;
 import view.window_LogScreen;
 import view.window_RegisterUser;
@@ -65,6 +69,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	private RequestHandler myRequester;
 	private Date aktDate;
+	private String aktTermin;
 	private int start = 0;
 	private organizer.objects.types.Calendar steffensCal;
 	private int port;
@@ -95,10 +100,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		myServereinstellungen = new window_Servereinstellungen(this);
 		myServereinstellungen.setVisible(false);
 		aktUser = new User();
-		List l=new ArrayList();
-		l.add(1);
-		aktUser.setCalendarIds(l);
-		aktUser.setID(1);
+		aktUserCa= new organizer.objects.types.Calendar();
+		
 	}
 
 	public static void main(String[] args) {
@@ -223,7 +226,34 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 		if (e.getSource() == myHauptmenue.getBtnTerminBearbeiten()) {
 			aktDate=myHauptmenue.getAktDateCali();
+			if(aktTermin==null)
+			{
+				myTerminBearbeiten.getStartUhrzeit().setText("8:00");
+				myTerminBearbeiten.getEndUhrzeit().setText("9:00");
+			}
+			else
+			{
+				myTerminBearbeiten.getStartUhrzeit().setText(aktTermin);
+				myTerminBearbeiten.getEndUhrzeit().setText(myModel.returnEndzeit(aktTermin));
+				myTerminBearbeiten.getTxtADetails().setText((String) myModel.returnDetail(aktTermin));
+				myTerminBearbeiten.getTxtBeschreibung().setText((String) myModel.returnBeschreibung(aktTermin));
+				
+			}
 			
+			checklistitem[] tmpcl= new checklistitem[100000];
+			int j=0;
+			for(int i=myModel.getAllePersonen().size(); i>0;i--)
+			{
+				User u= (User) myModel.getAllePersonen().get(i-1);
+				tmpcl[j]=new checklistitem(u.getGivenName()+" "+ u.getSurname());
+				j++;
+			}
+			JList tmplist=new JList(tmpcl);
+			System.out.println(tmpcl[1]);
+			tmplist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			tmplist.setCellRenderer(new listRenderer());
+			System.out.println(tmplist);
+			myTerminBearbeiten.setLstRaum(tmplist);
 			myTerminBearbeiten.setVisible(true);
 		}
 		if (e.getSource() == myHauptmenue.getBtnAbmelden()) {
@@ -290,17 +320,31 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 //				 * Abfrage der Id für den Benutzernamen
 //				 */
 				User tmpu=myRequester.login(benutzername, passwort);
-				System.out.println(tmpu+" ; "+ benutzername+" ; "+passwort);
+				
 				if (tmpu!= null) {
-
+					
 					aktUser = tmpu;
-					steffensCal.setID(aktUser.getID());
-
-					organizer.objects.types.Calendar tmpCal = myRequester.requestObjectByOwnId(steffensCal);
-					System.out.println(tmpCal);
+					List <Integer> calendarIDs= aktUser.getCalendarIds();
+					if(!calendarIDs.isEmpty())
+					{
+						aktUserCa.setID(calendarIDs.get(0));
+					}
+					else
+					{
+						JOptionPane
+						.showMessageDialog(
+								myLogScreen,
+								"Es ist noch kein Kalendar für Sie erstellt worden",
+								"Verbindungsfehler",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+					aktUserCa.setID(1);
+					
+					organizer.objects.types.Calendar tmpCal = myRequester.requestObjectByOwnId(aktUserCa);
+					
 //					// null Abfrage
 					if (tmpCal != null) {
-						steffensCal = tmpCal;
+						aktUserCa = tmpCal;
 						connectServerModel();
 
 					} else {
@@ -375,19 +419,24 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					aktUser= utmp;
 					aktUserCa = new organizer.objects.types.Calendar();
 					aktUserCa.setOwnerId(aktUser.getID());
-					System.out.println(aktUser.getID());
-					aktUserCa.setDescription("persönlicher Kalendar");
-					aktUserCa.setName("Kalendar" );
-			
+					aktUserCa.setDescription("persönlicher Kalendar von "+aktUser.getGivenName());
+					aktUserCa.setName("Kalendar von "+aktUser.getGivenName() );
+					myRequester.login(aktUser.getMailAddress(), passwort);
 					Object tmp=myRequester.addObject(aktUserCa);
 					
 				if(tmp==null)
 				{
+					// Fenster
 					System.out.println("Es konnte kein Kalendar hinzugefügt werden");
+				
 				}
 				else
 				{
-					System.out.println("Es wurde ein Kalendar hinzugefügt "+ tmp);
+					aktUserCa=(organizer.objects.types.Calendar) tmp;
+					List l=aktUser.getCalendarIds();
+					l.add(aktUserCa.getID());
+					aktUser.setCalendarIds(l);
+					
 				}
 				}
 				
@@ -462,6 +511,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 * myModel umgangen (Alternativtext)
 			 */
 			JTable zwTab = (JTable) e.getSource();
+			aktTermin=(String) myHauptmenue.getTable_1()
+					.getValueAt(zwTab.getSelectedRow(), 0);
 			zwTab.getSelectedRow();
 			String details = (String) myModel
 					.returnDetail((String) myHauptmenue.getTable_1()
@@ -551,8 +602,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		List<Room> lr = myRequester.requestAllObjects(new Room());
 		myModel.setAlleRaeume(lr);
 		
+		List <User> lp=myRequester.requestAllObjects(new User());
+		myModel.setAllePersonen(lp);
 		
-		System.out.println(myModel.getAlleRaeume());
+	
+		
 		
 		List myCes = steffensCal.getCalendarEntries();
 		for (int i = myCes.size() - 1; i > 0; i--) {
