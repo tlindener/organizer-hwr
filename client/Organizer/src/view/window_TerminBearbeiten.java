@@ -26,7 +26,16 @@ public class window_TerminBearbeiten extends JFrame {
 	private JList lstRaum;
 	private JTextField startUhrzeit;
 	private JTextField endUhrzeit;
+	private JList lstPersonen;
 	
+	public JList getLstPersonen() {
+		return lstPersonen;
+	}
+
+	public void setLstPersonen(JList lstPersonen) {
+		this.lstPersonen = lstPersonen;
+	}
+
 	public window_TerminBearbeiten(DataPusher myDataPusher, ActionListener con) {
 		myCon = con;
 		this.myDataPusher = myDataPusher;
@@ -133,7 +142,7 @@ public class window_TerminBearbeiten extends JFrame {
 		gbc_lblPersonen.gridy = 7;
 		getContentPane().add(lblPersonen, gbc_lblPersonen);
 
-		JList lstPersonen = new JList();
+		lstPersonen = new JList();
 		GridBagConstraints gbc_lstPersonen = new GridBagConstraints();
 		gbc_lstPersonen.gridwidth = 4;
 		gbc_lstPersonen.insets = new Insets(0, 0, 5, 5);

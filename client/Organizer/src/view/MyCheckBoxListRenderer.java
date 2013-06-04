@@ -43,6 +43,8 @@ public class MyCheckBoxListRenderer implements ListCellRenderer<User>, ChangeLis
 		map.put(box, value);
 		box.setSelected(false);
 		box.setEnabled(true);
+		box.setBackground(list.getBackground());
+		box.setForeground(list.getForeground());
 		box.setVisible(true);
 		box.addChangeListener(this);
 		return box;

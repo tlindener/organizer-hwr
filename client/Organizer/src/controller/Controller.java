@@ -257,12 +257,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			// j++;
 			// }
 			JList<User> tmplist = new JList<User>(listUser);
+			System.out.println(tmplist);
 			// JList tmplist=new JList(tmpcl);
 			// System.out.println(tmpcl[1]);
 			tmplist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			tmplist.setCellRenderer(new MyCheckBoxListRenderer(this));
 			System.out.println(tmplist);
-			myTerminBearbeiten.setLstRaum(tmplist);
+			myTerminBearbeiten.setLstPersonen(tmplist);
 			myTerminBearbeiten.setVisible(true);
 		}
 		if (e.getSource() == myHauptmenue.getBtnAbmelden()) {
