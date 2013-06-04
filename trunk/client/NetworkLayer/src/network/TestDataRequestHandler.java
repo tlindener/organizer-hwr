@@ -134,4 +134,10 @@ public class TestDataRequestHandler extends RequestHandler {
 		return 0;
 	}
 
+	@Override
+	public int declineInvite(int inviteId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

@@ -193,7 +193,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		try {
 			String getCmd = Utils.buildGetAllCommand(obj);
 			getCmd = Utils.addUserAuth(getCmd, authString);
-			//TODO replace by better code
+			// TODO replace by better code
 			getCmd = getCmd.replaceAll("&", "?");
 			String json = sendGetToServer(getCmd);
 			List<JsonElement> tmp = gson.fromJson(json,
@@ -409,6 +409,26 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@Override
 	public int acceptInvite(int inviteId) {
 		String getCmd = Utils.buildAcceptCommand(inviteId);
+		getCmd = Utils.addUserAuth(getCmd, authString);
+		String json = sendGetToServer(getCmd);
+		try {
+			return (int) gson.fromJson(json, int.class);
+		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
+		}
+		return -1;
+	}
+
+	/**
+	 * Sends a declining of an {@link Invite} to the Server.
+	 * 
+	 * @param inviteId
+	 *            the ID of the {@link Invite} that should be confirmed
+	 * @return
+	 */
+	@Override
+	public int declineInvite(int inviteId) {
+		String getCmd = Utils.buildDeclineCommand(inviteId);
 		getCmd = Utils.addUserAuth(getCmd, authString);
 		String json = sendGetToServer(getCmd);
 		try {
