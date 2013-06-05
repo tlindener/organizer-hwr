@@ -320,6 +320,16 @@ namespace Organizer.WebService
         int AcceptInvite(int inviteId, string userAuth);
 
         /// <summary>
+        /// Accepts invitation
+        /// </summary>
+        /// <param name="inviteId"></param>
+        /// <param name="userAuth">Used to authenticate a user against the requested action</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        int DeclineInvite(int inviteId, string userAuth);
+
+        /// <summary>
         /// Adds a new invite to calendarEntry
         /// </summary>
         /// <param name="calendarEntryId">Unique calendarEntry identification</param>
