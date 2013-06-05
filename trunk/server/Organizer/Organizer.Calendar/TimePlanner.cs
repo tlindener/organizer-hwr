@@ -584,12 +584,18 @@ namespace Organizer
         /// <returns></returns>
         public int DeclineInvite(int inviteId)
         {
-            Invite invite = _calendarDatabase.Invites.Find(inviteId);
-            invite.CalendarEntry.Owner = invite.Owner;
-            invite.Accepted = -1;
-            _calendarDatabase.CalendarEntries.Add(invite.CalendarEntry);
-            _calendarDatabase.SaveChanges();
-            return invite.CalendarEntry.CalendarEntryId;
+            try
+            {
+                Invite invite = _calendarDatabase.Invites.Find(inviteId);
+                invite.Accepted = -1;
+                _calendarDatabase.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+                return 0;
+            }
+            return 1;
         }
 
         /// <summary>

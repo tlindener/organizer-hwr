@@ -360,6 +360,13 @@ namespace Organizer.WebService
 
             return timeplanner.AcceptInvite(inviteId);
         }
+        public int DeclineInvite(int inviteId, string userAuth)
+        {
+            if (!ValidateUser(userAuth))
+                return 0;
+
+            return timeplanner.DeclineInvite(inviteId);
+        }
 
         public WebInvite GetInviteById(int inviteId, string userAuth)
         {
