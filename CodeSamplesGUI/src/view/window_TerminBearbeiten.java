@@ -4,9 +4,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,13 +20,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import view.listener.MyChangeListener;
 import view.renderer.MyCheckBoxListRenderer;
-import controller.MyChangeListener;
+import view.renderer.MyListSelectionModel;
 import data.DataPusher;
 import data.objects.types.Room;
 import data.objects.types.User;
 
-public class window_TerminBearbeiten extends JFrame implements MyChangeListener {
+public class window_TerminBearbeiten extends JFrame implements MyChangeListener{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -120,7 +125,22 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 
 		lstRaum = new JList<Room>(myDataPusher.pushRoomList());
 		lstRaum.setCellRenderer(combinedListener);
-//		lstRaum.addListSelectionListener(combinedListener);
+		lstRaum.setSelectionModel(new DefaultListSelectionModel(){
+					
+			@Override
+		    public void setSelectionInterval(int index0, int index1) 
+		    {
+					if(lstRaum.isSelectedIndex(index0)) 
+			        {
+						lstRaum.removeSelectionInterval(index0, index1);
+			        }
+			        else 
+			        {
+			        	lstRaum.addSelectionInterval(index0, index1);
+			        }
+		        
+		    }
+		});
 		GridBagConstraints gbc_lstRaum = new GridBagConstraints();
 		gbc_lstRaum.gridwidth = 4;
 		gbc_lstRaum.gridheight = 3;
@@ -161,6 +181,7 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 
 		lstPersonen = new JList<User>(myDataPusher.pushUserList());
 		lstPersonen.setCellRenderer(combinedListener);
+		lstPersonen.setSelectionModel(new MyListSelectionModel());
 		GridBagConstraints gbc_lstPersonen = new GridBagConstraints();
 		gbc_lstPersonen.gridwidth = 4;
 		gbc_lstPersonen.insets = new Insets(0, 0, 5, 5);
@@ -269,5 +290,4 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 			}
 		}
 	}
-
 }

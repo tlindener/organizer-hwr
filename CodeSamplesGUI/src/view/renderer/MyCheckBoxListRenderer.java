@@ -1,6 +1,8 @@
 package view.renderer;
 
 import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,7 +13,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import controller.MyChangeListener;
+import view.listener.MyChangeListener;
+
 import data.objects.AbstractOrganizerObject;
 import data.objects.types.Room;
 import data.objects.types.User;
