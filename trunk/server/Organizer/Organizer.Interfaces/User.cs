@@ -15,6 +15,9 @@ using System.Text;
 namespace Organizer.Interfaces
 {
    
+    /// <summary>
+    /// Model for database entity: Users
+    /// </summary>
     public class User
     {
         [Key]
@@ -49,7 +52,7 @@ namespace Organizer.Interfaces
        
         public virtual ICollection<Group> Groups { get; set; }
         public virtual ICollection<Invite> Invites { get; set; }
-
+        public virtual ICollection<CalendarEntry> CalendarEntries { get; set; }
 
 
 

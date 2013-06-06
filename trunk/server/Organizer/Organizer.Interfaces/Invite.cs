@@ -11,6 +11,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Organizer.Interfaces
 {
+    /// <summary>
+    /// Model for database entity: Invites
+    /// </summary>
    public class Invite
     {
 

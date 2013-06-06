@@ -12,6 +12,10 @@ using System.Collections.Generic;
 namespace Organizer.Interfaces.Json
 {
 
+    /// <summary>
+    /// JSON interface for Entity: Calendar 
+    /// <seealso cref="Organizer.Interfaces.Calendar"/>
+    /// </summary>
     public class WebCalendar
     {
 

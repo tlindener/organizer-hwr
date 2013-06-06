@@ -12,7 +12,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Organizer.Interfaces
 {
-
+    /// <summary>
+    /// Model for database entity: Calendar
+    /// </summary>
     public class Calendar
     {
         [Key]

@@ -12,6 +12,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Organizer.Interfaces
 {
+    /// <summary>
+    /// Model for database entity: Groups
+    /// </summary>
     public class Group
     {
         [Key]

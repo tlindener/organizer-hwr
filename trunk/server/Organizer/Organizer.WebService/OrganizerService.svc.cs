@@ -17,14 +17,15 @@ using System.Security.Cryptography;
 
 namespace Organizer.WebService
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service1" in code, svc and config file together.
-    // NOTE: In order to launch WCF Test Client for testing this service, please select Service1.svc or Service1.svc.cs at the Solution Explorer and start debugging.
+    /// <summary>
+    /// Implementation of IOrganizerService
+    /// </summary>
     [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
     public class OrganizerService : IOrganizerService
     {
         private bool ValidateUser(string userAuth)
         {
-        
+
             if (userAuth != null)
             {
 
@@ -48,8 +49,8 @@ namespace Organizer.WebService
 
                 }
             }
-            //has to be changed to false!
-            return true;
+
+            return false;
         }
 
 
@@ -59,7 +60,7 @@ namespace Organizer.WebService
             if (users != null && users.Count > 0)
             {
                 var user = users.Where(p => p.MailAddress == mailAddress && p.Password == password);
-                
+
                 if (user != null && user.Count() > 0)
                 {
                     return user.First().ToWebUser();
@@ -69,7 +70,7 @@ namespace Organizer.WebService
         }
 
 
-    
+
         Organizer.TimePlanner timeplanner;
         public OrganizerService()
         {
@@ -104,8 +105,8 @@ namespace Organizer.WebService
             if (!ValidateUser(userAuth))
                 return -1;
 
-            return timeplanner.AddCalendar(ownerId,name,description);
-              
+            return timeplanner.AddCalendar(ownerId, name, description);
+
         }
 
 
@@ -210,7 +211,7 @@ namespace Organizer.WebService
 
         public int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password)
         {
-       
+
 
             User user = new User()
             {
@@ -467,7 +468,7 @@ namespace Organizer.WebService
             {
                 return null;
             }
-            
+
             List<int> calendarIds = new List<int>();
 
             if (user.Calendar != null)
@@ -483,7 +484,7 @@ namespace Organizer.WebService
                 Surname = user.Surname,
                 CalendarIds = calendarIds,
                 MailAddress = user.MailAddress,
-                PhoneNumber = user.PhoneNumber,               
+                PhoneNumber = user.PhoneNumber,
                 GroupIds = user.Groups.Select(p => p.GroupId).ToList(),
                 InviteIds = user.Invites.Select(p => p.InviteId).ToList()
 
