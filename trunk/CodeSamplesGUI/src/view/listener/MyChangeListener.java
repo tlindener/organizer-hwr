@@ -1,4 +1,4 @@
-package controller;
+package view.listener;
 
 import data.objects.types.Room;
 import data.objects.types.User;
