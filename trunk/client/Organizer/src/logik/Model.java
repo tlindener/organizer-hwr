@@ -279,6 +279,7 @@ public class Model {
 	public HashMap getPersonen() {
 		return eingeladene;  
 	}
+	
 /**
  * Puts the submitted invitee list with the submitted time as key into the hashmap eingeladene.
  * 
@@ -358,10 +359,11 @@ public class Model {
 	 * 
 	 * @return allePersonen
 	 */
-	public List getAllePersonen() {
-		return allePersonen;
+	public User[] getAllePersonen() {
+		return (User[]) allePersonen.toArray(new User[0]);
 	}
 
+	
 	/**
 	 * Replaces the list with all persons with the submitted list.
 	 * 
@@ -376,8 +378,8 @@ public class Model {
 	 * 
 	 * @return alleRaueme
 	 */
-	public List getAlleRaeume() {
-		return alleRaeume;
+	public Room[] getAlleRaeume() {
+		return (Room[]) alleRaeume.toArray(new Room[0]);
 	}
 
 	
