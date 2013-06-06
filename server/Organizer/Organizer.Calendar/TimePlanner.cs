@@ -18,7 +18,7 @@ using log4net.Config;
 namespace Organizer
 {
     /// <summary>
-    ///     Included DatabaseContext for Organizer Database. Offers CRUD methods.
+    ///     Includes DatabaseContext for Organizer Database. Offers methods to Create, Update and Delete items from database
     /// </summary>
     public class TimePlanner
     {
@@ -124,6 +124,7 @@ namespace Organizer
         /// <returns></returns>
         public bool RemoveCalendar(int calendarId)
         {
+      
             Calendar calendar = _calendarDatabase.Calendar.Find(calendarId);
             if (calendar == null)
             {
@@ -668,7 +669,17 @@ namespace Organizer
         #endregion
 
 
-
+        /// <summary>
+        /// Adds single calendar entry
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="description"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="ownerId"></param>
+        /// <param name="roomId"></param>
+        /// <param name="calendarId"></param>
+        /// <returns></returns>
         private int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId)
         {
 
@@ -692,6 +703,11 @@ namespace Organizer
             return AddCalendarEntry(calendarEntry);
         }
 
+        /// <summary>
+        /// Returns the single calendar by owner
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <returns></returns>
         private Calendar GetCalendarByOwner(int ownerId)
         {
             var calendar = _calendarDatabase.Calendar.Where(p => p.Owner.UserId == ownerId);
@@ -757,28 +773,12 @@ namespace Organizer
         /// </summary>
         public DbSet<Invite> Invites { get; set; }
 
+        /// <summary>
+        /// Used to refine the generated database model
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<CalendarEntry>()
-            // .HasRequired(a => a.Calendar)
-            // .WithMany()
-            // .HasForeignKey(u => u.CalendarId);
-            //modelBuilder.Entity<CalendarEntry>()
-            //   .HasRequired(a => a.Calendar)
-            //   .WithMany()
-            //   .HasForeignKey(u => u.CalendarId).WillCascadeOnDelete(false);
-
-
-
-
-            modelBuilder.Entity<CalendarEntry>()
-                        .HasRequired(a => a.Owner)
-                        .WithMany()
-                        .HasForeignKey(u => u.OwnerId);
-            modelBuilder.Entity<CalendarEntry>()
-               .HasRequired(a => a.Owner)
-               .WithMany()
-               .HasForeignKey(u => u.OwnerId).WillCascadeOnDelete(false);
 
             modelBuilder.Entity<User>()
             .HasOptional(a => a.Calendar)

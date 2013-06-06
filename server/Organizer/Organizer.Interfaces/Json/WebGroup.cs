@@ -11,6 +11,10 @@ using System.Collections.Generic;
 
 namespace Organizer.Interfaces.Json
 {
+    /// <summary>
+    /// JSON interface for Entity: Group
+    /// <see cref="Organizer.Interface.Group"/>
+    /// </summary>
     public class WebGroup
     {
         public int Id { get; set; }

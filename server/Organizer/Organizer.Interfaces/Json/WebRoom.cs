@@ -6,7 +6,7 @@
 namespace Organizer.Interfaces.Json
 {
     /// <summary>
-    /// WebRoom is the JSON interface version of Room
+    /// JSON interface for Entity: Room
     /// </summary>
     /// <see cref="Organizer.Interfaces.Room"/>
     public class WebRoom

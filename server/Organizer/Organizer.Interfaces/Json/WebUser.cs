@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace Organizer.Interfaces.Json
 {
     /// <summary>
-    /// 
+    /// JSON interface for Entity: User
     /// </summary>
     /// <see cref="Organizer.Interfaces.User"/>
     public class WebUser

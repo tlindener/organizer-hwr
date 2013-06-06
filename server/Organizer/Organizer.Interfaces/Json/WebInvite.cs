@@ -5,6 +5,10 @@
 #endregion
 namespace Organizer.Interfaces.Json
 {
+    /// <summary>
+    /// JSON interface for Entity: Invite
+    /// <see cref="Organizer.Interface.Invite"/>
+    /// </summary>
     public class WebInvite
     {
         public int Id { get; set; }
