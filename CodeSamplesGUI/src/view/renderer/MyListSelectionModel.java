@@ -15,6 +15,7 @@ public class MyListSelectionModel extends DefaultListSelectionModel {
 
 	@Override
 	public void setSelectionInterval(int index0, int index1) {
+		System.out.println(index0 + " " +index1);
 		if (!gestureStarted) {
 			if (index0 == index1) {
 				toggleSelection(index0);
