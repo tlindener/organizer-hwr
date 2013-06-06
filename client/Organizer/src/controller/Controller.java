@@ -69,7 +69,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private window_LogScreen myLogScreen;
 	private window_Servereinstellungen myServereinstellungen;
 	private window_RegisterUser myRegistration;
-
+	private window_TerminBearbeiten editEntry;
+	
 	private RequestHandler myRequester;
 	private Date aktDate;
 	private String aktTermin;
@@ -82,6 +83,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private User aktUser;
 	private organizer.objects.types.Calendar aktUserCa;
 	private CalendarEntry aktEntry;
+	
 
 	public Controller() {
 		/**
@@ -91,6 +93,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		 */
 		// myRequester = new JsonJavaRequestHandler("localhost", 48585);
 		myModel = new Model(aktDate);
+		 editEntry = new window_TerminBearbeiten(this, this);
 		updateData();
 		myHauptmenue = new window_Hauptmenue(this, this, this, this);
 		myHauptmenue.setVisible(false);
@@ -121,6 +124,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	}
 
+	
+	
 	/*
 	 * DO= DatenObjekt
 	 * 
@@ -227,44 +232,46 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		}
 		if (e.getSource() == myHauptmenue.getBtnTerminBearbeiten()) {
-			aktDate = myHauptmenue.getAktDateCali();
-			if (aktTermin == null) {
-				myTerminBearbeiten.getStartUhrzeit().setText("8:00");
-				myTerminBearbeiten.getEndUhrzeit().setText("9:00");
-			} else {
-				myTerminBearbeiten.getStartUhrzeit().setText(aktTermin);
-				myTerminBearbeiten.getEndUhrzeit().setText(
-						myModel.returnEndzeit(aktTermin));
-				myTerminBearbeiten.getTxtADetails().setText(
-						(String) myModel.returnDetail(aktTermin));
-				myTerminBearbeiten.getTxtBeschreibung().setText(
-						(String) myModel.returnBeschreibung(aktTermin));
+			editEntry.setVisible(true);
+			
+//			aktDate = myHauptmenue.getAktDateCali();
+//			if (aktTermin == null) {
+//				myTerminBearbeiten.getStartUhrzeit().setText("8:00");
+//				myTerminBearbeiten.getEndUhrzeit().setText("9:00");
+//			} else {
+//				myTerminBearbeiten.getStartUhrzeit().setText(aktTermin);
+//				myTerminBearbeiten.getEndUhrzeit().setText(
+//						myModel.returnEndzeit(aktTermin));
+//				myTerminBearbeiten.getTxtADetails().setText(
+//						(String) myModel.returnDetail(aktTermin));
+//				myTerminBearbeiten.getTxtBeschreibung().setText(
+//						(String) myModel.returnBeschreibung(aktTermin));
+//
+//			}
 
-			}
-
-			Vector<User> listUser = new Vector<User>();
-			for (Object refObj : myModel.createAllePersonen()) {
-				User u = (User) refObj;
-				listUser.add(u);
-			}
-
-			// checklistitem[] tmpcl= new checklistitem[100000];
-			// int j=0;
-			// for(int i=myModel.getAllePersonen().size(); i>0;i--)
-			// {
-			// User u= (User) myModel.getAllePersonen().get(i-1);
-			// tmpcl[j]=new checklistitem(u.getGivenName()+" "+ u.getSurname());
-			// j++;
-			// }
-			JList<User> tmplist = new JList<User>(listUser);
-			System.out.println(tmplist);
-			// JList tmplist=new JList(tmpcl);
-			// System.out.println(tmpcl[1]);
-			tmplist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			tmplist.setCellRenderer(new MyCheckBoxListRenderer(this));
-			System.out.println(tmplist);
-			myTerminBearbeiten.setLstPersonen(tmplist);
-			myTerminBearbeiten.setVisible(true);
+//			Vector<User> listUser = new Vector<User>();
+//			for (Object refObj : myModel.createAllePersonen()) {
+//				User u = (User) refObj;
+//				listUser.add(u);
+//			}
+//
+//			// checklistitem[] tmpcl= new checklistitem[100000];
+//			// int j=0;
+//			// for(int i=myModel.getAllePersonen().size(); i>0;i--)
+//			// {
+//			// User u= (User) myModel.getAllePersonen().get(i-1);
+//			// tmpcl[j]=new checklistitem(u.getGivenName()+" "+ u.getSurname());
+//			// j++;
+//			// }
+//			JList<User> tmplist = new JList<User>(listUser);
+//			System.out.println(tmplist);
+//			// JList tmplist=new JList(tmpcl);
+//			// System.out.println(tmpcl[1]);
+//			tmplist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+//			tmplist.setCellRenderer(new MyCheckBoxListRenderer(this));
+//			System.out.println(tmplist);
+//			myTerminBearbeiten.setLstPersonen(tmplist);
+//			myTerminBearbeiten.setVisible(true);
 		}
 		if (e.getSource() == myHauptmenue.getBtnAbmelden()) {
 			myHauptmenue.dispose();
@@ -281,11 +288,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 * befüllen des Fensters mit den Daten Personen und Räume
 			 */
 
-			aktEntry = new CalendarEntry();
-			aktEntry.setCalendarId(aktUser.getID());
-			aktEntry.setDescription(myTerminBearbeiten.getTxtADetails()
-					.getText());
-			aktEntry.setTitle(myTerminBearbeiten.getTxtBeschreibung().getText());
+//			aktEntry = new CalendarEntry();
+//			aktEntry.setCalendarId(aktUser.getID());
+//			aktEntry.setDescription(myTerminBearbeiten.getTxtADetails()
+//					.getText());
+//			aktEntry.setTitle(myTerminBearbeiten.getTxtBeschreibung().getText());
 
 			/*
 			 * Über Model Verbindung zum Server Übergabe des Termines und
@@ -584,8 +591,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		myModel.getRaeume().clear();
 		myModel.getAnfangende().clear();
 
-		myModel.getAllePersonen().clear();
-		myModel.getAlleRaeume().clear();
 
 		// CalendarEntry entry =new CalendarEntry();
 		// entry.setCalendarId(aktUser.getCalendarIds().get(0));
@@ -709,5 +714,21 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		// TODO hier werden alle Änderungen der User geschehen - du kriegst den
 		// Status ob gerade ausgewählt oder wieder weggenommen
 
+	}
+
+	@Override
+	public void stateChangedForRoom(boolean state, Room room) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public User[] pushUserList() {
+		return myModel.getAllePersonen();
+	}
+
+	@Override
+	public Room[] pushRoomList() {
+		return myModel.getAlleRaeume();
 	}
 }
