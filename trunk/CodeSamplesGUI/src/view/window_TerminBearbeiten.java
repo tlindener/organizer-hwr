@@ -4,13 +4,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 
 import view.listener.MyChangeListener;
 import view.renderer.MyCheckBoxListRenderer;
@@ -27,13 +24,18 @@ import data.DataPusher;
 import data.objects.types.Room;
 import data.objects.types.User;
 
-public class window_TerminBearbeiten extends JFrame implements MyChangeListener{
-	
+public class window_TerminBearbeiten extends JFrame implements MyChangeListener {
+
 	private static final long serialVersionUID = 1L;
-	
+
+	public final String BUTTON_NAME = "Button_Termin_Window";
+	private final String DEFAULT_BTN_TEXT = "EDIT ENTRY";
+
 	private DataPusher myDataPusher;
-	 private ActionListener myCon;
-	
+	private ActionListener myCon;
+
+	private String btnText = "";
+
 	private JTextField txtBeschreibung;
 	private JButton btnTerminEintragen;
 	private JTextArea txtADetails;
@@ -41,21 +43,29 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener{
 	private JList<User> lstPersonen;
 	private JTextField startUhrzeit;
 	private JTextField endUhrzeit;
-	private MyCheckBoxListRenderer combinedListener = new MyCheckBoxListRenderer(this);
+	private MyCheckBoxListRenderer combinedListener = new MyCheckBoxListRenderer(
+			this);
 	private List<User> selectedUsers = new ArrayList<User>();
 	private List<Room> selectedRooms = new ArrayList<Room>();
 
 	public window_TerminBearbeiten(DataPusher myDataPusher, ActionListener con) {
-		 myCon = con;
-		 this.myDataPusher = myDataPusher;
-		
+		myCon = con;
+		this.myDataPusher = myDataPusher;
+		setButtonText(DEFAULT_BTN_TEXT);
 	}
 
-	public void openEmptyFrame(){
-		openFrameWithValues("","","","");
+	public void setButtonText(String buttonText) {
+		btnText = buttonText;
 	}
-	
-	public void openFrameWithValues(String startTime, String endTime, String beschreibung, String details){
+
+	public void openEmptyFrame() {
+		openFrameWithValues("", "", "", "", null, null);
+	}
+
+	public void openFrameWithValues(String startTime, String endTime,
+			String beschreibung, String details, Room[] rooms,
+			User[] user) {
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 42, 0, 100, 34, 100, 0, 43,
 				43, 20, 24, 0 };
@@ -68,150 +78,116 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener{
 		getContentPane().setLayout(gridBagLayout);
 
 		JLabel lblVon = new JLabel("von");
-		GridBagConstraints gbc_lblVon = new GridBagConstraints();
-		gbc_lblVon.anchor = GridBagConstraints.EAST;
-		gbc_lblVon.insets = new Insets(0, 0, 5, 5);
-		gbc_lblVon.gridx = 1;
-		gbc_lblVon.gridy = 1;
+		GridBagConstraints gbc_lblVon = createGridBagContraints(1, 1, 1, 1,
+				GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(lblVon, gbc_lblVon);
 
 		startUhrzeit = new JTextField(startTime);
 		startUhrzeit
 				.setToolTipText("Bitte geben Sie eine Uhrzeit im Format xx:xx ein.");
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.gridx = 2;
-		gbc_textField.gridy = 1;
+		GridBagConstraints gbc_textField = createGridBagContraints(1, 1, 2, 1,
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(startUhrzeit, gbc_textField);
 		startUhrzeit.setColumns(10);
 
 		JLabel lblBis = new JLabel("bis");
-		GridBagConstraints gbc_lblBis = new GridBagConstraints();
-		gbc_lblBis.anchor = GridBagConstraints.EAST;
-		gbc_lblBis.insets = new Insets(0, 0, 5, 5);
-		gbc_lblBis.gridx = 3;
-		gbc_lblBis.gridy = 1;
+		GridBagConstraints gbc_lblBis = createGridBagContraints(1, 1, 3, 1,
+				GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(lblBis, gbc_lblBis);
 
 		endUhrzeit = new JTextField(endTime);
 		endUhrzeit
 				.setToolTipText("Bitte geben Sie eine Uhrzeit im Format xx:xx ein.");
-		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_1.insets = new Insets(0, 0, 5, 5);
-		gbc_textField_1.gridx = 4;
-		gbc_textField_1.gridy = 1;
+		GridBagConstraints gbc_textField_1 = createGridBagContraints(1, 1, 4,
+				1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(endUhrzeit, gbc_textField_1);
 		endUhrzeit.setColumns(10);
 
 		JLabel lblRaum = new JLabel("Raum");
-		GridBagConstraints gbc_lblRaum = new GridBagConstraints();
-		gbc_lblRaum.gridwidth = 4;
-		gbc_lblRaum.anchor = GridBagConstraints.WEST;
-		gbc_lblRaum.insets = new Insets(0, 0, 5, 5);
-		gbc_lblRaum.gridx = 1;
-		gbc_lblRaum.gridy = 3;
+		GridBagConstraints gbc_lblRaum = createGridBagContraints(4, 1, 1, 3,
+				GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblRaum, gbc_lblRaum);
 
 		JLabel lblBeschreibung = new JLabel("Beschreibung");
-		GridBagConstraints gbc_lblBeschreibung = new GridBagConstraints();
-		gbc_lblBeschreibung.gridwidth = 3;
-		gbc_lblBeschreibung.anchor = GridBagConstraints.WEST;
-		gbc_lblBeschreibung.insets = new Insets(0, 0, 5, 5);
-		gbc_lblBeschreibung.gridx = 6;
-		gbc_lblBeschreibung.gridy = 3;
+		GridBagConstraints gbc_lblBeschreibung = createGridBagContraints(3, 1,
+				6, 3, GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblBeschreibung, gbc_lblBeschreibung);
 
 		lstRaum = new JList<Room>(myDataPusher.pushRoomList());
 		lstRaum.setCellRenderer(combinedListener);
-		lstRaum.setSelectionModel(new DefaultListSelectionModel(){
-					
-			@Override
-		    public void setSelectionInterval(int index0, int index1) 
-		    {
-					if(lstRaum.isSelectedIndex(index0)) 
-			        {
-						lstRaum.removeSelectionInterval(index0, index1);
-			        }
-			        else 
-			        {
-			        	lstRaum.addSelectionInterval(index0, index1);
-			        }
-		        
-		    }
-		});
-		GridBagConstraints gbc_lstRaum = new GridBagConstraints();
-		gbc_lstRaum.gridwidth = 4;
-		gbc_lstRaum.gridheight = 3;
-		gbc_lstRaum.insets = new Insets(0, 0, 5, 5);
-		gbc_lstRaum.fill = GridBagConstraints.BOTH;
-		gbc_lstRaum.gridx = 1;
-		gbc_lstRaum.gridy = 4;
+		lstRaum.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		lstRaum.setSelectionModel(new MyListSelectionModel());
+		setSelectedValues(lstRaum, rooms);
+		GridBagConstraints gbc_lstRaum = createGridBagContraints(4, 3, 1, 4,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(new JScrollPane(lstRaum), gbc_lstRaum);
+		setSelectedValues(lstRaum, rooms);
 
 		txtBeschreibung = new JTextField(beschreibung);
-		GridBagConstraints gbc_txtBeschreibung = new GridBagConstraints();
-		gbc_txtBeschreibung.gridwidth = 3;
-		gbc_txtBeschreibung.anchor = GridBagConstraints.NORTH;
-		gbc_txtBeschreibung.insets = new Insets(0, 0, 5, 5);
-		gbc_txtBeschreibung.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtBeschreibung.gridx = 6;
-		gbc_txtBeschreibung.gridy = 4;
+		GridBagConstraints gbc_txtBeschreibung = createGridBagContraints(3, 1,
+				6, 4, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(txtBeschreibung, gbc_txtBeschreibung);
 		txtBeschreibung.setColumns(10);
 
 		JLabel lblDetails = new JLabel("Details");
-		GridBagConstraints gbc_lblDetails = new GridBagConstraints();
-		gbc_lblDetails.gridwidth = 3;
-		gbc_lblDetails.anchor = GridBagConstraints.WEST;
-		gbc_lblDetails.insets = new Insets(0, 0, 5, 5);
-		gbc_lblDetails.gridx = 6;
-		gbc_lblDetails.gridy = 5;
+		GridBagConstraints gbc_lblDetails = createGridBagContraints(3, 1, 6, 5,
+				GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblDetails, gbc_lblDetails);
 
 		JLabel lblPersonen = new JLabel("Personen");
-		GridBagConstraints gbc_lblPersonen = new GridBagConstraints();
-		gbc_lblPersonen.gridwidth = 4;
-		gbc_lblPersonen.anchor = GridBagConstraints.WEST;
-		gbc_lblPersonen.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPersonen.gridx = 1;
-		gbc_lblPersonen.gridy = 7;
+		GridBagConstraints gbc_lblPersonen = createGridBagContraints(4, 1, 1,
+				7, GridBagConstraints.WEST, GridBagConstraints.BOTH);
 		getContentPane().add(lblPersonen, gbc_lblPersonen);
 
 		lstPersonen = new JList<User>(myDataPusher.pushUserList());
 		lstPersonen.setCellRenderer(combinedListener);
+		lstPersonen.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstPersonen.setSelectionModel(new MyListSelectionModel());
-		GridBagConstraints gbc_lstPersonen = new GridBagConstraints();
-		gbc_lstPersonen.gridwidth = 4;
-		gbc_lstPersonen.insets = new Insets(0, 0, 5, 5);
-		gbc_lstPersonen.fill = GridBagConstraints.BOTH;
-		gbc_lstPersonen.gridx = 1;
-		gbc_lstPersonen.gridy = 8;
+		setSelectedValues(lstPersonen, user);
+		GridBagConstraints gbc_lstPersonen = createGridBagContraints(4, 1, 1,
+				8, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(new JScrollPane(lstPersonen), gbc_lstPersonen);
 		
-		txtADetails = new JTextArea(details);
-		GridBagConstraints gbc_txtADetails = new GridBagConstraints();
-		gbc_txtADetails.gridwidth = 3;
-		gbc_txtADetails.gridheight = 3;
-		gbc_txtADetails.insets = new Insets(0, 0, 5, 5);
-		gbc_txtADetails.fill = GridBagConstraints.BOTH;
-		gbc_txtADetails.gridx = 6;
-		gbc_txtADetails.gridy = 6;
-		getContentPane().add(txtADetails, gbc_txtADetails);
 		
-		btnTerminEintragen = new JButton("Termin Eintragen");
-		btnTerminEintragen.setName("Button_Termin_Eintragen");
+		txtADetails = new JTextArea(details);
+		GridBagConstraints gbc_txtADetails = createGridBagContraints(3, 3, 6,
+				6, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+		getContentPane().add(txtADetails, gbc_txtADetails);
+
+		btnTerminEintragen = new JButton(btnText);
+		btnTerminEintragen.setName(BUTTON_NAME);
 		btnTerminEintragen.addActionListener(this.myCon);
-		GridBagConstraints gbc_btnTerminEintragen = new GridBagConstraints();
-		gbc_btnTerminEintragen.anchor = GridBagConstraints.EAST;
-		gbc_btnTerminEintragen.insets = new Insets(0, 0, 5, 5);
-		gbc_btnTerminEintragen.gridx = 8;
-		gbc_btnTerminEintragen.gridy = 10;
+		GridBagConstraints gbc_btnTerminEintragen = createGridBagContraints(1,
+				1, 8, 10, GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(btnTerminEintragen, gbc_btnTerminEintragen);
+
 		init();
 	}
-	
+
+	private GridBagConstraints createGridBagContraints(int gWidth, int gHeight,
+			int gridx, int gridy, int anchor, int fill) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = anchor;
+		gbc.gridwidth = gWidth;
+		gbc.gridheight = gHeight;
+		gbc.fill = fill;
+		gbc.gridx = gridx;
+		gbc.gridy = gridy;
+		gbc.insets = new Insets(0, 0, 5, 5);
+		return gbc;
+	}
+
+	private <T> void setSelectedValues(JList<T> awtList, T[] list) {
+		
+		if(list == null || list.length == 0) return;
+		
+		for (Object obj : list) {
+			System.out.println("Schleife");
+			awtList.setSelectedValue(obj, false);
+			awtList.setValueIsAdjusting(false);
+		}
+	}
+
 	/**
 	 * Create the frame.
 	 * 
@@ -258,9 +234,11 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener{
 	public String getEndUhrzeit() {
 		return endUhrzeit.getText();
 	}
+
 	/**
-	 * Fügt den User zur Liste hinzu wenn der Status true ist und er noch nicht in der Liste steht
-	 * Ist der Status false, wird er aus der Liste entfernt, falls er vorhanden ist
+	 * Fügt den User zur Liste hinzu wenn der Status true ist und er noch nicht
+	 * in der Liste steht Ist der Status false, wird er aus der Liste entfernt,
+	 * falls er vorhanden ist
 	 */
 	@Override
 	public void stateChangedForUser(boolean state, User user) {
@@ -274,9 +252,11 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener{
 			}
 		}
 	}
+
 	/**
-	 * Fügt den Raum zur Liste hinzu wenn der Status true ist und er noch nicht in der Liste steht
-	 * Ist der Status false, wird er aus der Liste entfernt, falls er vorhanden ist
+	 * Fügt den Raum zur Liste hinzu wenn der Status true ist und er noch nicht
+	 * in der Liste steht Ist der Status false, wird er aus der Liste entfernt,
+	 * falls er vorhanden ist
 	 */
 	@Override
 	public void stateChangedForRoom(boolean state, Room room) {
