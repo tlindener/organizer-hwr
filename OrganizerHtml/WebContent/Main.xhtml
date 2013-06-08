@@ -4,30 +4,41 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-	<title>Insert title here</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Main</title>
 </h:head>
 <h:body>
 	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="200">
+		<p:layoutUnit position="north" size="175">
 			<h1>Organizer</h1>
 			<h2>Termine planen und mehr</h2>
-			<hr size="3" noshade="noshade" />
 		</p:layoutUnit>
 		<p:layoutUnit position="west" size="150">
 			<h4>
-				<a href="Main.html"> Home </a>
+				<a href="Main.xhtml"> Home </a>
 			</h4>
 			<h4>
-				<a href="Kalender.jsp"> Kalender </a>
+				<a href="Kalender.xhtml"> Kalender </a>
 			</h4>
 		</p:layoutUnit>
 		<p:layoutUnit position="center">
 			<h3>Home</h3>
-			<p>Herzlich Willkommen</p>
-			<p>Den Organizer finden Sie unter dem Men&uuml;punkt Kalender.</p>
-			<p>Diese Oberfl&auml;che ist nur f&uuml;r die Ansicht Ihrer
-				Termine gedacht.</p>
+			Herzlich Willkommen
+			Den Organizer finden Sie unter dem Menüpunkt Kalender.<br />
+			Diese Oberfläche ist nur für die Ansicht Ihrer Termine gedacht.
+			<p:panel header="Login Form" style="width: 350;">
+				<h:form>
+					<h:panelGrid columns="2" cellpadding="2">
+						<h:outputLabel for="#{loginBean.username}" value="UserName" />
+						<h:inputText value="#{loginBean.username}" label="UserName"></h:inputText>
+						<h:outputLabel for="#{loginBean.password}" value="Password" />
+						<h:inputSecret value="#{loginBean.password}"></h:inputSecret>
+						<h:commandButton type="submit" value="Login"
+							action="#{loginBean.login}"></h:commandButton>
+					</h:panelGrid>
+				</h:form>
+			</p:panel>
+
 		</p:layoutUnit>
 	</p:layout>
 	<p:calendar />

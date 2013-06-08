@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Kalender</title>
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="175">
+			<h1>Organizer</h1>
+			<h2>Termine planen und mehr</h2>
+		</p:layoutUnit>
+		<p:layoutUnit position="west" size="150">
+			<h4>
+				<a href="Main.xhtml"> Home </a>
+			</h4>
+			<h4>
+				<a href="Kalender.xhtml"> Kalender </a>
+			</h4>
+		</p:layoutUnit>
+		<p:layoutUnit position="center">
+
+			<h:form id="calendar">
+				<p:calendar value="#{calenderBean.date}" mode="inline"
+					id="inlineCal">
+					<p:ajax event="dateSelect"
+						listener="#{calenderBean.handleDateSelect}" update="display" />
+				</p:calendar>
+				<h:outputText value="#{calenderBean.date}" id="display" />
+				<!--  hier kommen die Datenfelder hin, damit die Seite über AJAX aktualisiert wird -->
+			</h:form>
+
+
+		</p:layoutUnit>
+	</p:layout>
+	<p:calendar />
+</h:body>
+</html>
