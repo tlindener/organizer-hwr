@@ -9,34 +9,56 @@
 	<title>Kalender</title>
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="175">
-			<h1>Organizer</h1>
-			<h2>Termine planen und mehr</h2>
-		</p:layoutUnit>
-		<p:layoutUnit position="west" size="150">
-			<h4>
-				<a href="Main.xhtml"> Home </a>
-			</h4>
-			<h4>
-				<a href="Kalender.xhtml"> Kalender </a>
-			</h4>
-		</p:layoutUnit>
-		<p:layoutUnit position="center">
+	<h:form id="calendar">
+		<p:layout fullPage="true">
+			<p:layoutUnit position="north" size="160">
+				<h1>Organizer</h1>
+				<h2>Termine planen und mehr</h2>
+			</p:layoutUnit>
+			<p:layoutUnit position="west" size="150">
+				<h4>
+					<a href="Main.xhtml"> Home </a>
+				</h4>
+				<h4>
+					<a href="Kalender.xhtml"> Kalender </a>
+				</h4>
+			</p:layoutUnit>
+			<p:layoutUnit position="center">
+				<!-- Testbereich -->
 
-			<h:form id="calendar">
-				<p:calendar value="#{calenderBean.date}" mode="inline"
-					id="inlineCal">
-					<p:ajax event="dateSelect"
-						listener="#{calenderBean.handleDateSelect}" update="display" />
-				</p:calendar>
-				<h:outputText value="#{calenderBean.date}" id="display" />
-				<!--  hier kommen die Datenfelder hin, damit die Seite über AJAX aktualisiert wird -->
-			</h:form>
+				<p:panelGrid>
+					<f:facet name="header">
+Basic PanelGrid</f:facet>
+					<p:row>
+						<p:column rowspan="1">
+							<p:calendar value="#{calenderBean.date}" mode="inline"
+								id="inlineCal">
+								<p:ajax event="dateSelect"
+									listener="#{calenderBean.handleDateSelect}" update="display" />
+							</p:calendar>
+						</p:column>
+						<p:column colspan="3">
+							<p:schedule>
+							</p:schedule>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="1">Personen</p:column>
+						<p:column colspan="1">Raum</p:column>
+						<p:column colspan="3">Beschreibung</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<h:outputText value="#{calenderBean.date}" id="display" />
+						</p:column>
+						<p:column>FFF</p:column>
+						<p:column>GGG</p:column>
 
-
-		</p:layoutUnit>
-	</p:layout>
+					</p:row>
+				</p:panelGrid>
+			</p:layoutUnit>
+		</p:layout>
+	</h:form>
 	<p:calendar />
 </h:body>
 </html>

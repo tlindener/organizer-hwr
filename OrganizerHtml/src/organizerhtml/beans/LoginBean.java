@@ -36,7 +36,7 @@ public class LoginBean {
 	}
 	
 	private boolean verifyUser(){
-		//TODO: hier die Prüfung durchführen
+		System.out.println("hier her kommt er");
 		return false;
 	}
 }
