@@ -20,45 +20,45 @@ import organizer.objects.types.User;
  *
  */
 public class TestData implements Comparator<AbstractOrganizerObject>{
-	List<CalendarEntry> calendarEntries = new ArrayList<>();
-	List<Room> rooms = new ArrayList<>();
-	List<User> userList = new ArrayList<>();
-	List<Calendar> calendar = new ArrayList<>();
+	List<CalendarEntry> calendarEntries = new ArrayList<CalendarEntry>();
+	List<Room> rooms = new ArrayList<Room>();
+	List<User> userList = new ArrayList<User>();
+	List<Calendar> calendar = new ArrayList<Calendar>();
 	
 	public TestData(){		
 
-		addUser("Mustermann", "Max", "0180/1234567", "max.mustermann@web.de");
-		addUser("Normalverbraucher", "Otto", "030/1234567", "otto.normalverbrauher@web.de");
-		
-		addRoom("Ort","Raumname",25);
-		addRoom("Ort","Raumname",12);
-		addRoom("Ort","Raumname",5);
-		addRoom("Ort","Raumname",18);
-		
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "07:30", "01.05.2013", "08:00", 1, 1, 1);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "12:00", "01.05.2013", "13:00", 1, 1, 2);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "14:30", "01.05.2013", "16:30", 1, 1, 3);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "02.05.2013", "18:30", "02.05.2013", "18:45", 1, 1, 4);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "11:30", "03.05.2013", "13:30", 1, 1, 1);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "06:00", "03.05.2013", "06:15", 1, 1, 2);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "08:30", "03.05.2013", "10:30", 1, 1, 3);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "14:30", "03.05.2013", "15:30", 1, 1, 4);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "16:00", "03.05.2013", "16:30", 1, 1, 1);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "17:00", "03.05.2013", "18:30", 1, 1, 1);
-
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "07:30", "01.05.2013", "08:00", 2, 2, 1);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "12:00", "01.05.2013", "13:00", 2, 2, 2);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "14:30", "01.05.2013", "16:30", 2, 2, 3);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "02.05.2013", "18:30", "02.05.2013", "18:45", 2, 2, 4);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "11:30", "03.05.2013", "13:30", 2, 2, 1);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "06:00", "03.05.2013", "06:15", 2, 2, 2);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "08:30", "03.05.2013", "10:30", 2, 2, 3);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "14:30", "03.05.2013", "15:30", 2, 2, 4);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "16:00", "03.05.2013", "16:30", 2, 2, 1);
-		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "17:00", "03.05.2013", "18:30", 2, 2, 1);
-		
-		addCalendar("Kalenderbezeichnung", 1, calendarEntries.subList(0, 10));
-		addCalendar("Kalenderbezeichnung", 2, calendarEntries.subList(10, 20));
+//		addUser("Mustermann", "Max", "0180/1234567", "max.mustermann@web.de");
+//		addUser("Normalverbraucher", "Otto", "030/1234567", "otto.normalverbrauher@web.de");
+//		
+//		addRoom("Ort","Raumname",25);
+//		addRoom("Ort","Raumname",12);
+//		addRoom("Ort","Raumname",5);
+//		addRoom("Ort","Raumname",18);
+//		
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "07:30", "01.05.2013", "08:00", 1, 1, 1);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "12:00", "01.05.2013", "13:00", 1, 1, 2);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "14:30", "01.05.2013", "16:30", 1, 1, 3);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "02.05.2013", "18:30", "02.05.2013", "18:45", 1, 1, 4);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "11:30", "03.05.2013", "13:30", 1, 1, 1);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "06:00", "03.05.2013", "06:15", 1, 1, 2);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "08:30", "03.05.2013", "10:30", 1, 1, 3);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "14:30", "03.05.2013", "15:30", 1, 1, 4);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "16:00", "03.05.2013", "16:30", 1, 1, 1);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "17:00", "03.05.2013", "18:30", 1, 1, 1);
+//
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "07:30", "01.05.2013", "08:00", 2, 2, 1);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "12:00", "01.05.2013", "13:00", 2, 2, 2);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "01.05.2013", "14:30", "01.05.2013", "16:30", 2, 2, 3);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "02.05.2013", "18:30", "02.05.2013", "18:45", 2, 2, 4);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "11:30", "03.05.2013", "13:30", 2, 2, 1);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "06:00", "03.05.2013", "06:15", 2, 2, 2);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "08:30", "03.05.2013", "10:30", 2, 2, 3);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "14:30", "03.05.2013", "15:30", 2, 2, 4);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "16:00", "03.05.2013", "16:30", 2, 2, 1);
+//		addCalendarEntry("Testtermin", "Terminbeschreibung", "03.05.2013", "17:00", "03.05.2013", "18:30", 2, 2, 1);
+//		
+//		addCalendar("Kalenderbezeichnung", 1, calendarEntries.subList(0, 10));
+//		addCalendar("Kalenderbezeichnung", 2, calendarEntries.subList(10, 20));
 	}
 	
 	public void addCalendarEntry(String titel, String description, String startday, String starttime, String endday, String endtime, int calendarId, int ownerId, int roomId){

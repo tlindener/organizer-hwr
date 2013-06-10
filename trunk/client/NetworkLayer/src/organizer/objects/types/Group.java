@@ -51,10 +51,17 @@ public class Group extends AbstractOrganizerObject {
 
 	@Override
 	public String[] getProperty() throws IllegalArgumentException {
-		switch(byProperty){
-		case USER_ID: return new String[]{USER_ID, byValue};
-		default: throw new IllegalArgumentException("No available Property for " + getClass().getSimpleName());
+//		JDK 1.6
+		if(byProperty.equals(USER_ID)){
+			return new String[]{USER_ID, byValue};
 		}
+		throw new IllegalArgumentException(byProperty + " is an unkown Property for " + this.getClass().getSimpleName());
+		
+//		JDK 1.7
+//		switch(byProperty){
+//		case USER_ID: return new String[]{USER_ID, byValue};
+//		default: throw new IllegalArgumentException("No available Property for " + getClass().getSimpleName());
+//		}
 		
 	}
 }

@@ -17,7 +17,7 @@ import organizer.objects.types.User;
  */
 public abstract class RequestHandler{
 	
-	private List<ProcessListener> processListeners = new ArrayList<>();
+	private List<ProcessListener> processListeners = new ArrayList<ProcessListener>();
 	
 	public void addProcessListener(ProcessListener processListener){
 		this.processListeners.add(processListener);
@@ -97,7 +97,11 @@ public abstract class RequestHandler{
 	public abstract User login(String mail, String password);
 
 	public abstract int acceptInvite(int inviteId);
-	public abstract int declineInvite(int inviteId); 
+	
+	public abstract int declineInvite(int inviteId);
+	
+	public abstract <T extends AbstractOrganizerObject> boolean updateObject(T obj);
+	
 	/**
 	 * Generates an authentication String containing of mail and password.
 	 * Therefore the mail address and the password are encoded by
@@ -109,6 +113,6 @@ public abstract class RequestHandler{
 	 * @return the generated String
 	 */
 	protected String generateAuthenticationString(int id, String mail, String password) {
-		return id+"_"+Utils.encodeString(mail) + Utils.encodeString(password);
+		return Utils.parseStringToHTTP(id+"_"+Utils.encodeString(mail) + Utils.encodeString(password));
 	}
 }
