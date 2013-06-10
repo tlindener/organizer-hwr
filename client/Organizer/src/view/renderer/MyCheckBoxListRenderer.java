@@ -1,4 +1,4 @@
-package view;
+package view.renderer;
 
 import java.awt.Component;
 import java.util.HashMap;
@@ -16,7 +16,6 @@ import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
 import controller.MyChangeListener;
-
 
 public class MyCheckBoxListRenderer implements
 		ListCellRenderer<AbstractOrganizerObject>, ChangeListener {

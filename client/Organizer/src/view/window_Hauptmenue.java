@@ -39,6 +39,8 @@ import java.beans.PropertyChangeListener;
 import logik.DataPusher;
 import javax.swing.UIManager.*;
 
+import view.renderer.Renderer;
+
 
 public class window_Hauptmenue extends JFrame {
 

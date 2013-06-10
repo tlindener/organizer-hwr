@@ -26,11 +26,11 @@ public class Model {
 	private HashMap <String, String> beschreibungen;
 	private HashMap <String, String> anfangende;
 	private HashMap <String, String> details;
-	private HashMap <String, List> eingeladene;
+	private HashMap <String, List <User>> eingeladene;
 	private HashMap <String, String> raeume;
 	private HashMap <String, Double> dauer;
-	private List allePersonen;
-	private List alleRaeume;
+	private List<User> allePersonen;
+	private List<Room> alleRaeume;
 	private Date aktDate;
 	
 	
@@ -187,7 +187,7 @@ public class Model {
 	 * @return detail or a default string that there are no details available at the specified time
 	 */
 	
-	public Object returnDetail(String time)
+	public String returnDetail(String time)
 		{
 		if(details.get(time)!=null)
 		{
@@ -205,7 +205,7 @@ public class Model {
 	 * @param time
 	 * @return beschreibung 
 	 */
-	public Object returnBeschreibung(String time)
+	public String returnBeschreibung(String time)
 	{
 		return beschreibungen.get(time);
 	}
@@ -216,7 +216,7 @@ public class Model {
 	 * @param time
 	 * @return dauer or null if there is no duration at the specified time
 	 */
-	public Object returnDauer(String time)
+	public Double returnDauer(String time)
 	{
 		if(dauer.containsKey(time))
 		{
@@ -360,7 +360,7 @@ public class Model {
 	 * @return allePersonen
 	 */
 	public User[] getAllePersonen() {
-		return (User[]) allePersonen.toArray(new User[0]);
+		return allePersonen.toArray(new User[0]);
 	}
 
 	
@@ -379,7 +379,7 @@ public class Model {
 	 * @return alleRaueme
 	 */
 	public Room[] getAlleRaeume() {
-		return (Room[]) alleRaeume.toArray(new Room[0]);
+		return  alleRaeume.toArray(new Room[0]);
 	}
 
 	
