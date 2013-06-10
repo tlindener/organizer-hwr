@@ -34,7 +34,7 @@ import view.window_Servereinstellungen;
 import view.window_TerminBearbeiten;
 
 public class Controller implements DataPusher, ActionListener, MouseListener,
-		PropertyChangeListener, MyChangeListener {
+		PropertyChangeListener {
 
 	/**
 	 * @param args
@@ -46,12 +46,14 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private Object[][] beschreibungsDaten;
 	private Object[][] terminDauer;
 
-	private window_TerminBearbeiten myTerminBearbeiten;
+	
+	private window_TerminBearbeiten editEntry;
+	
 	private window_Hauptmenue myHauptmenue;
 	private window_LogScreen myLogScreen;
 	private window_Servereinstellungen myServereinstellungen;
 	private window_RegisterUser myRegistration;
-	private window_TerminBearbeiten editEntry;
+	
 	
 	private RequestHandler myRequester;
 	private Date aktDate;
@@ -75,12 +77,9 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		 */
 		// myRequester = new JsonJavaRequestHandler("localhost", 48585);
 		myModel = new Model(aktDate);
-		 editEntry = new window_TerminBearbeiten(this, this);
 		updateData();
 		myHauptmenue = new window_Hauptmenue(this, this, this, this);
 		myHauptmenue.setVisible(false);
-		myTerminBearbeiten = new window_TerminBearbeiten(this, this);
-		myTerminBearbeiten.setVisible(false);
 		myLogScreen = new window_LogScreen(this);
 		myLogScreen.setVisible(true);
 		myRegistration = new window_RegisterUser(this);
@@ -214,9 +213,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		}
 		if (e.getSource() == myHauptmenue.getBtnTerminBearbeiten()) {
-			
-			
-			
+			editEntry = new window_TerminBearbeiten(this, this);
 			aktDate = myHauptmenue.getAktDateCali();
 			if (aktTermin == null) {
 				editEntry.setButtonText("Erstellen");
@@ -231,13 +228,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				Room[]raeume= myModel.getAlleRaeume();
 				User[] allePersonen= myModel.getAllePersonen();
 				System.out.println(allePersonen[0]);
-			
-				
 				editEntry.openFrameWithValues(startZeit, endZeit, beschreibung, details, raeume,allePersonen,raum);
-
 			}
-
-
 
 		}
 		if (e.getSource() == myHauptmenue.getBtnAbmelden()) {
@@ -248,10 +240,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 * Über Model Verbindung zum Server Übergabe des Termines Löschen
 			 * des Termines durch Netzwerklayer
 			 */
-		}
-		if (e.getSource() == myTerminBearbeiten.getBtnTerminEintragen()) {
-
-			
 		}
 		if (e.getSource() == myLogScreen.getBtnAnmelden()) {
 			meldeUserAn();
@@ -266,7 +254,9 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 
 		if(e.getSource().equals(editEntry.getBtnTerminEintragen())){
+//			TODO Abfragen der Elemente aus dem Fenster abfragen
 			String startzeit = editEntry.getStartUhrzeit();
+			
 		}
 		
 	}
@@ -466,20 +456,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			myRequester = new JsonJavaRequestHandler(adresse, port);
 			return 1;
 		}
-
-	}
-
-	@Override
-	public void stateChangedForUser(boolean state, User user) {
-		// TODO hier werden alle Änderungen der User geschehen - du kriegst den
-		// Status ob gerade ausgewählt oder wieder weggenommen
-
-	}
-
-	@Override
-	public void stateChangedForRoom(boolean state, Room room) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
