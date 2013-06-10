@@ -41,7 +41,6 @@ public class MyCheckBoxListRenderer implements
 			JList<? extends AbstractOrganizerObject> list,
 			AbstractOrganizerObject value, int index, boolean isSelected,
 			boolean cellHasFocus) {
-
 		JCheckBox box = null;
 		// Unterscheidung zwischen User und Room
 		if (value instanceof User) {

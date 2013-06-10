@@ -154,7 +154,6 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		setSelectedValues(lstRaum, rooms);
 		GridBagConstraints gbc_lstRaum = createGridBagContraints(5, 2, 1, 7, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(new JScrollPane(lstRaum), gbc_lstRaum);
-		getContentPane().add(lstRaum, gbc_lstRaum);
 
 		JLabel lblPersonen = new JLabel("Personen");
 		GridBagConstraints gbc_lblPersonen = createGridBagContraints(5, 1, 1, 9,GridBagConstraints.WEST , GridBagConstraints.NONE);
@@ -168,10 +167,9 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		GridBagConstraints gbc_lstPersonen = createGridBagContraints(5, 2, 1,
 				10, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(new JScrollPane(lstPersonen), gbc_lstPersonen);
-		getContentPane().add(lstPersonen, gbc_lstPersonen);
 
-		btnTerminEintragen = new JButton("Termin Eintragen");
-		
+		btnTerminEintragen = new JButton(this.btnText);
+		btnTerminEintragen.addActionListener(this.myCon);
 		GridBagConstraints gbc_btnTerminEintragen = createGridBagContraints(1, 1, 9, 11, GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(btnTerminEintragen, gbc_btnTerminEintragen);
 		init();
@@ -336,11 +334,11 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 	}
 
 	public Room[] getSelectedRooms() {
-		return selectedRooms.toArray(new Room[0]);
+		return selectedRooms.toArray(new Room[selectedRooms.size()]);
 	}
 
 	public User[] getSelectedUsers() {
-		return selectedUsers.toArray(new User[0]);
+		return selectedUsers.toArray(new User[selectedUsers.size()]);
 	}
 
 	public String getStartUhrzeit() {
