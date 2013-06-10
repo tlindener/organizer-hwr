@@ -25,16 +25,21 @@
 			<h3>Home</h3>
 			Herzlich Willkommen
 			Den Organizer finden Sie unter dem Menüpunkt Kalender.<br />
-			Diese Oberfläche ist nur für die Ansicht Ihrer Termine gedacht.
-			<p:panel header="Login Form" style="width: 350;">
+			Diese Oberfläche ist nur für die Ansicht Ihrer Termine gedacht.<br />
+			<p:panel header="Login Form">
 				<h:form>
+					<!-- 
+					TODO: hier ist noch ne Fehlermeldung aufgetreten !
+					INFO: Unable to find component '' (calling findComponent on component 'j_id_e:j_id_i'). We'll try to return 
+					a guessed client-id anyways - this will be a problem if you put the referenced component into a different 
+					naming-container. If this is the case, you can always use the full client-id. -->
 					<h:panelGrid columns="2" cellpadding="2">
-						<h:outputLabel for="#{loginBean.username}" value="UserName" />
-						<h:inputText value="#{loginBean.username}" label="UserName"></h:inputText>
-						<h:outputLabel for="#{loginBean.password}" value="Password" />
-						<h:inputSecret value="#{loginBean.password}"></h:inputSecret>
+						<h:outputLabel for="#{calenderBean.username}" value="UserName" />
+						<h:inputText value="#{calenderBean.username}" label="UserName"></h:inputText>
+						<h:outputLabel for="#{calenderBean.password}" value="Password" />
+						<h:inputSecret value="#{calenderBean.password}"></h:inputSecret>
 						<h:commandButton type="submit" value="Login"
-							action="#{loginBean.login}"></h:commandButton>
+							action="#{calenderBean.login}"></h:commandButton>
 					</h:panelGrid>
 				</h:form>
 			</p:panel>
