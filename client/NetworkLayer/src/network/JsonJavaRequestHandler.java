@@ -4,27 +4,22 @@
 package network;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import network.objects.NetDateTimeAdapter;
-import network.objects.TestData;
 import network.objects.Utils;
 
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Invite;
-import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
 import com.google.gson.FieldNamingPolicy;
@@ -50,8 +45,6 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	/** The JSON-Paser */
 	private Gson gson = null;
 
-	TestData data = null;
-
 	/** The HTTP connection for sending GET-request */
 	private HttpURLConnection connection = null;
 	/** Hostname of the backend where the application is placed */
@@ -70,8 +63,6 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	public JsonJavaRequestHandler(String hostname, int port) {
 		this.hostname = hostname;
 		this.port = port;
-		// TODO Remove testData
-		data = new TestData();
 		init();
 	}
 
@@ -120,16 +111,6 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 */
 	private String sendGetToServer(String request) {
 
-		// String jsonString =
-		// "{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1366979015630+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968215630+0200)\\/\",\"Title\":null}";
-		// String jsonString2 =
-		// "[{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1366979015630+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968215630+0200)\\/\",\"Title\":null},{\"CalendarId\":2,\"Description\":null,\"Duration\":1440,\"EndDate\":\"\\/Date(1367054619440+0200)\\/\",\"Id\":0,\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1366968219440+0200)\\/\",\"Title\":null}]";
-		// String jsonString3 =
-		// "[{\"CalendarEntries\":[{\"CalendarId\":1,\"Description\":null,\"Duration\":180,\"EndDate\":\"\\/Date(1367602369353+0200)\\/\",\"Id\":1,\"Invitees\":[],\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1367591569353+0200)\\/\",\"Title\":\"Arbeit\"},{\"CalendarId\":2,\"Description\":null,\"Duration\":1440,\"EndDate\":\"\\/Date(1367677970180+0200)\\/\",\"Id\":2,\"Invitees\":[{\"CalendarIds\":[],\"GivenName\":\"Hans\",\"GroupIds\":[],\"Id\":2,\"InviteIds\":[],\"MailAddress\":\"tobias.lindener@gmail.com\",\"PhoneNumber\":\"01773071234\",\"Surname\":\"Dieter\"}],\"OwnerId\":1,\"RoomId\":0,\"StartDate\":\"\\/Date(1367591570180+0200)\\/\",\"Title\":null}],\"Description\":null,\"Id\":1,\"Name\":\"MyCalendar\",\"OwnerId\":1}]";
-		// return jsonString3;
-		// String obj = gson.toJson(new Date());
-		// System.out.println("TEST: " + obj);
-
 		try {
 			connection = (HttpURLConnection) (new URL("http://" + hostname
 					+ ":" + port + "/OrganizerService.svc/" + request))
@@ -145,38 +126,8 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			e.printStackTrace();
 		}
 		return null;
-		// System.out.println(request);
-		// return "";
 	}
 
-	//
-	// private String sendPostToServer(String request, String jsonParameter){
-	// try {
-	// connection = (HttpURLConnection) (new
-	// URL("http://"+hostname+":"+port+"/OrganizerService.svc/"+request)).openConnection();
-	// connection.setDoInput (true);
-	// connection.setDoOutput (true);
-	// connection.setUseCaches (false);
-	// connection.connect();
-	//
-	// PrintWriter printout = new PrintWriter(new
-	// DataOutputStream(connection.getOutputStream ()));
-	// printout.write(URLEncoder.encode(jsonParameter.toString(),"UTF-8"));
-	// printout.flush ();
-	// printout.close ();
-	//
-	// BufferedReader reader = new BufferedReader(new
-	// InputStreamReader(connection.getInputStream()));
-	// String jsonString = reader.readLine();
-	// connection.disconnect();
-	// return jsonString;
-	// } catch (MalformedURLException e) {
-	// e.printStackTrace();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// return null;
-	// }
 
 	/**
 	 * Requests all objects in the backend equals to the type of the given one.
@@ -203,7 +154,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			if (tmp == null)
 				return new ArrayList<T>();
 
-			List<T> result = new ArrayList<>();
+			List<T> result = new ArrayList<T>();
 			for (int i = 0; i < tmp.size(); i++) {
 				result.add((T) gson.fromJson(tmp.get(i), obj.getClass()));
 			}
@@ -263,7 +214,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 					}.getType());
 			if (tmp == null)
 				return new ArrayList<T>();
-			List<T> result = new ArrayList<>();
+			List<T> result = new ArrayList<T>();
 			for (int i = 0; i < tmp.size(); i++) {
 				result.add((T) gson.fromJson(tmp.get(i), obj.getClass()));
 			}
@@ -301,7 +252,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			getCmd += "&password=" + Utils.encodeString(password) + "";
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
-			if (id == null || id == -1)
+			if (id == null || id == 0)
 				return null;
 			user.setID(id);
 			return user;
@@ -404,7 +355,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * @param inviteId
 	 *            the ID of the {@link Invite} that should be confirmed
 	 * @return the ID of the created {@link CalendarEntry} in the own
-	 *         {@link Calendar} or -1, if there was an Error.
+	 *         {@link Calendar} or 0, if there was an Error.
 	 */
 	@Override
 	public int acceptInvite(int inviteId) {
@@ -416,7 +367,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		} catch (JsonSyntaxException ex) {
 			ex.printStackTrace();
 		}
-		return -1;
+		return 0;
 	}
 
 	/**
@@ -424,8 +375,8 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * 
 	 * @param inviteId
 	 *            the ID of the {@link Invite} that should be confirmed
-	 * @return
-	 */
+	 * @return 1 if there was no error, otherwise 0
+	 */	
 	@Override
 	public int declineInvite(int inviteId) {
 		String getCmd = Utils.buildDeclineCommand(inviteId);
@@ -436,7 +387,29 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		} catch (JsonSyntaxException ex) {
 			ex.printStackTrace();
 		}
-		return -1;
+		return 0;
+	}
+
+	@Override
+	public <T extends AbstractOrganizerObject> boolean updateObject(T obj) {
+		if (obj instanceof User)
+			throw new UnsupportedOperationException(
+					"User must be added by method \"registerNewUser\"");
+		try {
+			String getCmd = Utils.buildAddCommand(obj);
+			getCmd = Utils.addUserAuth(getCmd, authString);
+			String json = sendGetToServer(getCmd);
+			Integer id = gson.fromJson(json, int.class);
+			if (id == null || id == 0)
+				return false;
+			obj.setID(id);
+			return true;
+		} catch (IllegalArgumentException ex) {
+			ex.printStackTrace();
+		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
+		}
+		return false;
 	}
 
 }

@@ -75,7 +75,7 @@ public class TestDataRequestHandler extends RequestHandler {
 		if (result != null) {
 			return (List<T>) result;
 		} else {
-			return new ArrayList<>();
+			return new ArrayList<T>();
 		}
 	}
 
@@ -98,7 +98,7 @@ public class TestDataRequestHandler extends RequestHandler {
 		if (result != null) {
 			return (List<T>) result;
 		} else {
-			return new ArrayList<>();
+			return new ArrayList<T>();
 		}
 	}
 
@@ -138,6 +138,12 @@ public class TestDataRequestHandler extends RequestHandler {
 	public int declineInvite(int inviteId) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public <T extends AbstractOrganizerObject> boolean updateObject(T obj) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

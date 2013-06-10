@@ -5,9 +5,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class Utils {
 	 * Static constructor creates and fills the {@link #plurals}
 	 */
 	static {
-		plurals = new HashMap<>();
+		plurals = new HashMap<Class<? extends AbstractOrganizerObject>, String>();
 		plurals.put(User.class, "User");
 		plurals.put(Group.class, "Groups");
 		plurals.put(Calendar.class, "Calendar");
@@ -162,9 +162,26 @@ public class Utils {
 	public static <T extends AbstractOrganizerObject> String buildAddCommand(
 			T obj) throws IllegalArgumentException {
 		String command = "Add" + obj.getClass().getSimpleName() + "?";
+		
 		Field[] fields = obj.getClass().getDeclaredFields();
-		ArrayList<String> parameters = new ArrayList<>();
-
+		command += buildParameterString(fields, obj);
+		
+		return command;
+	}
+	
+	public static <T extends AbstractOrganizerObject> String buildUpdateCommand(
+			T obj) throws IllegalArgumentException {
+		String command = "Update" + obj.getClass().getSimpleName() + "?";
+		
+		Field[] fields = obj.getClass().getDeclaredFields();
+		command += buildParameterString(fields, obj);
+		
+		return command;
+	}
+	
+	private static <T extends AbstractOrganizerObject> String buildParameterString(Field[] fields, T obj){
+		String command = "";
+		ArrayList<String> parameters = new ArrayList<String>();
 		for (Field f : fields) {
 			if (f.getModifiers() != Modifier.PRIVATE)
 				continue;
@@ -174,10 +191,10 @@ public class Utils {
 				if(f.getName().equals("accepted")){
 					continue;
 				}
-				// if(value == null){
-				// //TODO Fehler anpassen
-				// throw new IllegalArgumentException("Darf nicht null sein");
-				// }
+//				 if(value == null){
+//					 parameters.add(f.getName() + "=");
+////					 throw new IllegalArgumentException("Darf nicht null sein");
+//				 }
 				if (value instanceof List<?>) {
 					continue;
 				} else if (value instanceof String) {
@@ -204,32 +221,16 @@ public class Utils {
 		return command;
 	}
 	
-	
-	
-//	/**
-//	 * 
-//	 * @param obj
-//	 * @param fieldName
-//	 * @return
-//	 */
-//	private static <T extends AbstractOrganizerObject> boolean isFieldOf(T obj,
-//			String fieldName) {
-//		Field[] fields = obj.getClass().getDeclaredFields();
-//		Field[] superFields = obj.getClass().getSuperclass()
-//				.getDeclaredFields();
-//		return (iterateThroughFields(fields, fieldName) || iterateThroughFields(
-//				superFields, fieldName));
-//
-//	}
-
-	private static String parseStringToHTTP(String value) {
+	public static String parseStringToHTTP(String value) {
 		value = value.replaceAll(" ", "%20");
+		value = value.replaceAll("[+]", "%2B");
 		return value;
 	}
 
 	public static String buildAcceptCommand(int inviteId){
 		return "AcceptInvite?inviteId="+inviteId;
 	}
+	
 	public static String buildDeclineCommand(int inviteId){
 		return "DeclineInvite?inviteId="+inviteId;
 	}
@@ -241,36 +242,11 @@ public class Utils {
 	 * @return String representation of C#-DateTime
 	 */
 	public static String parseDateToNetDateTime(Date date) {
-		java.util.Calendar c = new GregorianCalendar();
-		c.setTime(date);
 		
-		StringBuilder builder = new StringBuilder();
-		builder.append(c.get(java.util.Calendar.YEAR));
-		builder.append("-");
-		builder.append(doubleDigitInt(c.get(java.util.Calendar.MONTH)));
-		builder.append("-");
-		builder.append(doubleDigitInt(c.get(java.util.Calendar.DAY_OF_MONTH)));
-		builder.append("T");
-		builder.append(doubleDigitInt(c.get(java.util.Calendar.HOUR_OF_DAY)));
-		builder.append(":");
-		builder.append(doubleDigitInt(c.get(java.util.Calendar.MINUTE)));
-		builder.append(":");
-		builder.append(doubleDigitInt(c.get(java.util.Calendar.SECOND)));
-		builder.append(".");
-		builder.append(c.get(java.util.Calendar.MILLISECOND));
-		//TODO FIX TIME-OFFSET
-		builder.append("-");
-		builder.append("00:00");
+		SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		return parseStringToHTTP(formatted.format(date));
 		
 //		2008-11-01T19:35:00.0000000-07:00
-		
-		return builder.toString();
-	}
-
-	private static String doubleDigitInt(int i){
-		if(i < 10){
-			return "0"+i;
-		}else return ""+i;
 	}
 	
 	public static void main(String[] args) {

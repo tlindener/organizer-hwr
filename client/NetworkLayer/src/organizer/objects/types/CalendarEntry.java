@@ -37,7 +37,7 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	/** the room id for this entry*/
 	private int roomId = -1;
 	/** list of invited users for this entry*/			
-	private List<User> invitees = new ArrayList<>();
+	private List<User> invitees = new ArrayList<User>();
 
 	/**
 	 * @return the startDate
@@ -235,12 +235,23 @@ public class CalendarEntry extends AbstractOrganizerObject {
 
 	@Override
 	public String[] getProperty() {
-		switch(byProperty){
-		case OWNER_ID: return new String[]{OWNER_ID, byValue};
-		case ROOM_ID: return new String[]{ROOM_ID, byValue};
-		default:
-			throw new IllegalArgumentException(byProperty + " is an unkown Property for " + this.getClass().getSimpleName());
+		
+//		JDK 1.6
+		if(byProperty.equals(OWNER_ID)){
+			return new String[]{OWNER_ID, byValue};
 		}
+		if(byProperty.equals(ROOM_ID)){
+			return new String[]{ROOM_ID, byValue};
+		}
+		throw new IllegalArgumentException(byProperty + " is an unkown Property for " + this.getClass().getSimpleName());
+		
+//		JDK 1.7
+//		switch(byProperty){
+//		case OWNER_ID: return new String[]{OWNER_ID, byValue};
+//		case ROOM_ID: return new String[]{ROOM_ID, byValue};
+//		default: throw new IllegalArgumentException(byProperty + " is an unkown Property for " + this.getClass().getSimpleName());
+//			
+//		}
 	}
 	
 }

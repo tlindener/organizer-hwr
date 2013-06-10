@@ -19,7 +19,7 @@ public class Calendar extends AbstractOrganizerObject{
 	/** the description of the calendar*/
 	private String description = "";
 	/** list of all entry IDs contained by the calendar*/
-	private List<CalendarEntry> calendarEntries = new ArrayList<>();
+	private List<CalendarEntry> calendarEntries = new ArrayList<CalendarEntry>();
 	
 	
 	/**

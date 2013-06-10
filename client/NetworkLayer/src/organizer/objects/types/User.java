@@ -22,11 +22,11 @@ public class User extends AbstractOrganizerObject {
 	/** the phone number of the user */
 	private String phoneNumber = "";
 	/** a list of all group IDs the user participates */
-	private List<Integer> groupIds = new ArrayList<>();
+	private List<Integer> groupIds = new ArrayList<Integer>();
 	/** a list of all calendar IDs the user has */
-	private List<Integer> calendarIds = new ArrayList<>();
+	private List<Integer> calendarIds = new ArrayList<Integer>();
 	/** a list of all invite IDs the user has */
-	private List<Integer> inviteIds = new ArrayList<>();
+	private List<Integer> inviteIds = new ArrayList<Integer>();
 	
 	/**
 	 * @return the surname

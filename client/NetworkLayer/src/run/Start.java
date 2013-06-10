@@ -5,11 +5,10 @@ import java.util.List;
 
 import network.JsonJavaRequestHandler;
 import network.RequestHandler;
-import network.objects.Utils;
+import network.objects.TestData;
 
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
-import organizer.objects.types.Group;
 import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
@@ -23,12 +22,13 @@ import organizer.objects.types.User;
  */
 public class Start {
 	
-	public Start() {
+	public Start()	{
 //		
 //		
 ////		Schnittstelle für Jenny um Objekte zu erfragen
-		RequestHandler requester = new JsonJavaRequestHandler("localhost", 48585);
-		
+		RequestHandler requester = new JsonJavaRequestHandler("localhost",
+				48585);
+
 		User user = new User();
 		user.setMailAddress("steffen.baumann@localhost.de");
 		user.setGivenname("Steffen");
@@ -190,6 +190,36 @@ public class Start {
 			ca4 = requester.requestObjectByOwnId(ca4);
 			System.out.println("ID: "+ ca4.getID() + " | Name: "+ca4.getName());
 		}
+		
+		System.out.println("Log in " +u3.getMailAddress());
+		loggedInUser = requester.login(u3.getMailAddress(), "123456");
+		
+		List<Integer> inviteIDs = loggedInUser.getInviteIds();
+		if(!inviteIDs.isEmpty()){
+			for(Integer inte : inviteIDs){
+				System.out.println("Invite declined: " + requester.declineInvite(inte));
+			}
+		}
+//		TestData data = new TestData();
+//		
+//		for(int j = 0; j < 5; j++){
+//			if(j == 9){
+//				data.addCalendarEntry("Testtermin"+j, "Terminbeschreibung"+j, "01.05.2013", "0"+j+":30", "01.05.2013", (j+1)+":00", 1, 1, 1);
+//			}
+//			if(j < 9){
+//				data.addCalendarEntry("Testtermin"+j, "Terminbeschreibung"+j, "01.05.2013", "0"+j+":30", "01.05.2013", "0"+(j+1)+":00", 1, 1, 1);
+//			}else{
+//				data.addCalendarEntry("Testtermin"+j, "Terminbeschreibung"+j, "01.05.2013", j+":30", "01.05.2013", (j+1)+":00", 1, 1, 1);
+//			}
+//		}
+//		
+//		List<CalendarEntry> entryList = data.getAllCalendarEntries();
+//		for(CalendarEntry entry: entryList){
+//			CalendarEntry addedEntry = requester.addObject(entry);
+//			System.out.println("Entry ID: " +addedEntry.getID());
+//		}
+		
+		
 	}
 
 	/**
