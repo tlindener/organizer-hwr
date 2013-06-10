@@ -214,7 +214,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		}
 		if (e.getSource() == myHauptmenue.getBtnTerminBearbeiten()) {
-			editEntry = new window_TerminBearbeiten(this, this);
+			
 			
 			
 			aktDate = myHauptmenue.getAktDateCali();
