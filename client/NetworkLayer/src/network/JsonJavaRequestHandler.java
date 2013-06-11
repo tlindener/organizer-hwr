@@ -249,7 +249,10 @@ public class JsonJavaRequestHandler extends RequestHandler {
 					"The mail address must not be empty or null");
 		try {
 			String getCmd = Utils.buildAddCommand(user);
-			getCmd += "&password=" + Utils.encodeString(password) + "";
+			String encPassword = Utils.encodeString(password);
+			encPassword = Utils.parseStringToHTTP(encPassword);
+			
+			getCmd += "&password=" + encPassword + "";
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
 			if (id == null || id == 0)
