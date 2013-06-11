@@ -1,5 +1,6 @@
 package run;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import network.objects.TestData;
 
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
+import organizer.objects.types.Group;
 import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
@@ -160,7 +162,7 @@ public class Start {
 			tmp.setID(invite);
 			Invite in = requester.requestObjectByOwnId(tmp);
 			if(in.isAccepted() != 1){
-				int result = requester.acceptInvite(invite);
+				int result = requester.acceptInvite(in);
 				System.out.println("Invite "+invite + "--> neue EntryID: " + result);
 			}else{
 				System.out.println("Already Confirmed / Declined");
@@ -197,7 +199,9 @@ public class Start {
 		List<Integer> inviteIDs = loggedInUser.getInviteIds();
 		if(!inviteIDs.isEmpty()){
 			for(Integer inte : inviteIDs){
-				System.out.println("Invite declined: " + requester.declineInvite(inte));
+				Invite tmp = new Invite();
+				tmp.setID(inte);
+				System.out.println("Invite declined: " + requester.declineInvite(tmp));
 			}
 		}
 //		TestData data = new TestData();
@@ -222,11 +226,95 @@ public class Start {
 		
 	}
 
+//	public Start(String test)	{
+//		RequestHandler requester = new JsonJavaRequestHandler("localhost",
+//				48585);
+//
+//		User user = new User();
+//		user.setMailAddress("steffen.baumann@localhost.de");
+//		user.setGivenname("Steffen");
+//		user.setSurname("Baumann");
+//		user.setPhoneNumber("666666666");
+//		
+//		System.out.println("AddUser");
+//		User u = requester.registerNewUser(user, "123456");
+//		
+//		System.out.println("Log in " +user.getMailAddress());
+//		User loggedInUser = requester.login(user.getMailAddress(), "123456");
+//		
+//		Room room = new Room();
+//		room.setDescription("TestRaum1");
+//		room.setLocation("HierUndDa");
+//		room.setSeats(1478);
+//		
+//		System.out.println("AddRoom");
+//		Room r = requester.addObject(room);
+//		
+//		Calendar ca = new Calendar();
+//		ca.setOwnerId(user.getID());
+//		ca.setDescription("Infos%20von%20undfuer" + user.getGivenName());
+//		ca.setName(user.getGivenName()+"sCalendar");
+//
+//		System.out.println("AddCalendar");
+//		Calendar c = requester.addObject(ca);
+//		
+//		System.out.println("Request calendar of " + user.getGivenName());
+//		
+//		System.out.println("Request all rooms");
+//		List<Room> rooms = requester.requestAllObjects(new Room());
+//				
+//		CalendarEntry ce = new CalendarEntry();
+//		ce.setStartDate(new Date());
+//		ce.setDescription(user.getGivenName() +"sTermin");
+//		ce.setTitle("Testterminvon%20" + user.getGivenName());
+//		ce.setRoomId(room.getID());
+//		ce.setOwnerId(user.getID());
+//		ce.setCalendarId(1);
+//		ce.setEndDate(new Date());
+//		
+//		System.out.println("AddEntry");
+//		CalendarEntry ce1 = requester.addObject(ce);
+//
+//		System.out.println("AddInvite for User 2");
+//		Invite i = new Invite();
+//		i.setCalendarEntryId(1);
+//		i.setOwnerId(2);
+//		
+//		i = requester.addObject(i);
+//		
+//		System.out.println("Accept Invites");
+//		Invite tmp = new Invite();
+//		tmp.setID(1);
+//		Invite in = requester.requestObjectByOwnId(tmp);
+//			
+//		
+//		System.out.println("Remove Entries with RoomID=1 from current User");
+//		CalendarEntry room1Entry = new CalendarEntry();
+//		room1Entry.setRequestProperty(CalendarEntry.ROOM_ID, ""+1);
+//		List<CalendarEntry> entries = requester.requestAllObjectsByProperty(room1Entry);
+//		
+//		boolean result = false;
+//		result = requester.removeObjectByOwnId(ce);
+//		System.out.println("Result remove CalendarEntry: " +result);
+//		
+//		Group g = new Group();
+//		g.setDescription("Test");
+//		g.setID(1);
+//		g.setMembers(new ArrayList<Integer>());
+//		
+//		requester.addObject(g);
+//		
+//		requester.addUserToGroup(user, g);
+//		
+//		requester.removeUserFromGroup(user, g);
+//		
+//	}
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new Start();
+//		new Start();
+//		new Start("");
 	}
 
 }
