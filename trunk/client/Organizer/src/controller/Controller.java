@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -255,7 +256,44 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		if(e.getSource().equals(editEntry.getBtnTerminEintragen())){
 //			TODO Abfragen der Elemente aus dem Fenster abfragen
-			String startzeit = editEntry.getStartUhrzeit();
+			// Überprüfung auf richtiges Format!!
+			
+			CalendarEntry neuCalEnt = new CalendarEntry();
+			String startzeit = editEntry.getStartUhrzeit().getText();
+			String endzeit = editEntry.getEndUhrzeit().getText();
+			
+			Date startDate = parseStringtoDate(startzeit);
+			Date endDate = parseStringtoDate(endzeit);
+			
+			neuCalEnt.setCalendarId(aktUserCa.getID());
+			neuCalEnt.setDescription(editEntry.getTxtADetails().getText());
+//			neuCalEnt.setInvitees(invitees);
+			neuCalEnt.setEndDate(endDate);
+			neuCalEnt.setOwnerId(aktUser.getID());
+			neuCalEnt.setRoomId(editEntry.getSelectedRoom().getID());
+			neuCalEnt.setStartDate(startDate);
+			neuCalEnt.setTitle(editEntry.getBeschreibung().getText());
+						
+			Object obj=myRequester.addObject(neuCalEnt);
+			System.out.println("hier bin ich");
+			if(obj==null)
+			{
+				 JOptionPane.showMessageDialog(editEntry, "Termin konnte nicht eingetragen werden","Termin konnte nicht eingetragen werden", JOptionPane.INFORMATION_MESSAGE);
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(editEntry, "Termin wurde eingetragen","Termin wurde eingetragen", JOptionPane.INFORMATION_MESSAGE);
+			}
+			editEntry.setVisible(false);
+			updateData();
+			try {
+				befuelleModel();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			myHauptmenue.setVisible(true);
+			
 			
 		}
 		
@@ -333,9 +371,17 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		if (e.getOldValue() == null && e.getNewValue() != null) {
 			//
 			aktDate = new Date();
+			
 		}
 		if (e.getOldValue() != null) {
 			aktDate = myHauptmenue.getAktDateCali();
+			updateData();
+			try {
+				befuelleModel();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			connectServerModel();
 		}
 
@@ -401,6 +447,24 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		datum = date.toString().substring(0, 11)
 				+ date.toString().substring(20);
 		return datum;
+	}
+	
+	public Date parseStringtoDate(String zeit)
+	{
+		
+		Date date= aktDate;
+        String datetimeStr = date.toString();
+        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd "+ zeit+":ss zzz yyyy");
+        
+        datetimeStr=format.format(date);
+        System.out.println(datetimeStr);
+        try {
+			date=format.parse(datetimeStr);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date;
 	}
 
 	public void updateData() {

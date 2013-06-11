@@ -29,8 +29,8 @@ public class Model {
 	private HashMap <String, List <User>> eingeladene;
 	private HashMap <String, String> raeume;
 	private HashMap <String, Double> dauer;
-	private List<User> allePersonen;
-	private List<Room> alleRaeume;
+	private List <User> allePersonen;
+	private List <Room> alleRaeume;
 	private Date aktDate;
 	
 	
