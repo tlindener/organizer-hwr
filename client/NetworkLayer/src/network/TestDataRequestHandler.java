@@ -8,6 +8,8 @@ import network.objects.TestData;
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
+import organizer.objects.types.Group;
+import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
@@ -129,19 +131,33 @@ public class TestDataRequestHandler extends RequestHandler {
 	}
 
 	@Override
-	public int acceptInvite(int inviteId) {
+	public int acceptInvite(Invite invite) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int declineInvite(int inviteId) {
+	public int declineInvite(Invite invite) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public <T extends AbstractOrganizerObject> boolean updateObject(T obj) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public <T extends AbstractOrganizerObject> boolean addUserToGroup(
+			User user, Group group) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public <T extends AbstractOrganizerObject> boolean removeUserFromGroup(
+			User user, Group group) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -6,6 +6,8 @@ import java.util.List;
 import network.objects.Utils;
 
 import organizer.objects.AbstractOrganizerObject;
+import organizer.objects.types.Group;
+import organizer.objects.types.Invite;
 import organizer.objects.types.User;
 
 /**
@@ -96,11 +98,15 @@ public abstract class RequestHandler{
 	 */
 	public abstract User login(String mail, String password);
 
-	public abstract int acceptInvite(int inviteId);
+	public abstract int acceptInvite(Invite invite);
 	
-	public abstract int declineInvite(int inviteId);
+	public abstract int declineInvite(Invite invite);
 	
 	public abstract <T extends AbstractOrganizerObject> boolean updateObject(T obj);
+	
+	public abstract <T extends AbstractOrganizerObject> boolean addUserToGroup(User user, Group group);
+	
+	public abstract <T extends AbstractOrganizerObject> boolean removeUserFromGroup(User user, Group group);
 	
 	/**
 	 * Generates an authentication String containing of mail and password.
