@@ -20,7 +20,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-
 import com.toedter.calendar.JCalendar;
 import javax.swing.JList;
 import javax.swing.JTextArea;
@@ -40,7 +39,6 @@ import logik.DataPusher;
 import javax.swing.UIManager.*;
 
 import view.renderer.Renderer;
-
 
 public class window_Hauptmenue extends JFrame {
 
@@ -64,8 +62,6 @@ public class window_Hauptmenue extends JFrame {
 	private JCalendar cali;
 	private int rowCount;
 
-	
-
 	/**
 	 * Launch the application.
 	 */
@@ -76,7 +72,6 @@ public class window_Hauptmenue extends JFrame {
 		myPCL = pCL;
 		this.myDataPusher = myDataPusher;
 		myRenderer = new Renderer();
-		
 
 		init();
 	}
@@ -98,14 +93,15 @@ public class window_Hauptmenue extends JFrame {
 
 	public void init() {
 		try {
-		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		        if ("Metal".equals(info.getName())) {
-		            UIManager.setLookAndFeel(info.getClassName());
-		            break;
-		        }
-		    }
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Metal".equals(info.getName())) {
+					UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
 		} catch (Exception e) {
-		    // If Nimbus is not available, you can set the GUI to another look and feel.
+			// If Nimbus is not available, you can set the GUI to another look
+			// and feel.
 		}
 		setBounds(100, 100, 789, 572);
 
@@ -122,7 +118,7 @@ public class window_Hauptmenue extends JFrame {
 		// Kalender Konfiguration
 		cali = new JCalendar();
 		cali.addPropertyChangeListener(myPCL);
-	
+
 		GridBagConstraints gbc_cali = new GridBagConstraints();
 		gbc_cali.anchor = GridBagConstraints.NORTHWEST;
 		gbc_cali.insets = new Insets(0, 0, 5, 5);
@@ -132,6 +128,29 @@ public class window_Hauptmenue extends JFrame {
 
 		// Termintabelle
 		// Speicherung der Beschreibungen im Modell über HashMap
+
+		/*
+		 * XXX das hier in eine neue Methode auslagern:
+		 * 
+		 * public void updateMainFrame(){
+		 * 		TableModel dataModel = new AbstractTableModel(){
+		 * 			...den Kram von unter dem Kommentar...
+		 * 		}
+		 * 		table_1.setModel(dataModel);
+		 * }
+		 * 
+		 * diese Methode rufst du dann aus dem Controller auf, wenn du die Daten
+		 * refreshed haben willst. Also quasi da, wo du immer ein hauptmenu.repaint();
+		 * machst. 
+		 * 
+		 * Grund: Dein Datenmodell wird einmal angelegt. Dann befüllst du zwar
+		 * dein Model neu, aber ich schätze, dass das TableModel nicht
+		 * neugeladen wird. Wenn du die oben beschriebene Methode verwendest,
+		 * erzeugt du ein neues TableModel, dass sich die Daten frisch aus
+		 * deinem Model zieht.
+		 * Werden die Daten immer noch nicht angezeigt, solltest du nachschauen,
+		 * ob die Daten in deinem Model überhaupt drinne stehen. 
+		 */
 
 		TableModel dataModel = new AbstractTableModel() {
 			@Override
@@ -248,6 +267,12 @@ public class window_Hauptmenue extends JFrame {
 		gbc_lblDetails.gridy = 4;
 		panel.add(lblDetails, gbc_lblDetails);
 
+		/*
+		 * XXX Setze den generischen Typen in <> wenn es nicht Object ist.
+		 * Dann hast du weniger Sorgen mit dem Casten etc.
+		 * Außerdem kanst du die erste new JList(); rausnehmen, da sie unten
+		 * ja nochmal überschrieben wird.
+		 */
 		list = new JList();
 		listModel = new DefaultListModel();
 		list = new JList(listModel);
@@ -300,9 +325,15 @@ public class window_Hauptmenue extends JFrame {
 		panel.add(btnAbmelden, gbc_btnAbmelden);
 		setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 	}
 
+	/*
+	 * XXX Wie im anderen Fenster bereits gezeigt und gemacht:
+	 * Du solltest in der Regel keine GUI-Elemente zurückgeben
+	 * oder setzen. Das gilt auch für die anderen Fenster. 
+	 */
+	
+	
 	public JTextArea getTextArea() {
 		return textArea;
 	}
@@ -318,8 +349,6 @@ public class window_Hauptmenue extends JFrame {
 	public void setCali(JCalendar cali) {
 		this.cali = cali;
 	}
-
-	
 
 	public JTable getTable_1() {
 		return table_1;
@@ -357,6 +386,7 @@ public class window_Hauptmenue extends JFrame {
 	public void setBtnAbmelden(JButton btnAbmelden) {
 		this.btnAbmelden = btnAbmelden;
 	}
+
 	public DefaultListModel getListModel() {
 		return listModel;
 	}

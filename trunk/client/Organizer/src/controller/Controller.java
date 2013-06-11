@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
@@ -47,15 +46,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private Object[][] beschreibungsDaten;
 	private Object[][] terminDauer;
 
-	
 	private window_TerminBearbeiten editEntry;
-	
+
 	private window_Hauptmenue myHauptmenue;
 	private window_LogScreen myLogScreen;
 	private window_Servereinstellungen myServereinstellungen;
 	private window_RegisterUser myRegistration;
-	
-	
+
 	private RequestHandler myRequester;
 	private Date aktDate;
 	private String aktTermin;
@@ -68,7 +65,31 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private User aktUser;
 	private organizer.objects.types.Calendar aktUserCa;
 	private CalendarEntry aktEntry;
-	
+
+	/*
+	 * XXX Gleich mal ein Post am Anfang hier: Es ist sehr schwer deinen Code
+	 * nachzuvollziehen. Selbst Kommentare helfen da nur teilweise. An einigen
+	 * Stellen machst du Dinge doppelt, anstatt dafür eine Methode
+	 * bereitzustellen. Das solltest du unbedingt ändern. Alleine schon wegen
+	 * der Wartbarkeit. Passt man etwas an einer Stelle, kann der Fehler in
+	 * deinem Quellcode an anderer Stelle immer noch da sein.
+	 * 
+	 * Des Weiteren solltest du dir was Fenster angeht einen anderen Stil
+	 * angewöhnen. Das Fenster, dass du brauchst, wird erst erzeugt, wenn du es
+	 * brauchst. Dadurch umgehst du zum einen das Problem mit dem Datenrefresh
+	 * und zum anderen wird der Speicher nicht so voll gehauen. Das bedeutet,
+	 * was unten im Konstruktor steht, solltest du dringend ändern. (Bei dem
+	 * ganzen setVisible(true) und setVisible(false) weiß man gar nicht, wo man
+	 * suchen soll)
+	 * Eine weitere interessante Sache könnten JDialogs als Vaterklasse sein
+	 * anstatt JFrames. Dadurch wird das Fenster im Hintergrund blockiert
+	 * (solange nicht anders gesagt). Du würdest dein Hauptmenue also weiterhin
+	 * als JFrame haben und den Rest nur als JDialog - wäre mein Vorschlag.
+	 * 
+	 * Außerdem werden Java-Klassen immer großgeschrieben und haben keine '_'.
+	 * Das solltest du bei deinen Views ändern. Du kannst sie ja WindowSomeName
+	 * nennen. 
+	 */
 
 	public Controller() {
 		/**
@@ -106,8 +127,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	}
 
-	
-	
 	/*
 	 * DO= DatenObjekt
 	 * 
@@ -187,11 +206,25 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		return beschreibungsDaten;
 	}
 
+	/*
+	 * Du solltest wirklich beginnen, für jede "Source" eine Methode zu
+	 * schreiben, um die actionPerformed-Methode zu entlasten. Die Methoden
+	 * sollten dann entsprechende Namen haben.
+	 */
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == myLogScreen.getMntmServerkonfigurationen()) {
 			myServereinstellungen.setVisible(true);
 		}
+
+		/*
+		 * XXX wenn du auf leere Strings untersuchen willst, solltest du eher
+		 * String toCheck = "";
+		 * if(toCheck.isEmpty()){
+		 * 		...wenn der String leer ist... }
+		 * nutzen.
+		 */
 		if (e.getSource() == myServereinstellungen.getBtnSpeichern()) {
 			if (myServereinstellungen.getTxtPort().getText().equals("")
 					|| myServereinstellungen.getTxtAdresse().getText()
@@ -221,15 +254,16 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				editEntry.openEmptyFrame();
 			} else {
 				editEntry.setButtonText("Termin Speichern");
-				String details=myModel.returnDetail(aktTermin);
-				String startZeit=aktTermin;
-				String endZeit=myModel.returnEndzeit(aktTermin);
-				String beschreibung=myModel.returnBeschreibung(aktTermin);
-				String raum= myModel.returnRaum(aktTermin);
-				Room[]raeume= myModel.getAlleRaeume();
-				User[] allePersonen= myModel.getAllePersonen();
+				String details = myModel.returnDetail(aktTermin);
+				String startZeit = aktTermin;
+				String endZeit = myModel.returnEndzeit(aktTermin);
+				String beschreibung = myModel.returnBeschreibung(aktTermin);
+				String raum = myModel.returnRaum(aktTermin);
+				Room[] raeume = myModel.getAlleRaeume();
+				User[] allePersonen = myModel.getAllePersonen();
 				System.out.println(allePersonen[0]);
-				editEntry.openFrameWithValues(startZeit, endZeit, beschreibung, details, raeume,allePersonen,raum);
+				editEntry.openFrameWithValues(startZeit, endZeit, beschreibung,
+						details, raeume, allePersonen, raum);
 			}
 
 		}
@@ -251,54 +285,60 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 		if (e.getSource() == myRegistration.getBtnRegistrieren()) {
 			registriereUser();
-			
+
 		}
 
-		if(e.getSource().equals(editEntry.getBtnTerminEintragen())){
-//			TODO Abfragen der Elemente aus dem Fenster abfragen
+		if (e.getSource().equals(editEntry.getBtnTerminEintragen())) {
 			// Überprüfung auf richtiges Format!!
-			
+
 			CalendarEntry neuCalEnt = new CalendarEntry();
 			String startzeit = editEntry.getStartUhrzeit().getText();
 			String endzeit = editEntry.getEndUhrzeit().getText();
-			
+
 			Date startDate = parseStringtoDate(startzeit);
 			Date endDate = parseStringtoDate(endzeit);
-			
+
 			neuCalEnt.setCalendarId(aktUserCa.getID());
 			neuCalEnt.setDescription(editEntry.getTxtADetails().getText());
-//			neuCalEnt.setInvitees(invitees);
+			// neuCalEnt.setInvitees(invitees);
 			neuCalEnt.setEndDate(endDate);
 			neuCalEnt.setOwnerId(aktUser.getID());
 			neuCalEnt.setRoomId(editEntry.getSelectedRoom().getID());
 			neuCalEnt.setStartDate(startDate);
 			neuCalEnt.setTitle(editEntry.getBeschreibung().getText());
-						
-			Object obj=myRequester.addObject(neuCalEnt);
+
+			Object obj = myRequester.addObject(neuCalEnt);
 			System.out.println("hier bin ich");
-			if(obj==null)
-			{
-				 JOptionPane.showMessageDialog(editEntry, "Termin konnte nicht eingetragen werden","Termin konnte nicht eingetragen werden", JOptionPane.INFORMATION_MESSAGE);
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(editEntry, "Termin wurde eingetragen","Termin wurde eingetragen", JOptionPane.INFORMATION_MESSAGE);
+			if (obj == null) {
+				JOptionPane.showMessageDialog(editEntry,
+						"Termin konnte nicht eingetragen werden",
+						"Termin konnte nicht eingetragen werden",
+						JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(editEntry,
+						"Termin wurde eingetragen", "Termin wurde eingetragen",
+						JOptionPane.INFORMATION_MESSAGE);
 			}
 			editEntry.setVisible(false);
-			updateData();
-			try {
-				befuelleModel();
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			myHauptmenue.setVisible(true);
+
+			/*
+			 * Ich schätze, dass hast du auskommentiert
+			 * Hier sollte eigentlich dein Model neu befüllt werden? Das sollte passieren, damit was zu sehen ist.
+			 * Mit dem Hinweis im window_Hauptmenue zum TableModel sollte das dann funktionieren.
+			 */
 			
-			
+			// updateData();
+			// try {
+			// befuelleModel();
+			// } catch (ParseException e1) {
+			// e1.printStackTrace();
+			// }
+			// myHauptmenue.setVisible(true);
+
 		}
-		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
@@ -318,11 +358,20 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			/*
 			 * Terminteilnehmer werden in die JList eingefügt
 			 */
-			List myList = new ArrayList<String>();
+			List<String> myList = new ArrayList<String>();
+
 			myList = myModel.returnEingeladene((String) myHauptmenue
 					.getTable_1().getValueAt(zwTab.getSelectedRow(), 0));
 			if (myList != null) {
 				myHauptmenue.getListModel().removeAllElements();
+				/*
+				 * XXX Du deckst hier mal wieder nicht das Element an der Stelle 0 ab...
+				 * Du brauchst auch kein i - also solltest du die for-each-Schleife nutzen
+				 * 
+				 * for(String element: myList){
+				 * 		myHauptmenue.getListModel().addElement(element);
+				 * }
+				 */
 				for (int i = myList.size() - 1; i > 0; i--) {
 
 					myHauptmenue.getListModel().addElement(myList.get(i));
@@ -343,25 +392,21 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -371,7 +416,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		if (e.getOldValue() == null && e.getNewValue() != null) {
 			//
 			aktDate = new Date();
-			
+
 		}
 		if (e.getOldValue() != null) {
 			aktDate = myHauptmenue.getAktDateCali();
@@ -379,7 +424,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			try {
 				befuelleModel();
 			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			connectServerModel();
@@ -401,9 +445,25 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		List<User> lp = myRequester.requestAllObjects(new User());
 		myModel.setAllePersonen(lp);
 
-		List myCes = steffensCal.getCalendarEntries();
+		List<CalendarEntry> myCes = steffensCal.getCalendarEntries();
+		/*
+		 * XXX Warum zum Geier zählst du immer Rückwärts? Das ist außerdem
+		 * falsch, da du den Eintrag an Stelle 0 nicht abfragst... Da du hier ja
+		 * anscheinend eh über alle drüber gehst:
+		 * 
+		 * for(CalendarEntry myCe: myCes){
+		 * 		Do your stuff here
+		 * }
+		 * 
+		 * Außerdem kannst du mit Hilfe des SimpleDateFormats ja jetzt deine
+		 * Zeiten anpassen...
+		 * SimpleDateFormat formatString = new SimpleDateFormat("HH:mm");
+		 * String startTime = formatString.format(startDate);
+		 * String endTime = formatString.format(endDate);
+		 */
+
 		for (int i = myCes.size() - 1; i > 0; i--) {
-			CalendarEntry myCe = (CalendarEntry) myCes.get(i);
+			CalendarEntry myCe = myCes.get(i);
 			if (parseDate(myCe.getStartDate()).equals(
 					parseDate(myHauptmenue.getCali().getDate()))) {
 				String anfangZeit = "";
@@ -448,25 +508,47 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				+ date.toString().substring(20);
 		return datum;
 	}
-	
-	public Date parseStringtoDate(String zeit)
-	{
-		
-		Date date= aktDate;
-        String datetimeStr = date.toString();
-        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd "+ zeit+":ss zzz yyyy");
-        
-        datetimeStr=format.format(date);
-        System.out.println(datetimeStr);
-        try {
-			date=format.parse(datetimeStr);
+
+	public Date parseStringtoDate(String zeit) {
+		/*
+		 * XXX Was machst du hier genau? Habe es getestet und bin verwundert,
+		 * dass das klappt. Aber gut =)
+		 * 
+		 * PS: ich nutze einen ISO Standard um mit Tobi zu kommunizieren, das
+		 * Pattern dafür sieht so aus
+		 * "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+		 * Ich Schätze, du müsstest nur das HH:mm mit 'zeit' ersetzen.
+		 */
+
+		Date date = aktDate;
+		String datetimeStr = date.toString();
+		SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd " + zeit
+				+ ":ss zzz yyyy");
+
+		datetimeStr = format.format(date);
+		System.out.println(datetimeStr);
+		try {
+			date = format.parse(datetimeStr);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return date;
 	}
 
+	/*
+	 * XXX Diese Methode ist ziemlich unnütz, da sie nur eine andere aufruft und
+	 * selber nichts macht. Vielleicht solltest du überlegen, hier den anderen
+	 * Aufruf mit
+	 * 
+	 * try {
+	 * 		befuelleModel();
+	 * } catch (ParseException e1) {
+	 * 		e1.printStackTrace();
+	 * }
+
+	 * auch reinzunehmen.
+	 */
+	
 	public void updateData() {
 		erstelleDOBeschreibungen();
 	}
@@ -491,10 +573,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	public void connectServerModel() {
 		myModel.setAktDate(aktDate);
+		/*
+		 * Hier machst du den Aufruf schon wieder,
+		 * nur andersrum - ändert das was?
+		 */
 		try {
 			befuelleModel();
 		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		updateData();
@@ -504,6 +589,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	}
 
 	public int pruefeServereinstellungen() {
+		/*
+		 * XXX nicht mit den GUI-Elementen arbeiten sondern mit deren Werten.
+		 * leere String wieder mit isEmpty() abfragen.
+		 */
+		
 		if (myServereinstellungen.getTxtPort().getText().equals("")
 				|| myServereinstellungen.getTxtAdresse().getText().equals("")) {
 			JOptionPane.showMessageDialog(myLogScreen,
@@ -531,12 +621,31 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	public Room[] pushRoomList() {
 		return myModel.getAlleRaeume();
 	}
-	
-	public void registriereUser()
-	{
+
+	public void registriereUser() {
+		
+		/*
+		 * XXX Du kannst einen String aus einem char[] erzeugen, indem
+		 * du es einfach mit übergibst:
+		 * 
+		 * char[] passwort1 = myRegistration.getTxtPasswort().getPassword();
+		 * String pwd1 = new String(passwort1);
+		 * 
+		 * Außerdem kannst du einfach zwei Arrays miteinander vergleichen
+		 * Dazu brauchst du nicht mal Strings:
+		 * 
+		 * if(passwort1.equals(passwort2)){
+		 * 		...same here...
+		 * }
+		 * 
+		 * Damit brauchst du nicht erst die beiden for-Schleifen...(die nebenbei
+		 * gesagt auch wieder redundant sind.
+		 * 
+		 */
+		
+		
 		char[] passwort1 = myRegistration.getTxtPasswort().getPassword();
-		char[] passwort2 = myRegistration.getTxtPasswortBest()
-				.getPassword();
+		char[] passwort2 = myRegistration.getTxtPasswortBest().getPassword();
 		String pwd1 = "";
 		String pwd2 = "";
 		for (int i = 0; i < passwort1.length; i++) {
@@ -561,10 +670,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				// aktUser= new User();
 				aktUser.setMailAddress(myRegistration.getTxtEmailadresse()
 						.getText());
-				aktUser.setSurname(myRegistration.getTxtNachname()
-						.getText());
-				aktUser.setGivenname(myRegistration.getTxtVorname()
-						.getText());
+				aktUser.setSurname(myRegistration.getTxtNachname().getText());
+				aktUser.setGivenname(myRegistration.getTxtVorname().getText());
 				// aktUser.setPhoneNumber("111");
 
 				User utmp = myRequester.registerNewUser(aktUser, passwort);
@@ -579,8 +686,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					aktUserCa.setOwnerId(aktUser.getID());
 					aktUserCa.setDescription("persönlicher Kalendar von "
 							+ aktUser.getGivenName());
-					aktUserCa.setName("Kalendar von "
-							+ aktUser.getGivenName());
+					aktUserCa.setName("Kalendar von " + aktUser.getGivenName());
 					myRequester.login(aktUser.getMailAddress(), passwort);
 					Object tmp = myRequester.addObject(aktUserCa);
 
@@ -591,7 +697,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 					} else {
 						aktUserCa = (organizer.objects.types.Calendar) tmp;
-						List l = aktUser.getCalendarIds();
+						List<Integer> l = aktUser.getCalendarIds();
 						l.add(aktUserCa.getID());
 						aktUser.setCalendarIds(l);
 
@@ -640,17 +746,17 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				myRegistration.getTxtPasswortBest().setBorder(redline);
 				myRegistration.repaint();
 			}
-			//
-			//
+			/*
+			 * XXX Ein repaint hier unten würde es auch tun ;-)
+			 */
 		}
 
 	}
-	
-	public void meldeUserAn()
-	{
+
+	public void meldeUserAn() {
 		/*
-		 * Authentifizierung mit Server SPeicherung der ID Daten in das
-		 * Modell Speicherung der Daten in das Modell
+		 * Authentifizierung mit Server SPeicherung der ID Daten in das Modell
+		 * Speicherung der Daten in das Modell
 		 */
 		//
 
@@ -665,6 +771,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		benutzername = myLogScreen.getTextField().getText();
 		char[] tmppasswort = myLogScreen.getPasswort().getPassword();
+		/*
+		 * XXX Vorschlag passwort = new String(tmppasswort); dann brauchst du
+		 * keine for-Schleife --> wie weiter oben schon erwähnt.
+		 * (PS: schon wieder der gleiche Quellcode)
+		 */
 		passwort = "";
 		for (int i = 0; i < tmppasswort.length; i++) {
 			passwort = passwort + tmppasswort[i];
