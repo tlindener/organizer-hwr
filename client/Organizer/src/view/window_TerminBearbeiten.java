@@ -49,7 +49,7 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 	private MyCheckBoxListRenderer combinedListener = new MyCheckBoxListRenderer(
 			this);
 	private List<User> selectedUsers = new ArrayList<User>();
-	private List<Room> selectedRooms = new ArrayList<Room>();
+	private Room selectedRoom = new Room();
 
 	private JLabel lblRaeume;
 
@@ -149,7 +149,7 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 
 		lstRaum = new JList<Room>(myDataPusher.pushRoomList());
 		lstRaum.setCellRenderer(combinedListener);
-		lstRaum.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		lstRaum.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lstRaum.setSelectionModel(new MyListSelectionModel());
 		setSelectedValues(lstRaum, rooms);
 		GridBagConstraints gbc_lstRaum = createGridBagContraints(5, 2, 1, 7, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
@@ -168,113 +168,12 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 				10, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(new JScrollPane(lstPersonen), gbc_lstPersonen);
 
-		btnTerminEintragen = new JButton(this.btnText);
-		btnTerminEintragen.addActionListener(this.myCon);
+		btnTerminEintragen = new JButton(btnText);
+		btnTerminEintragen.addActionListener(myCon);
 		GridBagConstraints gbc_btnTerminEintragen = createGridBagContraints(1, 1, 9, 11, GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(btnTerminEintragen, gbc_btnTerminEintragen);
 		init();
-		// GridBagLayout gridBagLayout = new GridBagLayout();
-		// gridBagLayout.columnWidths = new int[] { 42, 0, 100, 34, 100, 0, 43,
-		// 43, 20, 24, 0 };
-		// gridBagLayout.rowHeights = new int[] { 0, 0, 32, 0, 0, 0, 0, 0, 0, 0,
-		// 31, 31, 0 }; 
-		// gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
-		// 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
-		// gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
-		// 0.0,
-		// 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		// getContentPane().setLayout(gridBagLayout);
-		//
-		// JLabel lblVon = new JLabel("von");
-		// GridBagConstraints gbc_lblVon = createGridBagContraints(1, 1, 1, 1,
-		// GridBagConstraints.EAST, GridBagConstraints.NONE);
-		// getContentPane().add(lblVon, gbc_lblVon);
-		//
-		// startUhrzeit = new JTextField(startTime);
-		// startUhrzeit
-		// .setToolTipText("Bitte geben Sie eine Uhrzeit im Format xx:xx ein.");
-		// GridBagConstraints gbc_textField = createGridBagContraints(1, 1, 2,
-		// 1,
-		// GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
-		// getContentPane().add(startUhrzeit, gbc_textField);
-		// startUhrzeit.setColumns(10);
-		//
-		// JLabel lblBis = new JLabel("bis");
-		// GridBagConstraints gbc_lblBis = createGridBagContraints(1, 1, 3, 1,
-		// GridBagConstraints.EAST, GridBagConstraints.NONE);
-		// getContentPane().add(lblBis, gbc_lblBis);
-		//
-		// endUhrzeit = new JTextField(endTime);
-		// endUhrzeit
-		// .setToolTipText("Bitte geben Sie eine Uhrzeit im Format xx:xx ein.");
-		// GridBagConstraints gbc_textField_1 = createGridBagContraints(1, 1, 4,
-		// 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
-		// getContentPane().add(endUhrzeit, gbc_textField_1);
-		// endUhrzeit.setColumns(10);
-		//
-		// JLabel lblRaum = new JLabel("Raum");
-		// GridBagConstraints gbc_lblRaum = createGridBagContraints(4, 1, 1, 3,
-		// GridBagConstraints.WEST, GridBagConstraints.NONE);
-		// getContentPane().add(lblRaum, gbc_lblRaum);
-		//
-		// JLabel lblBeschreibung = new JLabel("Beschreibung");
-		// GridBagConstraints gbc_lblBeschreibung = createGridBagContraints(3,
-		// 1,
-		// 6, 3, GridBagConstraints.WEST, GridBagConstraints.NONE);
-		// getContentPane().add(lblBeschreibung, gbc_lblBeschreibung);
-		//
-		// lstRaum = new JList<Room>(myDataPusher.pushRoomList());
-		// lstRaum.setCellRenderer(combinedListener);
-		// lstRaum.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		// lstRaum.setSelectionModel(new MyListSelectionModel());
-		// setSelectedValues(lstRaum, rooms);
-		// GridBagConstraints gbc_lstRaum = createGridBagContraints(4, 3, 1, 4,
-		// GridBagConstraints.CENTER, GridBagConstraints.BOTH);
-		// getContentPane().add(new JScrollPane(lstRaum), gbc_lstRaum);
-		// setSelectedValues(lstRaum, rooms);
-		//
-		// txtBeschreibung = new JTextField(beschreibung);
-		// GridBagConstraints gbc_txtBeschreibung = createGridBagContraints(3,
-		// 1,
-		// 6, 4, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL);
-		// getContentPane().add(txtBeschreibung, gbc_txtBeschreibung);
-		// txtBeschreibung.setColumns(10);
-		//
-		// JLabel lblDetails = new JLabel("Details");
-		// GridBagConstraints gbc_lblDetails = createGridBagContraints(3, 1, 6,
-		// 5,
-		// GridBagConstraints.WEST, GridBagConstraints.NONE);
-		// getContentPane().add(lblDetails, gbc_lblDetails);
-		//
-		// JLabel lblPersonen = new JLabel("Personen");
-		// GridBagConstraints gbc_lblPersonen = createGridBagContraints(4, 1, 1,
-		// 7, GridBagConstraints.WEST, GridBagConstraints.BOTH);
-		// getContentPane().add(lblPersonen, gbc_lblPersonen);
-		//
-		// lstPersonen = new JList<User>(myDataPusher.pushUserList());
-		// lstPersonen.setCellRenderer(combinedListener);
-		// lstPersonen.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		// lstPersonen.setSelectionModel(new MyListSelectionModel());
-		// setSelectedValues(lstPersonen, user);
-		// GridBagConstraints gbc_lstPersonen = createGridBagContraints(4, 1, 1,
-		// 8, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
-		// getContentPane().add(new JScrollPane(lstPersonen), gbc_lstPersonen);
-		//
-		//
-		// txtADetails = new JTextArea(details);
-		// GridBagConstraints gbc_txtADetails = createGridBagContraints(3, 3, 6,
-		// 6, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
-		// getContentPane().add(txtADetails, gbc_txtADetails);
-		//
-		// btnTerminEintragen = new JButton(btnText);
-		// btnTerminEintragen.setName(BUTTON_NAME);
-		// btnTerminEintragen.addActionListener(this.myCon);
-		// GridBagConstraints gbc_btnTerminEintragen =
-		// createGridBagContraints(1,
-		// 1, 8, 10, GridBagConstraints.EAST, GridBagConstraints.NONE);
-		// getContentPane().add(btnTerminEintragen, gbc_btnTerminEintragen);
-		//
-		// init();
+		
 	}
 
 	private GridBagConstraints createGridBagContraints(int gWidth, int gHeight,
@@ -321,32 +220,32 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		this.setVisible(true);
 	}
 
-	public String getBeschreibung() {
-		return txtBeschreibung.getText();
+	public JTextField getBeschreibung() {
+		return txtBeschreibung;
 	}
 
 	public JButton getBtnTerminEintragen() {
 		return btnTerminEintragen;
 	}
 
-	public String getTxtADetails() {
-		return txtADetails.getText();
+	public JTextArea getTxtADetails() {
+		return txtADetails;
 	}
 
-	public Room[] getSelectedRooms() {
-		return selectedRooms.toArray(new Room[selectedRooms.size()]);
+	public Room getSelectedRoom() {
+		return selectedRoom;
 	}
 
 	public User[] getSelectedUsers() {
 		return selectedUsers.toArray(new User[selectedUsers.size()]);
 	}
 
-	public String getStartUhrzeit() {
-		return startUhrzeit.getText();
+	public JTextField getStartUhrzeit() {
+		return startUhrzeit;
 	}
 
-	public String getEndUhrzeit() {
-		return endUhrzeit.getText();
+	public JTextField getEndUhrzeit() {
+		return endUhrzeit;
 	}
 
 	/**
@@ -375,12 +274,12 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 	@Override
 	public void stateChangedForRoom(boolean state, Room room) {
 		if (state) {
-			if (!selectedRooms.contains(room)) {
-				selectedRooms.add(room);
+			if (selectedRoom!=room) {
+				selectedRoom=room;
 			}
 		} else {
-			if (selectedRooms.contains(room)) {
-				selectedRooms.remove(room);
+			if (selectedRoom==room) {
+				
 			}
 		}
 	}
