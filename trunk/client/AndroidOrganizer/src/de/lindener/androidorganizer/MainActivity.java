@@ -11,6 +11,7 @@ import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.User;
 
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.app.Activity;
 import android.view.Menu;
 import android.widget.ListView;
@@ -29,6 +30,8 @@ int i = 1;
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
 		
 		serviceAddress = "tobiasnotebook";
 		servicePort = 80;
@@ -36,22 +39,10 @@ int i = 1;
 		userPassword = "123456";
 		
 		
-	//	CalendarAbstractionLayer layer = new CalendarAbstractionLayer(serviceAddress, servicePort, mailAdress, userPassword);
-//		 layer.getCalendars().get(0).getCalendarEntries();
-//		 
-
+		CalendarAbstractionLayer layer = new CalendarAbstractionLayer(serviceAddress, servicePort, mailAdress, userPassword);
+		if(!layer.getCalendars().isEmpty()) 
+		layer.getCalendars().get(0).getCalendarEntries();
 		 
-			addCalendarEntry("Testtermin1", "Terminbeschreibung", "01.05.2013", "07:30", "01.05.2013", "08:00", 1, 1, 1);
-			addCalendarEntry("Testtermin2", "Terminbeschreibung", "01.05.2013", "12:00", "01.05.2013", "13:00", 1, 1, 2);
-			addCalendarEntry("Testtermin3", "Terminbeschreibung", "01.05.2013", "14:30", "01.05.2013", "16:30", 1, 1, 3);
-			addCalendarEntry("Testtermin4", "Terminbeschreibung", "02.05.2013", "18:30", "02.05.2013", "18:45", 1, 1, 4);
-			addCalendarEntry("Testtermin5", "Terminbeschreibung", "03.05.2013", "11:30", "03.05.2013", "13:30", 1, 1, 1);
-			addCalendarEntry("Testtermin6", "Terminbeschreibung", "03.05.2013", "06:00", "03.05.2013", "06:15", 1, 1, 2);
-			addCalendarEntry("Testtermin7", "Terminbeschreibung", "03.05.2013", "08:30", "03.05.2013", "10:30", 1, 1, 3);
-			addCalendarEntry("Testtermin8", "Terminbeschreibung", "03.05.2013", "14:30", "03.05.2013", "15:30", 1, 1, 4);
-			addCalendarEntry("Testtermin9", "Terminbeschreibung", "03.05.2013", "16:00", "03.05.2013", "16:30", 1, 1, 1);
-			addCalendarEntry("Testtermin10", "Terminbeschreibung", "03.05.2013", "17:00", "03.05.2013", "18:30", 1, 1, 1);
-
 		
 		 CalendarEntryAdapter adapter = new CalendarEntryAdapter(this, R.layout.calendarentry, 0, data);
 		 ListView view1 =  (ListView)findViewById(R.id.calendarView);
@@ -66,21 +57,4 @@ int i = 1;
 		return true;
 	}
 	
-	public void addCalendarEntry(String titel, String description, String startday, String starttime, String endday, String endtime, int calendarId, int ownerId, int roomId){
-		CalendarEntry ce = new CalendarEntry();
-		
-		ce.setID(i++);
-		
-		ce.setTitle(titel);
-		ce.setDescription(description);
-		ce.setStartDate(CalendarEntry.parseStringToDate(startday, starttime));
-		ce.setEndDate(CalendarEntry.parseStringToDate(endday, endtime));
-		
-		ce.setCalendarId(calendarId);
-		ce.setOwnerId(ownerId);
-		ce.setRoomId(roomId);
-		data.add(ce);
-	}
-
-
 }

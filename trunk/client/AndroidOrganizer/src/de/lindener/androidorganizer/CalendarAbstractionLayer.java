@@ -3,6 +3,8 @@ package de.lindener.androidorganizer;
 import java.util.ArrayList;
 import java.util.List;
 
+import network.JsonJavaRequestHandler;
+
 //import network.JsonJavaRequestHandler;
 
 import organizer.objects.types.Calendar;
@@ -16,7 +18,7 @@ public class CalendarAbstractionLayer {
 	private int port;
 	private String mail;
 	private String password;
-//	private JsonJavaRequestHandler requestHandler;
+	private JsonJavaRequestHandler requestHandler;
 
 	public CalendarAbstractionLayer(String serviceAddress, int servicePort,
 			String mailAdress, String userPassword) {
@@ -34,22 +36,26 @@ public class CalendarAbstractionLayer {
 	public List<Calendar> getCalendars() {
 
 		List<Calendar> calendars = new ArrayList<Calendar>();
+		if(user != null)
+		{
 		List<Integer> calendarIds = user.getCalendarIds();
+
 		if (!calendarIds.isEmpty()) {
 			for (int i = 0; i < calendarIds.size(); i++) {
 				Calendar tmpCalendar = new Calendar();
 				tmpCalendar.setID(calendarIds.get(i));
-//				calendars.add(requestHandler.requestObjectByOwnId(tmpCalendar));
+				calendars.add(requestHandler.requestObjectByOwnId(tmpCalendar));
 			}
+		}
 		}
 		return calendars;
 	}
 
 	private boolean connectToServiceAndLogin(String address, int port,
 			String mail, String password) {
-//		requestHandler = new JsonJavaRequestHandler(address, port);
+		requestHandler = new JsonJavaRequestHandler(address, port);
 
-//		user = requestHandler.login(mail, password);
+		user = requestHandler.login(mail, password);
 		if (user != null) {
 			return true;
 		}
