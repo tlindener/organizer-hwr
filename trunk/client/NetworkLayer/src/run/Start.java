@@ -29,7 +29,7 @@ public class Start {
 //		
 ////		Schnittstelle für Jenny um Objekte zu erfragen
 		RequestHandler requester = new JsonJavaRequestHandler("localhost",
-				48585);
+				80);
 
 		User user = new User();
 		user.setMailAddress("steffen.baumann@localhost.de");
@@ -51,10 +51,19 @@ public class Start {
 		
 		System.out.println("AddUser");
 		User u = requester.registerNewUser(user, "123456");
+		if(u==null){
+			System.out.println("Error User = null");
+		}
 		System.out.println("UserID: " +u.getID());
 		User u2 = requester.registerNewUser(user2, "123456");
+		if(u2==null){
+			System.out.println("Error User = null");
+		}
 		System.out.println("UserID: " +u2.getID());
 		User u3 = requester.registerNewUser(user3, "123456");
+		if(u3==null){
+			System.out.println("Error User = null");
+		}
 		System.out.println("UserID: " +u3.getID());
 		
 		System.out.println("Log in " +u.getMailAddress());
@@ -313,7 +322,7 @@ public class Start {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//		new Start();
+		new Start();
 //		new Start("");
 	}
 
