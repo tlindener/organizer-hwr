@@ -119,6 +119,6 @@ public abstract class RequestHandler{
 	 * @return the generated String
 	 */
 	protected String generateAuthenticationString(int id, String mail, String password) {
-		return Utils.parseStringToHTTP(id+"_"+Utils.encodeString(mail) + Utils.encodeString(password));
+		return Utils.parseStringToHTTP(id+"_"+Utils.encodeStringNewBase64(mail) + Utils.encodeStringNewBase64(password));
 	}
 }
