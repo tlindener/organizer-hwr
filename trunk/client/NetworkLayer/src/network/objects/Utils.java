@@ -128,7 +128,7 @@ public class Utils {
 	 * @return the HTTP parameter
 	 */
 	public static String getParameterPassword(String password) {
-		return "Password=" + encodeString(password);
+		return "Password=" + encodeStringNewBase64(password);
 	}
 
 	/**
@@ -296,7 +296,7 @@ public class Utils {
 							+ parseStringToHTTP((String) value));
 				} else if (value instanceof Date) {
 					parameters.add(f.getName() + "="
-							+ parseDateToNetDateTime((Date) value));
+							+ parseStringToHTTP(parseDateToNetDateTime((Date) value)));
 				} else {
 					parameters.add(f.getName() + "=" + value);
 				}
@@ -383,33 +383,38 @@ public class Utils {
 	public static String parseDateToNetDateTime(Date date) {
 		// 2008-11-01T19:35:00.0000000-07:00
 		SimpleDateFormat formatted = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		return parseStringToHTTP(formatted.format(date));
+				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSXXX");
+		return formatted.format(date);
 	}
-
-	public static void main(String[] args) {
-
-		String zeit = "14:00";
+	/**
+	 * Parses the ISO 8601 time String into a Java-Date object
+	 * 
+	 * @param time
+	 * @return Date representation as Java-Date
+	 */
+	public static Date parseStringToDate(String time) {
+		// 2008-11-01T19:35:00.0000000-07:00
+		SimpleDateFormat formatted = new SimpleDateFormat(
+				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSXXX");
+		Date date = null;
 		
-		Date date = new Date();
-		String datetimeStr = date.toString();
-		SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd " + zeit
-				+ ":ss zzz yyyy");
-
-		datetimeStr = format.format(date);
 		try {
-			format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-			date = format.parse(datetimeStr);
+			date = formatted.parse(time);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		System.out.println(date);
+		return date;
+	}
+	
+	public static void main(String[] args) {
+		
+		
 		
 		System.out.println(encodeString("Test"));
 		System.out.println(encodeStringNewBase64("Test"));
 		
 //		System.out.println(parseStringToHTTP("Das ist ein Test"));
 //		System.out.println(encodeString("Test"));
-//		System.out.println(parseDateToNetDateTime(new Date()));
+		System.out.println(parseDateToNetDateTime(new Date()));
 	}
 }
