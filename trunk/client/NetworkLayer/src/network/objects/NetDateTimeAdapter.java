@@ -40,6 +40,7 @@ public class NetDateTimeAdapter extends TypeAdapter<Date> {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"+offset);
 		String tmp = format.format(result);
 		try {
+			format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 			result = format.parse(tmp);
 		} catch (ParseException e) {
 			e.printStackTrace();
