@@ -11,6 +11,8 @@ import java.util.List;
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
+import organizer.objects.types.Group;
+import organizer.objects.types.Invite;
 
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
@@ -24,6 +26,8 @@ public class TestData implements Comparator<AbstractOrganizerObject>{
 	List<Room> rooms = new ArrayList<Room>();
 	List<User> userList = new ArrayList<User>();
 	List<Calendar> calendar = new ArrayList<Calendar>();
+	List<Invite> invites = new ArrayList<Invite>();
+	List<Group> groups = new ArrayList<Group>();
 	
 	public TestData(){		
 
@@ -65,12 +69,10 @@ public class TestData implements Comparator<AbstractOrganizerObject>{
 		CalendarEntry ce = new CalendarEntry();
 		
 		ce.setID(nextID(calendarEntries));
-		
 		ce.setTitle(titel);
 		ce.setDescription(description);
 		ce.setStartDate(CalendarEntry.parseStringToDate(startday, starttime));
 		ce.setEndDate(CalendarEntry.parseStringToDate(endday, endtime));
-		
 		ce.setCalendarId(calendarId);
 		ce.setOwnerId(ownerId);
 		ce.setRoomId(roomId);
@@ -109,6 +111,51 @@ public class TestData implements Comparator<AbstractOrganizerObject>{
 		user.setPhoneNumber(phone);
 		user.setMailAddress(mail);
 		this.userList.add(user);
+	}
+	public void addInvite(int calendarEntryId, int ownerId){
+		Invite invite = new Invite();
+		invite.setID(nextID(invites));
+		invite.setAccepted(0);
+		invite.setCalendarEntryId(calendarEntryId);
+		invite.setOwnerId(ownerId);
+		this.invites.add(invite);
+	}
+	public void addGroup(String description){
+		Group group = new Group();
+		group.setID(nextID(groups));
+		group.setDescription(description);
+		this.groups.add(group);
+	}
+	
+	public Room addRoom(Room room){
+		room.setID(nextID(rooms));
+		rooms.add(room);
+		return room;
+	}
+	public Calendar addCalendar(Calendar ca){
+		ca.setID(nextID(calendar));
+		calendar.add(ca);
+		return ca;
+	}
+	public CalendarEntry addCalendarEntry(CalendarEntry ce){
+		ce.setID(nextID(calendarEntries));
+		calendarEntries.add(ce);
+		return ce;
+	}
+	public User addUser(User user){
+		user.setID(nextID(userList));
+		this.userList.add(user);
+		return user;
+	}
+	public Invite addInvite(Invite invite){
+		invite.setID(nextID(invites));
+		this.invites.add(invite);
+		return invite;
+	}
+	public Group addGroup(Group group){
+		group.setID(nextID(groups));
+		this.groups.add(group);
+		return group;
 	}
 	
 	public Calendar getCalendarById(int id){
@@ -149,24 +196,26 @@ public class TestData implements Comparator<AbstractOrganizerObject>{
 		return rooms;
 	}
 
-	public Object getAllCalendarEntriesByProperty(String[] property) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Object getAllCalendarByProperty(String[] property) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Object getAllRoomsByProperty(String[] property) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Object getAllUserByProperty(String[] property) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<CalendarEntry> getAllCalendarEntriesByProperty(String[] property) {
+		List<CalendarEntry> tmp = new ArrayList<CalendarEntry>();
+		try{
+			for(CalendarEntry entry: this.calendarEntries){
+				if(property[0].equals(CalendarEntry.OWNER_ID)){
+					if(entry.getOwnerId() == Integer.parseInt(property[1])){
+						tmp.add(entry);
+					}
+				}
+				if(property[0].equals(CalendarEntry.ROOM_ID)){
+					if(entry.getRoomId() == Integer.parseInt(property[1])){
+						tmp.add(entry);
+					}
+				}
+			}
+			
+		} catch(NumberFormatException e){
+			e.printStackTrace();
+		}
+		return tmp;
 	}
 
 	@Override

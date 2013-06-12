@@ -84,18 +84,9 @@ public class TestDataRequestHandler extends RequestHandler {
 	@Override
 	public <T extends AbstractOrganizerObject> List<T> requestAllObjectsByProperty(
 			T obj) {
-		Object result = null;
+		List<T> result = null;
 		if (obj instanceof CalendarEntry) {
-			result = data.getAllCalendarEntriesByProperty(obj.getProperty());
-		}
-		if (obj instanceof Calendar) {
-			result = data.getAllCalendarByProperty(obj.getProperty());
-		}
-		if (obj instanceof Room) {
-			result = data.getAllRoomsByProperty(obj.getProperty());
-		}
-		if (obj instanceof User) {
-			result = data.getAllUserByProperty(obj.getProperty());
+			result = (List<T>) data.getAllCalendarEntriesByProperty(obj.getProperty());
 		}
 		if (result != null) {
 			return (List<T>) result;
@@ -107,8 +98,31 @@ public class TestDataRequestHandler extends RequestHandler {
 	@Override
 	public <T extends AbstractOrganizerObject> T addObject(T obj)
 			throws UnsupportedOperationException {
-		// TODO Auto-generated method stub
-		return null;
+		
+			T result = null;
+		if (obj instanceof Invite){
+			return (T) data.addInvite((Invite)obj);
+		}
+		if(obj instanceof Group){
+			return (T) data.addGroup((Group)obj);
+		}
+		if (obj instanceof CalendarEntry) {
+			return (T) data.addCalendarEntry((CalendarEntry)obj);
+		}
+		if (obj instanceof Calendar) {
+			return (T) data.addCalendar((Calendar)obj);
+		}
+		if (obj instanceof Room) {
+			return (T) data.addRoom((Room)obj);
+		}
+		if (obj instanceof User) {
+			throw new UnsupportedOperationException();
+		}
+		if (result != null) {
+			return result;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -161,5 +175,5 @@ public class TestDataRequestHandler extends RequestHandler {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 }

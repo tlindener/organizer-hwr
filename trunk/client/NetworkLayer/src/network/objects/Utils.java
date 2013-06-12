@@ -92,6 +92,21 @@ public class Utils {
 		string = parseStringToHTTP(string);
 		return string;
 	}
+	
+	public static String encodeStringNewBase64(String string) {
+		try {
+			MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
+			byte[] output = sha512.digest(string.getBytes());
+			string = new String(output, "ASCII");
+			string = network.objects.Base64.encodeBytes(string.getBytes());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		string = parseStringToHTTP(string);
+		return string;
+	}
 
 	/**
 	 * Returns the mail address represented as a HTTP parameter
@@ -374,8 +389,11 @@ public class Utils {
 
 	public static void main(String[] args) {
 		
-		System.out.println(parseStringToHTTP("Das ist ein Test"));
 		System.out.println(encodeString("Test"));
-		System.out.println(parseDateToNetDateTime(new Date()));
+		System.out.println(encodeStringNewBase64("Test"));
+		
+//		System.out.println(parseStringToHTTP("Das ist ein Test"));
+//		System.out.println(encodeString("Test"));
+//		System.out.println(parseDateToNetDateTime(new Date()));
 	}
 }
