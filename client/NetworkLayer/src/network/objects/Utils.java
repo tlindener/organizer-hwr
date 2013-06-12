@@ -388,6 +388,22 @@ public class Utils {
 	}
 
 	public static void main(String[] args) {
+
+		String zeit = "14:00";
+		
+		Date date = new Date();
+		String datetimeStr = date.toString();
+		SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd " + zeit
+				+ ":ss zzz yyyy");
+
+		datetimeStr = format.format(date);
+		try {
+			format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+			date = format.parse(datetimeStr);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		System.out.println(date);
 		
 		System.out.println(encodeString("Test"));
 		System.out.println(encodeStringNewBase64("Test"));
