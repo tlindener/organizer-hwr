@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.util.Date;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -61,6 +62,8 @@ public class window_Hauptmenue extends JFrame {
 	private Date aktDateCali;
 	private JCalendar cali;
 	private int rowCount;
+	
+	private TableModel dataModel;
 
 	/**
 	 * Launch the application.
@@ -152,56 +155,7 @@ public class window_Hauptmenue extends JFrame {
 		 * ob die Daten in deinem Model überhaupt drinne stehen. 
 		 */
 
-		TableModel dataModel = new AbstractTableModel() {
-			@Override
-			public String getColumnName(int column) {
-				switch (column) {
-				case 0:
-					return "Uhrzeit";
-				case 1:
-					return "bis";
-				case 2:
-					return "Beschreibung";
-				default:
-					return "Error";
-				}
-			}
-
-			public int getColumnCount() {
-				return 3;
-			}
-
-			public int getRowCountUpdate() {
-
-				return rowCount;
-			}
-
-			public int getRowCount() {
-				rowCount = 0;
-				Object[][] obj = myDataPusher.getBeschreibungen();
-				for (int i = 0; i < 48; i++) {
-
-					if (obj[i][0] != null) {
-						rowCount = rowCount + 1;
-					}
-				}
-				return rowCount;
-			}
-
-			@Override
-			public Object getValueAt(int row, int col) {
-
-				return myDataPusher.getBeschreibungen()[row][col];
-
-			}
-
-			public void setValueAt(Object value, int row, int col) {
-
-				myDataPusher.getBeschreibungen()[row][col] = value;
-				fireTableCellUpdated(row, col);
-			}
-
-		};
+		updateTable();
 
 		table_1 = new JTable(dataModel);
 
@@ -294,7 +248,7 @@ public class window_Hauptmenue extends JFrame {
 		gbc_textArea.gridy = 5;
 		panel.add(textArea, gbc_textArea);
 
-		btnTerminBearbeiten = new JButton("Termin bearbeiten");
+		btnTerminBearbeiten = new JButton("Termin erstellen");
 		btnTerminBearbeiten.addActionListener(myCon);
 		btnTerminBearbeiten
 				.setToolTipText("Bitte w\u00E4hlen Sie einen Termin aus um ihn zu bearbeiten. Ist ein Termin noch leer wird er mit \"Termin bearbeiten\" erschaffen.");
@@ -305,7 +259,7 @@ public class window_Hauptmenue extends JFrame {
 		gbc_btnTerminBearbeiten.gridy = 7;
 		panel.add(btnTerminBearbeiten, gbc_btnTerminBearbeiten);
 
-		btnTerminEntfernen = new JButton("Termin entfernen.");
+		btnTerminEntfernen = new JButton("Termin entfernen");
 		btnTerminEntfernen
 				.setToolTipText("W\u00E4hlen Sie einen Termin aus um ihn zu l\u00F6schen");
 		GridBagConstraints gbc_btnTerminEntfernen = new GridBagConstraints();
@@ -323,6 +277,15 @@ public class window_Hauptmenue extends JFrame {
 		gbc_btnAbmelden.gridx = 3;
 		gbc_btnAbmelden.gridy = 9;
 		panel.add(btnAbmelden, gbc_btnAbmelden);
+		
+		
+		GridBagConstraints gbc_lblImage = new GridBagConstraints();
+		gbc_lblImage.anchor = GridBagConstraints.EAST;
+		gbc_lblImage.insets = new Insets(0, 0, 5, 5);
+		gbc_lblImage.gridx = 3;
+		gbc_lblImage.gridy = 2;
+//		panel.add(im, gbc_lblImage);
+		
 		setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -401,6 +364,60 @@ public class window_Hauptmenue extends JFrame {
 
 	public void setTextField(JTextField textField) {
 		this.textField = textField;
+	}
+	
+	public void updateTable()
+	{
+		dataModel = new AbstractTableModel() {
+			@Override
+			public String getColumnName(int column) {
+				switch (column) {
+				case 0:
+					return "Uhrzeit";
+				case 1:
+					return "bis";
+				case 2:
+					return "Beschreibung";
+				default:
+					return "Error";
+				}
+			}
+
+			public int getColumnCount() {
+				return 3;
+			}
+
+			public int getRowCountUpdate() {
+
+				return rowCount;
+			}
+
+			public int getRowCount() {
+				rowCount = 0;
+				Object[][] obj = myDataPusher.getBeschreibungen();
+				for (int i = 0; i < 48; i++) {
+
+					if (obj[i][0] != null) {
+						rowCount = rowCount + 1;
+					}
+				}
+				return rowCount;
+			}
+
+			@Override
+			public Object getValueAt(int row, int col) {
+
+				return myDataPusher.getBeschreibungen()[row][col];
+
+			}
+
+			public void setValueAt(Object value, int row, int col) {
+
+				myDataPusher.getBeschreibungen()[row][col] = value;
+				fireTableCellUpdated(row, col);
+			}
+
+		};
 	}
 
 }
