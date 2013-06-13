@@ -1,7 +1,7 @@
 /**
  * 
  */
-package network;
+package network.json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import network.RequestHandler;
 import network.utilities.NetDateTimeAdapter;
 import network.utilities.ParseUtils;
 
