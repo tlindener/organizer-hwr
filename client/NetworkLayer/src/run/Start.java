@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import network.JsonJavaRequestHandler;
 import network.RequestHandler;
+import network.json.JsonJavaRequestHandler;
 import network.test.model.TestData;
 
 import organizer.objects.types.Calendar;
