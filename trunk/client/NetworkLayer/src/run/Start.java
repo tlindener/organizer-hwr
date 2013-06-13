@@ -6,7 +6,7 @@ import java.util.List;
 
 import network.JsonJavaRequestHandler;
 import network.RequestHandler;
-import network.objects.TestData;
+import network.test.model.TestData;
 
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
@@ -31,6 +31,14 @@ public class Start {
 		RequestHandler requester = new JsonJavaRequestHandler("localhost",
 				80);
 
+		
+//		User user = new User();
+//		user.setMailAddress("svenja.möhring@localhost.de");
+//		requester.login(user.getMailAddress(), "123456");
+//		user.setID(2);
+//		boolean b = requester.removeObjectByOwnId(user);
+		
+		
 		User user = new User();
 		user.setMailAddress("steffen.baumann@localhost.de");
 		user.setGivenname("Steffen");
@@ -44,7 +52,7 @@ public class Start {
 		user2.setPhoneNumber("555555555");
 		
 		User user3 = new User();
-		user3.setMailAddress("svenja.möhring@localhost.de");
+		user3.setMailAddress("svenja.moehring@localhost.de");
 		user3.setGivenname("Svenja");
 		user3.setSurname("Möhring");
 		user3.setPhoneNumber("777777777");
@@ -53,16 +61,19 @@ public class Start {
 		User u = requester.registerNewUser(user, "123456");
 		if(u==null){
 			System.out.println("Error User = null");
+			u = user;
 		}
 		System.out.println("UserID: " +u.getID());
 		User u2 = requester.registerNewUser(user2, "123456");
 		if(u2==null){
 			System.out.println("Error User = null");
+			u2 = user2;
 		}
 		System.out.println("UserID: " +u2.getID());
 		User u3 = requester.registerNewUser(user3, "123456");
 		if(u3==null){
 			System.out.println("Error User = null");
+			u3 = user3;
 		}
 		System.out.println("UserID: " +u3.getID());
 		
@@ -186,20 +197,40 @@ public class Start {
 		for(CalendarEntry e: entries){
 			System.out.println("TerminID "+e.getID());
 			if(e.getOwnerId() == loggedInUser.getID()){
+				System.out.println("\tTry to remove Entry ID "+e.getID());
 				result = requester.removeObjectByOwnId(e);
+				if(!result){
+					break;
+				}
 			}
 		}
 		System.out.println("Result remove CalendarEntry: " +result);
 		
 		System.out.println("Request Calendar of " + loggedInUser.getMailAddress());
 		Calendar ca4 = new Calendar();
+		
+		if(loggedInUser.getCalendarIds().isEmpty()){
+			System.out.println("ERROR: no calendar for " +loggedInUser.getMailAddress());
+		}else{
+			ca4.setID(loggedInUser.getCalendarIds().get(0));
+			ca4 = requester.requestObjectByOwnId(ca4);
+			if(ca4 == null){
+				System.out.println("ERROR: Calendar mit ID " +loggedInUser.getCalendarIds().get(0) + " does not exist");
+				return;
+			}
+			System.out.println("Picked Calendar with ID " + ca4.getID() +" and name " +ca4.getName());
+		}
+		System.out.println("Request Entries of Calendar " +ca4.getName());
 		if(ca4.getCalendarEntries().isEmpty()){
 			System.out.println("No Elements in List");
 		}
 		else{
-			ca4.setID(loggedInUser.getCalendarIds().get(0));
-			ca4 = requester.requestObjectByOwnId(ca4);
-			System.out.println("ID: "+ ca4.getID() + " | Name: "+ca4.getName());
+			for(CalendarEntry entry : ca4.getCalendarEntries()){
+				System.out.println("EntryID: " + entry.getID());
+				System.out.println("\tTitle: "+entry.getTitle());
+				System.out.println("\tStart: " + entry.getStartHour()+":"+entry.getStartMinute());
+				System.out.println("\tEnd: " + entry.getEndHour()+":"+entry.getEndMinute());
+			}
 		}
 		
 		System.out.println("Log in " +u3.getMailAddress());
@@ -213,6 +244,14 @@ public class Start {
 				System.out.println("Invite declined: " + requester.declineInvite(tmp));
 			}
 		}
+		
+		
+		
+		
+		
+		
+		
+		
 //		TestData data = new TestData();
 //		
 //		for(int j = 0; j < 5; j++){

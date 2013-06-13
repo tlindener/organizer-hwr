@@ -3,7 +3,8 @@ package network;
 import java.util.ArrayList;
 import java.util.List;
 
-import network.objects.Utils;
+import network.listener.ProcessListener;
+import network.utilities.ParseUtils;
 
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Group;
@@ -111,7 +112,7 @@ public abstract class RequestHandler{
 	/**
 	 * Generates an authentication String containing of mail and password.
 	 * Therefore the mail address and the password are encoded by
-	 * {@link Utils#encodeString(String)} and joined.
+	 * {@link ParseUtils#encodeString(String)} and joined.
 	 * @param id 
 	 * 
 	 * @param mail
@@ -119,6 +120,6 @@ public abstract class RequestHandler{
 	 * @return the generated String
 	 */
 	protected String generateAuthenticationString(int id, String mail, String password) {
-		return Utils.parseStringToHTTP(id+"_"+Utils.encodeStringNewBase64(mail) + Utils.encodeStringNewBase64(password));
+		return ParseUtils.parseStringToHTTP(id+"_"+ParseUtils.encodeStringNewBase64(mail) + ParseUtils.encodeStringNewBase64(password));
 	}
 }

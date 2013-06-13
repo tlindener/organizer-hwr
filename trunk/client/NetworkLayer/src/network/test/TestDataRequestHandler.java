@@ -1,9 +1,10 @@
-package network;
+package network.test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import network.objects.TestData;
+import network.RequestHandler;
+import network.test.model.TestData;
 
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;

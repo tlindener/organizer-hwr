@@ -1,4 +1,4 @@
-package network.objects;
+package network.utilities;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -32,7 +32,7 @@ import organizer.objects.types.User;
  * @version 1.0
  * 
  */
-public class Utils {
+public class ParseUtils {
 	/**
 	 * HashMap containing the plurals of the class names.
 	 */
@@ -98,7 +98,7 @@ public class Utils {
 			MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
 			byte[] output = sha512.digest(string.getBytes());
 			string = new String(output, "ASCII");
-			string = network.objects.Base64.encodeBytes(string.getBytes());
+			string = network.utilities.Base64.encodeBytes(string.getBytes());
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
@@ -383,7 +383,7 @@ public class Utils {
 	public static String parseDateToNetDateTime(Date date) {
 		// 2008-11-01T19:35:00.0000000-07:00
 		SimpleDateFormat formatted = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSXXX");
+				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ");
 		return formatted.format(date);
 	}
 	/**
@@ -395,7 +395,7 @@ public class Utils {
 	public static Date parseStringToDate(String time) {
 		// 2008-11-01T19:35:00.0000000-07:00
 		SimpleDateFormat formatted = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSXXX");
+				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ");
 		Date date = null;
 		
 		try {
@@ -416,5 +416,6 @@ public class Utils {
 //		System.out.println(parseStringToHTTP("Das ist ein Test"));
 //		System.out.println(encodeString("Test"));
 		System.out.println(parseDateToNetDateTime(new Date()));
+		System.out.println(parseStringToDate("2008-11-01T19:35:00.0000000-07:00"));
 	}
 }
