@@ -1,4 +1,4 @@
-package network.objects;
+package network.test.model;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
