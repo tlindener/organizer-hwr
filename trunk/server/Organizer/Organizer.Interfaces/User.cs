@@ -52,7 +52,7 @@ namespace Organizer.Interfaces
        
         public virtual ICollection<Group> Groups { get; set; }
         public virtual ICollection<Invite> Invites { get; set; }
-        public virtual ICollection<CalendarEntry> CalendarEntries { get; set; }
+
 
 
 

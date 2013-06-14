@@ -450,8 +450,8 @@ namespace Organizer.WebService
 
                 CalendarId = calendarEntry.CalendarEntryId,
                 Description = calendarEntry.Description,
-                StartDate = calendarEntry.StartDate,
-                EndDate = calendarEntry.EndDate,
+                StartDate = calendarEntry.StartDate.ToString(@"yyyy-MM-ddTHH\:mm\:ss.fffffffzzz"),
+                EndDate = calendarEntry.EndDate.ToString(@"yyyy-MM-ddTHH\:mm\:ss.fffffffzzz"),
                 Title = calendarEntry.Title,
                 Id = calendarEntry.CalendarEntryId,
                 RoomId = roomId,

@@ -15,15 +15,15 @@ namespace Organizer.Interfaces.Json
 
     /// <summary>
     /// JSON interface for Entity: CalendarEntry 
-    /// <see cref="Organizer.Interface.CalendarEntry"/>
+    /// <seealso cref="Organizer.Interface.CalendarEntry"/>
     /// </summary>
     public class WebCalendarEntry
     {
 
         public int Id { get; set; }
         public string Title { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public String StartDate { get; set; }
+        public String EndDate { get; set; }
         public string Description { get; set; }
         public int OwnerId { get; set; }
         public int CalendarId { get; set; }

@@ -14,7 +14,7 @@ namespace Organizer.Interfaces.Json
     /// <summary>
     /// JSON interface for Entity: User
     /// </summary>
-    /// <see cref="Organizer.Interfaces.User"/>
+    /// <seealso cref="Organizer.Interfaces.User"/>
     public class WebUser
     {
         public int Id { get; set; }

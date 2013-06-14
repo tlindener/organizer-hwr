@@ -8,7 +8,7 @@ namespace Organizer.Interfaces.Json
     /// <summary>
     /// JSON interface for Entity: Room
     /// </summary>
-    /// <see cref="Organizer.Interfaces.Room"/>
+    /// <seealso cref="Organizer.Interfaces.Room"/>
     public class WebRoom
     {
         public int Id { get; set; }
