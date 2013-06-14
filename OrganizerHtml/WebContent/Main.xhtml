@@ -34,12 +34,12 @@
 					a guessed client-id anyways - this will be a problem if you put the referenced component into a different 
 					naming-container. If this is the case, you can always use the full client-id. -->
 					<h:panelGrid columns="2" cellpadding="2">
-						<h:outputLabel for="#{calenderBean.username}" value="UserName" />
-						<h:inputText value="#{calenderBean.username}" label="UserName"></h:inputText>
-						<h:outputLabel for="#{calenderBean.password}" value="Password" />
-						<h:inputSecret value="#{calenderBean.password}"></h:inputSecret>
+						<h:outputLabel for="#{controller.username}" value="UserName" />
+						<h:inputText value="#{controller.username}" label="UserName"></h:inputText>
+						<h:outputLabel for="#{controller.password}" value="Password" />
+						<h:inputSecret value="#{controller.password}"></h:inputSecret>
 						<h:commandButton type="submit" value="Login"
-							action="#{calenderBean.login}"></h:commandButton>
+							action="#{controller.login}"></h:commandButton>
 					</h:panelGrid>
 				</h:form>
 			</p:panel>

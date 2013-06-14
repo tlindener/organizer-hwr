@@ -6,18 +6,8 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
     version="2.1">
 	<managed-bean>
-		<managed-bean-name>loginBean</managed-bean-name>
-		<managed-bean-class>organizerhtml.beans.LoginBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
-	<managed-bean>
-		<managed-bean-name>calenderBean</managed-bean-name>
-		<managed-bean-class>organizerhtml.beans.CalenderBean</managed-bean-class>
-		<managed-bean-scope>application</managed-bean-scope>
-	</managed-bean>
-	<managed-bean>
-		<managed-bean-name>kalenderBean</managed-bean-name>
-		<managed-bean-class>organizerhtml.beans.KalenderBean</managed-bean-class>
+		<managed-bean-name>controller</managed-bean-name>
+		<managed-bean-class>organizerhtml.controller.Controller</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 

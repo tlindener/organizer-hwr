@@ -24,21 +24,21 @@
 				</h4>
 			</p:layoutUnit>
 			<p:layoutUnit position="center">
-				<!-- Testbereich -->
-
 				<p:panelGrid>
 					<f:facet name="header">
-Basic PanelGrid</f:facet>
+					</f:facet>
 					<p:row>
 						<p:column rowspan="1">
-							<p:calendar value="#{calenderBean.date}" mode="inline"
+							<p:calendar value="#{controller.date}" mode="inline"
 								id="inlineCal">
 								<p:ajax event="dateSelect"
-									listener="#{calenderBean.handleDateSelect}" update="display" />
+									listener="#{controller.handleDateSelect}"
+									update="personen,raum,beschreibung,schedule" />
 							</p:calendar>
 						</p:column>
 						<p:column colspan="3">
-							<p:schedule>
+							<p:schedule id="schedule" initialDate="#{controller.date}"
+								view="agendaDay" allDaySlot="false">
 							</p:schedule>
 						</p:column>
 					</p:row>
@@ -49,10 +49,15 @@ Basic PanelGrid</f:facet>
 					</p:row>
 					<p:row>
 						<p:column>
-							<h:outputText value="#{calenderBean.date}" id="display" />
+							<h:outputText value="#{controller.pers}" id="personen" />
 						</p:column>
-						<p:column>FFF</p:column>
-						<p:column>GGG</p:column>
+						<p:column>
+							<h:outputText value="#{controller.raum}" id="raum" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{controller.beschreibung}"
+								id="beschreibung" />
+						</p:column>
 
 					</p:row>
 				</p:panelGrid>
