@@ -401,6 +401,47 @@ namespace Organizer.WebService
         {
             return true;
         }
+
+
+        public bool UpdateCalendar(int calendarId, string name, string description, string userAuth)
+        {
+            if (!ValidateUser(userAuth))
+                return false;
+           
+            return timeplanner.UpdateCalendar(calendarId, name, description);
+        }
+
+        public bool UpdateCalendarEntry(int calendarEntryId, string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, string userAuth)
+        {
+            if (!ValidateUser(userAuth))
+                return false;
+
+            return timeplanner.UpdateCalendarEntry(calendarEntryId, title, description, startDate, endDate, roomId);
+        }
+
+        public bool UpdateUser(int userId, string givenName, string surname, string mailAddress, string phoneNumber, string password, string userAuth)
+        {
+            if (!ValidateUser(userAuth))
+                return false;
+
+            return timeplanner.UpdateUser(userId, givenName, surname, mailAddress, phoneNumber, password);
+        }
+
+        public bool UpdateRoom(int roomId, string description, string location, int seats, string userAuth)
+        {
+            if (!ValidateUser(userAuth))
+                return false;
+
+            return timeplanner.UpdateRoom(roomId, description, location, seats);
+        }
+
+        public bool UpdateGroup(int groupId, string description, string userAuth)
+        {
+            if (!ValidateUser(userAuth))
+                return false;
+
+            return timeplanner.UpdateGroup(groupId, description);
+        }
     }
 
 

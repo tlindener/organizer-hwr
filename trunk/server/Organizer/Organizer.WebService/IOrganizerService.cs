@@ -59,6 +59,18 @@ namespace Organizer.WebService
         int AddCalendar(int ownerId, string name, string description, string userAuth);
 
         /// <summary>
+        /// Updates specified calendar
+        /// </summary>
+        /// <param name="calendarId"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="userAuth"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool UpdateCalendar(int calendarId, string name, string description, string userAuth);
+
+        /// <summary>
         /// Removes a calendar from database
         /// </summary>
         /// <param name="calendarId">Specifies the chosen calendar</param>
@@ -122,6 +134,22 @@ namespace Organizer.WebService
         int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, string userAuth);
 
         /// <summary>
+        /// Updates calendar entry based on parameters
+        /// </summary>
+        /// <param name="calendarEntryId"></param>
+        /// <param name="title">Title of entry</param>
+        /// <param name="description">Description of the entry</param>
+        /// <param name="startDate">Start date and time</param>
+        /// <param name="endDate">End date and time</param>
+        /// <param name="ownerId">Owner of the entry</param>
+        /// <param name="roomId">Room in which meeting takes place</param>
+        /// <param name="calendarId">Specifies the chosen calendar</param>
+        /// <param name="userAuth">Used to authenticate a user against the requested action</param>
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool UpdateCalendarEntry(int calendarEntryId,string title, string description, DateTime startDate, DateTime endDate, int roomId, string userAuth);
+
+        /// <summary>
         /// Removes calendar entry from calendar
         /// </summary>
         /// <param name="calendarEntryId">Unique calendarEntry identification</param>
@@ -168,6 +196,20 @@ namespace Organizer.WebService
         int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password);
 
         /// <summary>
+        /// Updates specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="givenName"></param>
+        /// <param name="surname"></param>
+        /// <param name="mailAddress"></param>
+        /// <param name="phoneNumber"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool UpdateUser(int userId, string givenName, string surname, string mailAddress, string phoneNumber, string password, string userAuth);
+
+        /// <summary>
         /// Removes a user.
         /// </summary>
         /// <param name="userId">Unique identification of user</param>
@@ -211,6 +253,19 @@ namespace Organizer.WebService
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int AddRoom(string description, string location, int seats, string userAuth);
+
+        /// <summary>
+        /// Updates specified room
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="description"></param>
+        /// <param name="location"></param>
+        /// <param name="seats"></param>
+        /// <param name="userAuth"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool UpdateRoom(int roomId, string description, string location, int seats, string userAuth);
 
         /// <summary>
         /// Removes a room. Only accessible for administrator.
@@ -263,6 +318,18 @@ namespace Organizer.WebService
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int AddGroup(string description, string userAuth);
+
+       /// <summary>
+        ///  Update specified group
+       /// </summary>
+       /// <param name="groupId"></param>
+       /// <param name="description"></param>
+       /// <param name="userAuth"></param>
+       /// <returns></returns>
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool UpdateGroup(int groupId,string description, string userAuth);
+
 
         /// <summary>
         /// Adds user to specified group

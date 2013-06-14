@@ -835,20 +835,113 @@ namespace Organizer
 
 
 
+        public bool UpdateCalendar(int calendarId, string name, string description)
+        {
+           var calendar = _calendarDatabase.Calendar.Find(calendarId);
+           if (calendar != null)
+           {
+               calendar.Name = name;
+               calendar.Description = description;
+               try
+               {
+                   _calendarDatabase.SaveChanges();
+                   return true;
+               }
+               catch (Exception ex)
+               {
+                   _logger.Error(ex.ToString());
+               }
+           }
+           return false;
+         
+        }
 
+        public bool UpdateCalendarEntry(int calendarEntryId, string title, string description, DateTime startDate, DateTime endDate, int roomId)
+        {
+            var calendarEntry = _calendarDatabase.CalendarEntries.Find(calendarEntryId);
+            var room = _calendarDatabase.Rooms.Find(roomId);
 
+            if (calendarEntry != null)
+            {
+                calendarEntry.Title = title;
+                calendarEntry.Description = description;
+                calendarEntry.StartDate = startDate;
+                calendarEntry.EndDate = endDate;
+                calendarEntry.Room = room;
+                try
+                {
+                    _calendarDatabase.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex.ToString());
+                }
+            }
+            return false;
+        }
 
+        public bool UpdateUser(int userId, string givenName, string surname, string mailAddress, string phoneNumber, string password)
+        {
+            var user = _calendarDatabase.User.Find(userId);
+            if (user != null)
+            {
+                user.GivenName = givenName;
+                user.Surname = surname;
+                user.MailAddress = mailAddress;
+                user.PhoneNumber = phoneNumber;
+                user.Password = password;
+                try
+                {
+                    _calendarDatabase.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex.ToString());
+                }
+            }
+            return false;
 
+        }
 
+        public bool UpdateRoom(int roomId, string description, string location, int seats)
+        {
+            var room = _calendarDatabase.Rooms.Find(roomId);
+            if (room != null)
+            {
+                room.Description = description;
+                room.Location = location;
+                room.Seats = seats;
+                
+                try
+                {
+                    _calendarDatabase.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex.ToString());
+                }
+            }
+            return false;
+        }
 
+        public bool UpdateGroup(int groupId, string description)
+        {
+            var group = _calendarDatabase.Groups.Find(groupId);
+            if (group != null)
+            {
+                group.Description = description;
 
-
-
-
-
-
-
-
+                try
+                {
+                    _calendarDatabase.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex.ToString());
+                }
+            }
+            return false;
+        }
     }
 
     /// <summary>
