@@ -130,9 +130,16 @@ namespace Organizer
             {
                 return false;
             }
+            try{
             _calendarDatabase.Calendar.Remove(calendar);
             _calendarDatabase.SaveChanges();
             return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return false;
         }
 
         #endregion
@@ -238,9 +245,17 @@ namespace Organizer
             {
                 return false;
             }
+            try
+            {
             calendarEntry.Room = room;
             _calendarDatabase.SaveChanges();
             return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return false;
         }
 
         /// <summary>
@@ -259,7 +274,10 @@ namespace Organizer
                 {
                     return false;
                 }
-                return calendar.CalendarEntries.Remove(entry);
+                _calendarDatabase.CalendarEntries.Remove(entry);
+                _calendarDatabase.SaveChanges();
+                return true;
+               
             }
             catch (Exception ex)
             {
@@ -345,9 +363,17 @@ namespace Organizer
             {
                 return false;
             }
-            _calendarDatabase.User.Remove(user);
-            _calendarDatabase.SaveChanges();
-            return true;
+            try
+            {
+                _calendarDatabase.User.Remove(user);
+                _calendarDatabase.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return false;
         }
         #endregion
 
@@ -359,7 +385,15 @@ namespace Organizer
         /// <returns></returns>
         public ICollection<Room> GetAllRooms()
         {
-            return _calendarDatabase.Rooms.ToList();
+            try
+            {
+                return _calendarDatabase.Rooms.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return null;
         }
 
         /// <summary>
@@ -369,7 +403,15 @@ namespace Organizer
         /// <returns></returns>
         public Room GetRoomById(int roomId)
         {
-            return _calendarDatabase.Rooms.Find(roomId);
+            try
+            {
+                return _calendarDatabase.Rooms.Find(roomId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return null;
         }
 
         /// <summary>
@@ -404,9 +446,17 @@ namespace Organizer
             {
                 return false;
             }
-            _calendarDatabase.Rooms.Remove(room);
-            _calendarDatabase.SaveChanges();
-            return true;
+            try
+            {
+                _calendarDatabase.Rooms.Remove(room);
+                _calendarDatabase.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());                
+            }
+            return false;
         }
 
         #endregion
@@ -421,7 +471,11 @@ namespace Organizer
         {
             try
             {
-                return _calendarDatabase.Groups.ToList();
+                var groups =  _calendarDatabase.Groups.ToList();
+                if (groups != null)
+                {
+                    return groups;
+                }
             }
             catch (Exception ex)
             {
@@ -439,7 +493,11 @@ namespace Organizer
         {
             try
             {
-                return _calendarDatabase.Groups.Find(groupId);
+                var group = _calendarDatabase.Groups.Find(groupId);
+                if (group != null)
+                {
+                    return group;
+                }
             }
             catch (Exception ex)
             {
@@ -505,9 +563,17 @@ namespace Organizer
             {
                 return false;
             }
-            group.Members.Add(user);
-            _calendarDatabase.SaveChanges();
-            return true;
+            try
+            {
+                group.Members.Add(user);
+                _calendarDatabase.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return false;
         }
 
         /// <summary>
@@ -524,9 +590,17 @@ namespace Organizer
             {
                 return false;
             }
-            group.Members.Remove(user);
-            _calendarDatabase.SaveChanges();
-            return true;
+            try
+            {
+                group.Members.Remove(user);
+                _calendarDatabase.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return false;
         }
         /// <summary>
         ///     Removes specified group
@@ -540,9 +614,17 @@ namespace Organizer
             {
                 return false;
             }
-            _calendarDatabase.Groups.Remove(group);
-            _calendarDatabase.SaveChanges();
-            return true;
+            try
+            {
+                _calendarDatabase.Groups.Remove(group);
+                _calendarDatabase.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return false;
         }
 
 
@@ -558,8 +640,16 @@ namespace Organizer
         /// <returns></returns>
         public Invite GetInviteById(int inviteId)
         {
-            Invite invite = _calendarDatabase.Invites.Find(inviteId);
-            return invite;
+            try
+            {
+                Invite invite = _calendarDatabase.Invites.Find(inviteId);
+                return invite;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return null;
         }
 
 
@@ -575,7 +665,15 @@ namespace Organizer
             {
                 return null;
             }
-            return _calendarDatabase.Invites.Where(p => p.Owner == user).ToList();
+            try
+            {
+                return _calendarDatabase.Invites.Where(p => p.Owner == user).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return null;
         }
 
         /// <summary>
@@ -641,9 +739,17 @@ namespace Organizer
                 CalendarEntry = calendarEntry,
                 Owner = user
             };
-            _calendarDatabase.Invites.Add(invite);
-            _calendarDatabase.SaveChanges();
-            return invite.InviteId;
+            try
+            {
+                _calendarDatabase.Invites.Add(invite);
+                _calendarDatabase.SaveChanges();
+                return invite.InviteId;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return 0;
         }
 
         /// <summary>
@@ -660,9 +766,16 @@ namespace Organizer
             {
                 return false;
             }
-
-            _calendarDatabase.Invites.Remove(invite);
-            _calendarDatabase.SaveChanges();
+            try
+            {
+                _calendarDatabase.Invites.Remove(invite);
+                _calendarDatabase.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
             return true;
         }
 
