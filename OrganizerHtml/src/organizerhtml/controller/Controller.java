@@ -89,20 +89,22 @@ public class Controller {
 		try {
 			// XXX hier die Benutzerüberprüfung anhand des NetworkLayour.
 			if (!username.equals("") && !password.equals("")) {
+				// XXX hier hängt er sich auf !
 				// User tmpu = myRequester.login(username, password);
 				// if (tmpu != null) {
 				// aktUser = tmpu;
+				//
 				// aktUserCa = new Calendar();
 				// aktUserCa.setID(1);
-				// }
-				// Calendar tmpCal =
-				// myRequester.requestObjectByOwnId(aktUserCa);
-				//
+				// Calendar tmpCal = myRequester
+				// .requestObjectByOwnId(aktUserCa);
+				// System.out.println("hier");
 				// // null Abfrage
 				// if (tmpCal != null) {
 				// aktUserCa = tmpCal;
 				// }
-
+				// }
+				// updateEventModel();
 				return "Kalender";
 			}
 		} catch (NullPointerException e) {
@@ -233,8 +235,12 @@ public class Controller {
 		return myModel.getRaum();
 	}
 
-	public List<String> getPers() {
-		return myModel.getPers();
+	public String getPers() {
+		StringBuilder sb = new StringBuilder();
+		for (String s : myModel.getPers()) {
+			sb.append(s + "\n");
+		}
+		return sb.toString();
 	}
 
 }

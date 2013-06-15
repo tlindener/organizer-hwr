@@ -37,7 +37,7 @@
 							</p:calendar>
 						</p:column>
 						<p:column colspan="3">
-							<p:schedule id="schedule" initialDate="#{controller.date}" value="#{controller.eventModel}"
+							<p:schedule id="schedule" initialDate="#{controller.date}" value="#{controller.eventModel}" 
 								view="agendaDay" allDaySlot="false" showWeekends="true">
 								<p:ajax event="eventSelect"
 									listener="#{controller.onEventSelect}"
