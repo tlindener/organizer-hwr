@@ -17,22 +17,21 @@
 			<h4>
 				<a href="Main.xhtml"> Home </a>
 			</h4>
+			<!-- 
 			<h4>
 				<a href="Kalender.xhtml"> Kalender </a>
 			</h4>
+			 -->
 		</p:layoutUnit>
 		<p:layoutUnit position="center">
-			<h3>Home</h3>
-			Herzlich Willkommen
-			Den Organizer finden Sie unter dem Menüpunkt Kalender.<br />
-			Diese Oberfläche ist nur für die Ansicht Ihrer Termine gedacht.<br />
+			<h3>Herzlich Willkommen</h3>
+			<p>Sie gelangen zu der Ansicht des Organizer sobald Sie sich
+				korrekt angemeldet haben.</p>
+			<p>Dazu nutzen Sie bitte den Eingabedialog unterhalb dieses
+				Textes.</p>
+			<br />
 			<p:panel header="Login Form">
 				<h:form>
-					<!-- 
-					TODO: hier ist noch ne Fehlermeldung aufgetreten !
-					INFO: Unable to find component '' (calling findComponent on component 'j_id_e:j_id_i'). We'll try to return 
-					a guessed client-id anyways - this will be a problem if you put the referenced component into a different 
-					naming-container. If this is the case, you can always use the full client-id. -->
 					<h:panelGrid columns="2" cellpadding="2">
 						<h:outputLabel for="#{controller.username}" value="UserName" />
 						<h:inputText value="#{controller.username}" label="UserName"></h:inputText>
@@ -43,7 +42,6 @@
 					</h:panelGrid>
 				</h:form>
 			</p:panel>
-
 		</p:layoutUnit>
 	</p:layout>
 	<p:calendar />

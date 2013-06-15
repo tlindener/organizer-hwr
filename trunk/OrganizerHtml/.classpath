@@ -18,6 +18,5 @@
 			<attribute name="owner.project.facets" value="jst.jsf"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="/NetworkLayer"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
