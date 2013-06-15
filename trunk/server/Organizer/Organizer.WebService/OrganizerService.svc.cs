@@ -411,7 +411,8 @@ namespace Organizer.WebService
             return timeplanner.UpdateCalendar(calendarId, name, description);
         }
 
-        public bool UpdateCalendarEntry(int calendarEntryId, string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, string userAuth)
+        
+        public bool UpdateCalendarEntry(int calendarEntryId, string title, string description, DateTime startDate, DateTime endDate, int roomId, string userAuth)
         {
             if (!ValidateUser(userAuth))
                 return false;
