@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Model {
 
-	private Date date;
+	private Date date=new Date();
 	private String beschreibung = "Beschreibung";
 	private String raum = "Raum";
 	private List<String> pers;

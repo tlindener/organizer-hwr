@@ -1,6 +1,7 @@
 package organizerhtml.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,6 @@ import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
-import organizer.objects.types.Room;
 import organizer.objects.types.User;
 import organizerhtml.model.Model;
 
@@ -32,7 +32,8 @@ public class Controller {
 	private RequestHandler myRequester;
 	@SuppressWarnings("unused")
 	private User aktUser;
-	private Calendar aktUserCa;
+	private organizer.objects.types.Calendar aktUserCa;
+	Model myModel = new Model();
 
 	/*
 	 * "unused", da die HTML direkt auf das Modell zugreifen soll und keine
@@ -49,7 +50,34 @@ public class Controller {
 	private String raum = "Raum";
 	@SuppressWarnings("unused")
 	private List<String> pers;
-	Model myModel = new Model();
+
+	public Controller() {
+		aktUserCa = new Calendar();
+		aktUserCa.setID(1);
+		Date startDate = new Date();
+		Date endDate = new Date();
+		endDate.setHours(startDate.getHours() + 2);
+		List<CalendarEntry> entries = new ArrayList<CalendarEntry>();
+		CalendarEntry ce = new CalendarEntry();
+		ce.setStartDate(startDate);
+		ce.setDescription("Test");
+		ce.setTitle("Testtermin");
+		ce.setRoomId(1);
+		ce.setOwnerId(1);
+		ce.setCalendarId(1);
+		ce.setEndDate(endDate);
+		entries.add(ce);
+		aktUserCa.setCalendarEntries(entries);
+		if (!aktUserCa.getCalendarEntries().isEmpty()) {
+			System.out.println("alle einträge");
+			for (CalendarEntry e : entries) {
+				System.out.println(e.getStartDate());
+				System.out.println(e.getEndDate());
+				System.out.println(e.getTitle());
+			}
+		}
+		updateEventModel();
+	}
 
 	/**
 	 * Die Methode "login" übermittelt die Korrektheit der Benutzerdaten
@@ -61,25 +89,24 @@ public class Controller {
 		try {
 			// XXX hier die Benutzerüberprüfung anhand des NetworkLayour.
 			if (!username.equals("") && !password.equals("")) {
-				// System.out.println(getUsername());
-				// System.out.println(getPassword());
 				// User tmpu = myRequester.login(username, password);
 				// if (tmpu != null) {
 				// aktUser = tmpu;
 				// aktUserCa = new Calendar();
 				// aktUserCa.setID(1);
 				// }
-				// organizer.objects.types.Calendar tmpCal = myRequester
-				// .requestObjectByOwnId(aktUserCa);
+				// Calendar tmpCal =
+				// myRequester.requestObjectByOwnId(aktUserCa);
 				//
 				// // null Abfrage
 				// if (tmpCal != null) {
 				// aktUserCa = tmpCal;
 				// }
-				// updateEventModel();
+
 				return "Kalender";
 			}
 		} catch (NullPointerException e) {
+			e.printStackTrace();
 		}
 		return "Main";
 	}
@@ -90,12 +117,24 @@ public class Controller {
 	private void setupNetworkConnection() {
 		myRequester = new JsonJavaRequestHandler("localhost", 48585);
 	}
-	
-	private void fillMyModel(){
-		//XXX UNBEDINGT UPDATEN
-		myModel.setBeschreibung("");
-		myModel.setPers(null);
-		myModel.setRaum("");
+
+	private void fillMyModel(ScheduleEvent event) {
+		// XXX hier fehlt nur noch der Zugang zu dem Calender Object. Danach
+		// ließt er sich den rest alleine raus.
+		SimpleDateFormat format = new SimpleDateFormat("DDDYY");
+		CalendarEntry temp = (CalendarEntry) event.getData();
+		String room = null;
+		// XXX room ID ist im CalenderEntry mit drin. Aber wie komm ich an den
+		// Wert?
+		// room=myRequester.requestObjectByOwnId(new
+		// Room().setID(temp.getID()));
+		List<String> pers = new ArrayList<String>();
+		for (User u : temp.getInvitees()) {
+			pers.add(u.getGivenName());
+		}
+		myModel.setBeschreibung(temp.getDescription());
+		myModel.setPers(pers);
+		myModel.setRaum(room);
 	}
 
 	/*
@@ -106,11 +145,26 @@ public class Controller {
 	private void updateEventModel() {
 		eventModel.clear();
 		for (CalendarEntry c : aktUserCa.getCalendarEntries()) {
+			// eventModel.addEvent(new DefaultScheduleEvent(c.getTitle(), c
+			// .getStartDate(), c.getEndDate()));
 			eventModel.addEvent(new DefaultScheduleEvent(c.getTitle(), c
-					.getStartDate(), c.getEndDate()));
-			System.out.println(c.getTitle() + " " + c.getStartDate() + " "
+					.getStartDate(), c.getEndDate(), c));
+			System.out.println(c.getTitle() + " / " + c.getStartDate() + " / "
 					+ c.getEndDate());
 		}
+	}
+
+	public void onDateSelect(SelectEvent selectEvent) {
+		event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(),
+				(Date) selectEvent.getObject());
+	}
+
+	public ScheduleEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(ScheduleEvent event) {
+		this.event = event;
 	}
 
 	public ScheduleModel getEventModel() {
@@ -132,6 +186,8 @@ public class Controller {
 
 	public void onEventSelect(SelectEvent selectEvent) {
 		event = (ScheduleEvent) selectEvent.getObject();
+		System.out.println(event.getTitle());
+		fillMyModel(event);
 	}
 
 	/*
