@@ -52,7 +52,7 @@ namespace Organizer.WebService
         /// <param name="name">Specifies name of new calendar</param>
         /// <param name="description">Specifies description of new calendar</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns>Returns int value which specifies id of added object</returns>
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         /// <seealso cref="Organizer.TimePlanner.AddCalendar"/>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -61,11 +61,12 @@ namespace Organizer.WebService
         /// <summary>
         /// Updates specified calendar
         /// </summary>
-        /// <param name="calendarId"></param>
-        /// <param name="name"></param>
-        /// <param name="description"></param>
-        /// <param name="userAuth"></param>
-        /// <returns></returns>
+        /// <param name="calendarId">Specifies calendar</param>
+        /// <param name="name">Specifies name of new calendar</param>
+        /// <param name="description">Specifies description of new calendar</param>
+        /// <param name="userAuth">Used to authenticate a user against the requested action</param>
+        /// <returns>Success indicator</returns>
+        /// <seealso cref="Organizer.TimePlanner.UpdateCalendar"/>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         bool UpdateCalendar(int calendarId, string name, string description, string userAuth);
@@ -100,7 +101,7 @@ namespace Organizer.WebService
         /// </summary>
         /// <param name="calendarEntryId">Specifies chosen calendar entry</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>Requested WebCalendarEntry</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         WebCalendarEntry GetCalendarEntryById(int calendarEntryId, string userAuth);
@@ -110,7 +111,7 @@ namespace Organizer.WebService
         /// </summary>
         /// <param name="roomId">Specifies chosen room</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>Collection of WebCalendarEntry</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         ICollection<WebCalendarEntry> GetAllCalendarEntriesByRoomId(int roomId, string userAuth);
@@ -128,7 +129,7 @@ namespace Organizer.WebService
         /// <param name="roomId">Room in which meeting takes place</param>
         /// <param name="calendarId">Specifies the chosen calendar</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int AddCalendarEntry(string title, string description, DateTime startDate, DateTime endDate, int ownerId, int roomId, int calendarId, string userAuth);
@@ -154,7 +155,7 @@ namespace Organizer.WebService
         /// </summary>
         /// <param name="calendarEntryId">Unique calendarEntry identification</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>SuccessIndicator</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         bool RemoveCalendarEntry(int calendarEntryId, string userAuth);
@@ -165,7 +166,7 @@ namespace Organizer.WebService
         /// Returns a list of all users in database
         /// </summary>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>Collection of WebUser</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         ICollection<WebUser> GetAllUser(string userAuth);
@@ -175,7 +176,7 @@ namespace Organizer.WebService
         /// </summary>
         /// <param name="userId">Unique identification of user</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>Requested WebUser</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         WebUser GetUserById(int userId, string userAuth);
@@ -190,7 +191,7 @@ namespace Organizer.WebService
         /// <param name="phoneNumber"></param>
         /// <param name="password"></param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password);
@@ -249,7 +250,7 @@ namespace Organizer.WebService
         /// <param name="location">Location e.g. number of room</param>
         /// <param name="seats">Amount of available seats</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int AddRoom(string description, string location, int seats, string userAuth);
@@ -258,10 +259,10 @@ namespace Organizer.WebService
         /// Updates specified room
         /// </summary>
         /// <param name="roomId"></param>
-        /// <param name="description"></param>
-        /// <param name="location"></param>
-        /// <param name="seats"></param>
-        /// <param name="userAuth"></param>
+        /// <param name="description">Description of the room</param>
+        /// <param name="location">Location e.g. number of room</param>
+        /// <param name="seats">Amount of available seats</param>
+        /// <param name="userAuth">Used to authenticate a user against the requested action</param>
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -314,7 +315,7 @@ namespace Organizer.WebService
         /// Adds a new group
         /// </summary>
         /// <param name="description"></param>
-        /// <returns></returns>
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int AddGroup(string description, string userAuth);
@@ -357,7 +358,7 @@ namespace Organizer.WebService
         /// </summary>
         /// <param name="groupId">Unique identification of group</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>Success indicator</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         bool RemoveGroup(int groupId, string userAuth);
@@ -369,9 +370,9 @@ namespace Organizer.WebService
         /// <summary>
         /// Returns invitation by specified id
         /// </summary>
-        /// <param name="inviteId"></param>
+        /// <param name="inviteId">Unique invite identification</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>WebInvite</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         WebInvite GetInviteById(int inviteId, string userAuth);
@@ -379,9 +380,9 @@ namespace Organizer.WebService
         /// <summary>
         /// Accepts invitation
         /// </summary>
-        /// <param name="inviteId"></param>
+        /// <param name="inviteId">Unique invite identification</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>Success indicator</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int AcceptInvite(int inviteId, string userAuth);
@@ -389,9 +390,9 @@ namespace Organizer.WebService
         /// <summary>
         /// Accepts invitation
         /// </summary>
-        /// <param name="inviteId"></param>
+        /// <param name="inviteId">Unique invite identification</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>Success indicator</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int DeclineInvite(int inviteId, string userAuth);
@@ -402,7 +403,7 @@ namespace Organizer.WebService
         /// <param name="calendarEntryId">Unique calendarEntry identification</param>
         /// <param name="userId">Unique identification of user</param>
         /// <param name="userAuth">Used to authenticate a user against the requested action</param>
-        /// <returns></returns>
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int AddInvite(int calendarEntryId, int userId, string userAuth);
@@ -412,7 +413,7 @@ namespace Organizer.WebService
         /// </summary>
         /// <param name="calendarEntryId">Unique calendarEntry identification</param>
         /// <param name="userId">Unique identification of user</param>
-        /// <returns></returns>
+        /// <returns>Success indicator</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         bool RemoveInvite(int inviteId, string userAuth);
