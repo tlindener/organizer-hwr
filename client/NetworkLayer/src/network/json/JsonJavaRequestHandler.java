@@ -46,13 +46,12 @@ import com.google.gson.reflect.TypeToken;
 public class JsonJavaRequestHandler extends RequestHandler {
 	/** The JSON-Paser */
 	private Gson gson = null;
-
 	/** The HTTP connection for sending GET-request */
-	private HttpURLConnection connection = null;
+	protected HttpURLConnection connection = null;
 	/** Hostname of the backend where the application is placed */
-	private String hostname = "";
+	protected String hostname = "";
 	/** Port of the backend application */
-	private int port = -1;
+	protected int port = -1;
 
 	/**
 	 * Default construtor to connect to the server
@@ -120,11 +119,10 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * @return JSON-String representing the object or null, if there was an
 	 *         exception during transmission.
 	 */
-	private String sendGetToServer(String request) {
-
+	public String sendGetToServer(String request) {
 		try {
 			connection = (HttpURLConnection) (new URL("http://" + hostname
-					+ ":" + port + "/Organizer/OrganizerService.svc/" + request))
+					+ ":" + port + "/OrganizerService.svc/" + request))
 					.openConnection();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					connection.getInputStream()));
@@ -458,6 +456,16 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			String getCmd = ParseUtils.makeUpdateCommand(obj);
 			// returns the parameters as list
 			ArrayList<String> parameters = ParseUtils.getParameterStringList(obj);
+			
+			if(obj instanceof CalendarEntry){
+				parameters = ParseUtils.removeAttributeFromList("ownerid", parameters);
+				parameters = ParseUtils.removeAttributeFromList("calendarid", parameters);
+			} else if(obj instanceof Calendar){
+				parameters = ParseUtils.removeAttributeFromList("ownerid", parameters);
+			}
+			
+			parameters.add(ParseUtils.getParameterOwnId(obj));
+			
 			// returns the password as encoded value and adds it to the
 			// parameter list
 			parameters.add(ParseUtils.getParameterUserAuth(authString));
@@ -466,10 +474,10 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			getCmd += ParseUtils.getParameterString(parameters
 					.toArray(new String[parameters.size()]));
 			String json = sendGetToServer(getCmd);
-			Integer errorValue = gson.fromJson(json, int.class);
-			if (errorValue == null || errorValue == 0)
+			Boolean errorValue = gson.fromJson(json, boolean.class);
+			if (errorValue == null)
 				return false;
-			return true;
+			return errorValue;
 		} catch (IllegalArgumentException ex) {
 			ex.printStackTrace();
 		} catch (JsonSyntaxException ex) {

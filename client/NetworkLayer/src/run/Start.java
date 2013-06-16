@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import network.RequestHandler;
+import network.json.JsonJavaIISRequestHandler;
 import network.json.JsonJavaRequestHandler;
 import network.test.model.TestData;
 
@@ -28,9 +29,8 @@ public class Start {
 //		
 //		
 ////		Schnittstelle für Jenny um Objekte zu erfragen
-		RequestHandler requester = new JsonJavaRequestHandler("localhost",
+		RequestHandler requester = new JsonJavaIISRequestHandler("localhost",
 				80);
-
 		
 //		User user = new User();
 //		user.setMailAddress("svenja.möhring@localhost.de");
@@ -230,6 +230,11 @@ public class Start {
 				System.out.println("\tTitle: "+entry.getTitle());
 				System.out.println("\tStart: " + entry.getStartHour()+":"+entry.getStartMinute());
 				System.out.println("\tEnd: " + entry.getEndHour()+":"+entry.getEndMinute());
+				System.out.println("Liste Teilnehmer: " + entry.getInvitees());
+				
+				entry.setTitle("Tobias seiner jetzt");
+				boolean updateCa = requester.updateObject(entry);
+				System.out.println("updateresult: " + updateCa);
 			}
 		}
 		
@@ -245,7 +250,25 @@ public class Start {
 			}
 		}
 		
+		if(!rooms.isEmpty()){
+			System.out.println("Remove Room " + rooms.get(0).getID());
+			boolean resultRemoveRoom = requester.removeObjectByOwnId(rooms.get(0));
+			System.out.println("Result: " + resultRemoveRoom);
+		}
 		
+		List<Integer> calendarIDs = loggedInUser.getCalendarIds();
+		if(!calendarIDs.isEmpty()){
+			for(Integer calendarIDCurrentUser : caIDs){
+				Calendar calendarToRemove = new Calendar();
+				calendarToRemove.setID(calendarIDCurrentUser);
+				System.out.println("Remove Calendar with ID "+calendarIDCurrentUser+" of " + loggedInUser.getMailAddress());
+				System.out.println("Result: " + requester.removeObjectByOwnId(calendarToRemove));
+			}
+		}
+		
+		System.out.println("Remove user " + loggedInUser.getMailAddress());
+		boolean resultRemoveUser = requester.removeObjectByOwnId(loggedInUser);
+		System.out.println("Result: " + resultRemoveUser);
 		
 		
 		

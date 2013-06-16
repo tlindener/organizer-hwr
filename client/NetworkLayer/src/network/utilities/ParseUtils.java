@@ -1,5 +1,6 @@
 package network.utilities;
 
+import java.awt.datatransfer.StringSelection;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -14,7 +15,6 @@ import java.util.List;
 
 import network.RequestHandler;
 
-import org.apache.commons.codec.binary.Base64;
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
@@ -66,32 +66,32 @@ public class ParseUtils {
 		return cmd;
 	}
 
-	/**
-	 * Encodes a String in 3 steps:
-	 * <ol>
-	 * <li>Create the SHA-512 hash value
-	 * <li>Create an ASCII String from hash
-	 * <li>Encode the ASCII String with Base64
-	 * </ol>
-	 * 
-	 * @param string
-	 *            to encode
-	 * @return the encoded String
-	 */
-	public static String encodeString(String string) {
-		try {
-			MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
-			byte[] output = sha512.digest(string.getBytes());
-			string = new String(output, "ASCII");
-			string = Base64.encodeBase64String(string.getBytes());
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		string = parseStringToHTTP(string);
-		return string;
-	}
+//	/**
+//	 * Encodes a String in 3 steps:
+//	 * <ol>
+//	 * <li>Create the SHA-512 hash value
+//	 * <li>Create an ASCII String from hash
+//	 * <li>Encode the ASCII String with Base64
+//	 * </ol>
+//	 * 
+//	 * @param string
+//	 *            to encode
+//	 * @return the encoded String
+//	 */
+//	public static String encodeString(String string) {
+//		try {
+//			MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
+//			byte[] output = sha512.digest(string.getBytes());
+//			string = new String(output, "ASCII");
+//			string = Base64.encodeBase64String(string.getBytes());
+//		} catch (NoSuchAlgorithmException e) {
+//			e.printStackTrace();
+//		} catch (UnsupportedEncodingException e) {
+//			e.printStackTrace();
+//		}
+//		string = parseStringToHTTP(string);
+//		return string;
+//	}
 	
 	public static String encodeStringNewBase64(String string) {
 		try {
@@ -308,6 +308,20 @@ public class ParseUtils {
 		return parameters;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static ArrayList<String> removeAttributeFromList(String attribute, ArrayList<String> parameterList){
+		ArrayList<String> clone = (ArrayList<String>) parameterList.clone();
+		ArrayList<String> clone2 = (ArrayList<String>) parameterList.clone();
+		for(String parameter: clone){
+			String tmp1 = parameter.toLowerCase();
+			String tmp2 = attribute.toLowerCase();
+			if(tmp1.startsWith(tmp2)){
+				clone2.remove(parameter);
+			}
+		}
+		return clone2;
+	}
+	
 	/**
 	 * Combines the given {@link String}(s) to a single HTTP parameter String by
 	 * using <b>?</b> at the beginning and <b>&</b> between the parameters
@@ -383,7 +397,7 @@ public class ParseUtils {
 	public static String parseDateToNetDateTime(Date date) {
 		// 2008-11-01T19:35:00.0000000-07:00
 		SimpleDateFormat formatted = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ");
+				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSXXX");
 		return formatted.format(date);
 	}
 	/**
@@ -395,7 +409,7 @@ public class ParseUtils {
 	public static Date parseStringToDate(String time) {
 		// 2008-11-01T19:35:00.0000000-07:00
 		SimpleDateFormat formatted = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ");
+				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSXXX");
 		Date date = null;
 		
 		try {
@@ -410,7 +424,7 @@ public class ParseUtils {
 		
 		
 		
-		System.out.println(encodeString("Test"));
+//		System.out.println(encodeString("Test"));
 		System.out.println(encodeStringNewBase64("Test"));
 		
 //		System.out.println(parseStringToHTTP("Das ist ein Test"));
