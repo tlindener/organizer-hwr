@@ -241,14 +241,14 @@ public class Start {
 		System.out.println("Log in " +u3.getMailAddress());
 		loggedInUser = requester.login(u3.getMailAddress(), "123456");
 		
-		List<Integer> inviteIDs = loggedInUser.getInviteIds();
-		if(!inviteIDs.isEmpty()){
-			for(Integer inte : inviteIDs){
-				Invite tmp = new Invite();
-				tmp.setID(inte);
-				System.out.println("Invite declined: " + requester.declineInvite(tmp));
-			}
-		}
+//		List<Integer> inviteIDs = loggedInUser.getInviteIds();
+//		if(!inviteIDs.isEmpty()){
+//			for(Integer inte : inviteIDs){
+//				Invite tmp = new Invite();
+//				tmp.setID(inte);
+//				System.out.println("Invite declined: " + requester.declineInvite(tmp));
+//			}
+//		}
 		
 		if(!rooms.isEmpty()){
 			System.out.println("Remove Room " + rooms.get(0).getID());
@@ -270,8 +270,15 @@ public class Start {
 		boolean resultRemoveUser = requester.removeObjectByOwnId(loggedInUser);
 		System.out.println("Result: " + resultRemoveUser);
 		
+		System.out.println("Log in " +u.getMailAddress());
+		loggedInUser = requester.login(u.getMailAddress(), "123456");
+		Calendar uCal = new Calendar();
+		uCal.setID(loggedInUser.getCalendarIds().get(0));
+		uCal = requester.requestObjectByOwnId(uCal);
 		
-		
+		for(CalendarEntry userEntry: uCal.getCalendarEntries()){
+			System.out.println(userEntry);
+		}
 		
 		
 		
