@@ -874,6 +874,7 @@ namespace Organizer
                 try
                 {
                     _calendarDatabase.SaveChanges();
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -896,6 +897,7 @@ namespace Organizer
                 try
                 {
                     _calendarDatabase.SaveChanges();
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -918,6 +920,7 @@ namespace Organizer
                 try
                 {
                     _calendarDatabase.SaveChanges();
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -937,6 +940,7 @@ namespace Organizer
                 try
                 {
                     _calendarDatabase.SaveChanges();
+                    return true;
                 }
                 catch (Exception ex)
                 {
