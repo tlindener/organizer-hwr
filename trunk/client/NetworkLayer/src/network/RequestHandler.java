@@ -112,7 +112,7 @@ public abstract class RequestHandler{
 	/**
 	 * Generates an authentication String containing of mail and password.
 	 * Therefore the mail address and the password are encoded by
-	 * {@link ParseUtils#encodeString(String)} and joined.
+	 * {@link ParseUtils#hashString(String)} and joined.
 	 * @param id 
 	 * 
 	 * @param mail
@@ -120,6 +120,6 @@ public abstract class RequestHandler{
 	 * @return the generated String
 	 */
 	protected String generateAuthenticationString(int id, String mail, String password) {
-		return ParseUtils.parseStringToHTTP(id+"_"+ParseUtils.encodeStringNewBase64(mail) + ParseUtils.encodeStringNewBase64(password));
+		return ParseUtils.parseStringToHTTP(id+"_"+ParseUtils.hashString(mail) + ParseUtils.hashString(password));
 	}
 }

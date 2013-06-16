@@ -9,27 +9,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import network.RequestHandler;
-import network.utilities.NetDateTimeAdapter;
-import network.utilities.ParseUtils;
-
-import organizer.objects.AbstractOrganizerObject;
-import organizer.objects.types.Calendar;
-import organizer.objects.types.CalendarEntry;
-import organizer.objects.types.Group;
-import organizer.objects.types.Invite;
-import organizer.objects.types.User;
-
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Interface to communicate with the server by using the REST/JSON API. Objects
