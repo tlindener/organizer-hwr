@@ -21,6 +21,8 @@ import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +40,7 @@ public class MainActivity extends Activity {
 	String title = "";
 	int adapterIndex = 1;
 	CalendarAbstractionLayer layer = null;
+	ListView calendarEntryListView = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +51,12 @@ public class MainActivity extends Activity {
 
 		StrictMode.setThreadPolicy(policy);
 
-requestSettings();
+		requestSettings();
 		requestData();
 
 	}
 
-	private void requestSettings()
-	{
+	private void requestSettings() {
 		SharedPreferences sharedPref = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		mailAddress = sharedPref.getString("preferences_edittext_mail_address",
@@ -66,8 +68,8 @@ requestSettings();
 		userPassword = sharedPref
 				.getString("preferences_edittext_password", "");
 
-		
 	}
+
 	private void requestData() {
 
 		if (!mailAddress.isEmpty() || !serviceAddress.isEmpty()
@@ -87,14 +89,31 @@ requestSettings();
 			CalendarEntryAdapter adapter = new CalendarEntryAdapter(this,
 					R.layout.calendarentry, 0, calendarEntries);
 
-			ListView calendarEntryListView = (ListView) findViewById(R.id.calendarView);
+			calendarEntryListView = (ListView) findViewById(R.id.calendarView);
+
+			calendarEntryListView
+					.setOnItemClickListener(new OnItemClickListener() {
+						public void onItemClick(AdapterView<?> arg0, View v,
+								int position, long id) {
+
+							CalendarEntry entry = (CalendarEntry) calendarEntryListView
+									.getItemAtPosition(position);
+							if (entry != null) {
+								Intent intent = new Intent(
+										getBaseContext(),
+										CalendarEntryActivity.class);
+								intent.putExtra(Constants.CALENDAR_ENTRY_ID,
+										entry.getID());
+								startActivity(intent);
+							}
+						}
+					});
 
 			View header = (View) getLayoutInflater().inflate(
 					R.layout.calendarentry_listview_header, null);
 			if (header != null) {
-				if(calendarEntryListView.getHeaderViewsCount() == 0)
-				{
-				calendarEntryListView.addHeaderView(header);
+				if (calendarEntryListView.getHeaderViewsCount() == 0) {
+					calendarEntryListView.addHeaderView(header);
 				}
 			}
 			TextView title = (TextView) findViewById(R.id.calendarTitleTextView);
@@ -145,11 +164,11 @@ requestSettings();
 		ce.setRoomId(roomId);
 		calendarEntries.add(ce);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
-		super.onPause();		
+		super.onPause();
 	}
 
 	@Override
@@ -159,7 +178,7 @@ requestSettings();
 		requestSettings();
 		requestData();
 	}
-	
+
 	@Override
 	protected void onRestart() {
 		// TODO Auto-generated method stub

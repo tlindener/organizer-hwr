@@ -2,6 +2,8 @@ package de.lindener.androidorganizer;
 
 import java.util.List;
 
+import de.lindener.androidorganizer.viewmodels.UserViewModel;
+
 import organizer.objects.types.CalendarEntry;
 
 import android.app.Activity;
@@ -14,16 +16,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class CalendarEntryAdapter extends ArrayAdapter<CalendarEntry> {
+public class UserViewModelAdapter extends ArrayAdapter<UserViewModel> {
 
 	
 	Context context;
 	int layoutResourceId;
-	List<CalendarEntry> data = null;
+	List<UserViewModel> data = null;
 
 	
-	public CalendarEntryAdapter(Context context, int resource,
-			int textViewResourceId, List<CalendarEntry> objects) {
+	public UserViewModelAdapter(Context context, int resource,
+			int textViewResourceId, List<UserViewModel> objects) {
 		super(context, resource, textViewResourceId, objects);
 	
 		this.layoutResourceId = resource;
@@ -48,10 +50,10 @@ public class CalendarEntryAdapter extends ArrayAdapter<CalendarEntry> {
             row = inflater.inflate(layoutResourceId, parent, false);
             
             holder = new CalendarEntryHolder();
-            holder.startDate = (TextView)row.findViewById(R.id.calendarEntryStartDate);
-            holder.endDate = (TextView)row.findViewById(R.id.calendarEntryEndDate);
-            holder.entryTitle = (TextView)row.findViewById(R.id.calendarEntryTitle);
-            
+            holder.givenName = (TextView)row.findViewById(R.id.userViewModelGivenName);
+            holder.surname = (TextView)row.findViewById(R.id.userViewModelSurname);
+            holder.mailAddress = (TextView)row.findViewById(R.id.userViewModelMailAddress);
+            holder.phoneNumber = (TextView)row.findViewById(R.id.userViewModelPhoneNumber);
             row.setTag(holder);
         }
         else
@@ -59,10 +61,11 @@ public class CalendarEntryAdapter extends ArrayAdapter<CalendarEntry> {
             holder = (CalendarEntryHolder)row.getTag();
         }
         
-        CalendarEntry entry = data.get(position);
-        holder.startDate.setText("Beginn: " + entry.getStartHour()+ ":" + entry.getStartMinute());
-        holder.endDate.setText("Ende: " +entry.getEndHour() +":"+entry.getEndMinute());        
-        holder.entryTitle.setText(entry.getTitle());
+        UserViewModel entry = data.get(position);
+        holder.givenName.setText(entry.getGivenName());
+        holder.surname.setText(entry.getSurname());     
+        holder.mailAddress.setText(entry.getMailAddress());
+        holder.phoneNumber.setText(entry.getPhoneNumber());
        
         
         return row;
@@ -70,9 +73,12 @@ public class CalendarEntryAdapter extends ArrayAdapter<CalendarEntry> {
     
     static class CalendarEntryHolder
     {
-        TextView startDate;
-        TextView endDate;
-        TextView entryTitle;
+    	TextView givenName;        
+    	TextView surname;         
+    	TextView mailAddress;
+    	TextView phoneNumber;
+        
+       
     }
 
     
