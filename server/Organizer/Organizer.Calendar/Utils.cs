@@ -8,6 +8,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using Organizer.Interfaces;
+using System;
 
 #endregion
 
@@ -42,8 +43,11 @@ namespace Organizer
             string hash = "";
             SHA512 alg = SHA512.Create();
             byte[] result = alg.ComputeHash(Encoding.UTF8.GetBytes(text));
-            hash = Encoding.ASCII.GetString(result);
-            return hash;
+
+            StringBuilder hex = new StringBuilder(result.Length * 2);
+            foreach (byte b in result)
+                hex.AppendFormat("{0:x2}", b);
+            return hex.ToString();           
         }
         /// <summary>
         /// Decodes Base64 string
