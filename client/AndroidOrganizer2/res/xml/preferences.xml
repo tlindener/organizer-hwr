@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/preferences_category_user" >
+        <EditTextPreference
+            android:dialogTitle="@string/preferences_summary_mail_address"
+            android:key="preferences_edittext_mail_address"
+            android:summary="@string/preferences_summary_mail_address"
+            android:title="@string/preferences_edittext_mail_address" />
+        <EditTextPreference
+            android:dialogTitle="@string/preferences_summary_password"
+            android:key="preferences_edittext_password"
+            
+            android:summary="@string/preferences_summary_password"
+            android:title="@string/preferences_edittext_password" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_category_server" >
+        <EditTextPreference
+            android:dialogTitle="@string/preferences_summary_server_address"
+            android:key="preferences_edittext_server_address"
+            android:summary="@string/preferences_summary_server_address"
+            android:title="@string/preferences_edittext_server_address" />
+        <EditTextPreference
+            android:dialogTitle="@string/preferences_summary_port"
+            android:key="preferences_edittext_port"
+            android:summary="@string/preferences_summary_port"
+            android:title="@string/preferences_edittext_port" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
