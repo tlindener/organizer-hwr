@@ -368,7 +368,7 @@ namespace Organizer
                 _calendarDatabase.User.Remove(user);
                 _calendarDatabase.SaveChanges();
                 return true;
-            }
+            }              
             catch (Exception ex)
             {
                 _logger.Error(ex.ToString());
@@ -732,7 +732,10 @@ namespace Organizer
             {
                 return 0;
             }
-            calendarEntry.Invitees.Add(user);
+            if (!calendarEntry.Invitees.Contains(user))
+            {
+                calendarEntry.Invitees.Add(user);
+            }
             var invite = new Invite
             {
                 Accepted = 0,

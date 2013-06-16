@@ -12,6 +12,7 @@ using System.ServiceModel;
 using Organizer.Interfaces;
 using Organizer.Interfaces.Json;
 using System.Security.Cryptography;
+using System.Text;
 
 #endregion
 
@@ -40,8 +41,10 @@ namespace Organizer.WebService
                 if (user != null)
                 {
                     var hash = Utils.getSHA512Hash(user.MailAddress);
-                    var base64String = Utils.EncodeTo64(hash);
-                    var authenticationString = base64String + user.Password;
+                          StringBuilder sb = new StringBuilder();
+     
+                    //var base64String = Utils.EncodeTo64(hash);
+                    var authenticationString = hash + user.Password;
                     if (authentication[1].Equals(authenticationString))
                     {
                         return true;
@@ -476,6 +479,11 @@ namespace Organizer.WebService
             }
             int ownerId = 0;
             int roomId = 0;
+            List<WebUser> invitees = new List<WebUser>();
+            if (calendarEntry.Invitees.Count() > 0)
+            { 
+            invitees = calendarEntry.Invitees.Select(p => p.ToWebUser()).ToList();
+            }
 
             if (calendarEntry.Owner != null)
             {
@@ -498,7 +506,7 @@ namespace Organizer.WebService
                 Id = calendarEntry.CalendarEntryId,
                 RoomId = roomId,
                 OwnerId = ownerId,
-                Invitees = calendarEntry.Invitees.Select(p => p.ToWebUser()).ToList()
+                Invitees = invitees
             };
 
 
