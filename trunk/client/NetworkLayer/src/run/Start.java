@@ -9,6 +9,7 @@ import java.util.Scanner;
 import network.RequestHandler;
 import network.json.JsonJavaIISRequestHandler;
 import network.json.JsonJavaRequestHandler;
+import network.listener.ProcessListener;
 
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
@@ -25,23 +26,23 @@ import organizer.objects.types.User;
  * @version 1.0
  * 
  */
-public class Start {
+public class Start implements ProcessListener{
 
 	RequestHandler requester;
-	final String[] mainmenu = new String[] { "CREATE default USER(with Calendar)", "LOGIN" };
+	final String[] mainmenu = new String[] {
+			"CREATE default USER(with Calendar)", "LOGIN" };
 	String[] loggedInUsermenu = new String[] { "CREATE default ENTRY",
 			"CREATE default ROOM", "PRINT ENTRIES (by UserID)",
-			"PRINT ENTRIES (by Calendar)", "PRINT ALL USER",
-			"PRINT ROOMS", "UPDATE ENTRY", "INVITE one User", "CHANGE INVITE state", 
+			"PRINT ENTRIES (by Calendar)", "PRINT ALL USER", "PRINT ROOMS",
+			"UPDATE ENTRY", "INVITE one User", "CHANGE INVITE state",
 			"REMOVE ENTRY from User", "LOGIN with other User" };
 
 	public Start() {
 
 		requester = new JsonJavaIISRequestHandler("localhost", 80);
-
+		requester.addProcessListener(this);
 		handleMainMenu();
-		
-		
+
 	}
 
 	private boolean manualUpdateRoomForEntry() {
@@ -51,13 +52,13 @@ public class Start {
 		Room r = new Room();
 		r.setID(idRoom);
 		r = requester.requestObjectByOwnId(r);
-		
+
 		System.out.print("Enter a entry id: ");
 		int idEntry = scan.nextInt();
 		CalendarEntry ce = new CalendarEntry();
 		ce.setID(idEntry);
 		ce = requester.requestObjectByOwnId(ce);
-		
+
 		return updateRoomForCalendarEntry(r, ce);
 	}
 
@@ -69,7 +70,7 @@ public class Start {
 		}
 	}
 
-	private void createEntryForUser(){
+	private void createEntryForUser() {
 		CalendarEntry entry = makeDefaultEntryForLoggedInUser();
 		if (entry == null) {
 			System.err.println("ERROR");
@@ -80,83 +81,114 @@ public class Start {
 			return;
 		}
 	}
-	
-	private void handleMainMenu(){
-		while(true){
+
+	private void handleMainMenu() {
+		while (true) {
 			showMenu(mainmenu);
 			System.out.print("Enter an integer to chose an action: ");
 			int chosen = requestInput(mainmenu.length);
-			if(chosen == mainmenu.length){
+			if (chosen == mainmenu.length) {
 				System.out.println("Exit the main menu. Programm shuts down.");
 				return;
-			}else{
+			} else {
 				System.out.println("You chosed: " + mainmenu[chosen]);
-				switch(chosen){
-				case 0: createDefaultUsersWithCalendar(); break;
-				case 1: if(!manualLogin()){
-					 System.err.println("UABLE TO LOGIN ERROR");
-					 }else{
-						 handleLoggedInUserMenu();
-					 }
-						break;
-				default: System.err.println("HARD ERROR in MAIN MENU ITEM SELECTION");
+				switch (chosen) {
+				case 0:
+					createDefaultUsersWithCalendar();
+					break;
+				case 1:
+					if (!manualLogin()) {
+						System.err.println("UABLE TO LOGIN ERROR");
+					} else {
+						handleLoggedInUserMenu();
+					}
+					break;
+				default:
+					System.err
+							.println("HARD ERROR in MAIN MENU ITEM SELECTION");
 				}
 			}
 		}
 	}
-	
-	private void handleLoggedInUserMenu(){
-		while(true){
+
+	private void handleLoggedInUserMenu() {
+		while (true) {
 			showMenu(loggedInUsermenu);
 			System.out.print("Enter an integer to chose an action: ");
 			int chosen = requestInput(loggedInUsermenu.length);
-			if(chosen == loggedInUsermenu.length){
+			if (chosen == loggedInUsermenu.length) {
 				System.out.println("Exit the user menu. Show main menu again.");
 				return;
-			}else{
+			} else {
 				System.out.println("You chosed: " + loggedInUsermenu[chosen]);
-				switch(chosen){
-				case 0:	createEntryForUser(); break;
-				case 1: createRoom();break;
-				case 2: if(!requestAllEntriesOfUserByUserID(loggedInUser)){
-					System.err.println("UNABLE TO DISPLAY ENTRIES BY USER ID");
-				} break;
-				case 3: if (!requestAllEntriesOfUserByCalendar(loggedInUser)) {
-					System.err.println("UNABLE TO DISPLAY ENTRIES BY CALENDAR");
-					return;
-				} break;
-				case 4: if (!requestAllObjectsOfType(new User())) {
-					System.err.println("UNABLE TO DISPLAY ALL USER");
-					return;
-				} break;
-				case 5: if (!requestAllObjectsOfType(new Room())) {
-					System.err.println("UNABLE TO DISPLAY ALL ROOMS");
-					return;
-				} break;
-				case 6: if(!manualUpdateRoomForEntry()){
-					System.err.println("UNABLE TO UPDATE ROOM FOR ENTRY");
-				} break;
-				case 7:if (!manualInvites()) {
-					System.err.println("UNABLE TO SEND INVITES");
-					return;
-				} break;
-				case 8: if(!manualInviteChange()){
-					
-				}break;
-				case 9: if(!manualRemoveEntry()){
-					 System.err.println("UNABLE TO REMOVE ENTRY");
-					 return;
-					 } break;
-				case 10:  if(!manualLogin()){
-					 System.err.println("UABLE TO LOGIN ERROR");
-					 return;
-					 } break;
-				default: System.err.println("HARD ERROR in MAIN MENU ITEM SELECTION");
+				switch (chosen) {
+				case 0:
+					createEntryForUser();
+					break;
+				case 1:
+					createRoom();
+					break;
+				case 2:
+					if (!requestAllEntriesOfUserByUserID(loggedInUser)) {
+						System.err
+								.println("UNABLE TO DISPLAY ENTRIES BY USER ID");
+					}
+					break;
+				case 3:
+					if (!requestAllEntriesOfUserByCalendar(loggedInUser)) {
+						System.err
+								.println("UNABLE TO DISPLAY ENTRIES BY CALENDAR");
+						return;
+					}
+					break;
+				case 4:
+					if (!requestAllObjectsOfType(new User())) {
+						System.err.println("UNABLE TO DISPLAY ALL USER");
+						return;
+					}
+					break;
+				case 5:
+					if (!requestAllObjectsOfType(new Room())) {
+						System.err.println("UNABLE TO DISPLAY ALL ROOMS");
+						return;
+					}
+					break;
+				case 6:
+					if (!manualUpdateRoomForEntry()) {
+						System.err.println("UNABLE TO UPDATE ROOM FOR ENTRY");
+					}
+					break;
+				case 7:
+					if (!manualInvites()) {
+						System.err.println("UNABLE TO SEND INVITES");
+						return;
+					}
+					break;
+				case 8:
+					if (!manualInviteChange()) {
+
+					}
+					break;
+				case 9:
+					if (!manualRemoveEntry()) {
+						System.err.println("UNABLE TO REMOVE ENTRY");
+						return;
+					}
+					break;
+				case 10:
+					if (!manualLogin()) {
+						System.err.println("UABLE TO LOGIN ERROR");
+						return;
+					}
+					break;
+				default:
+					System.err
+							.println("HARD ERROR in MAIN MENU ITEM SELECTION");
 				}
 			}
 		}
 	}
-	
+
 	private void showMenu(String... menu) {
 		System.out.println("Choose one of the following actions: ");
 		for (int i = 0; i < menu.length; i++) {
@@ -197,11 +229,12 @@ public class Start {
 
 	private boolean manualInvites() {
 
-		System.out.print("Enter the UserIDs you want to add(-1 to send invites): ");
+		System.out
+				.print("Enter the UserIDs you want to add(-1 to send invites): ");
 
 		ArrayList<Integer> ints = new ArrayList<Integer>();
 		Scanner scan = new Scanner(System.in);
-		int readIn = scan.nextInt();		
+		int readIn = scan.nextInt();
 		System.out.print("Enter the ID of the Entry you want to invite to: ");
 		int entryId = scan.nextInt();
 		return sendInvitesTo(readIn, entryId);
@@ -220,24 +253,38 @@ public class Start {
 			System.out.println("\tEmtpy");
 			return true;
 		}
-		for (int id : loggedInUser.getInviteIds()) {
-			Invite in = new Invite();
-			in.setID(id);
-			Invite tmp = requester.requestObjectByOwnId(in);
-			if (tmp == null) {
-				System.err.println("ERROR Request of invite " + id
-						+ " was not successful");
+
+		List<Invite> invites = requester.requestFollowingObjectsByOwnId(
+				loggedInUser.getInviteIds(), new Invite());
+		for (Invite in : invites) {
+			if (in == null) {
+				System.out
+						.println("ERROR Request of invite was not successful");
 			} else {
-				System.out.println("\t" + id + " current state: "
-						+ tmp.isAccepted());
+				System.out.println("\t" + in.getID() + " current state: "
+						+ in.isAccepted());
 			}
 		}
+
 		
+//		for (int id : loggedInUser.getInviteIds()) {
+//			Invite in = new Invite();
+//			in.setID(id);
+//			Invite tmp = requester.requestObjectByOwnId(in);
+//			if (tmp == null) {
+//				System.err.println("ERROR Request of invite " + id
+//						+ " was not successful");
+//			} else {
+//				System.out.println("\t" + id + " current state: "
+//						+ tmp.isAccepted());
+//			}
+//		}
+
 		System.out.println("Set Invite Status");
 		int goOn = -1;
 		Scanner scan = new Scanner(System.in);
 		do {
-			
+
 			System.out.print("Enter InviteID: ");
 			int id = scan.nextInt();
 			System.out.print("Enter accept(1) or decline(0): ");
@@ -316,8 +363,8 @@ public class Start {
 	}
 
 	public boolean updateRoomForCalendarEntry(Room room, CalendarEntry ce) {
-		System.out.println("Update CalendarEntry " + ce.getID() + "'s roomId => "
-				+ room.getID());
+		System.out.println("Update CalendarEntry " + ce.getID()
+				+ "'s roomId => " + room.getID());
 		ce.setRoomId(room.getID());
 		return requester.updateObject(ce);
 	}
@@ -345,12 +392,12 @@ public class Start {
 	}
 
 	public boolean sendInvitesTo(int id, int calendarEntryId) {
-			Invite in = new Invite();
-			in.setCalendarEntryId(calendarEntryId);
-			in.setOwnerId(id);
-			if (!addObject(in)) {
-				return false;
-			}
+		Invite in = new Invite();
+		in.setCalendarEntryId(calendarEntryId);
+		in.setOwnerId(id);
+		if (!addObject(in)) {
+			return false;
+		}
 		return true;
 	}
 
@@ -423,5 +470,10 @@ public class Start {
 		new Start();
 		// new Start("");
 	}
+
+	@Override
+	public void getCurrentProcessState(double process) {
+		System.out.println(">>>>>>>>>>>>>>>STATUS IS: " + process + " <<<<<<<<<<<<<<<");
+	}																  
 
 }
