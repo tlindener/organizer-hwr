@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Organizer.Interfaces;
 using System;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -33,6 +34,26 @@ namespace Organizer
             }
             return false;
         }
+
+        /// <summary>
+        /// Checks validity of mailAdress
+        /// </summary>
+        /// <param name="mailAddress"></param>
+        /// <returns></returns>
+        public static bool IsEmailValid(string mailAddress)
+        {
+
+            string validEmailPattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|"
+                + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)"
+                + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
+
+            
+            Regex ex = new Regex(validEmailPattern, RegexOptions.IgnoreCase);            
+            return ex.IsMatch(mailAddress);
+        }
+
+  
+
         /// <summary>
         /// Generates SHA512 Hash for security purposes
         /// </summary>

@@ -86,11 +86,11 @@ namespace Organizer
         ///     Returns a collection of calendar items
         /// </summary>
         /// <returns></returns>
-        public ICollection<Calendar> GetAllCalendar()
+        public ICollection<Calendar> GetAllCalendarFromUser(int userId)
         {
             try
             {
-                return _calendarDatabase.Calendar.ToList();
+                return _calendarDatabase.Calendar.Where(p => p.Owner.UserId == userId).ToList();
             }
             catch (Exception ex)
             {
@@ -331,6 +331,9 @@ namespace Organizer
         /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         public int AddUser(User dbUser)
         {
+            if (!Utils.IsEmailValid(dbUser.MailAddress))
+                return 0;
+
             var users = this.GetAllUser();
 
             if (users != null && users.Where(p => p.MailAddress == dbUser.MailAddress).Count() > 0)
@@ -709,9 +712,15 @@ namespace Organizer
             var calendar = GetCalendarByOwner(invite.Owner.UserId);
             var ce = invite.CalendarEntry;
             int userId = invite.Owner.UserId;
+            int roomId = 0;
+            if (ce.Room != null)
+            {
+                roomId = ce.Room.RoomId;
+            }
+
             if (calendar != null)
             {
-                return AddCalendarEntry(ce.Title, ce.Description, ce.StartDate, ce.EndDate, userId, ce.Room.RoomId, calendar.CalendarId);
+                return AddCalendarEntry(ce.Title, ce.Description, ce.StartDate, ce.EndDate, userId, roomId, calendar.CalendarId);
             }
             return 0;
 

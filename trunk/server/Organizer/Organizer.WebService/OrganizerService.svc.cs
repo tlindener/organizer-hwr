@@ -26,33 +26,266 @@ namespace Organizer.WebService
     {
         private bool ValidateUser(string userAuth)
         {
-
             if (userAuth != null)
             {
-
                 var authentication = userAuth.Split('_');
-                int userId = 0;
-                Int32.TryParse(authentication[0], out userId);
-                if (userId == 0)
-                {
-                    return false;
-                }
-                var user = timeplanner.GetUserById(userId);
+                var user = GetUserFromAuthString(userAuth);                
                 if (user != null)
                 {
-                    var hash = Utils.getSHA512Hash(user.MailAddress);
-                          StringBuilder sb = new StringBuilder();
-     
-                    //var base64String = Utils.EncodeTo64(hash);
-                    var authenticationString = hash + user.Password;
+                    var stringToHash = user.MailAddress + user.Password;
+                    var hash = Utils.getSHA512Hash(stringToHash);
+
+                    var authenticationString = hash;
                     if (authentication[1].Equals(authenticationString))
                     {
                         return true;
                     }
-
                 }
             }
+            return false;
+        }
 
+        private bool ValidateRequest(RequestType type, RequestItemType itemType, string userAuth, int requestId, int requestId2)
+        {
+            var user = GetUserFromAuthString(userAuth);
+            switch (type)
+            {
+                case RequestType.AddItem:
+                    {
+                        return ValidateAddItem(itemType, user, requestId,requestId2);
+                    }
+                case RequestType.GetItem:
+                    {
+
+                        return ValidateGetItem(itemType, user, requestId, requestId2);
+                    }
+                case RequestType.UpdateItem:
+                    {
+                        return ValidateUpdateItem(itemType, user, requestId, requestId2);
+                    }
+                case RequestType.RemoveItem:
+                    {
+                        return ValidateRemoveItem(itemType, user, requestId, requestId2);
+                    }
+            }
+            return false;
+        }
+
+        private bool ValidateGetItem(RequestItemType itemType, User user, int requestId, int requestId2)
+        {
+            if (user == null || requestId == 0 || requestId2 == -1)
+            {
+                return false;
+            }
+
+            switch (itemType)
+            {
+                case RequestItemType.Calendar:
+                    {
+                        return IsRequesterOwner(user, requestId);
+
+                    }
+                case RequestItemType.CalendarEntry:
+                    {
+
+                        bool returnValue1 = false;
+                        bool returnValue2 = false;
+                        var item = timeplanner.GetCalendarEntryById(requestId2);
+                        if (item != null)
+                        {
+                            returnValue1 =  IsRequesterOwner(user, item.Owner.UserId);
+                            returnValue2 = (item.Invitations.Where(p => p.Owner.UserId == requestId).Count() > 0);
+                        }
+
+                        if (returnValue1 || returnValue2)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                case RequestItemType.Invite:
+                    {
+                        bool returnValue1 = false;
+                        bool returnValue2 = false;
+                        var item = timeplanner.GetInviteById(requestId);
+                        if (item != null)
+                        {
+                            returnValue1 = IsRequesterOwner(user, item.Owner.UserId);
+                            returnValue2 = IsRequesterOwner(user, item.CalendarEntry.Owner.UserId);
+                        }
+
+                        if (returnValue1 || returnValue2)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+
+
+            }
+            return false;
+        }
+        private User GetUserFromAuthString(string authString)
+        {
+            if (authString != null)
+            {
+                var authentication = authString.Split('_');
+                int userId = 0;
+                Int32.TryParse(authentication[0], out userId);
+                if (userId == 0)
+                {
+                    return null;
+                }
+                var user = timeplanner.GetUserById(userId);
+                return user;
+            }
+            return null;
+
+        }
+        private bool ValidateAddItem(RequestItemType itemType, User user, int requestId, int requestId2)
+        {
+            if (user == null || requestId == 0 || requestId2 == -1)
+            {
+                return false;
+            }
+
+            switch (itemType)
+            {
+                case RequestItemType.Calendar:
+                    {
+                        return IsRequesterOwner(user, requestId);
+
+                    }
+                case RequestItemType.CalendarEntry:
+                    {
+
+                        if (IsRequesterOwner(user, requestId))
+                        {
+                            var calendarList = timeplanner.GetAllCalendarFromUser(user.UserId);
+                            var requestedCalendarList = calendarList.Where(p => p.CalendarId == requestId2).ToList();
+                            if (requestedCalendarList != null && requestedCalendarList.Count > 0)
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
+
+                    }
+                case RequestItemType.Group:
+                    {
+                        return IsRequesterOwner(user, requestId);
+
+                    }
+                case RequestItemType.Invite:
+                    {
+
+                        return IsRequesterOwner(user, requestId);
+                    }
+                case RequestItemType.Room:
+                    {
+
+                        return IsRequesterOwner(user, requestId);
+                    }
+            }
+            return false;
+        }
+
+        private bool ValidateUpdateItem(RequestItemType itemType, User user, int requestId, int requestId2)
+        {
+            if (user == null || requestId == 0 || requestId2 == -1)
+            {
+                return false;
+            }
+
+            switch (itemType)
+            {
+                case RequestItemType.Calendar:
+                    {
+                        var item = timeplanner.GetCalendarById(requestId);
+                        if (item != null)
+                        {
+                            return IsRequesterOwner(user, item.Owner.UserId);
+                        }
+                        return false;
+
+                    }
+                case RequestItemType.CalendarEntry:
+                    {
+
+                        var item = timeplanner.GetCalendarEntryById(requestId);
+                        if (item != null)
+                        {
+                            return IsRequesterOwner(user, item.Owner.UserId);
+                        }
+                        return false;
+                    }
+                case RequestItemType.Invite:
+                    {
+
+                        var item = timeplanner.GetInviteById(requestId);
+                        if (item != null)
+                        {
+                            return IsRequesterOwner(user, item.CalendarEntry.Owner.UserId);
+                        }
+                        return false;
+                    }
+
+            }
+            return false;
+        }
+        private bool ValidateRemoveItem(RequestItemType itemType, User user, int requestId, int requestId2)
+        {
+            if (user == null || requestId == 0 || requestId2 == -1)
+            {
+                return false;
+            }
+
+            switch (itemType)
+            {
+                case RequestItemType.Calendar:
+                    {
+                        var item = timeplanner.GetCalendarById(requestId);
+                        if (item != null)
+                        {
+                            return IsRequesterOwner(user, item.Owner.UserId);
+                        }
+                        return false;
+
+                    }
+                case RequestItemType.CalendarEntry:
+                    {
+
+                        var item = timeplanner.GetCalendarEntryById(requestId);
+                        if (item != null)
+                        {
+                            return IsRequesterOwner(user, item.Owner.UserId);
+                        }
+                        return false;
+                    }
+                case RequestItemType.Invite:
+                    {
+
+                        var item = timeplanner.GetInviteById(requestId);
+                        if (item != null)
+                        {
+                            return IsRequesterOwner(user, item.CalendarEntry.Owner.UserId);
+                        }
+                        return false;
+                    }
+                case RequestItemType.User:
+                    {
+                        return IsRequesterOwner(user, requestId);
+                    }
+
+            }
+            return false;
+        }
+        private bool IsRequesterOwner(User user, int id)
+        {
+            if (user.UserId == id)
+            {
+                return true;
+            }
             return false;
         }
 
@@ -82,12 +315,16 @@ namespace Organizer.WebService
 
 
         #region Calendar
-        public ICollection<WebCalendar> GetAllCalendar(string userAuth)
+        public ICollection<WebCalendar> GetAllCalendarFromUser(int userId, string userAuth)
         {
             if (!ValidateUser(userAuth))
                 return null;
 
-            var calendar = timeplanner.GetAllCalendar();
+            //if (!ValidateRequest(RequestType.GetItem, RequestItemType.Calendar, userAuth, userId, 0))
+            //    return null;
+
+
+            var calendar = timeplanner.GetAllCalendarFromUser(userId);
             if (calendar == null)
             {
                 return null;
@@ -105,6 +342,7 @@ namespace Organizer.WebService
 
         public int AddCalendar(int ownerId, string name, string description, string userAuth)
         {
+        
             if (!ValidateUser(userAuth))
                 return -1;
 
@@ -410,11 +648,11 @@ namespace Organizer.WebService
         {
             if (!ValidateUser(userAuth))
                 return false;
-           
+
             return timeplanner.UpdateCalendar(calendarId, name, description);
         }
 
-        
+
         public bool UpdateCalendarEntry(int calendarEntryId, string title, string description, DateTime startDate, DateTime endDate, int roomId, string userAuth)
         {
             if (!ValidateUser(userAuth))
@@ -446,9 +684,30 @@ namespace Organizer.WebService
 
             return timeplanner.UpdateGroup(groupId, description);
         }
+
+        private enum RequestType
+        {
+            AddItem,
+            GetItem,
+            UpdateItem,
+            RemoveItem
+        };
+
+        private enum RequestItemType
+        {
+            Calendar,
+            CalendarEntry,
+            Invite,
+            User,
+            Group,
+            Room
+
+
+        };
     }
 
 
+    
     public static class ExtensionMethods
     {
 
@@ -481,8 +740,8 @@ namespace Organizer.WebService
             int roomId = 0;
             List<WebUser> invitees = new List<WebUser>();
             if (calendarEntry.Invitations.Count() > 0)
-            { 
-            invitees = calendarEntry.Invitations.Select(p => p.Owner.ToWebUser()).ToList();
+            {
+                invitees = calendarEntry.Invitations.Select(p => p.Owner.ToWebUser()).ToList();
             }
 
             if (calendarEntry.Owner != null)
@@ -498,7 +757,7 @@ namespace Organizer.WebService
             return new WebCalendarEntry()
             {
 
-                CalendarId = calendarEntry.CalendarEntryId,
+                CalendarId = calendarEntry.Calendar.CalendarId,
                 Description = calendarEntry.Description,
                 StartDate = calendarEntry.StartDate.ToString(@"yyyy-MM-ddTHH\:mm\:ss.fffffffzzz"),
                 EndDate = calendarEntry.EndDate.ToString(@"yyyy-MM-ddTHH\:mm\:ss.fffffffzzz"),

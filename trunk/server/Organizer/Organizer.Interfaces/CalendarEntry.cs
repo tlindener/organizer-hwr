@@ -54,7 +54,7 @@ namespace Organizer.Interfaces
             }
         }
 
-        public int OwnerId { get; set; }
+
         public virtual User Owner { get; set; }
         public int CalendarId { get; set; }
         public virtual Calendar Calendar { get; set; }
