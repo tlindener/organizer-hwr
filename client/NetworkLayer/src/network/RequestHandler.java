@@ -23,6 +23,7 @@ public abstract class RequestHandler{
 	private List<ProcessListener> processListeners = new ArrayList<ProcessListener>();
 	
 	public void addProcessListener(ProcessListener processListener){
+		if(processListener == null) throw new IllegalArgumentException("ProcessListener must not be null");
 		this.processListeners.add(processListener);
 	}
 	
@@ -59,6 +60,8 @@ public abstract class RequestHandler{
 	public abstract <T extends AbstractOrganizerObject> T requestObjectByOwnId(
 			T obj);
 
+	public abstract <T extends AbstractOrganizerObject> List<T> requestFollowingObjectsByOwnId(List<Integer> ids, T obj);
+	
 	/**
 	 * Requests a list of objects <br>
 	 * For more information have a look on the implementing Class
@@ -120,6 +123,6 @@ public abstract class RequestHandler{
 	 * @return the generated String
 	 */
 	protected String generateAuthenticationString(int id, String mail, String password) {
-		return ParseUtils.parseStringToHTTP(id+"_"+ParseUtils.hashString(mail) + ParseUtils.hashString(password));
+		return ParseUtils.parseStringToHTTP(id+"_"+ParseUtils.hashString(mail + ParseUtils.hashString(password)));
 	}
 }

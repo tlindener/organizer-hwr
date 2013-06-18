@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import network.RequestHandler;
+import network.listener.ProcessListener;
 import network.utilities.NetDateTimeAdapter;
 import network.utilities.ParseUtils;
 
@@ -558,5 +559,24 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			ex.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public <T extends AbstractOrganizerObject> List<T> requestFollowingObjectsByOwnId(
+			List<Integer> ids, T obj) {
+		List<T> requestedObjects = new ArrayList<T>();
+		
+		for(int i = 0; i < ids.size(); i++){
+			T tmp = newInstanceOf(obj);
+			tmp.setID(ids.get(i));
+			requestedObjects.add(requestObjectByOwnId(tmp));
+			for(ProcessListener listener: getProcessListeners()){
+				listener.getCurrentProcessState((double)(i+1)/(double)ids.size());
+			}
+		}
+		
+		
+		
+		return requestedObjects;
 	}
 }

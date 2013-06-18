@@ -176,5 +176,12 @@ public class TestDataRequestHandler extends RequestHandler {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public <T extends AbstractOrganizerObject> List<T> requestFollowingObjectsByOwnId(
+			List<Integer> ids, T obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
