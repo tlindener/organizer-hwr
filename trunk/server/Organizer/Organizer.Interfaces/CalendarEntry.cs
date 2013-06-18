@@ -20,16 +20,16 @@ namespace Organizer.Interfaces
     {
         public CalendarEntry()
         {
-            Invitees = new List<User>();
+            Invitations = new List<Invite>();
         }
-        public virtual ICollection<User> Invitees { get; set; }
+        public virtual ICollection<Invite> Invitations { get; set; }
 
 
         public bool IsEmpty
         {
             get
             {
-                if (Invitees.Count == 0)
+                if (Invitations.Count == 0)
                 {
                     return true;
                 }

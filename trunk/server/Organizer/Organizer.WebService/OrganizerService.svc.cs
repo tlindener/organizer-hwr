@@ -480,9 +480,9 @@ namespace Organizer.WebService
             int ownerId = 0;
             int roomId = 0;
             List<WebUser> invitees = new List<WebUser>();
-            if (calendarEntry.Invitees.Count() > 0)
+            if (calendarEntry.Invitations.Count() > 0)
             { 
-            invitees = calendarEntry.Invitees.Select(p => p.ToWebUser()).ToList();
+            invitees = calendarEntry.Invitations.Select(p => p.Owner.ToWebUser()).ToList();
             }
 
             if (calendarEntry.Owner != null)

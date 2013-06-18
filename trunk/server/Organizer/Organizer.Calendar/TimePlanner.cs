@@ -732,9 +732,9 @@ namespace Organizer
             {
                 return 0;
             }
-            if (!calendarEntry.Invitees.Contains(user))
+            if (calendarEntry.Invitations.Where(p=> p.Owner == user).Count() > 0)
             {
-                calendarEntry.Invitees.Add(user);
+                return calendarEntry.Invitations.Where(p => p.Owner == user).First().InviteId;  
             }
             var invite = new Invite
             {
@@ -744,7 +744,7 @@ namespace Organizer
             };
             try
             {
-                _calendarDatabase.Invites.Add(invite);
+                calendarEntry.Invitations.Add(invite);
                 _calendarDatabase.SaveChanges();
                 return invite.InviteId;
             }
