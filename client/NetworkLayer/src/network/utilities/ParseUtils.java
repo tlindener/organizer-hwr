@@ -1,7 +1,5 @@
 package network.utilities;
 
-import java.awt.datatransfer.StringSelection;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.security.MessageDigest;

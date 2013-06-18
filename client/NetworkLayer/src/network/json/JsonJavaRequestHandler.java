@@ -327,6 +327,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		}
 		return null;
 	}
+	
 
 	/**
 	 * Removes an {@link AbstractOrganizerObject} from the database by using its
