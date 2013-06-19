@@ -232,7 +232,7 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	public void setInvitees(List<User> invitees) {
 		this.invitees = invitees;
 	}
-
+	
 	@Override
 	public String[] getProperty() {
 		
