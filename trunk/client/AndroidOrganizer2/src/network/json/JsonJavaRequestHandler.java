@@ -1,7 +1,7 @@
 /**
  * 
  */
-package network;
+package network.json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import network.objects.NetDateTimeAdapter;
-import network.objects.Utils;
+import network.RequestHandler;
+import network.listener.ProcessListener;
+import network.utilities.NetDateTimeAdapter;
+import network.utilities.ParseUtils;
 
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
@@ -22,8 +24,6 @@ import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Group;
 import organizer.objects.types.Invite;
 import organizer.objects.types.User;
-
-import android.util.Log;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -47,13 +47,12 @@ import com.google.gson.reflect.TypeToken;
 public class JsonJavaRequestHandler extends RequestHandler {
 	/** The JSON-Paser */
 	private Gson gson = null;
-
 	/** The HTTP connection for sending GET-request */
-	private HttpURLConnection connection = null;
+	protected HttpURLConnection connection = null;
 	/** Hostname of the backend where the application is placed */
-	private String hostname = "";
+	protected String hostname = "";
 	/** Port of the backend application */
-	private int port = -1;
+	protected int port = -1;
 
 	/**
 	 * Default construtor to connect to the server
@@ -93,17 +92,20 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj) {
-//		makes the start of the HTTP command 'GetOBJECTNAMEById' where OBJECTNAME is the name of T obj
-		String getCmd = Utils.makeGetByOwnIdCommand(obj);
-//		makes the parameter for the own id
-		String parameterOwnId = Utils.getParameterOwnId(obj);
-//		makes the parameter for the user authentication
-		String parameterUserAuth = Utils.getParameterUserAuth(authString);
-//		returns the parameters as String for HTTP command and combines it with the command start
-		getCmd += Utils.getParameterString(parameterOwnId, parameterUserAuth);
+		// makes the start of the HTTP command 'GetOBJECTNAMEById' where
+		// OBJECTNAME is the name of T obj
+		String getCmd = ParseUtils.makeGetByOwnIdCommand(obj);
+		// makes the parameter for the own id
+		String parameterOwnId = ParseUtils.getParameterOwnId(obj);
+		// makes the parameter for the user authentication
+		String parameterUserAuth = ParseUtils.getParameterUserAuth(authString);
+		// returns the parameters as String for HTTP command and combines it
+		// with the command start
+		getCmd += ParseUtils.getParameterString(parameterOwnId,
+				parameterUserAuth);
 		String json = sendGetToServer(getCmd);
 		try {
-			
+
 			return (T) gson.fromJson(json, newInstanceOf(obj).getClass());
 		} catch (JsonSyntaxException ex) {
 			ex.printStackTrace();
@@ -119,13 +121,11 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * @return JSON-String representing the object or null, if there was an
 	 *         exception during transmission.
 	 */
-	private String sendGetToServer(String request) {
-
+	public String sendGetToServer(String request) {
 		try {
 			connection = (HttpURLConnection) (new URL("http://" + hostname
-					+ ":" + port + "/organizer/OrganizerService.svc/" + request))
+					+ ":" + port + "/OrganizerService.svc/" + request))
 					.openConnection();
-		    connection.setRequestProperty("Accept-Charset", "UTF-8");
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					connection.getInputStream()));
 			String jsonString = reader.readLine();
@@ -139,10 +139,24 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		return null;
 	}
 
-
 	/**
-	 * Requests all objects in the backend equals to the type of the given one.
+	 * Requests all objects in the back end equals to the type of the given one. <br>
+	 * <b>Following restrictions are given by the back end:</b>
 	 * 
+	 * <ul>
+	 * <li>{@link User}: You will receive a {@link List}<{@link User}>, where
+	 * anF user contains its given name, surname, mail address, phone number and
+	 * ID. The stored lists will be empty.
+	 * <li>{@link CalendarEntry}: This method is not supported. Use the method
+	 * {@link #requestAllObjectsByProperty(AbstractOrganizerObject)} with the
+	 * user id as byProperty instead.
+	 * <li>{@link Calendar}: This method is not supported. Use the List of
+	 * calendar IDs in your user object.
+	 * <li>{@link Invite}: This method is not supported. Use the List of invite
+	 * IDs in your user object. Maybe you have to request this object.
+	 * </ul>
+	 * 
+	 * Rooms and Groups do not have any restrictions. 
 	 * @param obj
 	 *            Instance of {@link AbstractOrganizerObject} thats type is used
 	 *            to request all elements from the backend.
@@ -152,14 +166,28 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends AbstractOrganizerObject> List<T> requestAllObjects(T obj) {
+		if (obj instanceof Invite) {
+			throw new UnsupportedOperationException(
+					"GetAllInvites method is restricted by the back end. Use the List of invites IDs in your user object.");
+		}
+		if (obj instanceof Calendar) {
+			throw new UnsupportedOperationException(
+					"GetAllCalendar method is restricted by the back end. Use the List of calendar IDs in your user object.");
+		}
+		if (obj instanceof CalendarEntry) {
+			throw new UnsupportedOperationException(
+					"GetAllCalendarEntries method is restricted by the back end. This method is not supported. Use the method 'requestAllObjectsByProperty(T obj)' with the user id as byProperty instead.");
+		}
+
 		try {
-//			makes the start of the HTTP command 'GetOBJECTNAMEById' where OBJECTNAME is the name(plural) of T obj
-			String getCmd = Utils.makeGetAllCommand(obj);
-//			makes the parameter for the user authentication
-			String parameter = Utils.getParameterUserAuth(authString);
-//			combines command and parameter
-			getCmd += Utils.getParameterString(parameter);
-			
+			// makes the start of the HTTP command 'GetOBJECTNAMEById' where
+			// OBJECTNAME is the name(plural) of T obj
+			String getCmd = ParseUtils.makeGetAllCommand(obj);
+			// makes the parameter for the user authentication
+			String parameter = ParseUtils.getParameterUserAuth(authString);
+			// combines command and parameter
+			getCmd += ParseUtils.getParameterString(parameter);
+
 			String json = sendGetToServer(getCmd);
 			List<JsonElement> tmp = gson.fromJson(json,
 					new TypeToken<List<JsonElement>>() {
@@ -170,7 +198,8 @@ public class JsonJavaRequestHandler extends RequestHandler {
 
 			List<T> result = new ArrayList<T>();
 			for (int i = 0; i < tmp.size(); i++) {
-				result.add((T) gson.fromJson(tmp.get(i), newInstanceOf(obj).getClass()));
+				result.add((T) gson.fromJson(tmp.get(i), newInstanceOf(obj)
+						.getClass()));
 			}
 			return result;
 		} catch (IllegalArgumentException ex) {
@@ -207,6 +236,17 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * Look on {@link AbstractOrganizerObject#getProperty()} for more
 	 * information.
 	 * 
+	 * <b>Following restrictions are given by the back end:</b>
+	 * 
+	 * <ul>
+	 * <li> {@link CalendarEntry}: 
+	 * <ul>
+	 * <li>by owner ID: You can only request {@link CalendarEntry}s of your own ID
+	 * <li>by room id: You will receive a List of anonymous {@link CalendarEntry}(time, owner ID)
+	 * </ul>
+	 * <li> {@link Group}: You can only request {@link Group}s you are member of.
+	 * </ul>
+	 * 
 	 * @param obj
 	 *            Instance of {@link AbstractOrganizerObject} whose set property
 	 *            is used.
@@ -218,8 +258,10 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@Override
 	public <T extends AbstractOrganizerObject> List<T> requestAllObjectsByProperty(
 			T obj) {
+		
 		try {
-			String getCmd = Utils.getCompleteByPropertyCommand(obj, authString);
+			String getCmd = ParseUtils.getCompleteByPropertyCommand(obj,
+					authString);
 			String json = sendGetToServer(getCmd);
 			List<JsonElement> tmp = gson.fromJson(json,
 					new TypeToken<List<JsonElement>>() {
@@ -228,7 +270,8 @@ public class JsonJavaRequestHandler extends RequestHandler {
 				return new ArrayList<T>();
 			List<T> result = new ArrayList<T>();
 			for (int i = 0; i < tmp.size(); i++) {
-				result.add((T) gson.fromJson(tmp.get(i), newInstanceOf(obj).getClass()));
+				result.add((T) gson.fromJson(tmp.get(i), newInstanceOf(obj)
+						.getClass()));
 			}
 			return result;
 		} catch (IllegalArgumentException ex) {
@@ -260,14 +303,18 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			throw new IllegalArgumentException(
 					"The mail address must not be empty or null");
 		try {
-//			returns the start of the HTTP command
-			String getCmd = Utils.makeAddCommand(user);
-//			returns the parameters as list
-			ArrayList<String> parameters = Utils.getParameterStringList(user);
-//			returns the password as encoded value and adds it to the parameter list
-			parameters.add(Utils.getParameterPassword(password));
-//			returns the parameters as String for HTTP command and combines it with the command start
-			getCmd += Utils.getParameterString(parameters.toArray(new String[parameters.size()]));
+			// returns the start of the HTTP command
+			String getCmd = ParseUtils.makeAddCommand(user);
+			// returns the parameters as list
+			ArrayList<String> parameters = ParseUtils
+					.getParameterStringList(user);
+			// returns the password as encoded value and adds it to the
+			// parameter list
+			parameters.add(ParseUtils.getParameterPassword(password));
+			// returns the parameters as String for HTTP command and combines it
+			// with the command start
+			getCmd += ParseUtils.getParameterString(parameters
+					.toArray(new String[parameters.size()]));
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
 			if (id == null || id == 0)
@@ -300,17 +347,21 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			throw new UnsupportedOperationException(
 					"User must be added by method \"registerNewUser\"");
 		try {
-//			returns the start of the HTTP command
-			String getCmd = Utils.makeAddCommand(obj);
-//			returns the parameters as list
-			ArrayList<String> parameters = Utils.getParameterStringList(obj);
-//			returns the password as encoded value and adds it to the parameter list
-			parameters.add(Utils.getParameterUserAuth(authString));
-//			returns the parameters as String for HTTP command and combines it with the command start
-			getCmd += Utils.getParameterString(parameters.toArray(new String[parameters.size()]));
+			// returns the start of the HTTP command
+			String getCmd = ParseUtils.makeAddCommand(obj);
+			// returns the parameters as list
+			ArrayList<String> parameters = ParseUtils
+					.getParameterStringList(obj);
+			// returns the password as encoded value and adds it to the
+			// parameter list
+			parameters.add(ParseUtils.getParameterUserAuth(authString));
+			// returns the parameters as String for HTTP command and combines it
+			// with the command start
+			getCmd += ParseUtils.getParameterString(parameters
+					.toArray(new String[parameters.size()]));
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
-			if (id == null || id == 0)
+			if (id == null || id == 0 || id == -1)
 				return null;
 			obj.setID(id);
 			return obj;
@@ -332,18 +383,21 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 */
 	@Override
 	public <T extends AbstractOrganizerObject> boolean removeObjectByOwnId(T obj) {
-//		makes the start of the HTTP command 'GetOBJECTNAMEById' where OBJECTNAME is the name of T obj
-		String getCmd = Utils.makeRemoveByOwnIdCommand(obj);
-//		makes the parameter for the own id
-		String parameterOwnId = Utils.getParameterOwnId(obj);
-//		makes the parameter for the user authentication
-		String parameterUserAuth = Utils.getParameterUserAuth(authString);
-//		combines command and parameter
-		getCmd += Utils.getParameterString(parameterOwnId, parameterUserAuth);
+		// makes the start of the HTTP command 'GetOBJECTNAMEById' where
+		// OBJECTNAME is the name of T obj
+		String getCmd = ParseUtils.makeRemoveByOwnIdCommand(obj);
+		// makes the parameter for the own id
+		String parameterOwnId = ParseUtils.getParameterOwnId(obj);
+		// makes the parameter for the user authentication
+		String parameterUserAuth = ParseUtils.getParameterUserAuth(authString);
+		// combines command and parameter
+		getCmd += ParseUtils.getParameterString(parameterOwnId,
+				parameterUserAuth);
 		String json = sendGetToServer(getCmd);
 		try {
 			Boolean result = gson.fromJson(json, boolean.class);
-			if(result == null) return false;
+			if (result == null)
+				return false;
 			return result;
 		} catch (JsonSyntaxException ex) {
 			ex.printStackTrace();
@@ -367,12 +421,11 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@Override
 	public User login(String mail, String password) {
 
-		String cmd = Utils.getCompleteLoginCommand(mail, password);
-		Log.w("Tag",cmd);
+		String cmd = ParseUtils.getCompleteLoginCommand(mail, password);
 		String json = sendGetToServer(cmd);
 		try {
 			User user = (User) gson.fromJson(json, User.class);
-			if(user == null){
+			if (user == null) {
 				return null;
 			}
 			authString = generateAuthenticationString(user.getID(), mail,
@@ -380,7 +433,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			return user;
 		} catch (JsonSyntaxException ex) {
 			ex.printStackTrace();
-		} catch (NullPointerException ex){
+		} catch (NullPointerException ex) {
 			ex.printStackTrace();
 		}
 		return null;
@@ -397,14 +450,15 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 */
 	@Override
 	public int acceptInvite(Invite invite) {
-//		makes the start of the HTTP command 
-		String getCmd = Utils.makeAcceptCommand();
-//		makes the parameter for the own id
-		String parameterInviteId = Utils.getParameterOwnId(invite);
-//		makes the parameter for the user authentication
-		String parameterUserAuth = Utils.getParameterUserAuth(authString);
-//		combines command and parameter
-		getCmd += Utils.getParameterString(parameterInviteId, parameterUserAuth);
+		// makes the start of the HTTP command
+		String getCmd = ParseUtils.makeAcceptCommand();
+		// makes the parameter for the own id
+		String parameterInviteId = ParseUtils.getParameterOwnId(invite);
+		// makes the parameter for the user authentication
+		String parameterUserAuth = ParseUtils.getParameterUserAuth(authString);
+		// combines command and parameter
+		getCmd += ParseUtils.getParameterString(parameterInviteId,
+				parameterUserAuth);
 		String json = sendGetToServer(getCmd);
 		try {
 			return (int) gson.fromJson(json, int.class);
@@ -420,17 +474,18 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * @param inviteId
 	 *            the ID of the {@link Invite} that should be confirmed
 	 * @return 1 if there was no error, otherwise 0
-	 */	
+	 */
 	@Override
 	public int declineInvite(Invite invite) {
-//		makes the start of the HTTP command 
-		String getCmd = Utils.makeDeclineCommand();
-//		makes the parameter for the own id
-		String parameterInviteId = Utils.getParameterOwnId(invite);
-//		makes the parameter for the user authentication
-		String parameterUserAuth = Utils.getParameterUserAuth(authString);
-//		combines command and parameter
-		getCmd += Utils.getParameterString(parameterInviteId, parameterUserAuth);
+		// makes the start of the HTTP command
+		String getCmd = ParseUtils.makeDeclineCommand();
+		// makes the parameter for the own id
+		String parameterInviteId = ParseUtils.getParameterOwnId(invite);
+		// makes the parameter for the user authentication
+		String parameterUserAuth = ParseUtils.getParameterUserAuth(authString);
+		// combines command and parameter
+		getCmd += ParseUtils.getParameterString(parameterInviteId,
+				parameterUserAuth);
 		String json = sendGetToServer(getCmd);
 		try {
 			return (int) gson.fromJson(json, int.class);
@@ -443,19 +498,36 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@Override
 	public <T extends AbstractOrganizerObject> boolean updateObject(T obj) {
 		try {
-//			returns the start of the HTTP command
-			String getCmd = Utils.makeUpdateCommand(obj);
-//			returns the parameters as list
-			ArrayList<String> parameters = Utils.getParameterStringList(obj);
-//			returns the password as encoded value and adds it to the parameter list
-			parameters.add(Utils.getParameterUserAuth(authString));
-//			returns the parameters as String for HTTP command and combines it with the command start
-			getCmd += Utils.getParameterString(parameters.toArray(new String[parameters.size()]));
+			// returns the start of the HTTP command
+			String getCmd = ParseUtils.makeUpdateCommand(obj);
+			// returns the parameters as list
+			ArrayList<String> parameters = ParseUtils
+					.getParameterStringList(obj);
+
+			if (obj instanceof CalendarEntry) {
+				parameters = ParseUtils.removeAttributeFromList("ownerid",
+						parameters);
+				parameters = ParseUtils.removeAttributeFromList("calendarid",
+						parameters);
+			} else if (obj instanceof Calendar) {
+				parameters = ParseUtils.removeAttributeFromList("ownerid",
+						parameters);
+			}
+
+			parameters.add(ParseUtils.getParameterOwnId(obj));
+
+			// returns the password as encoded value and adds it to the
+			// parameter list
+			parameters.add(ParseUtils.getParameterUserAuth(authString));
+			// returns the parameters as String for HTTP command and combines it
+			// with the command start
+			getCmd += ParseUtils.getParameterString(parameters
+					.toArray(new String[parameters.size()]));
 			String json = sendGetToServer(getCmd);
-			Integer errorValue = gson.fromJson(json, int.class);
-			if (errorValue == null || errorValue == 0)
+			Boolean errorValue = gson.fromJson(json, boolean.class);
+			if (errorValue == null)
 				return false;
-			return true;
+			return errorValue;
 		} catch (IllegalArgumentException ex) {
 			ex.printStackTrace();
 		} catch (JsonSyntaxException ex) {
@@ -463,26 +535,28 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		}
 		return false;
 	}
+
 	/**
-	 * Creates a new instance from the given object to ensure the old reference is not used.
+	 * Creates a new instance from the given object to ensure the old reference
+	 * is not used.
+	 * 
 	 * @param obj
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private <T extends AbstractOrganizerObject> T newInstanceOf(T obj){
+	private <T extends AbstractOrganizerObject> T newInstanceOf(T obj) {
 		try {
 			return (T) obj.getClass().newInstance();
-		} catch (InstantiationException e)
-		{
+		} catch (InstantiationException e) {
 			e.printStackTrace();
-		}
-		catch(IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
+
 	/**
-	 * Adds the given {@link User} to the given {@link Group} with sending a 
+	 * Adds the given {@link User} to the given {@link Group} with sending a
 	 * 
 	 * @param user
 	 * @param group
@@ -491,15 +565,18 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	public <T extends AbstractOrganizerObject> boolean addUserToGroup(
 			User user, Group group) {
 		try {
-			String getCmd = Utils.makeAddUserToGroupCommand();
-			String parameterUserId = Utils.getParameterOwnId(user);
-			String parameterGroupId = Utils.getParameterOwnId(group);
-			String parameterUserAuth = Utils.getParameterUserAuth(authString);
-			getCmd += Utils.getParameterString(parameterGroupId, parameterUserId, parameterUserAuth);
-			
+			String getCmd = ParseUtils.makeAddUserToGroupCommand();
+			String parameterUserId = ParseUtils.getParameterOwnId(user);
+			String parameterGroupId = ParseUtils.getParameterOwnId(group);
+			String parameterUserAuth = ParseUtils
+					.getParameterUserAuth(authString);
+			getCmd += ParseUtils.getParameterString(parameterGroupId,
+					parameterUserId, parameterUserAuth);
+
 			String json = sendGetToServer(getCmd);
 			Boolean result = gson.fromJson(json, boolean.class);
-			if(result == null) return false;
+			if (result == null)
+				return false;
 			return result;
 		} catch (IllegalArgumentException ex) {
 			ex.printStackTrace();
@@ -513,15 +590,18 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	public <T extends AbstractOrganizerObject> boolean removeUserFromGroup(
 			User user, Group group) {
 		try {
-			String getCmd = Utils.makeRemoveUserFromGroupCommand();
-			String parameterUserId = Utils.getParameterOwnId(user);
-			String parameterGroupId = Utils.getParameterOwnId(group);
-			String parameterUserAuth = Utils.getParameterUserAuth(authString);
-			getCmd += Utils.getParameterString(parameterGroupId, parameterUserId, parameterUserAuth);
-			
+			String getCmd = ParseUtils.makeRemoveUserFromGroupCommand();
+			String parameterUserId = ParseUtils.getParameterOwnId(user);
+			String parameterGroupId = ParseUtils.getParameterOwnId(group);
+			String parameterUserAuth = ParseUtils
+					.getParameterUserAuth(authString);
+			getCmd += ParseUtils.getParameterString(parameterGroupId,
+					parameterUserId, parameterUserAuth);
+
 			String json = sendGetToServer(getCmd);
 			Boolean result = gson.fromJson(json, boolean.class);
-			if(result == null) return false;
+			if (result == null)
+				return false;
 			return result;
 		} catch (IllegalArgumentException ex) {
 			ex.printStackTrace();
@@ -529,5 +609,23 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			ex.printStackTrace();
 		}
 		return false;
-	}	
+	}
+
+	@Override
+	public <T extends AbstractOrganizerObject> List<T> requestFollowingObjectsByOwnId(
+			List<Integer> ids, T obj) {
+		List<T> requestedObjects = new ArrayList<T>();
+
+		for (int i = 0; i < ids.size(); i++) {
+			T tmp = newInstanceOf(obj);
+			tmp.setID(ids.get(i));
+			requestedObjects.add(requestObjectByOwnId(tmp));
+			for (ProcessListener listener : getProcessListeners()) {
+				listener.getCurrentProcessState((double) (i + 1)
+						/ (double) ids.size());
+			}
+		}
+
+		return requestedObjects;
+	}
 }
