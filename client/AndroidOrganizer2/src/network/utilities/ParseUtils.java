@@ -1,19 +1,15 @@
-package network.objects;
+package network.utilities;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import android.util.Log;
 
 import network.RequestHandler;
 
@@ -34,7 +30,7 @@ import organizer.objects.types.User;
  * @version 1.0
  * 
  */
-public class Utils {
+public class ParseUtils {
 	/**
 	 * HashMap containing the plurals of the class names.
 	 */
@@ -69,51 +65,28 @@ public class Utils {
 	}
 
 	/**
-	 * Encodes a String in 3 steps:
-	 * <ol>
-	 * <li>Create the SHA-512 hash value
-	 * <li>Create an ASCII String from hash
-	 * <li>Encode the ASCII String with Base64
-	 * </ol>
+	 * Hashs the given String by using the SHA-512 algorithm and converts it to
+	 * an hexadecimal String
 	 * 
 	 * @param string
-	 *            to encode
-	 * @return the encoded String
+	 *            to hash
+	 * @return hashed and converted String
 	 */
-	// public static String encodeString(String string) {
-	// try {
-	// MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
-	// byte[] output = sha512.digest(string.getBytes());
-	// string = new String(output, "ASCII");
-	// string = Base64.encodeBase64String(string.getBytes());
-	// } catch (NoSuchAlgorithmException e) {
-	// e.printStackTrace();
-	// } catch (UnsupportedEncodingException e) {
-	// e.printStackTrace();
-	// }
-	// string = parseStringToHTTP(string);
-	// return string;
-	// }
-
-	public static String encodeStringNewBase64(String string) {
+	public static String hashString(String string) {
 		try {
-			MessageDigest md = MessageDigest.getInstance("SHA-512");
-			md.update(string.getBytes());
-
-			byte byteData[] = md.digest();
+			MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
+			byte[] output = sha512.digest(string.getBytes());
 
 			// convert the byte to hex format method 1
 			StringBuffer sb = new StringBuffer();
-			for (int i = 0; i < byteData.length; i++) {
-				sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16)
+			for (int i = 0; i < output.length; i++) {
+				sb.append(Integer.toString((output[i] & 0xff) + 0x100, 16)
 						.substring(1));
 			}
 			string = sb.toString();
-			// string = network.objects.Base64.encodeBytes(string.getBytes());
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		string = parseStringToHTTP(string);
 		return string;
 	}
 
@@ -130,17 +103,14 @@ public class Utils {
 
 	/**
 	 * Returns the password represented as a HTTP parameter. The password will
-	 * be encoded by using {@link #encodeString(String)}
+	 * be encoded by using {@link #hashString(String)}
 	 * 
 	 * @param password
 	 *            - value of the parameter
 	 * @return the HTTP parameter
 	 */
 	public static String getParameterPassword(String password) {
-
-		String request = "Password=" + encodeStringNewBase64(password);
-		Log.w("PW", request);
-		return request;
+		return "Password=" + hashString(password);
 	}
 
 	/**
@@ -322,6 +292,21 @@ public class Utils {
 		return parameters;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static ArrayList<String> removeAttributeFromList(String attribute,
+			ArrayList<String> parameterList) {
+		ArrayList<String> clone = (ArrayList<String>) parameterList.clone();
+		ArrayList<String> clone2 = (ArrayList<String>) parameterList.clone();
+		for (String parameter : clone) {
+			String tmp1 = parameter.toLowerCase();
+			String tmp2 = attribute.toLowerCase();
+			if (tmp1.startsWith(tmp2)) {
+				clone2.remove(parameter);
+			}
+		}
+		return clone2;
+	}
+
 	/**
 	 * Combines the given {@link String}(s) to a single HTTP parameter String by
 	 * using <b>?</b> at the beginning and <b>&</b> between the parameters
@@ -395,7 +380,6 @@ public class Utils {
 	 * @return String representation of C#-DateTime
 	 */
 	public static String parseDateToNetDateTime(Date date) {
-
 		// 2008-11-01T19:35:00.0000000-07:00
 		SimpleDateFormat formatted = new SimpleDateFormat(
 				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSXXX");
@@ -409,18 +393,19 @@ public class Utils {
 	 * @return Date representation as Java-Date
 	 */
 	public static Date parseStringToDate(String time) {
+		
 		// 2008-11-01T19:35:00.0000000-07:00
-		int index = time.lastIndexOf(":");
-		String parseString = null;
-
-		parseString = time.substring(0, index);
-		parseString = parseString + time.substring(index);
+		int lastIndexOfDoublePoint = time.lastIndexOf(':');
+		StringBuilder b = new StringBuilder(time);
+		time = b.replace(lastIndexOfDoublePoint, lastIndexOfDoublePoint+1, "").toString();
+		
+		// 2008-11-01T19:35:00.0000000-0700
 		SimpleDateFormat formatted = new SimpleDateFormat(
 				"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ");
 		Date date = null;
 
 		try {
-			date = formatted.parse(parseString);
+			date = formatted.parse(time);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -430,10 +415,12 @@ public class Utils {
 	public static void main(String[] args) {
 
 		// System.out.println(encodeString("Test"));
-		System.out.println(encodeStringNewBase64("Test"));
+		System.out.println(hashString("Test"));
 
 		// System.out.println(parseStringToHTTP("Das ist ein Test"));
 		// System.out.println(encodeString("Test"));
 		System.out.println(parseDateToNetDateTime(new Date()));
+		System.out
+				.println(parseStringToDate("2008-11-01T19:35:00.0000000-07:00"));
 	}
 }

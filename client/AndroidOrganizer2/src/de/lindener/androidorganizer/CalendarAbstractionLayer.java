@@ -3,6 +3,8 @@ package de.lindener.androidorganizer;
 import java.util.ArrayList;
 import java.util.List;
 
+import network.json.JsonJavaIISRequestHandler;
+
 import de.lindener.androidorganizer.viewmodels.CalendarEntryViewModel;
 import de.lindener.androidorganizer.viewmodels.UserViewModel;
 
@@ -10,7 +12,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import network.JsonJavaRequestHandler;
+
 
 //import network.JsonJavaRequestHandler;
 
@@ -26,7 +28,7 @@ public class CalendarAbstractionLayer  {
 	private int port;
 	private String mail;
 	private String password;
-	private JsonJavaRequestHandler requestHandler = null;
+	private JsonJavaIISRequestHandler requestHandler = null;
 
 	public CalendarAbstractionLayer(String serviceAddress, int servicePort,
 			String mailAdress, String userPassword) {
@@ -99,7 +101,7 @@ public class CalendarAbstractionLayer  {
 
 	private boolean connectToServiceAndLogin(String address, int port,
 			String mail, String password) {
-		requestHandler = new JsonJavaRequestHandler(address, port);
+		requestHandler = new JsonJavaIISRequestHandler(address, port);
 
 		if (requestHandler != null) {
 
