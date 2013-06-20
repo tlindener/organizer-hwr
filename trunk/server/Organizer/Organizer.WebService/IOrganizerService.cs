@@ -116,7 +116,9 @@ namespace Organizer.WebService
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         ICollection<WebCalendarEntry> GetAllCalendarEntriesByRoomId(int roomId, string userAuth);
 
-
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        bool RemoveDatabase();
 
         /// <summary>
         /// Adds a new calendar entry based on parameters

@@ -274,6 +274,11 @@ namespace Organizer
                 {
                     return false;
                 }
+                if (entry.Invitations.Count > 0)
+                {
+                    entry.Invitations = null;
+                    _calendarDatabase.SaveChanges();
+                }
                 _calendarDatabase.CalendarEntries.Remove(entry);
                 _calendarDatabase.SaveChanges();
                 return true;
@@ -957,6 +962,11 @@ namespace Organizer
                 }
             }
             return false;
+        }
+
+        public bool RemoveDatabase()
+        {
+           return _calendarDatabase.Database.Delete();
         }
     }
 
