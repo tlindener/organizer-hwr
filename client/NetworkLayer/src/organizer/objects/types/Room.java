@@ -1,5 +1,7 @@
 package organizer.objects.types;
 
+import java.util.List;
+
 import organizer.objects.AbstractOrganizerObject;
 /**
  * This class represents a room from the database with all attributes.

@@ -1,18 +1,30 @@
 package test.junit;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+//import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.assertFalse;
+//import static org.junit.Assert.assertNotNull;
+//import static org.junit.Assert.assertNull;
+//import static org.junit.Assert.assertTrue;
+//import static org.junit.Assert.fail;
 
+import static org.junit.Assert.*;
+
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import network.RequestHandler;
 import network.json.JsonJavaIISRequestHandler;
+import network.json.JsonJavaRequestHandler;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Group;
@@ -22,40 +34,235 @@ import organizer.objects.types.User;
 
 public class TestSuite {
 
-	private RequestHandler requester = null;
+	private static final String FAIL_ADD_NOTNULL_CAL = "ERROR: Calendar is null. It was not added.";
+	private static final String FAIL_ADD_NOTNULL_ENT = "ERROR: CalendarEntry is null. It was not added.";
+	private static final String FAIL_ADD_NOTNULL_USE = "ERROR: User is null. It was not added.";
+	private static final String FAIL_ADD_NOTNULL_ROO = "ERROR: Room is null. It was not added.";
+	private static final String FAIL_ADD_NOTNULL_GRO = "ERROR: Group is null. It was not added.";
+	private static final String FAIL_ADD_NOTNULL_INV = "ERROR: Invite is null. It was not added.";
+	
+	private static final String FAIL_REQ_NOTNULL_CAL = "ERROR: Calendar is null. It was not requested.";
+	private static final String FAIL_REQ_NOTNULL_ENT = "ERROR: CalendarEntry is null. It was not requested.";
+	private static final String FAIL_REQ_NOTNULL_USE = "ERROR: User is null. It was not requested.";
+	private static final String FAIL_REQ_NOTNULL_ROO = "ERROR: Room is null. It was not requested.";
+	private static final String FAIL_REQ_NOTNULL_GRO = "ERROR: Group is null. It was not requested.";
+	private static final String FAIL_REQ_NOTNULL_INV = "ERROR: Invite is null. It was not requested.";
+	private static final String FAIL_REQ_NOTNULL_LIST = "ERROR: List is null. It was not requested. Major error in Requester.";
+	
+	private static final String FAIL_UPD_FALSE_CAL = "ERROR: Result is false. Calendar is not updated.";
+	private static final String FAIL_UPD_FALSE_ENT = "ERROR: Result is false. CalendarEntry is not updated.";
+	private static final String FAIL_UPD_FALSE_USE = "ERROR: Result is false. User is not updated.";
+	private static final String FAIL_UPD_FALSE_ROO = "ERROR: Result is false. Room is not updated.";
+	private static final String FAIL_UPD_FALSE_GRO = "ERROR: Result is false. Group is not updated.";
+	private static final String FAIL_UPD_FALSE_INV = "ERROR: Result is false. Invite is not updated.";
+	
+	private static final String FAIL_REM_FALSE_CAL = "ERROR: Result is false. Calendar is not removed.";
+	private static final String FAIL_REM_FALSE_ENT = "ERROR: Result is false. CalendarEntry is not removed.";
+	private static final String FAIL_REM_FALSE_USE = "ERROR: Result is false. User is not removed.";
+	private static final String FAIL_REM_FALSE_ROO = "ERROR: Result is false. Room is not removed.";
+	private static final String FAIL_REM_FALSE_GRO = "ERROR: Result is false. Group is not removed.";
+	private static final String FAIL_REM_FALSE_INV = "ERROR: Result is false. Invite is not removed.";
+	
+	private static final String FAIL_ACC = "ERROR: The invite was not accepted. The returned value was not 1";
+	private static final String FAIL_DEC = "ERROR: The invite was not accepted. The returned value was not -1";
+	
+	private static final String FAIL_ACC_ANOTHER_USE = "ERROR: The invite was accepted, although you are not the owner.";
+	private static final String FAIL_DEC_ANOTHER_USE = "ERROR: The invite was declined, although you are not the owner.";
+	
+//	private static final String FAIL_ADD_SEC_USE = "ERROR: You successfully added an user twice.";
+	
+	private static final String FAIL_ADD_FOR_ONESELF = "ERROR: You have not added an element for yourself! CLASSTYPE: ";
+	private static final String FAIL_REQ_FOR_ONESELF = "ERROR! You have not requested an element for yourself! CLASSTYPE: ";
+	private static final String FAIL_REM_FOR_ONESELF = "ERROR! You have not removed an element for yourself! CLASSTYPE: ";
+	private static final String FAIL_UPD_FOR_ONESELF = "ERROR! You have not updated an element for yourself! CLASSTYPE: ";
+	
+	private static final String FAIL_ADD_FOR_ANOTHER_USER = "ERROR: You successfully added an element to another user: ";
+	private static final String FAIL_REQ_FOR_ANOTHER_USER = "ERROR: You successfully requested an element of another user: ";
+	private static final String FAIL_REM_FOR_ANOTHER_USER = "ERROR: You successfully removed an element of another user: ";
+	private static final String FAIL_UPD_FOR_ANOTHER_USER = "ERROR: You successfully updated an element of another user: ";
+	
+	private static final String FAIL_LOGIN_USE = "ERROR: The login was not successful";
+	private static final String FAIL_LIST_EMPTY = "ERROR: The given list is not empty.";
+	private static final String FAIL_NOT_EQUALS = "ERROR: The Objects are not equal";
+	private static final String FAIL_LIST_FULL = "ERROR: The given list is emtpy";
+	
+	private static final String FAIL_EXCE_UNTHROWN = "ERROR: An expected Exception was not thrown";
+	private static final String FAIL_ADD_TO_GRO = "ERROR: User was not added to the Group";
+	private static final String FAIL_ADD_TO_GRO_TWICE = "ERROR: User was successfully added to the Group a second time";
+	private static final String FAIL_REM_FR_GRO = "ERROR: User was not removed from the Group";
+	
+//	private static final String FAIL_LIST_EMPTY = "ERROR: You successfully added an user twice.";
+//	private static final String FAIL_LIST_EMPTY = "ERROR: You successfully added an user twice.";
+//	
+//	"No equal entries"
+	
+	
+//	private static final String FAIL_ADD_FOR_ANOTHER_USER = "ERROR: You successfully added an element to another user: ";
+//	private static final String FAIL_REQ_FOR_ANOTHER_USER = "ERROR: You successfully requested an element of another user: ";
+//	private static final String FAIL_REM_FOR_ANOTHER_USER = "ERROR: You successfully removed an element of another user: ";
+//	private static final String FAIL_UPD_FOR_ANOTHER_USER = "ERROR: You successfully updated an element of another user: ";
+	
+	
+//	private static final String FAIL_CAL_OTHER_USE = "ERROR: Request Calendar of another User was successful";
+//	private static final String FAIL_ENT_OTHER_USE = "ERROR: Request Entry of another User was successful";
+//	private static final String FAIL_INV_OTHER_USE = "ERROR: Request Invite of another User was successful";
+
+	
+	private static RequestHandler requester = null;
 	private final String defaultPassword = "1234";
 	
-	@Before
-	public void setUp() throws Exception {
+	@BeforeClass
+	public static void setUp() throws Exception {
 		requester = new JsonJavaIISRequestHandler("localhost", 80);
+//		requester = new JsonJavaRequestHandler("localhost", 48585);
+	}
+	
+	@AfterClass
+	public static void tearDown() throws Exception {
+		
+	}
+	
+	@Before
+	public void setUpEachTest() throws Exception {
+	
 	}
 	
 	@After
-	public void tearDown() throws Exception {
-		
+	public void tearDownEachTest() throws Exception {
+		boolean result = requester.dropDatabase();
+		System.err.println("TearDown Result: " + result);
+		assertTrue(result);
 	}
 
-	@Test
+	@Ignore
 	public void testRequestObjectByProperty() {
 		fail("Not yet implemented");
 	}
 
 	@Test
 	public void testRequestObjectByOwnId() {
-		fail("Not yet implemented");
+		
+		User[] userList = createDefaultData(4,4,2);
+		
+		User loggedInUser2 = login(userList[1].getMailAddress());
+		
+		Calendar calendarUser2 = requestCalendar(loggedInUser2.getCalendarIds().get(0));
+		assertNotNull(FAIL_REQ_NOTNULL_CAL, calendarUser2);
+		
+		User loggedInUser = login(userList[0].getMailAddress());
+		
+		assertFalse(FAIL_LIST_EMPTY, loggedInUser.getCalendarIds().isEmpty());
+		assertFalse(FAIL_LIST_EMPTY, loggedInUser.getInviteIds().isEmpty());
+		assertTrue(FAIL_LIST_FULL, loggedInUser.getGroupIds().isEmpty());
+		
+//		User can only have on Calendar at the moment
+		Calendar calendarUser1 = requestCalendar(loggedInUser.getCalendarIds().get(0));
+		assertNotNull(FAIL_REQ_NOTNULL_CAL, calendarUser1);
+		
+		
+		for(CalendarEntry entry: calendarUser1.getCalendarEntries()){
+			CalendarEntry requestedEntry = requestCalendarEntry(entry.getID());
+			assertNotNull(FAIL_REQ_NOTNULL_ENT, requestedEntry);
+			assertEquals("No equal entries", requestedEntry.toString(), entry.toString());
+		}
+		
+		//TODO Invites abfragen geht nicht
+		for(int id: loggedInUser.getInviteIds()){
+//			Invite invite = requestInvite(id);
+//			assertNotNull(FAIL_REQ_NOTNULL_INV, invite);
+//			CalendarEntry entry = requestCalendarEntry(invite.getCalendarEntryId());
+//			assertNotNull(entry);
+		}
+		
+		Group group = requestGroup(1);
+		assertNotNull(FAIL_REQ_NOTNULL_GRO, group);
+		
+		Room room = requestRoom(1);
+		assertNotNull(FAIL_REQ_NOTNULL_ROO, room);
+		
+//		TODO Anonymous User-Object ?
+		User userRequest = requestUser(userList[1].getID());
+		assertNotNull(FAIL_REQ_NOTNULL_USE, userRequest);
+//		assertTrue(FAIL_LIST_EMPTY, userRequest.getCalendarIds().isEmpty());
+//		assertTrue(FAIL_LIST_EMPTY, userRequest.getInviteIds().isEmpty());
+//		assertFalse(FAIL_LIST_FULL, userRequest.getGroupIds().isEmpty());
+		
+		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"Calendar", requestCalendar(calendarUser2.getID()));
+		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"Invite", requestInvite(userList[1].getInviteIds().get(0)));
+		
+		CalendarEntry noInvite = calendarUser2.getCalendarEntries().get(calendarUser2.getCalendarEntries().size()-1);
+		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"CalendarEntry", requestCalendarEntry(noInvite.getID()));
+		
+		
+		
 	}
 
-	@Test
+	@Ignore
 	public void testRequestFollowingObjectsByOwnId() {
 		fail("Not yet implemented");
 	}
 
 	@Test
 	public void testRequestAllObjects() {
-		fail("Not yet implemented");
+		User[] userList = createDefaultData(2, 2, 1);
+		
+		User loggedInUser = login(userList[0].getMailAddress());
+		assertNotNull(FAIL_LOGIN_USE, loggedInUser);
+		
+		List<Group> groups = requester.requestAllObjects(new Group());
+		assertNotNull(FAIL_REQ_NOTNULL_LIST, groups);
+		
+//		assertFalse(FAIL_LIST_FULL, groups.isEmpty());
+		
+		List<Room> rooms =requester.requestAllObjects(new Room());
+		assertNotNull(FAIL_REQ_NOTNULL_LIST, rooms);
+		assertFalse(FAIL_LIST_FULL, rooms.isEmpty());
+		
+		List<User> user =requester.requestAllObjects(new User());
+		assertNotNull(FAIL_REQ_NOTNULL_LIST, user);
+		assertFalse(FAIL_LIST_FULL, user.isEmpty());
+		for(User u: user){
+			assertTrue(FAIL_LIST_EMPTY, u.getCalendarIds().isEmpty());
+			assertTrue(FAIL_LIST_EMPTY, u.getInviteIds().isEmpty());
+			assertTrue(FAIL_LIST_FULL, u.getGroupIds().isEmpty());
+		}
+		
+		try {
+			requester.requestAllObjects(new CalendarEntry());
+			fail(FAIL_EXCE_UNTHROWN);
+		} catch (UnsupportedOperationException ex) {
+		}
+		try {
+			requester.requestAllObjects(new Calendar());
+			fail(FAIL_EXCE_UNTHROWN);
+		} catch (UnsupportedOperationException ex) {
+		}
+
+		try {
+			requester.requestAllObjects(new Invite());
+			fail(FAIL_EXCE_UNTHROWN);
+		} catch (UnsupportedOperationException ex) {
+		}
+		
+		Group group = requestGroup(1);
+		assertNotNull(FAIL_REQ_NOTNULL_GRO, group);
+		
+		boolean result = requester.addUserToGroup(loggedInUser, group);
+		assertTrue(FAIL_ADD_TO_GRO, result);
+		
+		loggedInUser = login(userList[1].getMailAddress());
+		List<User> user2 =requester.requestAllObjects(new User());
+		assertNotNull(FAIL_REQ_NOTNULL_LIST, user2);
+		assertFalse(FAIL_LIST_FULL, user2.isEmpty());
+		for(User u: user2){
+			assertTrue(FAIL_LIST_EMPTY, u.getCalendarIds().isEmpty());
+			assertTrue(FAIL_LIST_EMPTY, u.getInviteIds().isEmpty());
+			assertFalse(FAIL_LIST_EMPTY, u.getGroupIds().isEmpty());
+		}
 	}
 
-	@Test
+	
+	@Ignore
 	public void testRequestAllObjectsByProperty() {
 		fail("Not yet implemented");
 	}
@@ -63,40 +270,37 @@ public class TestSuite {
 	@Test
 	public void testAddObject() {
 
-		
-		
-		User user1 = (User) addUser("Steffen", "Baumann");
-		User user2 = (User) addUser("Tobias", "Lindener");
-		
+		User user1 = addUser("Steffen", "Baumann");
+		assertNotNull(FAIL_ADD_NOTNULL_USE, user1);
+		User user2 = addUser("Tobias", "Lindener");
+		assertNotNull(FAIL_ADD_NOTNULL_USE, user2);
 //		>>>>>CALENDAR
-		
-		
 		login(user1);
 //		Add calendar to oneself
 		Calendar calendarUser1ToUser1 = addCalendar(user1.getGivenName(), user1.getID());
-		assertNotNull(calendarUser1ToUser1);
+		assertNotNull(FAIL_ADD_NOTNULL_CAL, calendarUser1ToUser1);
 		
 //		Add calendar to another user should fail
-		assertNull(addCalendar(user1.getGivenName(), user2.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "Calendar", addCalendar(user1.getGivenName(), user2.getID()));
 		
 		login(user2);
 //		Add calendar to oneself
 		Calendar calendarUser2ToUser2 = addCalendar(user2.getGivenName(), user2.getID());
-		assertNotNull(calendarUser2ToUser2);
+		assertNotNull(FAIL_ADD_NOTNULL_CAL, calendarUser2ToUser2);
 		
 //		Add calendar to another user should fail		
-		assertNull(addCalendar(user2.getGivenName(), user1.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "Calendar", addCalendar(user2.getGivenName(), user1.getID()));
 		
 //		CALENDAR<<<<<
 		
 //		>>>>>ROOM
 		login(user1);
 		Room room1 = addRoom("Created for JUnit test", "Testroom 1", 12);
-		assertNotNull(room1);
+		assertNotNull(FAIL_ADD_NOTNULL_ROO, room1);
 		
 		login(user2);
 		Room room2 = addRoom("Created for JUnit test", "Testroom 2", 24);
-		assertNotNull(room2);
+		assertNotNull(FAIL_ADD_NOTNULL_ROO, room2);
 		
 //		ROOM<<<<<
 		
@@ -105,159 +309,254 @@ public class TestSuite {
 		login(user1);
 //		Add entry to own calendar
 		CalendarEntry entryUser1ToUser1NoRoom = addCalendarEntry(user1.getGivenName(), calendarUser1ToUser1.getID(), user1.getID(), 0);
-		assertNotNull(entryUser1ToUser1NoRoom);
+		assertNotNull(FAIL_ADD_NOTNULL_ENT, entryUser1ToUser1NoRoom);
 		
 //		Add entry to another user should fail
-		assertNull(addCalendarEntry(user1.getGivenName(), calendarUser1ToUser1.getID(), user2.getID(), 0));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user1.getGivenName(), calendarUser1ToUser1.getID(), user2.getID(), 0));
 //		Add entry to another user's calendar should fail		
-		assertNull(addCalendarEntry(user1.getGivenName(), calendarUser2ToUser2.getID(), user1.getID(), 0));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user1.getGivenName(), calendarUser2ToUser2.getID(), user1.getID(), 0));
 //		Add entry to another user's calendar and user itself should fail
-		assertNull(addCalendarEntry(user1.getGivenName(), calendarUser2ToUser2.getID(), user2.getID(), 0));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user1.getGivenName(), calendarUser2ToUser2.getID(), user2.getID(), 0));
 		
 //		Add entry to own calendar with room created by oneself
 		CalendarEntry entryUser1ToUser1WithRoom1 = addCalendarEntry(user1.getGivenName(), calendarUser1ToUser1.getID(), user1.getID(), room1.getID());
-		assertNotNull(entryUser1ToUser1WithRoom1);
+		assertNotNull(FAIL_ADD_NOTNULL_ENT, entryUser1ToUser1WithRoom1);
 //		Add entry to own calendar with room created by another user
 		CalendarEntry entryUser1ToUser1WithRoom2 = addCalendarEntry(user1.getGivenName(), calendarUser1ToUser1.getID(), user1.getID(), room2.getID());
-		assertNotNull(entryUser1ToUser1WithRoom2);
+		assertNotNull(FAIL_ADD_NOTNULL_ENT, entryUser1ToUser1WithRoom2);
 		
 //		Add entry to another user should fail
-		assertNull(addCalendarEntry(user1.getGivenName(), calendarUser1ToUser1.getID(), user2.getID(), room1.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user1.getGivenName(), calendarUser1ToUser1.getID(), user2.getID(), room1.getID()));
 //		Add entry to another user's calendar should fail		
-		assertNull(addCalendarEntry(user1.getGivenName(), calendarUser2ToUser2.getID(), user1.getID(), room1.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user1.getGivenName(), calendarUser2ToUser2.getID(), user1.getID(), room1.getID()));
 //		Add entry to another user's calendar and user itself should fail
-		assertNull(addCalendarEntry(user1.getGivenName(), calendarUser2ToUser2.getID(), user2.getID(), room1.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user1.getGivenName(), calendarUser2ToUser2.getID(), user2.getID(), room1.getID()));
 		
 		login(user2);
 //		Add entry to own calendar
 		CalendarEntry entryUser2ToUser2NoRoom = addCalendarEntry(user2.getGivenName(), calendarUser2ToUser2.getID(), user2.getID(), 0);
-		assertNotNull(entryUser2ToUser2NoRoom);
+		assertNotNull(FAIL_ADD_NOTNULL_ENT, entryUser2ToUser2NoRoom);
 		
 //		Add entry to another user should fail
-		assertNull(addCalendarEntry(user2.getGivenName(), calendarUser2ToUser2.getID(), user1.getID(), 0));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user2.getGivenName(), calendarUser2ToUser2.getID(), user1.getID(), 0));
 //		Add entry to another user's calendar should fail
-		assertNull(addCalendarEntry(user2.getGivenName(), calendarUser1ToUser1.getID(), user2.getID(), 0));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user2.getGivenName(), calendarUser1ToUser1.getID(), user2.getID(), 0));
 //		Add entry to another user's calendar and user itself should fail
-		assertNull(addCalendarEntry(user2.getGivenName(), calendarUser1ToUser1.getID(), user1.getID(), 0));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user2.getGivenName(), calendarUser1ToUser1.getID(), user1.getID(), 0));
 		
 //		Add entry to own calendar with room created by oneself
 		CalendarEntry entryUser2ToUser2WithRoom2 = addCalendarEntry(user2.getGivenName(), calendarUser2ToUser2.getID(), user2.getID(), room2.getID());
-		assertNotNull(entryUser2ToUser2WithRoom2);
+		assertNotNull(FAIL_ADD_NOTNULL_ENT, entryUser2ToUser2WithRoom2);
 //		Add entry to own calendar with room created by another user
 		CalendarEntry entryUser2ToUser2WithRoom1 = addCalendarEntry(user2.getGivenName(), calendarUser2ToUser2.getID(), user2.getID(), room1.getID());
-		assertNotNull(entryUser2ToUser2WithRoom1);
+		assertNotNull(FAIL_ADD_NOTNULL_ENT, entryUser2ToUser2WithRoom1);
 		
 //		Add entry to another user should fail
-		assertNull(addCalendarEntry(user2.getGivenName(), calendarUser2ToUser2.getID(), user1.getID(), room1.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user2.getGivenName(), calendarUser2ToUser2.getID(), user1.getID(), room1.getID()));
 //		Add entry to another user's calendar should fail
-		assertNull(addCalendarEntry(user2.getGivenName(), calendarUser1ToUser1.getID(), user2.getID(), room1.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user2.getGivenName(), calendarUser1ToUser1.getID(), user2.getID(), room1.getID()));
 //		Add entry to another user's calendar and user itself should fail
-		assertNull(addCalendarEntry(user2.getGivenName(), calendarUser1ToUser1.getID(), user1.getID(), room1.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "CalendarEntry", addCalendarEntry(user2.getGivenName(), calendarUser1ToUser1.getID(), user1.getID(), room1.getID()));
 		
 //		ENTIRES<<<<<
-		
-//		>>>>>INVITES
+
+		//		>>>>>INVITES
 		
 		login(user1);
 //		Add invite with no room set
 		Invite inviteUser2ToUser1sEntryNoRoom = addInvite(entryUser1ToUser1NoRoom.getID(), user2.getID());
-		assertNotNull(inviteUser2ToUser1sEntryNoRoom);
+		assertNotNull(FAIL_ADD_NOTNULL_INV, inviteUser2ToUser1sEntryNoRoom);
 //		Add invite with room set
 		Invite inviteUser2ToUser1sEntryWithRoom1 = addInvite(entryUser1ToUser1WithRoom1.getID(), user2.getID());
-		assertNotNull(inviteUser2ToUser1sEntryWithRoom1);
+		assertNotNull(FAIL_ADD_NOTNULL_INV, inviteUser2ToUser1sEntryWithRoom1);
 //		Add second invite with room set
 		Invite inviteUser2ToUser1sEntryWithRoom2 = addInvite(entryUser1ToUser1WithRoom2.getID(), user2.getID());
-		assertNotNull(inviteUser2ToUser1sEntryWithRoom2);
+		assertNotNull(FAIL_ADD_NOTNULL_INV, inviteUser2ToUser1sEntryWithRoom2);
 		
 //		Add invite for other user to its own calendar entry	without room		
-		assertNull(addInvite(entryUser2ToUser2NoRoom.getID(), user2.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "Invite", addInvite(entryUser2ToUser2NoRoom.getID(), user2.getID()));
 //		Add invite for other user to its own calendar entry	with room
-		assertNull(addInvite(entryUser2ToUser2WithRoom1.getID(), user2.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "Invite", addInvite(entryUser2ToUser2WithRoom1.getID(), user2.getID()));
 //		Add own invite for other users calendar entry
-		assertNull(addInvite(entryUser2ToUser2WithRoom2.getID(), user1.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "Invite", addInvite(entryUser2ToUser2WithRoom2.getID(), user1.getID()));
 		
 		login(user2);
 //		Add invite with no room set
 		Invite inviteUser1ToUser2sEntryNoRoom = addInvite(entryUser2ToUser2NoRoom.getID(), user1.getID());
-		assertNotNull(inviteUser1ToUser2sEntryNoRoom);
+		assertNotNull(FAIL_ADD_NOTNULL_INV, inviteUser1ToUser2sEntryNoRoom);
 //		Add invite with room set
 		Invite inviteUser1ToUser2sEntryWithRoom1 = addInvite(entryUser2ToUser2WithRoom1.getID(), user1.getID());
-		assertNotNull(inviteUser1ToUser2sEntryWithRoom1);
+		assertNotNull(FAIL_ADD_NOTNULL_INV, inviteUser1ToUser2sEntryWithRoom1);
 //		Add second invite with room set
 		Invite inviteUser1ToUser2sEntryWithRoom2 = addInvite(entryUser2ToUser2WithRoom2.getID(), user2.getID());
-		assertNotNull(inviteUser1ToUser2sEntryWithRoom2);
+		assertNotNull(FAIL_ADD_NOTNULL_INV, inviteUser1ToUser2sEntryWithRoom2);
 		
 //		Add invite for other user to its own calendar entry	without room		
-		assertNull(addInvite(entryUser1ToUser1NoRoom.getID(), user1.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "Invite", addInvite(entryUser1ToUser1NoRoom.getID(), user1.getID()));
 //		Add invite for other user to its own calendar entry	with room
-		assertNull(addInvite(entryUser1ToUser1WithRoom1.getID(), user1.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "Invite", addInvite(entryUser1ToUser1WithRoom1.getID(), user1.getID()));
 //		Add own invite for other users calendar entry
-		assertNull(addInvite(entryUser1ToUser1WithRoom2.getID(), user2.getID()));
+		assertNull(FAIL_ADD_FOR_ANOTHER_USER + "Invite", addInvite(entryUser1ToUser1WithRoom2.getID(), user2.getID()));
 		
 //		INVITES<<<<<
 		
 //		>>>>>GROUPS
 		login(user1);
 		Group group1 = addGroup(user1.getGivenName()+"'s group");
-		assertNotNull(group1);
+		assertNotNull(FAIL_ADD_NOTNULL_GRO, group1);
 		
 		login(user2);
 		Group group2 = addGroup(user2.getGivenName()+"'s group");
-		assertNotNull(group2);
+		assertNotNull(FAIL_ADD_NOTNULL_GRO, group2);
 //		GROUPS<<<<<
 		
 	}
 
-	private void login(User userToLogin){
-		assertNotNull(requester.login(userToLogin.getMailAddress(), defaultPassword));
+	private User[] createDefaultData(int calendarEntryWithoutRoomPerUser, int calendarEntryWithRoomPerUser, int inviteSentFromUser){
+			
+		User user1 = addUser("Steffen", "Baumann");
+		assertNotNull(FAIL_ADD_NOTNULL_USE, user1);
+		User user2 = addUser("Tobias", "Lindener");
+		assertNotNull(FAIL_ADD_NOTNULL_USE, user2);
+		
+		login(user1);
+//		Add calendar to oneself
+		Calendar calendarUser1ToUser1 = addCalendar(user1.getGivenName(), user1.getID());
+		assertNotNull(FAIL_ADD_NOTNULL_CAL, calendarUser1ToUser1);
+		user1 = login(user1.getMailAddress());
+		
+//		Add calendar to another user should fail
+		assertNull(addCalendar(user1.getGivenName(), user2.getID()));
+		
+		Room room1 = addRoom("Created for JUnit test", "Testroom 1", 12);
+		assertNotNull(FAIL_ADD_NOTNULL_ROO, room1);
+		
+		addEntriesAndInvites(user1, user2, calendarEntryWithRoomPerUser, inviteSentFromUser, room1.getID());
+		addEntriesAndInvites(user1, user2, calendarEntryWithoutRoomPerUser, inviteSentFromUser, 0);
+		
+		Group group1 = addGroup(user1.getGivenName()+"'s group");
+		assertNotNull(FAIL_ADD_NOTNULL_GRO, group1);
+		
+		login(user2);
+		
+//		Add calendar to oneself
+		Calendar calendarUser2ToUser2 = addCalendar(user2.getGivenName(), user2.getID());
+		assertNotNull(FAIL_ADD_NOTNULL_CAL, calendarUser2ToUser2);
+
+		user2 = login(user2.getMailAddress());
+		
+		Room room2 = addRoom("Created for JUnit test", "Testroom 2", 24);
+		assertNotNull(FAIL_ADD_NOTNULL_ROO, room2);
+		
+		addEntriesAndInvites(user2, user1, calendarEntryWithRoomPerUser, inviteSentFromUser, room1.getID());
+		addEntriesAndInvites(user2, user1, calendarEntryWithoutRoomPerUser, inviteSentFromUser, 0);
+		
+		Group group2 = addGroup(user2.getGivenName()+"'s group");
+		assertNotNull(FAIL_ADD_NOTNULL_GRO, group2);
+		
+		return new User[]{user1, user2};
+		
 	}
 	
-	@Ignore
+	private void addEntriesAndInvites(User owner, User invitee, int calendarEntryCount, int inviteCount, int roomId){
+		for(int i = 0; i < calendarEntryCount; i++){
+			
+			CalendarEntry entry = addDefaultEntry(owner, i+". entry", roomId);
+			assertNotNull(FAIL_ADD_NOTNULL_ENT, entry);
+			
+			if(i < inviteCount){
+				Invite inviteForOtherUser = addInvite(entry.getID(), invitee.getID());
+				assertNotNull(FAIL_ADD_NOTNULL_INV, inviteForOtherUser);
+			}
+		}
+	}
+	
+	private void login(User userToLogin){
+		login(userToLogin.getMailAddress());
+	}
+	private User login(String mailAddress){
+		User user = requester.login(mailAddress, defaultPassword);
+		assertNotNull(FAIL_LOGIN_USE, user);
+		
+		return user;
+	}
+	
+	@Test
 	public void testRegisterNewUser() {
-		User user1 = (User) addUser("Steffen", "Baumann");
-		assertNotNull(user1);
-		User user2 = (User) addUser("Steffen", "Baumann");
+		User user1 = addUser("Steffen", "Baumann");
+		assertNotNull(FAIL_ADD_NOTNULL_USE, user1);
+		User user2 = addUser("Steffen", "Baumann");
 		assertNull(user2);
-		User user3 = (User) addUser("Svenja", "Moehring");
-		assertNotNull(user3);
+		User user3 = addUser("Svenja", "Moehring");
+		assertNotNull(FAIL_ADD_NOTNULL_USE, user3);
 	}
 
-	@Test
+	@Ignore
 	public void testRemoveObjectByOwnId() {
+		User[] testUser = createDefaultData(2,2,1);
+		login(testUser[0])	;
+		
+//		Calendar requestCalendarUser1 = new Calendar();
+//		requestCalendarUser1.setID(user1.getID());
+//		Calendar user1Calendar = requester.requestObjectByOwnId(requestCalendarUser1);
+		
+//		assertTrue(removeCalendarEntry());
+		
+		
+		
 		fail("Not yet implemented");
 	}
+
 
 	@Test
 	public void testLogin() {
-		
-		
-		
-		fail("Not yet implemented");
+		User user = addUser("Steffen", "Baumann");
+		assertNotNull(FAIL_ADD_NOTNULL_USE, user);
+		login(user);
 	}
 
-	@Test
+	@Ignore
 	public void testAcceptInvite() {
-		
-		
 		fail("Not yet implemented");
 	}
 
-	@Test
+	@Ignore
 	public void testDeclineInvite() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+	@Ignore
 	public void testUpdateObject() {
 		fail("Not yet implemented");
 	}
 
 	@Test
 	public void testAddUserToGroup() {
-		fail("Not yet implemented");
+		User[] userList = createDefaultData(2, 2, 1);
+		
+		User loggedInUser = login(userList[0].getMailAddress());
+		List<Integer> ids = Arrays.asList(1,2);
+		List<Group> groups = requester.requestFollowingObjectsByOwnId(ids, new Group());
+		assertNotNull(FAIL_REQ_NOTNULL_LIST, groups);
+		assertFalse(FAIL_LIST_FULL, groups.isEmpty());
+		
+		for(Group group: groups){
+			boolean result = requester.addUserToGroup(loggedInUser, group);
+			assertTrue(FAIL_ADD_TO_GRO, result);
+		}
+		
+		for(Group group: groups){
+			boolean result = requester.addUserToGroup(loggedInUser, group);
+			assertFalse(FAIL_ADD_TO_GRO_TWICE, result);
+		}
+		
+		for(Group group: groups){
+			boolean result = requester.addUserToGroup(userList[1], group);
+			assertFalse(FAIL_ADD_FOR_ANOTHER_USER + "User to Group", result);
+		}
 	}
 
-	@Test
+	@Ignore
 	public void testRemoveUserFromGroup() {
 		fail("Not yet implemented");
 	}
@@ -318,6 +617,99 @@ public class TestSuite {
 		return requester.addObject(group);
 	}
 	
+	private CalendarEntry addDefaultEntry(User user, String suffix, int roomId){
+		CalendarEntry calendarEntry = new CalendarEntry();
+		calendarEntry.setTitle("DefaultEntry - " + suffix);
+		calendarEntry.setDescription("Entry automated generated for "+user.getGivenName() + " " + user.getSurname());
+		calendarEntry.setStartDate(new Date());
+		calendarEntry.setEndDate(new Date());
+		calendarEntry.setCalendarId(user.getCalendarIds().get(0));
+		calendarEntry.setOwnerId(user.getID());
+		calendarEntry.setRoomId(roomId);
+		return requester.addObject(calendarEntry);
+	}
 	
+
+	private Calendar requestCalendar(int id) {
+		Calendar calendar = new Calendar();
+		calendar.setID(id);
+		return requester.requestObjectByOwnId(calendar);
+	}
+	
+
+	private CalendarEntry requestCalendarEntry(int id) {
+		CalendarEntry calendarEntry = new CalendarEntry();
+		calendarEntry.setID(id);
+		return requester.requestObjectByOwnId(calendarEntry);
+	}
+	
+	private Invite requestInvite(int id){
+		Invite invite = new Invite();
+		invite.setID(id);
+		return requester.requestObjectByOwnId(invite);
+	}
+
+	private User requestUser(int id) {
+		User user = new User();
+		user.setID(id);
+		return requester.requestObjectByOwnId(user);
+	}
+	
+
+	private Room requestRoom(int id) {
+		Room room= new Room();
+		room.setID(id);
+		return requester.requestObjectByOwnId(room);
+	}
+	
+
+	private Group requestGroup(int id) {
+		Group group = new Group();
+		group.setID(id);
+		return requester.requestObjectByOwnId(group);
+	}
+	
+	private boolean removeCalendar(int id) {
+		Calendar calendar = new Calendar();
+		calendar.setID(id);
+		return requester.removeObjectByOwnId(calendar);
+	}
+	
+
+	private boolean removeCalendarEntry(int id) {
+		CalendarEntry calendarEntry = new CalendarEntry();
+		calendarEntry.setID(id);
+		return requester.removeObjectByOwnId(calendarEntry);
+	}
+	
+	private boolean removeInvite(int id){
+		Invite invite = new Invite();
+		invite.setID(id);
+		return requester.removeObjectByOwnId(invite);
+	}
+
+	private boolean removeUser(int id) {
+		User user = new User();
+		user.setID(id);
+		return requester.removeObjectByOwnId(user);
+	}
+	
+
+	private boolean removeRoom(int id) {
+		Room room= new Room();
+		room.setID(id);
+		return requester.removeObjectByOwnId(room);
+	}
+	
+
+	private boolean removeGroup(int id) {
+		Group group = new Group();
+		group.setID(id);
+		return requester.removeObjectByOwnId(group);
+	}
+	
+	private String buildErrorMessage(String message, Object obj){
+		return message + obj.getClass().getSimpleName();
+	}
 	
 }

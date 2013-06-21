@@ -183,5 +183,11 @@ public class TestDataRequestHandler extends RequestHandler {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public boolean dropDatabase() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }
