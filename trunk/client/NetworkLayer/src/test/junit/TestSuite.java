@@ -143,11 +143,13 @@ public class TestSuite {
 	public void testRequestObjectByOwnId() {
 //		Create default data and returns the users to act with
 		User[] userList = createDefaultData(4,4,2);
+		
 //		Login user 2 to request calendar
-		User loggedInUser2 = login(userList[1].getMailAddress());
+		User loggedUser2 = login(userList[1].getMailAddress());
 //		request calendar of user 2
-		Calendar calendarUser2 = requestCalendar(loggedInUser2.getCalendarIds().get(0));
+		Calendar calendarUser2 = requestCalendar(loggedUser2.getCalendarIds().get(0));
 		assertNotNull(FAIL_REQ_NOTNULL_CAL, calendarUser2);
+		
 //		login user 1 to test functionalities
 		User loggedInUser = login(userList[0].getMailAddress());
 //		Should have invites and at least one calendar. Therefore not groups
@@ -162,6 +164,7 @@ public class TestSuite {
 		
 //		Request entries by their id and compare to entries in calendar
 		for(CalendarEntry entry: calendarUser1.getCalendarEntries()){
+//			request own entry by id
 			CalendarEntry requestedEntry = requestCalendarEntry(entry.getID());
 			assertNotNull(FAIL_REQ_NOTNULL_ENT, requestedEntry);
 //			equals method won't work - the hashcode is different
@@ -171,10 +174,12 @@ public class TestSuite {
 		//TODO Invites abfragen geht nicht
 //		Request invites and check access to the mentioned entry
 		for(int id: loggedInUser.getInviteIds()){
-//			Invite invite = requestInvite(id);
-//			assertNotNull(FAIL_REQ_NOTNULL_INV, invite);
-//			CalendarEntry entry = requestCalendarEntry(invite.getCalendarEntryId());
-//			assertNotNull(entry);
+//			request own invites
+			Invite invite = requestInvite(id);
+			assertNotNull(FAIL_REQ_NOTNULL_INV, invite);
+//			request entry you are invited to
+			CalendarEntry entry = requestCalendarEntry(invite.getCalendarEntryId());
+			assertNotNull(FAIL_REQ_NOTNULL_ENT, entry);
 		}
 //		request a group by id
 		Group group = requestGroup(1);
@@ -199,12 +204,12 @@ public class TestSuite {
 //		assertFalse(FAIL_LIST_FULL, userRequest.getGroupIds().isEmpty());
 		
 
-//		request another users calendar (calendar from the top of this method is used)
+//		request another user's calendar (calendar from the top of this method is used)
 		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"Calendar", requestCalendar(calendarUser2.getID()));
-//		request another users invite
-		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"Invite", requestInvite(userList[1].getInviteIds().get(0)));
-//		request an entry of another user you are not invited to
-		CalendarEntry noInvite = calendarUser2.getCalendarEntries().get(calendarUser2.getCalendarEntries().size()-1);
+//		request another user's invite you have not send (User 1 invites just User 2)
+		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"Invite", requestInvite(userList[3].getInviteIds().get(0)));
+//		request another user's entry you are not invited to (User 2 invites User 3)
+		CalendarEntry noInvite = calendarUser2.getCalendarEntries().get(0);
 		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"CalendarEntry", requestCalendarEntry(noInvite.getID()));
 		
 	}
@@ -430,44 +435,41 @@ public class TestSuite {
 		assertNotNull(FAIL_ADD_NOTNULL_USE, user1);
 		User user2 = addUser("Tobias", "Lindener");
 		assertNotNull(FAIL_ADD_NOTNULL_USE, user2);
+		User user3 = addUser("Svenja", "Moehring");
+		assertNotNull(FAIL_ADD_NOTNULL_USE, user2);
+		User[] userList = new User[]{user1, user2, user3};
 		
-		login(user1);
-//		Add calendar to oneself
-		Calendar calendarUser1ToUser1 = addCalendar(user1.getGivenName(), user1.getID());
-		assertNotNull(FAIL_ADD_NOTNULL_CAL, calendarUser1ToUser1);
-		user1 = login(user1.getMailAddress());
 		
-//		Add calendar to another user should fail
-		assertNull(addCalendar(user1.getGivenName(), user2.getID()));
+		for(int i = 0; i < userList.length; i++ ){
+			
+			login(userList[i]);
+//			Add calendar to oneself
+			Calendar calendarUser1ToUser1 = addCalendar(userList[i].getGivenName(), userList[i].getID());
+			assertNotNull(FAIL_ADD_NOTNULL_CAL, calendarUser1ToUser1);
+			userList[i] = login(userList[i].getMailAddress());
+			
+			Room room1 = addRoom("Created for JUnit test", "Testroom "+(i+1), 5*(i+1));
+			assertNotNull(FAIL_ADD_NOTNULL_ROO, room1);
+			
+			User invite = null;
+			if(i==userList.length-1){
+				invite = userList[0];
+			}else{
+				invite = userList[i+1];
+			}
+			
+			addEntriesAndInvites(userList[i], invite, calendarEntryWithRoomPerUser, inviteSentFromUser, room1.getID());
+			addEntriesAndInvites(userList[i], invite, calendarEntryWithoutRoomPerUser, inviteSentFromUser, 0);
+			
+			Group group1 = addGroup(userList[i].getGivenName()+"'s group");
+			assertNotNull(FAIL_ADD_NOTNULL_GRO, group1);
+			
+		}
 		
-		Room room1 = addRoom("Created for JUnit test", "Testroom 1", 12);
-		assertNotNull(FAIL_ADD_NOTNULL_ROO, room1);
-		
-		addEntriesAndInvites(user1, user2, calendarEntryWithRoomPerUser, inviteSentFromUser, room1.getID());
-		addEntriesAndInvites(user1, user2, calendarEntryWithoutRoomPerUser, inviteSentFromUser, 0);
-		
-		Group group1 = addGroup(user1.getGivenName()+"'s group");
-		assertNotNull(FAIL_ADD_NOTNULL_GRO, group1);
-		
-		login(user2);
-		
-//		Add calendar to oneself
-		Calendar calendarUser2ToUser2 = addCalendar(user2.getGivenName(), user2.getID());
-		assertNotNull(FAIL_ADD_NOTNULL_CAL, calendarUser2ToUser2);
-
-		user2 = login(user2.getMailAddress());
-		
-		Room room2 = addRoom("Created for JUnit test", "Testroom 2", 24);
-		assertNotNull(FAIL_ADD_NOTNULL_ROO, room2);
-		
-		addEntriesAndInvites(user2, user1, calendarEntryWithRoomPerUser, inviteSentFromUser, room1.getID());
-		addEntriesAndInvites(user2, user1, calendarEntryWithoutRoomPerUser, inviteSentFromUser, 0);
-		
-		Group group2 = addGroup(user2.getGivenName()+"'s group");
-		assertNotNull(FAIL_ADD_NOTNULL_GRO, group2);
-		
-		return new User[]{user1, user2};
-		
+		for(int i = 0; i < userList.length; i++){
+			userList[i] = login(userList[i].getMailAddress());
+		}
+		return userList;
 	}
 	
 	private void addEntriesAndInvites(User owner, User invitee, int calendarEntryCount, int inviteCount, int roomId){
@@ -625,6 +627,7 @@ public class TestSuite {
 	
 	private Group addGroup(String description){
 		Group group = new Group();
+		group.setName("Testgroup");
 		group.setDescription(description);
 		return requester.addObject(group);
 	}
