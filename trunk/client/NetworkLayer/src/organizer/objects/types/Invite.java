@@ -3,6 +3,8 @@
  */
 package organizer.objects.types;
 
+import java.util.List;
+
 import organizer.objects.AbstractOrganizerObject;
 
 /**

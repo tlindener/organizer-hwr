@@ -46,7 +46,7 @@ import com.google.gson.reflect.TypeToken;
  */
 public class JsonJavaRequestHandler extends RequestHandler {
 	/** The JSON-Paser */
-	private Gson gson = null;
+	protected Gson gson = null;
 	/** The HTTP connection for sending GET-request */
 	protected HttpURLConnection connection = null;
 	/** Hostname of the backend where the application is placed */
@@ -81,7 +81,18 @@ public class JsonJavaRequestHandler extends RequestHandler {
 
 	/**
 	 * Requests an given object by using its own ID. Look on
-	 * {@link AbstractOrganizerObject#getID()} for more information.
+	 * {@link AbstractOrganizerObject#getID()} for more information. <br>
+	 * <b>Following restrictions are given by the back end:</b>
+	 * <ul>
+	 * <li>{@link User}: You can only request the user object you logged in to.
+	 * <li>{@link CalendarEntry}: You receive the whole {@link CalendarEntry}, if you
+	 * are owner of it or if you are invited to it.
+	 * TODO Tobias Fragen 
+	 * <li>{@link Calendar}: You can only request a {@link Calendar} of yours.
+	 * <li>{@link Invite}: You can only request an {@link Invite} you are registered as owner.
+	 * </ul>
+	 * 
+	 * Rooms and Groups do not have any restrictions.
 	 * 
 	 * @param obj
 	 *            Instance of {@link AbstractOrganizerObject} thats ID is used
@@ -145,7 +156,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * 
 	 * <ul>
 	 * <li>{@link User}: You will receive a {@link List}<{@link User}>, where
-	 * anF user contains its given name, surname, mail address, phone number and
+	 * an user contains its given name, surname, mail address, phone number and
 	 * ID. The stored lists will be empty.
 	 * <li>{@link CalendarEntry}: This method is not supported. Use the method
 	 * {@link #requestAllObjectsByProperty(AbstractOrganizerObject)} with the
@@ -156,7 +167,10 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * IDs in your user object. Maybe you have to request this object.
 	 * </ul>
 	 * 
-	 * Rooms and Groups do not have any restrictions. 
+	 * TODO Mit Tobias absprechen
+	 * 
+	 * Rooms and Groups do not have any restrictions.
+	 * 
 	 * @param obj
 	 *            Instance of {@link AbstractOrganizerObject} thats type is used
 	 *            to request all elements from the backend.
@@ -213,7 +227,9 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	/**
 	 * Requests the first object of the given object type by using its set
 	 * property. Look on {@link AbstractOrganizerObject#getProperty()} for more
-	 * information.
+	 * information. With this method using the
+	 * {@link #requestAllObjectsByProperty(AbstractOrganizerObject)} method, the
+	 * same restrictions are given.
 	 * 
 	 * @param obj
 	 *            Instance of {@link AbstractOrganizerObject} thats set property
@@ -239,10 +255,12 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * <b>Following restrictions are given by the back end:</b>
 	 * 
 	 * <ul>
-	 * <li> {@link CalendarEntry}: 
+	 * <li> {@link CalendarEntry}:
 	 * <ul>
-	 * <li>by owner ID: You can only request {@link CalendarEntry}s of your own ID
-	 * <li>by room id: You will receive a List of anonymous {@link CalendarEntry}(time, owner ID)
+	 * <li>by owner ID: You can only request {@link CalendarEntry}s of your own
+	 * ID
+	 * <li>by room id: You will receive a List of anonymous
+	 * {@link CalendarEntry}(time, owner ID)
 	 * </ul>
 	 * <li> {@link Group}: You can only request {@link Group}s you are member of.
 	 * </ul>
@@ -258,7 +276,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	@Override
 	public <T extends AbstractOrganizerObject> List<T> requestAllObjectsByProperty(
 			T obj) {
-		
+
 		try {
 			String getCmd = ParseUtils.getCompleteByPropertyCommand(obj,
 					authString);
@@ -332,8 +350,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	/**
 	 * Adds an new object of {@link AbstractOrganizerObject} to the database.<br>
 	 * <b>For adding an {@link User} use
-	 * {@link JsonJavaRequestHandler#registerNewUser(User, String)} instead this
-	 * method.</b>
+	 * {@link JsonJavaRequestHandler#registerNewUser(User, String)} instead.
 	 * 
 	 * @param obj
 	 *            defines the main attributes of the object, that should be
@@ -361,7 +378,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 					.toArray(new String[parameters.size()]));
 			String json = sendGetToServer(getCmd);
 			Integer id = gson.fromJson(json, int.class);
-			if (id == null || id == 0)
+			if (id == null || id == 0 || id == -1)
 				return null;
 			obj.setID(id);
 			return obj;
@@ -551,6 +568,8 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -625,7 +644,15 @@ public class JsonJavaRequestHandler extends RequestHandler {
 						/ (double) ids.size());
 			}
 		}
-
 		return requestedObjects;
+	}
+
+	@Override
+	public boolean dropDatabase() {
+		String json = sendGetToServer("RemoveDatabase");
+		Boolean errorValue = gson.fromJson(json, boolean.class);
+		if (errorValue == null)
+			return false;
+		return errorValue;
 	}
 }

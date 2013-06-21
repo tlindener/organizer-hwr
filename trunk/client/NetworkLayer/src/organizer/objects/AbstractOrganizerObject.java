@@ -3,6 +3,8 @@ package organizer.objects;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import network.RequestHandler;
 
@@ -16,7 +18,7 @@ import network.RequestHandler;
  * @version 1.0
  * 
  */
-public abstract class AbstractOrganizerObject {
+public abstract class AbstractOrganizerObject implements Comparable<AbstractOrganizerObject>{
 
 	/** the property of the object*/
 	protected String byProperty = null;
@@ -85,6 +87,7 @@ public abstract class AbstractOrganizerObject {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private String checkType(Field field) throws IllegalArgumentException,
 			IllegalAccessException {
 		// null is returned every time
@@ -98,6 +101,7 @@ public abstract class AbstractOrganizerObject {
 		}
 		// Collections (like List<?>) will be encapsulated by "<[" and "]>"
 		if (Collection.class.isAssignableFrom(type)) {
+			Collections.sort((List)field.get(this));
 			return "<" + field.get(this) + ">";
 			// elements of AbstractOrganizerObject will be replaced by their IDs
 		} else if (AbstractOrganizerObject.class.isAssignableFrom(type)) {
@@ -128,6 +132,12 @@ public abstract class AbstractOrganizerObject {
 	public void setRequestProperty(String property, String value) {
 		this.byValue = value;
 		this.byProperty = property;
+	}
+	
+	@Override
+	public int compareTo(AbstractOrganizerObject o) {
+		if(!o.getClass().equals(this.getClass())) throw new IllegalArgumentException("Cannot compare to elements of different classes.");
+		return this.getID()-o.getID();
 	}
 
 }

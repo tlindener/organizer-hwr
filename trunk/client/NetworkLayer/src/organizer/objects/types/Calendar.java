@@ -75,4 +75,5 @@ public class Calendar extends AbstractOrganizerObject{
 	public String[] getProperty() throws IllegalArgumentException {
 		throw new IllegalArgumentException("No available Property for " + getClass().getSimpleName());
 	}
+
 }
