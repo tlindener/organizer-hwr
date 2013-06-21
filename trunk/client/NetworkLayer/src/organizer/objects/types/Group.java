@@ -20,6 +20,8 @@ public class Group extends AbstractOrganizerObject {
 	private String description = "";
 	/** list of all user IDs contained by the group*/
 	private List<Integer> members = new ArrayList<Integer>();
+	/** the name of the group*/
+	private String name = "";
 	
 	/**
 	 * @return the description
@@ -47,6 +49,20 @@ public class Group extends AbstractOrganizerObject {
 	 */
 	public void setMembers(List<Integer> members) {
 		this.members = members;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override

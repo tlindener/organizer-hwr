@@ -141,59 +141,71 @@ public class TestSuite {
 
 	@Test
 	public void testRequestObjectByOwnId() {
-		
+//		Create default data and returns the users to act with
 		User[] userList = createDefaultData(4,4,2);
-		
+//		Login user 2 to request calendar
 		User loggedInUser2 = login(userList[1].getMailAddress());
-		
+//		request calendar of user 2
 		Calendar calendarUser2 = requestCalendar(loggedInUser2.getCalendarIds().get(0));
 		assertNotNull(FAIL_REQ_NOTNULL_CAL, calendarUser2);
-		
+//		login user 1 to test functionalities
 		User loggedInUser = login(userList[0].getMailAddress());
-		
+//		Should have invites and at least one calendar. Therefore not groups
 		assertFalse(FAIL_LIST_EMPTY, loggedInUser.getCalendarIds().isEmpty());
 		assertFalse(FAIL_LIST_EMPTY, loggedInUser.getInviteIds().isEmpty());
 		assertTrue(FAIL_LIST_FULL, loggedInUser.getGroupIds().isEmpty());
 		
 //		User can only have on Calendar at the moment
+//		request this calendar
 		Calendar calendarUser1 = requestCalendar(loggedInUser.getCalendarIds().get(0));
 		assertNotNull(FAIL_REQ_NOTNULL_CAL, calendarUser1);
 		
-		
+//		Request entries by their id and compare to entries in calendar
 		for(CalendarEntry entry: calendarUser1.getCalendarEntries()){
 			CalendarEntry requestedEntry = requestCalendarEntry(entry.getID());
 			assertNotNull(FAIL_REQ_NOTNULL_ENT, requestedEntry);
+//			equals method won't work - the hashcode is different
 			assertEquals("No equal entries", requestedEntry.toString(), entry.toString());
 		}
 		
 		//TODO Invites abfragen geht nicht
+//		Request invites and check access to the mentioned entry
 		for(int id: loggedInUser.getInviteIds()){
 //			Invite invite = requestInvite(id);
 //			assertNotNull(FAIL_REQ_NOTNULL_INV, invite);
 //			CalendarEntry entry = requestCalendarEntry(invite.getCalendarEntryId());
 //			assertNotNull(entry);
 		}
-		
+//		request a group by id
 		Group group = requestGroup(1);
 		assertNotNull(FAIL_REQ_NOTNULL_GRO, group);
-		
+//		request a group by id
 		Room room = requestRoom(1);
 		assertNotNull(FAIL_REQ_NOTNULL_ROO, room);
 		
-//		TODO Anonymous User-Object ?
-		User userRequest = requestUser(userList[1].getID());
+//		request own user object completely
+		User userRequest = requestUser(userList[0].getID());
 		assertNotNull(FAIL_REQ_NOTNULL_USE, userRequest);
+		assertFalse(FAIL_LIST_FULL, userRequest.getCalendarIds().isEmpty());
+		assertFalse(FAIL_LIST_FULL, userRequest.getInviteIds().isEmpty());
+		assertTrue(FAIL_LIST_EMPTY, userRequest.getGroupIds().isEmpty());
+		
+//		Request another user by its id should be an anonymous one (no lists contained)
+//		TODO Anonymous User-Object ?
+//		User userRequest = requestUser(userList[1].getID());
+//		assertNotNull(FAIL_REQ_NOTNULL_USE, userRequest);
 //		assertTrue(FAIL_LIST_EMPTY, userRequest.getCalendarIds().isEmpty());
 //		assertTrue(FAIL_LIST_EMPTY, userRequest.getInviteIds().isEmpty());
 //		assertFalse(FAIL_LIST_FULL, userRequest.getGroupIds().isEmpty());
 		
+
+//		request another users calendar (calendar from the top of this method is used)
 		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"Calendar", requestCalendar(calendarUser2.getID()));
+//		request another users invite
 		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"Invite", requestInvite(userList[1].getInviteIds().get(0)));
-		
+//		request an entry of another user you are not invited to
 		CalendarEntry noInvite = calendarUser2.getCalendarEntries().get(calendarUser2.getCalendarEntries().size()-1);
 		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"CalendarEntry", requestCalendarEntry(noInvite.getID()));
-		
-		
 		
 	}
 
@@ -257,7 +269,7 @@ public class TestSuite {
 		for(User u: user2){
 			assertTrue(FAIL_LIST_EMPTY, u.getCalendarIds().isEmpty());
 			assertTrue(FAIL_LIST_EMPTY, u.getInviteIds().isEmpty());
-			assertFalse(FAIL_LIST_EMPTY, u.getGroupIds().isEmpty());
+//			assertFalse(FAIL_LIST_EMPTY, u.getGroupIds().isEmpty());
 		}
 	}
 
