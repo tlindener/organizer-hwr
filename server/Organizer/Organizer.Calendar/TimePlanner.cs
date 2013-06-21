@@ -546,6 +546,7 @@ namespace Organizer
         {
             try
             {
+          
                 _calendarDatabase.Groups.Add(dbGroup);
                 _calendarDatabase.SaveChanges();
                 return dbGroup.GroupId;
@@ -573,6 +574,10 @@ namespace Organizer
             }
             try
             {
+                if (group.Members.Contains(user))
+                {
+                    return false;
+                }
                 group.Members.Add(user);
                 _calendarDatabase.SaveChanges();
                 return true;

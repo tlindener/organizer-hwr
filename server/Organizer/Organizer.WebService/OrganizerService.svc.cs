@@ -102,7 +102,7 @@ namespace Organizer.WebService
                         if (item != null)
                         {
                             returnValue1 = IsRequesterOwner(user, item.Owner.UserId);
-                            returnValue2 = (item.Invitations.Where(p => p.Owner.UserId == requestUserId).Count() > 0);
+                            returnValue2 = (item.Invitations.Where(p => p.Owner.UserId == user.UserId).Count() > 0);
                         }
                         return IsRequestAllowed(returnValue1, returnValue2);
                     }
@@ -110,16 +110,29 @@ namespace Organizer.WebService
                     {
                         bool returnValue1 = false;
                         bool returnValue2 = false;
-                        var item = timeplanner.GetInviteById(requestUserId);
-                        if (item != null)
+
+                        Invite item = null;
+                        if (requestId > 0)
                         {
-                            returnValue1 = IsRequesterOwner(user, item.Owner.UserId);
-                            returnValue2 = IsRequesterOwner(user, item.CalendarEntry.Owner.UserId);
+                            item = timeplanner.GetInviteById(requestId);
+                            if (item != null)
+                            {
+                                returnValue1 = IsRequesterOwner(user, item.Owner.UserId);
+                                returnValue2 = IsRequesterOwner(user, item.CalendarEntry.Owner.UserId);
+                            }
                         }
+                        if (requestUserId > 0)
+                        {
+                            return IsRequesterOwner(user, requestUserId);
+                        }
+
                         return IsRequestAllowed(returnValue1, returnValue2);
                     }
-                case RequestItemType.Room:
                 case RequestItemType.User:
+                    {
+                        return IsRequesterOwner(user, requestUserId);
+                    }
+                case RequestItemType.Room:
                 case RequestItemType.Group:
                     {
                         return true;
@@ -289,10 +302,7 @@ namespace Organizer.WebService
                     }
                 case RequestItemType.Group:
                     {
-                        if (requestUserId > 0)
-                        {
-                            return IsRequesterOwner(user, requestUserId);
-                        }
+
                         if (requestId > 0)
                         {
                             var item = timeplanner.GetGroupById(requestId);
@@ -468,13 +478,16 @@ namespace Organizer.WebService
 
         public WebUser GetUserById(int userId, string userAuth)
         {
-            if (!ValidateRequest(RequestType.RemoveItem, RequestItemType.Calendar, userAuth, userId, 0))
-                return null;
+            if (!ValidateRequest(RequestType.GetItem, RequestItemType.User, userAuth, userId, 0))
+            {
+                if (!ValidateUser(userAuth))
+                    return null;
+
+                return timeplanner.GetUserById(userId).ToAnonymousWebUser();
+            }
 
             return timeplanner.GetUserById(userId).ToWebUser();
         }
-
-
 
         public int AddUser(string givenName, string surname, string mailAddress, string phoneNumber, string password)
         {
@@ -570,10 +583,23 @@ namespace Organizer.WebService
             }
             return groups.Select(p => p.ToWebGroup()).ToList();
         }
-        public int AddGroup(string description, string userAuth)
+        public ICollection<WebGroup> GetAllGroups(string userAuth)
+        {
+            if (ValidateUser(userAuth))
+                return null;
+
+            var groups = timeplanner.GetAllGroups();
+            if (groups == null)
+            {
+                return null;
+            }
+            return groups.Select(p => p.ToWebGroup()).ToList();
+        }
+        public int AddGroup(string name, string description, string userAuth)
         {
             Group group = new Group()
             {
+                Name = name,
                 Description = description
             };
 
@@ -765,7 +791,7 @@ namespace Organizer.WebService
             List<WebUser> invitees = new List<WebUser>();
             if (calendarEntry.Invitations.Count() > 0)
             {
-                invitees = calendarEntry.Invitations.Select(p => p.Owner.ToWebUser()).ToList();
+                invitees = calendarEntry.Invitations.Select(p => p.Owner.ToAnonymousWebUser()).ToList();
             }
 
             if (calendarEntry.Owner != null)
@@ -896,6 +922,7 @@ namespace Organizer.WebService
             return new WebGroup()
             {
                 Description = group.Description,
+                Name = group.Name,
                 Id = group.GroupId,
                 Members = group.Members
 

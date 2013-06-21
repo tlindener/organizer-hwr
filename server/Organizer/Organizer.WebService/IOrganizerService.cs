@@ -320,7 +320,7 @@ namespace Organizer.WebService
         /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        int AddGroup(string description, string userAuth);
+        int AddGroup(string name,string description, string userAuth);
 
        /// <summary>
         ///  Update specified group
@@ -421,6 +421,14 @@ namespace Organizer.WebService
         bool RemoveInvite(int inviteId, string userAuth);
 
 
+        /// <summary>
+        /// Returns a list of all available groups
+        /// </summary>
+        /// <param name="userAuth"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        ICollection<WebGroup> GetAllGroups(string userAuth);
 
         #endregion
 
