@@ -212,7 +212,7 @@ namespace Organizer.WebService
             {
                 case RequestItemType.Calendar:
                     {
-                        var item = timeplanner.GetCalendarById(requestUserId);
+                        var item = timeplanner.GetCalendarById(requestId);
                         if (item != null)
                         {
                             return IsRequesterOwner(user, item.Owner.UserId);
@@ -232,7 +232,7 @@ namespace Organizer.WebService
                         }
                         if (requestUserId > 0)
                         {
-                            var item = timeplanner.GetInviteById(requestUserId);
+                            var item = timeplanner.GetInviteById(requestId);
                             if (item != null)
                             {
                                 return IsRequesterOwner(user, item.CalendarEntry.Owner.UserId);
@@ -243,7 +243,7 @@ namespace Organizer.WebService
                 case RequestItemType.Invite:
                     {
 
-                        var item = timeplanner.GetInviteById(requestUserId);
+                        var item = timeplanner.GetInviteById(requestId);
                         if (item != null)
                         {
                             return IsRequesterOwner(user, item.CalendarEntry.Owner.UserId);
@@ -253,6 +253,17 @@ namespace Organizer.WebService
                 case RequestItemType.User:
                     {
                         return IsRequesterOwner(user, requestUserId);
+                    }
+                case RequestItemType.Group:
+                    {
+
+                        if (requestId > 0)
+                        {
+                            var item = timeplanner.GetGroupById(requestId);
+                            return (item.Members.Where(p => p.UserId == user.UserId).Count() > 0);
+
+                        }
+                        break;
                     }
             }
             return false;
@@ -268,7 +279,7 @@ namespace Organizer.WebService
             {
                 case RequestItemType.Calendar:
                     {
-                        var item = timeplanner.GetCalendarById(requestUserId);
+                        var item = timeplanner.GetCalendarById(requestId);
                         if (item != null)
                         {
                             return IsRequesterOwner(user, item.Owner.UserId);
@@ -289,7 +300,7 @@ namespace Organizer.WebService
                 case RequestItemType.Invite:
                     {
 
-                        var item = timeplanner.GetInviteById(requestUserId);
+                        var item = timeplanner.GetInviteById(requestId);
                         if (item != null)
                         {
                             return IsRequesterOwner(user, item.CalendarEntry.Owner.UserId);
@@ -504,7 +515,7 @@ namespace Organizer.WebService
 
         public bool RemoveUser(int userId, string userAuth)
         {
-            if (!ValidateRequest(RequestType.RemoveItem, RequestItemType.User, userAuth, userId, 0))
+            if(ValidateRequest(RequestType.RemoveItem, RequestItemType.User, userAuth, userId, 0))
             {
                 return timeplanner.RemoveUser(userId);
             }
@@ -713,7 +724,7 @@ namespace Organizer.WebService
 
         public bool UpdateUser(int userId, string givenName, string surname, string mailAddress, string phoneNumber, string password, string userAuth)
         {
-            if (!ValidateRequest(RequestType.UpdateItem, RequestItemType.CalendarEntry, userAuth, userId, 0))
+            if (ValidateRequest(RequestType.UpdateItem, RequestItemType.CalendarEntry, userAuth, userId, 0))
                 return false;
 
             return timeplanner.UpdateUser(userId, givenName, surname, mailAddress, phoneNumber, password);
@@ -788,10 +799,10 @@ namespace Organizer.WebService
             }
             int ownerId = 0;
             int roomId = 0;
-            List<WebUser> invitees = new List<WebUser>();
+            List<int> invitations = new List<int>();
             if (calendarEntry.Invitations.Count() > 0)
             {
-                invitees = calendarEntry.Invitations.Select(p => p.Owner.ToAnonymousWebUser()).ToList();
+                invitations = calendarEntry.Invitations.Select(p => p.InviteId).ToList();
             }
 
             if (calendarEntry.Owner != null)
@@ -815,7 +826,7 @@ namespace Organizer.WebService
                 Id = calendarEntry.CalendarEntryId,
                 RoomId = roomId,
                 OwnerId = ownerId,
-                Invitees = invitees
+                InviteIds = invitations
             };
 
 
@@ -851,7 +862,7 @@ namespace Organizer.WebService
                 Id = calendarEntry.CalendarEntryId,
                 RoomId = roomId,
                 OwnerId = ownerId,
-                Invitees = null
+                InviteIds = null
             };
 
 
@@ -904,7 +915,7 @@ namespace Organizer.WebService
                 CalendarIds = new List<int>(),
                 MailAddress = user.MailAddress,
                 PhoneNumber = user.PhoneNumber,
-                GroupIds = new List<int>(),
+                GroupIds = user.Groups.Select(p => p.GroupId).ToList(),
                 InviteIds = new List<int>()
 
             };

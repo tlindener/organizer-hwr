@@ -64,6 +64,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Calendar.cd" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

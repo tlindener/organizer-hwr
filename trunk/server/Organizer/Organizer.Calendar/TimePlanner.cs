@@ -70,8 +70,8 @@ namespace Organizer
                 _calendarDatabase.Calendar.Add(cal);
                 _calendarDatabase.SaveChanges();
                 owner.CalendarId = cal.CalendarId;
-                                _calendarDatabase.SaveChanges();  
-                
+                _calendarDatabase.SaveChanges();
+
                 return cal.CalendarId;
             }
             catch (Exception ex)
@@ -124,16 +124,33 @@ namespace Organizer
         /// <returns></returns>
         public bool RemoveCalendar(int calendarId)
         {
-      
+
             Calendar calendar = _calendarDatabase.Calendar.Find(calendarId);
             if (calendar == null)
             {
                 return false;
             }
-            try{
-            _calendarDatabase.Calendar.Remove(calendar);
-            _calendarDatabase.SaveChanges();
-            return true;
+
+            try
+            {
+                if (calendar.CalendarEntries.Count > 0)
+                {
+                    var calendarEntries = calendar.CalendarEntries.ToList();
+                    foreach (var entry in calendarEntries)
+                    {
+                        var invites = entry.Invitations.ToList();
+                        foreach (Invite inv in invites)
+                        {
+                            _calendarDatabase.Invites.Remove(inv);
+
+                        }
+                        _calendarDatabase.CalendarEntries.Remove(entry);
+                    }
+
+                }
+                _calendarDatabase.Calendar.Remove(calendar);
+                _calendarDatabase.SaveChanges();
+                return true;
             }
             catch (Exception ex)
             {
@@ -247,9 +264,9 @@ namespace Organizer
             }
             try
             {
-            calendarEntry.Room = room;
-            _calendarDatabase.SaveChanges();
-            return true;
+                calendarEntry.Room = room;
+                _calendarDatabase.SaveChanges();
+                return true;
             }
             catch (Exception ex)
             {
@@ -282,7 +299,7 @@ namespace Organizer
                 _calendarDatabase.CalendarEntries.Remove(entry);
                 _calendarDatabase.SaveChanges();
                 return true;
-               
+
             }
             catch (Exception ex)
             {
@@ -368,15 +385,23 @@ namespace Organizer
         {
             User user = _calendarDatabase.User.Find(userId);
             if (user == null)
-            {
                 return false;
-            }
+
             try
             {
+                RemoveCalendar(user.Calendar.CalendarId);
+                user.Calendar = null;
+
+                var invites = user.Invites.ToList();
+                foreach(Invite inv in invites)
+                {
+                    _calendarDatabase.Invites.Remove(inv);
+                }
+                user.Groups = null;
                 _calendarDatabase.User.Remove(user);
                 _calendarDatabase.SaveChanges();
                 return true;
-            }              
+            }
             catch (Exception ex)
             {
                 _logger.Error(ex.ToString());
@@ -462,7 +487,7 @@ namespace Organizer
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.ToString());                
+                _logger.Error(ex.ToString());
             }
             return false;
         }
@@ -479,7 +504,7 @@ namespace Organizer
         {
             try
             {
-                var groups =  _calendarDatabase.Groups.ToList();
+                var groups = _calendarDatabase.Groups.ToList();
                 if (groups != null)
                 {
                     return groups;
@@ -546,7 +571,7 @@ namespace Organizer
         {
             try
             {
-          
+
                 _calendarDatabase.Groups.Add(dbGroup);
                 _calendarDatabase.SaveChanges();
                 return dbGroup.GroupId;
@@ -578,7 +603,7 @@ namespace Organizer
                 {
                     return false;
                 }
-                group.Members.Add(user);
+                user.Groups.Add(group);
                 _calendarDatabase.SaveChanges();
                 return true;
             }
@@ -751,9 +776,9 @@ namespace Organizer
             {
                 return 0;
             }
-            if (calendarEntry.Invitations.Where(p=> p.Owner == user).Count() > 0)
+            if (calendarEntry.Invitations.Where(p => p.Owner == user).Count() > 0)
             {
-                return calendarEntry.Invitations.Where(p => p.Owner == user).First().InviteId;  
+                return calendarEntry.Invitations.Where(p => p.Owner == user).First().InviteId;
             }
             var invite = new Invite
             {
@@ -859,23 +884,23 @@ namespace Organizer
 
         public bool UpdateCalendar(int calendarId, string name, string description)
         {
-           var calendar = _calendarDatabase.Calendar.Find(calendarId);
-           if (calendar != null)
-           {
-               calendar.Name = name;
-               calendar.Description = description;
-               try
-               {
-                   _calendarDatabase.SaveChanges();
-                   return true;
-               }
-               catch (Exception ex)
-               {
-                   _logger.Error(ex.ToString());
-               }
-           }
-           return false;
-         
+            var calendar = _calendarDatabase.Calendar.Find(calendarId);
+            if (calendar != null)
+            {
+                calendar.Name = name;
+                calendar.Description = description;
+                try
+                {
+                    _calendarDatabase.SaveChanges();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex.ToString());
+                }
+            }
+            return false;
+
         }
 
         public bool UpdateCalendarEntry(int calendarEntryId, string title, string description, DateTime startDate, DateTime endDate, int roomId)
@@ -935,7 +960,7 @@ namespace Organizer
                 room.Description = description;
                 room.Location = location;
                 room.Seats = seats;
-                
+
                 try
                 {
                     _calendarDatabase.SaveChanges();
@@ -971,7 +996,7 @@ namespace Organizer
 
         public bool RemoveDatabase()
         {
-           return _calendarDatabase.Database.Delete();
+            return _calendarDatabase.Database.Delete();
         }
     }
 

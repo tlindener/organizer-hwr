@@ -19,9 +19,7 @@ namespace Organizer.Interfaces
     {
         [Key]
         public int CalendarId { get; set; }
-
-        [Required]
-        public virtual User Owner { get; set; }
+       public virtual User Owner { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public virtual ICollection<CalendarEntry> CalendarEntries { get; set; }

@@ -95,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <Content Include="Release_Web.config" />
     <None Include="Web.Debug.config">
