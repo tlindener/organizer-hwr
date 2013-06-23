@@ -84,19 +84,20 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * {@link AbstractOrganizerObject#getID()} for more information. <br>
 	 * <b>Following restrictions are given by the back end:</b>
 	 * <ul>
-	 * <li>{@link User}: You can only request the user object you logged in to.
-	 * <li>{@link CalendarEntry}: You receive the whole {@link CalendarEntry}, if you
-	 * are owner of it or if you are invited to it.
-	 * TODO Tobias Fragen 
+	 * <li>{@link User}: You can only request the user object you logged into.
+	 * All other user objects will be anonymized.
+	 * <li>{@link CalendarEntry}: You receive the whole {@link CalendarEntry},
+	 * if you are owner of it or if you are invited to it.
 	 * <li>{@link Calendar}: You can only request a {@link Calendar} of yours.
-	 * <li>{@link Invite}: You can only request an {@link Invite} you are registered as owner.
+	 * <li>{@link Invite}: You can only request an {@link Invite} you are
+	 * registered as owner of it or owner of the {@link CalendarEntry}.
 	 * </ul>
 	 * 
 	 * Rooms and Groups do not have any restrictions.
 	 * 
 	 * @param obj
 	 *            Instance of {@link AbstractOrganizerObject} thats ID is used
-	 *            to request an element from the backend.
+	 *            to request an element from the back end.
 	 * @return filled instance of {@link AbstractOrganizerObject} or null, if no
 	 *         element with the given ID exists.
 	 */
@@ -126,7 +127,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 
 	/**
 	 * Sends the GET-Command to the server and receives a JSON-String
-	 * repesenting the answer.
+	 * representing the answer.
 	 * 
 	 * @param request
 	 * @return JSON-String representing the object or null, if there was an
@@ -155,9 +156,9 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * <b>Following restrictions are given by the back end:</b>
 	 * 
 	 * <ul>
-	 * <li>{@link User}: You will receive a {@link List}<{@link User}>, where
-	 * an user contains its given name, surname, mail address, phone number and
-	 * ID. The stored lists will be empty.
+	 * <li>{@link User}: You will receive a {@link List}<{@link User}>, where an
+	 * user contains its given name, surname, mail address, phone number and ID.
+	 * The stored lists will be empty <b>expected</b> the groupIds.
 	 * <li>{@link CalendarEntry}: This method is not supported. Use the method
 	 * {@link #requestAllObjectsByProperty(AbstractOrganizerObject)} with the
 	 * user id as byProperty instead.
@@ -258,11 +259,11 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * <li> {@link CalendarEntry}:
 	 * <ul>
 	 * <li>by owner ID: You can only request {@link CalendarEntry}s of your own
-	 * ID
+	 * ID or you are invited to.
 	 * <li>by room id: You will receive a List of anonymous
 	 * {@link CalendarEntry}(time, owner ID)
 	 * </ul>
-	 * <li> {@link Group}: You can only request {@link Group}s you are member of.
+	 * <li> {@link Group}: You will request {@link Group}s you are member of.
 	 * </ul>
 	 * 
 	 * @param obj
@@ -302,8 +303,8 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	}
 
 	/**
-	 * Adds new {@link User} to the database. The password is hashed,
-	 * ASCII-based and Base64 encoded before it is sent to the server. With the
+	 * Adds new {@link User} to the database. The password is hashed
+	 * and hexadecimal encoded before it is sent to the server. With the
 	 * mail address being necessary for the login it must be defined by the
 	 * given {@link User}, otherwise an {@link IllegalArgumentException} is
 	 * thrown.

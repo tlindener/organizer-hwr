@@ -37,7 +37,7 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	/** the room id for this entry*/
 	private int roomId = -1;
 	/** list of invited users for this entry*/			
-	private List<User> invitees = new ArrayList<User>();
+	private List<Integer> inviteIds = new ArrayList<Integer>();
 
 	/**
 	 * @return the startDate
@@ -222,15 +222,15 @@ public class CalendarEntry extends AbstractOrganizerObject {
 	/**
 	 * @return the invitees
 	 */
-	public List<User> getInvitees() {
-		return invitees;
+	public List<Integer> getInviteIds() {
+		return inviteIds;
 	}
 
 	/**
-	 * @param invitees the invitees to set
+	 * @param inviteIds the invitees to set
 	 */
-	public void setInvitees(List<User> invitees) {
-		this.invitees = invitees;
+	public void setInvitees(List<Integer> inviteIds) {
+		this.inviteIds = inviteIds;
 	}
 	
 	@Override

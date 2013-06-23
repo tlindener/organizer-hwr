@@ -9,9 +9,12 @@ package test.junit;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import javax.security.auth.login.FailedLoginException;
 
 import network.RequestHandler;
 import network.json.JsonJavaIISRequestHandler;
@@ -56,12 +59,17 @@ public class TestSuite {
 	private static final String FAIL_UPD_FALSE_GRO = "ERROR: Result is false. Group is not updated.";
 	private static final String FAIL_UPD_FALSE_INV = "ERROR: Result is false. Invite is not updated.";
 	
+	private static final String FAIL_UPD_TRUE_GRO = "ERROR: Result is true. Group is updated.";
+	
 	private static final String FAIL_REM_FALSE_CAL = "ERROR: Result is false. Calendar is not removed.";
 	private static final String FAIL_REM_FALSE_ENT = "ERROR: Result is false. CalendarEntry is not removed.";
 	private static final String FAIL_REM_FALSE_USE = "ERROR: Result is false. User is not removed.";
 	private static final String FAIL_REM_FALSE_ROO = "ERROR: Result is false. Room is not removed.";
 	private static final String FAIL_REM_FALSE_GRO = "ERROR: Result is false. Group is not removed.";
 	private static final String FAIL_REM_FALSE_INV = "ERROR: Result is false. Invite is not removed.";
+	
+	private static final String FAIL_REM_TRUE_INV = "ERROR: Result is true. Invite is removed.";
+	private static final String FAIL_REM_TRUE_GRO = "ERROR: Result is true. Group is removed.";
 	
 	private static final String FAIL_ACC = "ERROR: The invite was not accepted. The returned value was not 1";
 	private static final String FAIL_DEC = "ERROR: The invite was not accepted. The returned value was not -1";
@@ -130,7 +138,7 @@ public class TestSuite {
 	@After
 	public void tearDownEachTest() throws Exception {
 		boolean result = requester.dropDatabase();
-		System.err.println("TearDown Result: " + result);
+//		System.err.println("TearDown Result: " + result);
 		assertTrue(result);
 	}
 
@@ -169,9 +177,17 @@ public class TestSuite {
 			assertNotNull(FAIL_REQ_NOTNULL_ENT, requestedEntry);
 //			equals method won't work - the hashcode is different
 			assertEquals("No equal entries", requestedEntry.toString(), entry.toString());
+			if(!entry.getInviteIds().isEmpty()){
+				for(int id : entry.getInviteIds()){
+					Invite in = requestInvite(id);
+					assertNotNull(FAIL_REQ_NOTNULL_INV, in);
+				}
+				
+			}
+			
+			
 		}
 		
-		//TODO Invites abfragen geht nicht
 //		Request invites and check access to the mentioned entry
 		for(int id: loggedInUser.getInviteIds()){
 //			request own invites
@@ -195,19 +211,17 @@ public class TestSuite {
 		assertFalse(FAIL_LIST_FULL, userRequest.getInviteIds().isEmpty());
 		assertTrue(FAIL_LIST_EMPTY, userRequest.getGroupIds().isEmpty());
 		
-//		Request another user by its id should be an anonymous one (no lists contained)
-//		TODO Anonymous User-Object ?
-//		User userRequest = requestUser(userList[1].getID());
-//		assertNotNull(FAIL_REQ_NOTNULL_USE, userRequest);
-//		assertTrue(FAIL_LIST_EMPTY, userRequest.getCalendarIds().isEmpty());
-//		assertTrue(FAIL_LIST_EMPTY, userRequest.getInviteIds().isEmpty());
-//		assertFalse(FAIL_LIST_FULL, userRequest.getGroupIds().isEmpty());
-		
+//		Request another user by its id
+		User userRequest2 = requestUser(userList[1].getID());
+		assertNotNull(FAIL_REQ_NOTNULL_USE, userRequest2);
+		assertTrue(FAIL_LIST_EMPTY, userRequest2.getCalendarIds().isEmpty());
+		assertTrue(FAIL_LIST_EMPTY, userRequest2.getInviteIds().isEmpty());
+		assertTrue(FAIL_LIST_EMPTY, userRequest2.getGroupIds().isEmpty());
 
 //		request another user's calendar (calendar from the top of this method is used)
 		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"Calendar", requestCalendar(calendarUser2.getID()));
 //		request another user's invite you have not send (User 1 invites just User 2)
-		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"Invite", requestInvite(userList[3].getInviteIds().get(0)));
+		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"Invite", requestInvite(userList[2].getInviteIds().get(0)));
 //		request another user's entry you are not invited to (User 2 invites User 3)
 		CalendarEntry noInvite = calendarUser2.getCalendarEntries().get(0);
 		assertNull(FAIL_REQ_FOR_ANOTHER_USER+"CalendarEntry", requestCalendarEntry(noInvite.getID()));
@@ -216,6 +230,7 @@ public class TestSuite {
 
 	@Ignore
 	public void testRequestFollowingObjectsByOwnId() {
+//		This method uses the requestObjectByOwnID() --> testRequestObjectByOwnId() must be successful
 		fail("Not yet implemented");
 	}
 
@@ -264,17 +279,27 @@ public class TestSuite {
 		Group group = requestGroup(1);
 		assertNotNull(FAIL_REQ_NOTNULL_GRO, group);
 		
-		boolean result = requester.addUserToGroup(loggedInUser, group);
-		assertTrue(FAIL_ADD_TO_GRO, result);
+		boolean resultFirstUserToGroup = requester.addUserToGroup(loggedInUser, group);
+		assertTrue(FAIL_ADD_TO_GRO, resultFirstUserToGroup);
 		
 		loggedInUser = login(userList[1].getMailAddress());
+		boolean resultSecondUserToGroup = requester.addUserToGroup(loggedInUser, group);
+		assertTrue(FAIL_ADD_TO_GRO, resultSecondUserToGroup);
+		
+		loggedInUser = login(userList[0].getMailAddress());
 		List<User> user2 =requester.requestAllObjects(new User());
 		assertNotNull(FAIL_REQ_NOTNULL_LIST, user2);
 		assertFalse(FAIL_LIST_FULL, user2.isEmpty());
-		for(User u: user2){
-			assertTrue(FAIL_LIST_EMPTY, u.getCalendarIds().isEmpty());
-			assertTrue(FAIL_LIST_EMPTY, u.getInviteIds().isEmpty());
-//			assertFalse(FAIL_LIST_EMPTY, u.getGroupIds().isEmpty());
+		
+		
+		for(int i = 0; i < user2.size(); i++){
+			assertTrue(FAIL_LIST_EMPTY, user2.get(i).getCalendarIds().isEmpty());
+			assertTrue(FAIL_LIST_EMPTY, user2.get(i).getInviteIds().isEmpty());
+			if(i == 0 || i == 1){
+				assertFalse(FAIL_LIST_FULL, user2.get(i).getGroupIds().isEmpty());
+			}else{
+				assertTrue(FAIL_LIST_EMPTY, user2.get(i).getGroupIds().isEmpty());
+			}
 		}
 	}
 
@@ -505,20 +530,77 @@ public class TestSuite {
 		assertNotNull(FAIL_ADD_NOTNULL_USE, user3);
 	}
 
-	@Ignore
+	@Test
 	public void testRemoveObjectByOwnId() {
-		User[] testUser = createDefaultData(2,2,1);
-		login(testUser[0])	;
+		User[] testUser = createDefaultData(3,3,2);
+		User loggedInUser = login(testUser[0].getMailAddress());
 		
-//		Calendar requestCalendarUser1 = new Calendar();
-//		requestCalendarUser1.setID(user1.getID());
-//		Calendar user1Calendar = requester.requestObjectByOwnId(requestCalendarUser1);
+		Calendar calendar = requestCalendar(loggedInUser.getCalendarIds().get(0));
+		for(CalendarEntry entry: calendar.getCalendarEntries()){
+			List<Invite> invites = requester.requestFollowingObjectsByOwnId(entry.getInviteIds(), new Invite());
+			for(Invite invite: invites){
+				assertNotNull(FAIL_REQ_NOTNULL_INV, invite);
+				boolean resultRemoveInvite = removeInvite(invite.getID());
+				assertTrue(FAIL_REM_FALSE_INV, resultRemoveInvite);
+			}
+//			Remove Entry without Invites
+			boolean resultRemoveEntry = removeCalendarEntry(entry.getID());
+			assertTrue(FAIL_REM_FALSE_ENT, resultRemoveEntry);
+		}
+
+//		Remove Group one is not added to
+		Group group = requestGroup(1);
+		boolean resultRemoveGroup = removeGroup(group.getID());
+		assertFalse(FAIL_REM_TRUE_GRO, resultRemoveGroup);
 		
-//		assertTrue(removeCalendarEntry());
+//		Add User to Group
+		boolean resultAddToGroup = requester.addUserToGroup(loggedInUser, group);
+		assertTrue(FAIL_ADD_TO_GRO, resultAddToGroup);
+		
+//		Remove Group one is added to
+		boolean resultRemoveGroup2 = removeGroup(group.getID());
+		assertTrue(FAIL_REM_FALSE_GRO, resultRemoveGroup2);
+		
+//		Remove own got Invites
+		for(int id: loggedInUser.getInviteIds()){
+			boolean result = removeInvite(id);
+			assertFalse(FAIL_REM_TRUE_INV, result);
+		}
+	
+//		Remove own Calendar
+		for(int id: loggedInUser.getCalendarIds()){
+			boolean result = removeCalendar(id);
+			assertTrue(FAIL_REM_FALSE_CAL, result);
+		}
+		
+//		Remove Room
+		boolean resultRemoveRoom = removeRoom(1);
+		assertTrue(FAIL_REM_FALSE_ROO, resultRemoveRoom);
+		
+//		Remove other user's Invites
+		for(int id: testUser[2].getInviteIds()){
+			boolean result = removeInvite(id);
+			assertFalse(FAIL_REM_FOR_ANOTHER_USER+"Invite", result);
+		};
+		
+//		Remove other user's Entry
+		assertFalse(FAIL_REM_FOR_ANOTHER_USER+"Entry", removeCalendarEntry(7));
+		
+//		Remove other user's Calendar	
+		assertFalse(FAIL_REM_FOR_ANOTHER_USER+"Calendar", removeCalendar(2));
+		
+//		Remove other user
+		assertFalse(FAIL_REM_FOR_ANOTHER_USER+"User", removeUser(testUser[1].getID()));
+		
+
 		
 		
 		
-		fail("Not yet implemented");
+//		Login as user 3
+		loggedInUser = login(testUser[2].getMailAddress());
+//		Remove User 3
+		boolean resultRemoveUser = removeUser(loggedInUser.getID());
+		assertTrue(FAIL_REM_FALSE_USE, resultRemoveUser);
 	}
 
 
@@ -539,9 +621,76 @@ public class TestSuite {
 		fail("Not yet implemented");
 	}
 
-	@Ignore
+	@Test
 	public void testUpdateObject() {
-		fail("Not yet implemented");
+
+		User[] testUser = createDefaultData(3,3,2);
+		
+		User loggedInUser = login(testUser[1].getMailAddress());
+		Calendar calendarUser2 = requestCalendar(loggedInUser.getCalendarIds().get(0));
+		assertNotNull(FAIL_REQ_NOTNULL_CAL, calendarUser2);
+		
+				
+		loggedInUser = login(testUser[0].getMailAddress());
+		
+		Calendar calendarUser1 = requestCalendar(loggedInUser.getCalendarIds().get(0));
+		assertNotNull(FAIL_REQ_NOTNULL_CAL, calendarUser1);
+		for(CalendarEntry entry: calendarUser1.getCalendarEntries()){
+//			Update Entry without Invites
+			boolean resultUpdateEntry = updateCalendarEntry(entry);
+			assertTrue(FAIL_UPD_FALSE_ENT, resultUpdateEntry);
+		}
+
+//		Update Group one is not added to
+		Group group = requestGroup(1);
+		boolean resultUpdateGroup = updateGroup(group.getID());
+		assertFalse(FAIL_UPD_TRUE_GRO, resultUpdateGroup);
+		
+//		Add User to Group
+		boolean resultAddToGroup = requester.addUserToGroup(loggedInUser, group);
+		assertTrue(FAIL_ADD_TO_GRO, resultAddToGroup);
+		
+//		Update Group one is added to
+		boolean resultUpdateGroup2 = updateGroup(group.getID());
+		assertTrue(FAIL_UPD_FALSE_GRO, resultUpdateGroup2);
+		
+	
+//		Update own Calendar
+		for(int id: loggedInUser.getCalendarIds()){
+			boolean result = updateCalendar(id);
+			assertTrue(FAIL_UPD_FALSE_CAL, result);
+		}
+		
+//		Update Room
+		boolean resultUpdateRoom = updateRoom(1);
+		assertTrue(FAIL_UPD_FALSE_ROO, resultUpdateRoom);
+		
+		
+//		Update other user's Entry
+		assertFalse(FAIL_LIST_EMPTY, calendarUser2.getCalendarEntries().isEmpty());
+		assertFalse(FAIL_UPD_FOR_ANOTHER_USER+"Entry", updateCalendarEntry(calendarUser2.getCalendarEntries().get(0)));
+		
+//		Update other user's Calendar	
+		assertFalse(FAIL_UPD_FOR_ANOTHER_USER+"Calendar", updateCalendar(calendarUser2.getID()));
+		
+//		Update other user
+		assertFalse(FAIL_UPD_FOR_ANOTHER_USER+"User", updateUser(testUser[2].getID()));
+		
+
+		
+		
+//		Login user 2
+		loggedInUser = login(testUser[1].getMailAddress());
+		
+		
+		//XXX E-Mail Adresse auf bereits bekannte Mail ändern?
+		
+//		Login as user 3
+		loggedInUser = login(testUser[2].getMailAddress());
+//		Update User 3
+		boolean resultUpdateUser = updateUser(loggedInUser.getID());
+		assertTrue(FAIL_UPD_FALSE_USE, resultUpdateUser);
+	
 	}
 
 	@Test
@@ -572,6 +721,13 @@ public class TestSuite {
 
 	@Ignore
 	public void testRemoveUserFromGroup() {
+		User[] userList = createDefaultData(2, 2, 1);
+		
+		User loggedInUser = login(userList[0].getMailAddress());
+		
+		
+		
+		
 		fail("Not yet implemented");
 	}
 //	####################################
@@ -723,8 +879,54 @@ public class TestSuite {
 		return requester.removeObjectByOwnId(group);
 	}
 	
-	private String buildErrorMessage(String message, Object obj){
-		return message + obj.getClass().getSimpleName();
+	private boolean updateCalendar(int id) {
+		Calendar calendar = new Calendar();
+		calendar.setID(id);
+		calendar.setDescription("Updated Calendar");
+		calendar.setName("Update Test");
+		return requester.updateObject(calendar);
 	}
+	
+
+	private boolean updateCalendarEntry(CalendarEntry entry) {
+		entry.setStartDate(new Date());
+		entry.setDescription("Updated CalendarEntry");
+		entry.setRoomId(2);
+		entry.setEndDate(new Date());
+		entry.setTitle("Update Test");
+		return requester.updateObject(entry);
+	}
+
+	private boolean updateUser(int id) {
+		User user = new User();
+		user.setID(id);
+		user.setGivenname("Update");
+		user.setSurname("Test");
+		user.setMailAddress("updateUser@localhost.de");
+		return requester.updateObject(user);
+	}
+	
+
+	private boolean updateRoom(int id) {
+		Room room= new Room();
+		room.setID(id);
+		room.setDescription("Updated Room");
+		room.setLocation("UPD47E");
+		room.setSeats(123);
+		return requester.updateObject(room);
+	}
+	
+	
+	private boolean updateGroup(int id) {
+		Group group = new Group();
+		group.setID(id);
+		group.setDescription("Updated Group");
+		group.setName("Update Test");
+		return requester.updateObject(group);
+	}
+	
+//	private String buildErrorMessage(String message, Object obj){
+//		return message + obj.getClass().getSimpleName();
+//	}
 	
 }
