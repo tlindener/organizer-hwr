@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import organizer.objects.types.CalendarEntry;
+import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
@@ -21,9 +23,18 @@ import organizer.objects.types.User;
 public class Model {
 
 
-	private HashMap Kalenderdaten;
+	private HashMap<String, Integer> Kalenderentries;
 	
 	private HashMap <String, String> beschreibungen;
+	public List<Invite> getEinladungen() {
+		return einladungen;
+	}
+
+	public void setEinladungen(List<Invite> einladungen) {
+		this.einladungen = einladungen;
+	}
+
+
 	private HashMap <String, String> anfangende;
 	private HashMap <String, String> details;
 	private HashMap <String, List <User>> eingeladene;
@@ -31,6 +42,7 @@ public class Model {
 	private HashMap <String, Double> dauer;
 	private List <User> allePersonen;
 	private List <Room> alleRaeume;
+	private List <Invite> einladungen;
 	private Date aktDate;
 	
 	
@@ -51,6 +63,8 @@ public class Model {
 		createAnfangende();
 		createAlleRaeume();
 		createAllePersonen();
+		createEinladungen();
+		createKalendarentries();
 		
 	}
 	
@@ -58,22 +72,39 @@ public class Model {
 	 * Creates the list "alleRaeume" which contains all rooms which are in the database.
 	 * @return alleRaueme
 	 */
-	public List createAlleRaeume()
+	public List <Room> createAlleRaeume()
 	{
-		alleRaeume =new ArrayList();
+		alleRaeume =new ArrayList <Room>();
 		return alleRaeume;
+	}
+	
+
+	/**
+	 * Creates the list "Einladungen" which contains all invites for the logged in person which are in the database.
+	 * @return einladungen
+	 */
+	public List <Invite> createEinladungen()
+	{
+		einladungen =new ArrayList<Invite>();
+		return einladungen;
 	}
 	
 	/**
 	 * Creates the list "allePersonen" which contains all persons which are in the database.
 	 * @return allePersonen
 	 */
-	public List createAllePersonen()
+	public List <User> createAllePersonen()
 	{
 		allePersonen=new ArrayList();
 		return allePersonen;
 	}
 	
+	
+	public HashMap createKalendarentries()
+	{
+		Kalenderentries= new HashMap();
+		return Kalenderentries;
+	}
 	/**
 	 * Creates the hashmap which contains the durations of the calendarentries for the defined date.
 	 * @return dauer;
@@ -226,23 +257,37 @@ public class Model {
 		return null;
 	}
 	
+	public int returnKalendarentryId(String time)
+	{
+		if(Kalenderentries.containsKey(time))
+			return Kalenderentries.get(time);
+		else
+			return 0;
+	}
+	
 	/**
-	 * Returns the hashmap calendardata.
+	 * Returns the hashmap Kalendarentries.
 	 * 
 	 * @return kalendardaten
 	 */
-	public HashMap getKalenderdaten() {
-		return Kalenderdaten;
+	
+	public HashMap getKalendarentries()
+	{
+		return Kalenderentries;
 	}
-
+	
 	/**
-	 * Sets the hashmap Kalendardaten
+	 * Sets the hashmap Kalendarentries
 	 * @param kalenderdaten
 	 */
-	public void setKalenderdaten(HashMap kalenderdaten) {
-		Kalenderdaten = kalenderdaten;
+	
+	public void setKalendarentries(String time, int ceID)
+	{
+		Kalenderentries.put(time, ceID);
 	}
-
+	
+	
+	
 	public HashMap getBeschreibungen() {
 		return beschreibungen;
 	}

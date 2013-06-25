@@ -111,7 +111,8 @@ public class window_LogScreen extends JFrame {
 		gbc_lblBenutzername.gridy = 1;
 		contentPane.add(lblBenutzername, gbc_lblBenutzername);
 		
-		textField = new JTextField();
+		// nur Test!!!
+		textField = new JTextField("jenny@home.de");
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.gridwidth = 2;
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
@@ -130,7 +131,8 @@ public class window_LogScreen extends JFrame {
 		gbc_lblPasswort.gridy = 3;
 		contentPane.add(lblPasswort, gbc_lblPasswort);
 		
-		passwort = new JPasswordField();
+		// nur Test!!!
+		passwort = new JPasswordField("123");
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
 		gbc_textField_1.gridwidth = 2;
 		gbc_textField_1.insets = new Insets(0, 0, 5, 5);

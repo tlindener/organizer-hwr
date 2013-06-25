@@ -4,9 +4,10 @@ import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class Renderer extends DefaultTableCellRenderer{
+public class CellRenderer extends DefaultTableCellRenderer{
 	
 	  Color color = new Color(252,255,170);
     @Override
@@ -28,6 +29,9 @@ public class Renderer extends DefaultTableCellRenderer{
         
         return label;
     }
+    
+    
+   
 	 
 	
 }
