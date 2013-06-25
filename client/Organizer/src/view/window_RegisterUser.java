@@ -1,12 +1,16 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridBagLayout;
 import javax.swing.JTextField;
@@ -199,6 +203,49 @@ public class window_RegisterUser extends JFrame {
 
 	public void setTxtEmailadresse(JTextField txtEmailadresse) {
 		this.txtEmailadresse = txtEmailadresse;
+	}
+	
+	public void pruefeVollständigkeit()
+	{
+		if (getTxtEmailadresse().getText().isEmpty()||
+			getTxtNachname().getText().isEmpty()||
+			getTxtVorname().getText().isEmpty()||
+			getTxtPasswort().getPassword().length==0||
+			getTxtPasswortBest().getPassword().length==0)
+		{
+			JOptionPane.showMessageDialog(this,
+					"Bitte füllen Sie alle Felder aus!", "Felder frei",
+					JOptionPane.INFORMATION_MESSAGE);
+			
+		Color c = new Color(255, 86, 63);
+		Border redline = BorderFactory.createLineBorder(c);
+		Border blackline = BorderFactory.createLineBorder(Color.black);
+		if (getTxtEmailadresse().getText().equals("")) 
+			getTxtEmailadresse().setBorder(redline);
+		else
+			getTxtEmailadresse().setBorder(blackline);
+
+		if (getTxtNachname().getText().equals(""))
+			getTxtNachname().setBorder(redline);
+		else
+			getTxtNachname().setBorder(blackline);
+		
+		if (getTxtVorname().getText().equals("")) 
+			getTxtVorname().setBorder(redline);
+		else
+			getTxtVorname().setBorder(blackline);
+	
+		if (getTxtPasswort().getPassword().length==0) 
+			getTxtPasswort().setBorder(redline);
+		else
+			getTxtPasswort().setBorder(blackline);
+		if (getTxtPasswortBest().getPassword().length==0) 
+			getTxtPasswortBest().setBorder(redline);
+		else
+			getTxtPasswortBest().setBorder(blackline);
+		
+		repaint();
+		}
 	}
 
 

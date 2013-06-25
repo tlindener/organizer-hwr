@@ -5,11 +5,15 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,23 +38,28 @@ import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import logik.DataPusher;
 import javax.swing.UIManager.*;
 
-import view.renderer.Renderer;
+import view.renderer.*;
+import java.awt.Canvas;
 
 public class window_Hauptmenue extends JFrame {
 
 	private JTable table_1;
 	private JPanel contentPane;
 	private DataPusher myDataPusher;
-	private Renderer myRenderer;
+	private CellRenderer myRenderer;
 	private ActionListener myCon;
 	private MouseListener myML;
 	private PropertyChangeListener myPCL;
-	private JTextField textField;
+	private JTextField txtRaum;
 
 	private JList list;
 	private DefaultListModel listModel;
@@ -62,8 +71,10 @@ public class window_Hauptmenue extends JFrame {
 	private Date aktDateCali;
 	private JCalendar cali;
 	private int rowCount;
+	private JLabel picLabel;
 	
 	private TableModel dataModel;
+	private JLabel lblAnzahlEinladungen;
 
 	/**
 	 * Launch the application.
@@ -74,7 +85,7 @@ public class window_Hauptmenue extends JFrame {
 		myML = mL;
 		myPCL = pCL;
 		this.myDataPusher = myDataPusher;
-		myRenderer = new Renderer();
+		myRenderer = new CellRenderer();
 
 		init();
 	}
@@ -106,7 +117,7 @@ public class window_Hauptmenue extends JFrame {
 			// If Nimbus is not available, you can set the GUI to another look
 			// and feel.
 		}
-		setBounds(100, 100, 789, 572);
+		setBounds(100, 100, 823, 599);
 
 		JPanel panel = new JPanel();
 
@@ -129,37 +140,15 @@ public class window_Hauptmenue extends JFrame {
 		gbc_cali.gridy = 1;
 		panel.add(cali, gbc_cali);
 
-		// Termintabelle
-		// Speicherung der Beschreibungen im Modell über HashMap
-
-		/*
-		 * XXX das hier in eine neue Methode auslagern:
-		 * 
-		 * public void updateMainFrame(){
-		 * 		TableModel dataModel = new AbstractTableModel(){
-		 * 			...den Kram von unter dem Kommentar...
-		 * 		}
-		 * 		table_1.setModel(dataModel);
-		 * }
-		 * 
-		 * diese Methode rufst du dann aus dem Controller auf, wenn du die Daten
-		 * refreshed haben willst. Also quasi da, wo du immer ein hauptmenu.repaint();
-		 * machst. 
-		 * 
-		 * Grund: Dein Datenmodell wird einmal angelegt. Dann befüllst du zwar
-		 * dein Model neu, aber ich schätze, dass das TableModel nicht
-		 * neugeladen wird. Wenn du die oben beschriebene Methode verwendest,
-		 * erzeugt du ein neues TableModel, dass sich die Daten frisch aus
-		 * deinem Model zieht.
-		 * Werden die Daten immer noch nicht angezeigt, solltest du nachschauen,
-		 * ob die Daten in deinem Model überhaupt drinne stehen. 
-		 */
-
 		updateTable();
 
 		table_1 = new JTable(dataModel);
 
 		table_1.setDefaultRenderer(Object.class, myRenderer);
+		
+//		table_1.getColumn("Beschreibung").setCellRenderer(new ButtonRenderer());
+//	    table_1.getColumn("Beschreibung").setCellEditor(
+//	        new ButtonEditor(new JCheckBox()));
 		table_1.addMouseListener(myML);
 
 		JScrollPane scrollpane = new JScrollPane(table_1);
@@ -194,16 +183,16 @@ public class window_Hauptmenue extends JFrame {
 		gbc_lblRaum.gridy = 2;
 		panel.add(lblRaum, gbc_lblRaum);
 
-		textField = new JTextField();
+		txtRaum = new JTextField();
 
-		GridBagConstraints gbc_textField = new GridBagConstraints();
+		GridBagConstraints gbc_txtRaum = new GridBagConstraints();
 
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 3;
-		panel.add(textField, gbc_textField);
-		textField.setColumns(10);
+		gbc_txtRaum.insets = new Insets(0, 0, 5, 5);
+		gbc_txtRaum.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtRaum.gridx = 1;
+		gbc_txtRaum.gridy = 3;
+		panel.add(txtRaum, gbc_txtRaum);
+		txtRaum.setColumns(10);
 
 		JLabel lblPersonen = new JLabel("Personen");
 		GridBagConstraints gbc_lblPersonen = new GridBagConstraints();
@@ -221,15 +210,8 @@ public class window_Hauptmenue extends JFrame {
 		gbc_lblDetails.gridy = 4;
 		panel.add(lblDetails, gbc_lblDetails);
 
-		/*
-		 * XXX Setze den generischen Typen in <> wenn es nicht Object ist.
-		 * Dann hast du weniger Sorgen mit dem Casten etc.
-		 * Außerdem kanst du die erste new JList(); rausnehmen, da sie unten
-		 * ja nochmal überschrieben wird.
-		 */
-		list = new JList();
 		listModel = new DefaultListModel();
-		list = new JList(listModel);
+		list = new JList<String>(listModel);
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.gridheight = 2;
 		gbc_list.insets = new Insets(0, 0, 5, 5);
@@ -262,6 +244,16 @@ public class window_Hauptmenue extends JFrame {
 		btnTerminEntfernen = new JButton("Termin entfernen");
 		btnTerminEntfernen
 				.setToolTipText("W\u00E4hlen Sie einen Termin aus um ihn zu l\u00F6schen");
+		btnTerminEntfernen.addActionListener(myCon);
+		
+		lblAnzahlEinladungen = new JLabel("AnzahlEinladungen");
+		GridBagConstraints gbc_lblAnzahlEinladungen = new GridBagConstraints();
+		gbc_lblAnzahlEinladungen.anchor = GridBagConstraints.NORTH;
+		gbc_lblAnzahlEinladungen.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAnzahlEinladungen.gridx = 1;
+		gbc_lblAnzahlEinladungen.gridy = 8;
+		panel.add(lblAnzahlEinladungen, gbc_lblAnzahlEinladungen);
+		
 		GridBagConstraints gbc_btnTerminEntfernen = new GridBagConstraints();
 		gbc_btnTerminEntfernen.anchor = GridBagConstraints.EAST;
 		gbc_btnTerminEntfernen.insets = new Insets(0, 0, 5, 5);
@@ -279,12 +271,30 @@ public class window_Hauptmenue extends JFrame {
 		panel.add(btnAbmelden, gbc_btnAbmelden);
 		
 		
+		URL filename = getClass().getResource("briefkasten.png");
+		
+		if (filename!= null)
+		{
+		Image image = Toolkit.getDefaultToolkit().getImage( filename );
+		image=image.getScaledInstance(50, 100, 0);
+		 picLabel = new JLabel(new ImageIcon(image));
+		picLabel.addMouseListener(myML);
+		
 		GridBagConstraints gbc_lblImage = new GridBagConstraints();
-		gbc_lblImage.anchor = GridBagConstraints.EAST;
+		gbc_lblImage.anchor = GridBagConstraints.CENTER;
 		gbc_lblImage.insets = new Insets(0, 0, 5, 5);
-		gbc_lblImage.gridx = 3;
-		gbc_lblImage.gridy = 2;
-//		panel.add(im, gbc_lblImage);
+		gbc_lblImage.gridwidth=1;
+		gbc_lblImage.gridheight=1;
+		gbc_lblImage.gridx = 1;
+		gbc_lblImage.gridy = 8;
+		panel.add(picLabel, gbc_lblImage);
+		}
+		else
+		{
+			System.out.println("Ich habe das Foto nicht gefunden");
+		}
+		
+		
 		
 		setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -358,17 +368,39 @@ public class window_Hauptmenue extends JFrame {
 		this.listModel = listModel;
 	}
 
-	public JTextField getTextField() {
-		return textField;
+	public JTextField getTxtRaum() {
+		return txtRaum;
 	}
 
-	public void setTextField(JTextField textField) {
-		this.textField = textField;
+	public void setTxtRaum(JTextField textField) {
+		this.txtRaum = textField;
 	}
 	
+	public JLabel getPicLabel() {
+		return picLabel;
+	}
+
+	public void setPicLabel(JLabel picLabel) {
+		this.picLabel = picLabel;
+	}
+
+	
+	public JLabel getLblAnzahlEinladungen() {
+		return lblAnzahlEinladungen;
+	}
+
+	public void setLblAnzahlEinladungen(JLabel lblAnzahlEinladungen) {
+		this.lblAnzahlEinladungen = lblAnzahlEinladungen;
+	}
+
 	public void updateTable()
 	{
 		dataModel = new AbstractTableModel() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public String getColumnName(int column) {
 				switch (column) {
@@ -387,6 +419,7 @@ public class window_Hauptmenue extends JFrame {
 				return 3;
 			}
 
+			@SuppressWarnings("unused")
 			public int getRowCountUpdate() {
 
 				return rowCount;

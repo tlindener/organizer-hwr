@@ -50,10 +50,13 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 			this);
 	private List<User> selectedUsers = new ArrayList<User>();
 	private Room selectedRoom = new Room();
+	
 
 	private JLabel lblRaeume;
 
 	private JTextField txtRaum;
+
+	private JButton btnAbbrechen;
 
 	public window_TerminBearbeiten(DataPusher myDataPusher, ActionListener con) {
 		myCon = con;
@@ -76,8 +79,8 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 42, 57, 36, 100, 34, 100, 0,
 				43, 43, 20, 24, 0 };
-		gridBagLayout.rowHeights = new int[] { 20, 0, 32, 0, 0, 0, 0, 0, 94, 41,
-				89, 31, 31, 0 };
+		gridBagLayout.rowHeights = new int[] { 20, 0, 32, 0, 0, 0, 0, 0, 94,
+				41, 89, 31, 31, 0 };
 		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -143,25 +146,28 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		getContentPane().add(lblRaeume, gbc_lblRume);
 
 		txtADetails = new JTextArea(details);
-		GridBagConstraints gbc_txtADetails = createGridBagContraints(3, 4, 7,
+		GridBagConstraints gbc_txtADetails = createGridBagContraints(3, 3, 7,
 				6, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(txtADetails, gbc_txtADetails);
 
 		lstRaum = new JList<Room>(myDataPusher.pushRoomList());
 		lstRaum.setCellRenderer(combinedListener);
 		lstRaum.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		lstRaum.setSelectionModel(new MyListSelectionModel());
+//		lstRaum.setSelectionModel(new MyListSelectionModel());
 		setSelectedValues(lstRaum, rooms);
-		GridBagConstraints gbc_lstRaum = createGridBagContraints(5, 2, 1, 7, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+		GridBagConstraints gbc_lstRaum = createGridBagContraints(5, 2, 1, 7,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(new JScrollPane(lstRaum), gbc_lstRaum);
 
 		JLabel lblPersonen = new JLabel("Personen");
-		GridBagConstraints gbc_lblPersonen = createGridBagContraints(5, 1, 1, 9,GridBagConstraints.WEST , GridBagConstraints.NONE);
+		GridBagConstraints gbc_lblPersonen = createGridBagContraints(5, 1, 1,
+				9, GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblPersonen, gbc_lblPersonen);
 
 		lstPersonen = new JList<User>(myDataPusher.pushUserList());
 		lstPersonen.setCellRenderer(combinedListener);
-		lstPersonen.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		lstPersonen
+				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstPersonen.setSelectionModel(new MyListSelectionModel());
 		setSelectedValues(lstPersonen, user);
 		GridBagConstraints gbc_lstPersonen = createGridBagContraints(5, 2, 1,
@@ -170,10 +176,18 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 
 		btnTerminEintragen = new JButton(btnText);
 		btnTerminEintragen.addActionListener(myCon);
-		GridBagConstraints gbc_btnTerminEintragen = createGridBagContraints(1, 1, 9, 11, GridBagConstraints.EAST, GridBagConstraints.NONE);
+		GridBagConstraints gbc_btnTerminEintragen = createGridBagContraints(1,
+				1, 9, 10, GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(btnTerminEintragen, gbc_btnTerminEintragen);
+
+		btnAbbrechen = new JButton("Abbrechen");
+		btnAbbrechen.addActionListener(myCon);
+		GridBagConstraints gbc_btnAbbrechen = createGridBagContraints(1, 1, 9,
+				11, GridBagConstraints.EAST, GridBagConstraints.NONE);
+		getContentPane().add(btnAbbrechen, gbc_btnAbbrechen);
+
 		init();
-		
+
 	}
 
 	private GridBagConstraints createGridBagContraints(int gWidth, int gHeight,
@@ -211,13 +225,41 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		setBounds(100, 100, 804, 472);
 		JPanel panel = new JPanel();
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[] { 21, 145, 1, 342, 0, 0 };
-		gbl_panel.rowHeights = new int[] { 9, 186, 0, 0, 0, 0, 110, 59 };
+		gbl_panel.columnWidths = new int[] { 21, 145, 1, 20, 0, 0 };
+		gbl_panel.rowHeights = new int[] { 9, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panel.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, 0.0,
 				Double.MIN_VALUE };
 		panel.setLayout(gbl_panel);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
+	}
+
+	public void setSelectedRoom(Room selectedRoom) {
+		this.selectedRoom = selectedRoom;
+	}
+
+	public JList<Room> getLstRaum() {
+		return lstRaum;
+	}
+
+	public void setLstRaum(JList<Room> lstRaum) {
+		this.lstRaum = lstRaum;
+	}
+
+	public JList<User> getLstPersonen() {
+		return lstPersonen;
+	}
+
+	public void setLstPersonen(JList<User> lstPersonen) {
+		this.lstPersonen = lstPersonen;
+	}
+
+	public JButton getBtnAbbrechen() {
+		return btnAbbrechen;
+	}
+
+	public void setBtnAbbrechen(JButton btnAbbrechen) {
+		this.btnAbbrechen = btnAbbrechen;
 	}
 
 	public JTextField getBeschreibung() {
@@ -232,12 +274,13 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		return txtADetails;
 	}
 
+	
 	public Room getSelectedRoom() {
 		return selectedRoom;
 	}
 
-	public User[] getSelectedUsers() {
-		return selectedUsers.toArray(new User[selectedUsers.size()]);
+	public List<User> getSelectedUsers() {
+		return selectedUsers;
 	}
 
 	public JTextField getStartUhrzeit() {
@@ -246,6 +289,14 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 
 	public JTextField getEndUhrzeit() {
 		return endUhrzeit;
+	}
+
+	public JTextField getTxtRaum() {
+		return txtRaum;
+	}
+
+	public void setTxtRaum(JTextField txtRaum) {
+		this.txtRaum = txtRaum;
 	}
 
 	/**
@@ -267,18 +318,17 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 	}
 
 	/**
-	 * Fügt den Raum zur Liste hinzu wenn der Status true ist und er noch nicht
-	 * in der Liste steht Ist der Status false, wird er aus der Liste entfernt,
-	 * falls er vorhanden ist
+	 * Setzt den Raum als selected 
+	 * wird der Raum erneut ausgewählt wird nichts gemacht
 	 */
 	@Override
 	public void stateChangedForRoom(boolean state, Room room) {
 		if (state) {
-			if (selectedRoom!=room) {
-				selectedRoom=room;
+			if (selectedRoom != room) {
+				selectedRoom = room;
 			}
 		} else {
-			if (selectedRoom==room) {
+			if (selectedRoom == room) {
 				
 			}
 		}
