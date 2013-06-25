@@ -13,11 +13,7 @@ import organizer.objects.AbstractOrganizerObject;
  * This class represents an user from the database with all attributes except the password
  * @author Steffen Baumann
  */
-public class User extends AbstractOrganizerObject implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5502563591811214389L;
+public class User extends AbstractOrganizerObject{
 	/** the surname of the user */
 	private String surname = "";
 	/** the given name of the user */

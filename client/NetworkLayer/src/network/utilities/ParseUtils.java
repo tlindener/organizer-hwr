@@ -370,11 +370,12 @@ public class ParseUtils {
 	 * @return GET-Command
 	 */
 	public static String makeRemoveUserFromGroupCommand() {
-		return "RemoveUserToGroup";
+		return "RemoveUserFromGroup";
 	}
 
 	/**
-	 * Parses the Java-Date into a JSON value representing an C#-DateTime object
+	 * Parses the Java-Date into a JSON value representing an C#-DateTime object.
+	 * Representation as ISO 8601 needs jre 1.7.
 	 * 
 	 * @param date
 	 * @return String representation of C#-DateTime
@@ -414,11 +415,7 @@ public class ParseUtils {
 
 	public static void main(String[] args) {
 
-		// System.out.println(encodeString("Test"));
 		System.out.println(hashString("Test"));
-
-		// System.out.println(parseStringToHTTP("Das ist ein Test"));
-		// System.out.println(encodeString("Test"));
 		System.out.println(parseDateToNetDateTime(new Date()));
 		System.out
 				.println(parseStringToDate("2008-11-01T19:35:00.0000000-07:00"));

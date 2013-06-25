@@ -19,7 +19,7 @@ public class Group extends AbstractOrganizerObject {
 	/** the description of the group*/
 	private String description = "";
 	/** list of all user IDs contained by the group*/
-	private List<Integer> members = new ArrayList<Integer>();
+	private List<Integer> memberIds = new ArrayList<Integer>();
 	/** the name of the group*/
 	private String name = "";
 	
@@ -40,15 +40,15 @@ public class Group extends AbstractOrganizerObject {
 	/**
 	 * @return the users
 	 */
-	public List<Integer> getMembers() {
-		return members;
+	public List<Integer> getMemberIds() {
+		return memberIds;
 	}
 
 	/**
 	 * @param members the user IDs to set
 	 */
-	public void setMembers(List<Integer> members) {
-		this.members = members;
+	public void setMemberIds(List<Integer> members) {
+		this.memberIds = members;
 	}
 
 	/**

@@ -168,8 +168,6 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * IDs in your user object. Maybe you have to request this object.
 	 * </ul>
 	 * 
-	 * TODO Mit Tobias absprechen
-	 * 
 	 * Rooms and Groups do not have any restrictions.
 	 * 
 	 * @param obj
