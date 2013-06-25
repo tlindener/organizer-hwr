@@ -33,4 +33,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src2</name>
+			<type>2</type>
+			<location>C:/!Daten/Documents/workspace/NetworkLayer/src</location>
+		</link>
+	</linkedResources>
 </projectDescription>

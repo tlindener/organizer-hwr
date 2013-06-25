@@ -1,14 +1,19 @@
 package organizerhtml.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Model {
 
-	private Date date=new Date();
-	private String beschreibung = "Beschreibung";
-	private String raum = "Raum";
-	private List<String> pers;
+	/** actual date */
+	private Date date = new Date();
+	/** actual description */
+	private String beschreibung = null;
+	/** actual room */
+	private String raum = null;
+	/** actual list of person */
+	private List<String> pers = new ArrayList<>();
 
 	/**
 	 * @return the pers

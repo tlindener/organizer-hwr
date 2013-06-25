@@ -17,6 +17,7 @@ import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
+import organizer.objects.types.Room;
 import organizer.objects.types.User;
 import organizerhtml.model.Model;
 
@@ -25,14 +26,22 @@ public class Controller {
 	/*
 	 * vorherige Variablen
 	 */
+	/** username */
 	private String username;
+	/** password */
 	private String password;
+	/** eventModel for the Schedular */
 	private ScheduleModel eventModel = new DefaultScheduleModel();
+	/** event for the Schedular */
 	private ScheduleEvent event = new DefaultScheduleEvent();
+	/** JSon eventhandler */
 	private RequestHandler myRequester;
 	@SuppressWarnings("unused")
+	/** actual User object*/
 	private User aktUser;
+	/** actual UserCalendar object */
 	private organizer.objects.types.Calendar aktUserCa;
+	/** data model */
 	Model myModel = new Model();
 
 	/*
@@ -43,71 +52,57 @@ public class Controller {
 	 */
 
 	@SuppressWarnings("unused")
+	/** actual date */
 	private Date date;
 	@SuppressWarnings("unused")
+	/** actual description*/
 	private String beschreibung = "Beschreibung";
 	@SuppressWarnings("unused")
+	/** actual room*/
 	private String raum = "Raum";
 	@SuppressWarnings("unused")
+	/** actual list of person*/
 	private List<String> pers;
 
+	/**
+	 * Class to transmit the In- and Output data from the HTML to the datamodel
+	 * and back.
+	 * 
+	 * @author Marcel Hodan
+	 */
 	public Controller() {
-		aktUserCa = new Calendar();
-		aktUserCa.setID(1);
-		Date startDate = new Date();
-		Date endDate = new Date();
-		endDate.setHours(startDate.getHours() + 2);
-		List<CalendarEntry> entries = new ArrayList<CalendarEntry>();
-		CalendarEntry ce = new CalendarEntry();
-		ce.setStartDate(startDate);
-		ce.setDescription("Test");
-		ce.setTitle("Testtermin");
-		ce.setRoomId(1);
-		ce.setOwnerId(1);
-		ce.setCalendarId(1);
-		ce.setEndDate(endDate);
-		entries.add(ce);
-		aktUserCa.setCalendarEntries(entries);
-		if (!aktUserCa.getCalendarEntries().isEmpty()) {
-			System.out.println("alle einträge");
-			for (CalendarEntry e : entries) {
-				System.out.println(e.getStartDate());
-				System.out.println(e.getEndDate());
-				System.out.println(e.getTitle());
-			}
-		}
-		updateEventModel();
+
 	}
 
 	/**
-	 * Die Methode "login" übermittelt die Korrektheit der Benutzerdaten
+	 * The method "login" transmit the name of the routing page depending on the
+	 * correctness of the credentials.
 	 * 
-	 * @return
+	 * @return the pagename for routing
 	 */
 	public String login() {
-		setupNetworkConnection();
+		myRequester = new JsonJavaRequestHandler("localhost", 48585);
 		try {
-			// XXX hier die Benutzerüberprüfung anhand des NetworkLayour.
 			if (!username.equals("") && !password.equals("")) {
-				// XXX hier hängt er sich auf !
-				// User tmpu = myRequester.login(username, password);
-				// if (tmpu != null) {
-				// aktUser = tmpu;
-				//
-				// aktUserCa = new Calendar();
-				// aktUserCa.setID(1);
-				// Calendar tmpCal = myRequester
-				// .requestObjectByOwnId(aktUserCa);
-				// System.out.println("hier");
-				// // null Abfrage
-				// if (tmpCal != null) {
-				// aktUserCa = tmpCal;
-				// }
-				// }
-				// updateEventModel();
-				return "Kalender";
+				User tmpu = myRequester.login(username, password);
+				if (tmpu != null) {
+					aktUser = tmpu;
+					System.out.println(aktUser.getMailAddress());
+					aktUserCa = new Calendar();
+					aktUserCa.setID(1);
+					Calendar tmpCal = myRequester
+							.requestObjectByOwnId(aktUserCa);
+					System.out.println("hier");
+					// null Abfrage
+					if (tmpCal != null) {
+						aktUserCa = tmpCal;
+					}
+					updateEventModel();
+					return "Kalender";
+				}
+
 			}
-		} catch (NullPointerException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "Main";
@@ -116,34 +111,58 @@ public class Controller {
 	/*
 	 * folgende Methoden regeln die Befüllung des Datenmodells
 	 */
-	private void setupNetworkConnection() {
-		myRequester = new JsonJavaRequestHandler("localhost", 48585);
-	}
 
+	/**
+	 * receives the necessary data from a CalendarEntry to put it in the
+	 * DataModel.
+	 * 
+	 * @param event
+	 */
 	private void fillMyModel(ScheduleEvent event) {
-		// XXX hier fehlt nur noch der Zugang zu dem Calender Object. Danach
-		// ließt er sich den rest alleine raus.
 		SimpleDateFormat format = new SimpleDateFormat("DDDYY");
 		CalendarEntry temp = (CalendarEntry) event.getData();
-		String room = null;
-		// XXX room ID ist im CalenderEntry mit drin. Aber wie komm ich an den
-		// Wert?
-		// room=myRequester.requestObjectByOwnId(new
-		// Room().setID(temp.getID()));
+		Room room = new Room();
+		room.setID(temp.getRoomId());
+		room = myRequester.requestObjectByOwnId(room);
+		String roomString;
+		if (room != null) {
+			roomString = room.getLocation();
+			myModel.setRaum(roomString);
+		}
 		List<String> pers = new ArrayList<String>();
 		for (User u : temp.getInvitees()) {
 			pers.add(u.getGivenName());
 		}
+		// List<Invite> invites = myRequester.requestFollowingObjectsByOwnId(
+		// temp.getInvitees(), new Invite());
+		// for (Invite invite : invites) {
+		// if (invite == null) {
+		// // Fehler bei der Abfrage, ID exitiert entweder nicht oder es
+		// // gab einen ParsingError (sollte hier nicht vorkommen, aber um
+		// // sicher zu gehen)
+		// } else {
+		// User requestUser = new User();
+		// requestUser.setID(invite.getOwnerId());
+		// requestUser = myRequester.requestObjectByOwnId(requestUser);
+		// if (requestUser == null) {
+		// // Fehler bei der Abfrage, sollte nicht vorkommen...
+		// } else {
+		// // Anzeigen des Users bzw. Übertragen ins das Modell
+		// }
+		// }
+		// }
 		myModel.setBeschreibung(temp.getDescription());
 		myModel.setPers(pers);
-		myModel.setRaum(room);
+
 	}
 
 	/*
 	 * folgende Methoden werden benötigt,um die Daten innerhalb des "Scheduler"
 	 * zu aktualisieren.
 	 */
-
+	/**
+	 * receives the right CalenderEntry out of the actuall UserCalender.
+	 */
 	private void updateEventModel() {
 		eventModel.clear();
 		for (CalendarEntry c : aktUserCa.getCalendarEntries()) {
@@ -156,27 +175,53 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * onDateSelect eventHandler for the Schedular.
+	 * 
+	 * @param selectEvent
+	 */
 	public void onDateSelect(SelectEvent selectEvent) {
 		event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(),
 				(Date) selectEvent.getObject());
 	}
 
+	/**
+	 * 
+	 * @return the event
+	 */
 	public ScheduleEvent getEvent() {
 		return event;
 	}
 
+	/**
+	 * 
+	 * @param event
+	 */
 	public void setEvent(ScheduleEvent event) {
 		this.event = event;
 	}
 
+	/**
+	 * 
+	 * @return the eventmodel
+	 * 
+	 */
 	public ScheduleModel getEventModel() {
 		return eventModel;
 	}
 
+	/**
+	 * 
+	 * @param eventModel
+	 */
 	public void setEventModel(ScheduleModel eventModel) {
 		this.eventModel = eventModel;
 	}
 
+	/**
+	 * 
+	 * @param actionEvent
+	 */
 	public void addEvent(ActionEvent actionEvent) {
 		if (event.getId() == null)
 			eventModel.addEvent(event);
@@ -186,6 +231,11 @@ public class Controller {
 		event = new DefaultScheduleEvent();
 	}
 
+	/**
+	 * onEventSelect eventHandler for the Schedular.
+	 * 
+	 * @param selectEvent
+	 */
 	public void onEventSelect(SelectEvent selectEvent) {
 		event = (ScheduleEvent) selectEvent.getObject();
 		System.out.println(event.getTitle());
@@ -196,45 +246,82 @@ public class Controller {
 	 * Username und Password hat nichts im Datenmodell zu tun, deswegen wird es
 	 * innerhalb des Controllers behalten.
 	 */
+
+	/**
+	 * @return the username
+	 */
 	public String getUsername() {
 		return username;
 	}
 
+	/**
+	 * @param username
+	 *            the username to set
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
+	/**
+	 * @return the password
+	 */
 	public String getPassword() {
 		return password;
+	}
+
+	/**
+	 * @param password
+	 *            the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	/*
 	 * Hier werden die Anfragen der Beans direkt auf das Datenmodell verwiesen.
 	 */
-	public Date getDate() {
-		return myModel.getDate();
-	}
 
-	public void setDate(Date date) {
-		myModel.setDate(date);
-	}
-
+	/**
+	 * dataSelect eventHandler for the Calendar
+	 * 
+	 * @param event
+	 */
 	public void handleDateSelect(SelectEvent event) {
 		myModel.setDate((Date) event.getObject());
 	}
 
+	/**
+	 * @return the date
+	 */
+	public Date getDate() {
+		return myModel.getDate();
+	}
+
+	/**
+	 * @param date
+	 *            the date to set
+	 */
+	public void setDate(Date date) {
+		myModel.setDate(date);
+	}
+
+	/**
+	 * @return the beschreibung
+	 */
 	public String getBeschreibung() {
 		return myModel.getBeschreibung();
 	}
 
+	/**
+	 * @return the raum
+	 */
 	public String getRaum() {
 		return myModel.getRaum();
 	}
 
+	/**
+	 * @return the pers
+	 */
 	public String getPers() {
 		StringBuilder sb = new StringBuilder();
 		for (String s : myModel.getPers()) {
