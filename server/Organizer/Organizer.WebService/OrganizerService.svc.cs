@@ -24,11 +24,19 @@ namespace Organizer.WebService
     [ServiceBehavior(IncludeExceptionDetailInFaults = false)]
     public class OrganizerService : IOrganizerService
     {
+
+        /// <summary>
+        /// Validates if the userAuth string is allowed to access the service
+        /// </summary>
+        /// <param name="userAuth"></param>
+        /// <returns></returns>
         private bool ValidateUser(string userAuth)
         {
             if (userAuth != null)
             {
+                // splits userid from authorization string
                 var authentication = userAuth.Split('_');
+
                 var user = GetUserFromAuthString(userAuth);
                 if (user != null)
                 {
@@ -44,7 +52,15 @@ namespace Organizer.WebService
             }
             return false;
         }
-
+        /// <summary>
+        /// Generic request validation method
+        /// </summary>
+        /// <param name="type">Defines the type of the request (Add,Update,Remove, Get)</param>
+        /// <param name="itemType">Defines the type of the requested item (Calendar, CalendarEntry, Invite, Group, User, Room)</param>
+        /// <param name="userAuth"></param>
+        /// <param name="requestUserId"></param>
+        /// <param name="requestId"></param>
+        /// <returns></returns>
         private bool ValidateRequest(RequestType type, RequestItemType itemType, string userAuth, int requestUserId, int requestId)
         {
             if (!ValidateUser(userAuth))
@@ -95,16 +111,24 @@ namespace Organizer.WebService
                     }
                 case RequestItemType.CalendarEntry:
                     {
-
-                        bool returnValue1 = false;
-                        bool returnValue2 = false;
-                        var item = timeplanner.GetCalendarEntryById(requestId);
-                        if (item != null)
+                        if (requestUserId > 0)
                         {
-                            returnValue1 = IsRequesterOwner(user, item.Owner.UserId);
-                            returnValue2 = (item.Invitations.Where(p => p.Owner.UserId == user.UserId).Count() > 0);
+                            return IsRequesterOwner(user, requestUserId);
                         }
-                        return IsRequestAllowed(returnValue1, returnValue2);
+
+                        if (requestId > 0)
+                        {
+                            bool returnValue1 = false;
+                            bool returnValue2 = false;
+                            var item = timeplanner.GetCalendarEntryById(requestId);
+                            if (item != null)
+                            {
+                                returnValue1 = IsRequesterOwner(user, item.Owner.UserId);
+                                returnValue2 = (item.Invitations.Where(p => p.Owner.UserId == user.UserId).Count() > 0);
+                            }
+                            return IsRequestAllowed(returnValue1, returnValue2);
+                        }
+                        break;
                     }
                 case RequestItemType.Invite:
                     {
@@ -133,9 +157,16 @@ namespace Organizer.WebService
                         return IsRequesterOwner(user, requestUserId);
                     }
                 case RequestItemType.Room:
-                case RequestItemType.Group:
                     {
                         return true;
+                    }
+                case RequestItemType.Group:
+                    {
+                        if (requestUserId > 0)
+                        {
+                            return IsRequesterOwner(user, requestUserId);
+                        }
+                        break;
                     }
 
 
@@ -191,10 +222,11 @@ namespace Organizer.WebService
                     }
                 case RequestItemType.Invite:
                     {
-                        var inviteUser = timeplanner.GetInviteById(requestId).Owner;
-                        if (inviteUser != null)
+
+                        var invite = timeplanner.GetCalendarEntryById(requestId);
+                        if (invite != null)
                         {
-                            return IsRequesterOwner(user, inviteUser.UserId);
+                            return IsRequesterOwner(user, invite.Owner.UserId);
                         }
                         break;
                     }
@@ -242,13 +274,12 @@ namespace Organizer.WebService
                     }
                 case RequestItemType.Invite:
                     {
-
-                        var item = timeplanner.GetInviteById(requestId);
-                        if (item != null)
+                        var inviteUser = timeplanner.GetInviteById(requestId).Owner;
+                        if (inviteUser != null)
                         {
-                            return IsRequesterOwner(user, item.CalendarEntry.Owner.UserId);
+                            return IsRequesterOwner(user, inviteUser.UserId);
                         }
-                        return false;
+                        break;
                     }
                 case RequestItemType.User:
                     {
@@ -313,7 +344,11 @@ namespace Organizer.WebService
                     }
                 case RequestItemType.Group:
                     {
+                        if (requestUserId > 0)
+                        {
+                            return IsRequesterOwner(user, requestUserId);
 
+                        }                        
                         if (requestId > 0)
                         {
                             var item = timeplanner.GetGroupById(requestId);
@@ -515,7 +550,7 @@ namespace Organizer.WebService
 
         public bool RemoveUser(int userId, string userAuth)
         {
-            if(ValidateRequest(RequestType.RemoveItem, RequestItemType.User, userAuth, userId, 0))
+            if (ValidateRequest(RequestType.RemoveItem, RequestItemType.User, userAuth, userId, 0))
             {
                 return timeplanner.RemoveUser(userId);
             }
@@ -584,7 +619,7 @@ namespace Organizer.WebService
 
         public ICollection<WebGroup> GetAllGroupsByUserId(int userId, string userAuth)
         {
-            if (!ValidateRequest(RequestType.GetItem, RequestItemType.Group, userAuth, userId, 0))
+            if (!ValidateUser(userAuth))
                 return null;
 
             var groups = timeplanner.GetGroupsByUserId(userId);
@@ -596,7 +631,7 @@ namespace Organizer.WebService
         }
         public ICollection<WebGroup> GetAllGroups(string userAuth)
         {
-            if (ValidateUser(userAuth))
+            if (!ValidateUser(userAuth))
                 return null;
 
             var groups = timeplanner.GetAllGroups();
@@ -658,14 +693,14 @@ namespace Organizer.WebService
 
         public int AcceptInvite(int inviteId, string userAuth)
         {
-            if (!ValidateRequest(RequestType.AddItem, RequestItemType.Invite, userAuth, 0, inviteId))
+            if (!ValidateRequest(RequestType.UpdateItem, RequestItemType.Invite, userAuth, 0, inviteId))
                 return 0;
 
             return timeplanner.AcceptInvite(inviteId);
         }
         public int DeclineInvite(int inviteId, string userAuth)
         {
-            if (!ValidateRequest(RequestType.AddItem, RequestItemType.Invite, userAuth, 0, inviteId))
+            if (!ValidateRequest(RequestType.UpdateItem, RequestItemType.Invite, userAuth, 0, inviteId))
                 return 0;
 
             return timeplanner.DeclineInvite(inviteId);
@@ -681,7 +716,7 @@ namespace Organizer.WebService
 
         public int AddInvite(int calendarEntryId, int userId, string userAuth)
         {
-            if (!ValidateRequest(RequestType.UpdateItem, RequestItemType.CalendarEntry, userAuth, 0, calendarEntryId))
+            if (!ValidateRequest(RequestType.AddItem, RequestItemType.Invite, userAuth, 0, calendarEntryId))
                 return 0;
 
             return timeplanner.AddInvite(calendarEntryId, userId);
@@ -689,7 +724,7 @@ namespace Organizer.WebService
 
         public bool RemoveInvite(int inviteId, string userAuth)
         {
-            if (!ValidateRequest(RequestType.UpdateItem, RequestItemType.CalendarEntry, userAuth, inviteId, 0))
+            if (!ValidateRequest(RequestType.RemoveItem, RequestItemType.Invite, userAuth, 0, inviteId))
                 return false;
 
             return timeplanner.RemoveInvite(inviteId);
@@ -724,7 +759,8 @@ namespace Organizer.WebService
 
         public bool UpdateUser(int userId, string givenName, string surname, string mailAddress, string phoneNumber, string password, string userAuth)
         {
-            if (ValidateRequest(RequestType.UpdateItem, RequestItemType.CalendarEntry, userAuth, userId, 0))
+
+            if (!ValidateRequest(RequestType.UpdateItem, RequestItemType.User, userAuth, userId, 0))
                 return false;
 
             return timeplanner.UpdateUser(userId, givenName, surname, mailAddress, phoneNumber, password);
@@ -935,7 +971,7 @@ namespace Organizer.WebService
                 Description = group.Description,
                 Name = group.Name,
                 Id = group.GroupId,
-                Members = group.Members
+                MemberIds = group.Members.Select(p => p.UserId).ToList()
 
             };
 

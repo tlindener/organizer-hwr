@@ -69,6 +69,10 @@ namespace Organizer
 
                 _calendarDatabase.Calendar.Add(cal);
                 _calendarDatabase.SaveChanges();
+
+                /*resolution of nullable integer is a manual job
+                 * Next step would be to implement 1:n relationship von user and calendar
+                 */
                 owner.CalendarId = cal.CalendarId;
                 _calendarDatabase.SaveChanges();
 
@@ -127,20 +131,22 @@ namespace Organizer
 
             Calendar calendar = _calendarDatabase.Calendar.Find(calendarId);
             if (calendar == null)
-            {
                 return false;
-            }
 
             try
             {
                 if (calendar.CalendarEntries.Count > 0)
                 {
+                    // Second step is to remove all calendar entries
                     var calendarEntries = calendar.CalendarEntries.ToList();
                     foreach (var entry in calendarEntries)
                     {
+
+                        //First step is to remove all invites
                         var invites = entry.Invitations.ToList();
                         foreach (Invite inv in invites)
                         {
+
                             _calendarDatabase.Invites.Remove(inv);
 
                         }
@@ -148,6 +154,7 @@ namespace Organizer
                     }
 
                 }
+                //third step is to delete calendar
                 _calendarDatabase.Calendar.Remove(calendar);
                 _calendarDatabase.SaveChanges();
                 return true;
@@ -192,9 +199,8 @@ namespace Organizer
             {
                 Calendar calendar = _calendarDatabase.Calendar.Find(entry.CalendarId);
                 if (calendar == null)
-                {
                     return 0;
-                }
+
                 calendar.CalendarEntries.Add(entry);
                 _calendarDatabase.SaveChanges();
                 return entry.CalendarEntryId;
@@ -236,9 +242,8 @@ namespace Organizer
                 // Check if given roomId is available
                 Room room = _calendarDatabase.Rooms.Find(roomId);
                 if (room == null)
-                {
                     return null;
-                }
+
                 return _calendarDatabase.CalendarEntries.Where(p => p.Room.RoomId == room.RoomId).ToList();
             }
             catch (Exception ex)
@@ -259,9 +264,8 @@ namespace Organizer
             Room room = _calendarDatabase.Rooms.Find(roomId);
             CalendarEntry calendarEntry = _calendarDatabase.CalendarEntries.Find(calendarEntryId);
             if (room == null || calendarEntry == null)
-            {
                 return false;
-            }
+
             try
             {
                 calendarEntry.Room = room;
@@ -389,11 +393,12 @@ namespace Organizer
 
             try
             {
+                //each values with constraint has to be set to null
                 RemoveCalendar(user.Calendar.CalendarId);
                 user.Calendar = null;
 
                 var invites = user.Invites.ToList();
-                foreach(Invite inv in invites)
+                foreach (Invite inv in invites)
                 {
                     _calendarDatabase.Invites.Remove(inv);
                 }
@@ -553,7 +558,8 @@ namespace Organizer
                 {
                     return null;
                 }
-                return _calendarDatabase.Groups.Where(p => p.Members == member).ToList();
+
+                return member.Groups;
             }
             catch (Exception ex)
             {
@@ -723,7 +729,12 @@ namespace Organizer
         {
             try
             {
+
                 Invite invite = _calendarDatabase.Invites.Find(inviteId);
+                if (invite.Accepted == -1)
+                {
+                    return 0;
+                }
                 invite.Accepted = -1;
                 _calendarDatabase.SaveChanges();
             }
@@ -742,7 +753,13 @@ namespace Organizer
         /// <returns></returns>
         public int AcceptInvite(int inviteId)
         {
+
             Invite invite = _calendarDatabase.Invites.Find(inviteId);
+            if (invite.Accepted == 1)
+            {
+                return 0;
+            }
+
             invite.Accepted = 1;
             var calendar = GetCalendarByOwner(invite.Owner.UserId);
             var ce = invite.CalendarEntry;
@@ -758,8 +775,6 @@ namespace Organizer
                 return AddCalendarEntry(ce.Title, ce.Description, ce.StartDate, ce.EndDate, userId, roomId, calendar.CalendarId);
             }
             return 0;
-
-
         }
 
         /// <summary>
@@ -930,6 +945,16 @@ namespace Organizer
 
         public bool UpdateUser(int userId, string givenName, string surname, string mailAddress, string phoneNumber, string password)
         {
+            if (!Utils.IsEmailValid(mailAddress))
+                return false;
+
+            var users = this.GetAllUser();
+
+            if (users != null && users.Where(p => p.MailAddress == mailAddress).Count() > 0)
+            {
+                return false;
+            }
+
             var user = _calendarDatabase.User.Find(userId);
             if (user != null)
             {
