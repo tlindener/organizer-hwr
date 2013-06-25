@@ -382,7 +382,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					myModel.setAktDate(aktDate);
 					myModel.setBeschreibungen(anfangZeit, myCe.getTitle());
 					myModel.setDauer(anfangZeit, myCe.getDuration());
-					 myModel.setPersonen(anfangZeit, myCe.getInvitees());
+
+					List<User> invitees = getInvitesOfEntry(myCe.getInviteIds());
+
+					myModel.setPersonen(anfangZeit, invitees);
+
 					myModel.setKalendarentries(anfangZeit, myCe.getID());
 
 					List<Invite> invites = myRequester
@@ -426,6 +430,28 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				}
 			}
 		}
+	}
+	/**
+	 * Hier werden die User von den Invites abgefragt
+	 * XXX Hier ist die Methode
+	 * @param inviteIds
+	 * @return
+	 */
+	private List<User> getInvitesOfEntry(List<Integer> inviteIds) {
+		ArrayList<User> user = new ArrayList<User>();
+		List<Invite> invites = myRequester.requestFollowingObjectsByOwnId(
+				inviteIds, new Invite());
+		for (Invite invite : invites) {
+			if (invite != null) {
+				User requestUser = new User();
+				requestUser.setID(invite.getOwnerId());
+				requestUser = myRequester.requestObjectByOwnId(requestUser);
+				if (requestUser != null) {
+					user.add(requestUser);
+				}
+			}
+		}
+		return user;
 	}
 
 	/**
@@ -864,18 +890,18 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		editEntry = new window_TerminBearbeiten(this, this);
 		aktDate = myHauptmenue.getAktDateCali();
 		String startZeit = aktTermin;
-		boolean containsTermin=myModel.getKalendarentries().containsKey(aktTermin);
-		if (aktTermin == null
-				||containsTermin==false) {
+		boolean containsTermin = myModel.getKalendarentries().containsKey(
+				aktTermin);
+		if (aktTermin == null || containsTermin == false) {
 			editEntry.setButtonText("Erstellen");
-			
-			if(containsTermin==false)
-				editEntry.openFrameWithValues(startZeit, "", "",
-						"", null, null,"");	
+
+			if (containsTermin == false)
+				editEntry.openFrameWithValues(startZeit, "", "", "", null,
+						null, "");
 			else
-			editEntry.openEmptyFrame();
+				editEntry.openEmptyFrame();
 		} else {
-			
+
 			editEntry.setButtonText("Termin Speichern");
 			String details = myModel.returnDetail(aktTermin);
 			String endZeit = myModel.returnEndzeit(aktTermin);
