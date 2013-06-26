@@ -66,7 +66,10 @@ public class CalendarEntryActivity extends Activity {
 					}
 					TextView room = (TextView) findViewById(R.id.calendarEntryActivityRoomLocation);
 					if (room != null) {
+						if(model.getRoom() != null)
+						{
 						room.setText(model.getRoom().getLocation());
+						}
 					}
 					ListView invites = (ListView)findViewById(R.id.calendarEntryActivityInvitationsList);
 					if(invites != null)

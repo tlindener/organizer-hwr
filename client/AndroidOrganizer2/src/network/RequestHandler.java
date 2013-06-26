@@ -125,4 +125,6 @@ public abstract class RequestHandler{
 	protected String generateAuthenticationString(int id, String mail, String password) {
 		return ParseUtils.parseStringToHTTP(id+"_"+ParseUtils.hashString(mail + ParseUtils.hashString(password)));
 	}
+	
+	public abstract boolean dropDatabase();
 }

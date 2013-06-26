@@ -1,6 +1,7 @@
 package de.lindener.androidorganizer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import de.lindener.androidorganizer.preferences.SettingsActivity;
@@ -84,7 +85,15 @@ public class MainActivity extends Activity {
 			}
 		}
 		if (calendar != null) {
-			calendarEntries = calendar.getCalendarEntries();
+
+			calendarEntries.clear();
+			Date today = new Date();
+			today.setDate(today.getDate() -1);
+			for (CalendarEntry entry : calendar.getCalendarEntries()) {
+				if (entry.getStartDate().after(today)) {
+					calendarEntries.add(entry);
+				}
+			}
 
 			CalendarEntryAdapter adapter = new CalendarEntryAdapter(this,
 					R.layout.calendarentry, 0, calendarEntries);
@@ -99,8 +108,7 @@ public class MainActivity extends Activity {
 							CalendarEntry entry = (CalendarEntry) calendarEntryListView
 									.getItemAtPosition(position);
 							if (entry != null) {
-								Intent intent = new Intent(
-										getBaseContext(),
+								Intent intent = new Intent(getBaseContext(),
 										CalendarEntryActivity.class);
 								intent.putExtra(Constants.CALENDAR_ENTRY_ID,
 										entry.getID());
