@@ -12,16 +12,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-
-
-//import network.JsonJavaRequestHandler;
-
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
+import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
-public class CalendarAbstractionLayer  {
+public class CalendarAbstractionLayer {
 
 	private organizer.objects.types.User user;
 	private String address;
@@ -66,24 +63,50 @@ public class CalendarAbstractionLayer  {
 		serverEntry.setID(calendarEntryId);
 
 		serverEntry = requestHandler.requestObjectByOwnId(serverEntry);
-		CalendarEntryViewModel entry = new CalendarEntryViewModel();
-		entry.setDescription(serverEntry.getDescription());
-		entry.setEndDate(serverEntry.getEndDate());
-		entry.setStartDate(serverEntry.getStartDate());
-		entry.setTitle(serverEntry.getTitle());
-		entry.setRoom(requestRoom(serverEntry.getRoomId()));
 
-		List<UserViewModel> inviteList = new ArrayList<UserViewModel>();
-		for (User u : serverEntry.getInvitees()) {
-			inviteList.add(convertToUserViewModel(u));
+		CalendarEntryViewModel entry = new CalendarEntryViewModel();
+		if (serverEntry != null) {
+			entry.setDescription(serverEntry.getDescription());
+			entry.setEndDate(serverEntry.getEndDate());
+			entry.setStartDate(serverEntry.getStartDate());
+			entry.setTitle(serverEntry.getTitle());
+			entry.setRoom(requestRoom(serverEntry.getRoomId()));
+
+			List<UserViewModel> inviteList = new ArrayList<UserViewModel>();
+
+			for (User u : getInvitesOfEntry(serverEntry.getInviteIds())) {
+				inviteList.add(convertToUserViewModel(u));
+			}
+			entry.setInvitees(inviteList);
 		}
-		entry.setInvitees(inviteList);
-		
 		return entry;
 
 	}
-	private Room requestRoom(int roomId)
-	{
+
+	/**
+	 * Hier werden die User von den Invites abgefragt XXX Hier ist die Methode
+	 * 
+	 * @param inviteIds
+	 * @return
+	 */
+	private List<User> getInvitesOfEntry(List<Integer> inviteIds) {
+		ArrayList<User> user = new ArrayList<User>();
+		List<Invite> invites = requestHandler.requestFollowingObjectsByOwnId(
+				inviteIds, new Invite());
+		for (Invite invite : invites) {
+			if (invite != null) {
+				User requestUser = new User();
+				requestUser.setID(invite.getOwnerId());
+				requestUser = requestHandler.requestObjectByOwnId(requestUser);
+				if (requestUser != null) {
+					user.add(requestUser);
+				}
+			}
+		}
+		return user;
+	}
+
+	private Room requestRoom(int roomId) {
 		Room room = new Room();
 		room.setID(roomId);
 		room = requestHandler.requestObjectByOwnId(room);
