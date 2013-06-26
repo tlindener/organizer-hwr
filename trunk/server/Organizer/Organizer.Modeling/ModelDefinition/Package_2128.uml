@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner"
   dslVersion="1.0.0.0"
   Id="099d51de-ddd8-4f94-bb3a-ad7af4d8a03c"
   name="Organizer"
@@ -971,71 +971,6 @@
         </ownedAttributesInternal>
         <ownedOperationsInternal>
           <operation
-            Id="395415f7-586a-426a-bbf3-9817c55585f1"
-            name="CalendarContext"
-            isLeaf="false"
-            isStatic="false"
-            isAbstract="false"
-            concurrency="Sequential"
-            isQuery="false">
-            <referencesInternal>
-              <reference
-                Id="1d389c9b-3783-459b-9758-becca9ec8e57"
-                handle="viewcode://./CodeSchema_Method?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2FTobias%2FDocuments%2FVisual Studio 2012%2FProjects%2FOrganizer%2Fserver%2FOrganizer%2FOrganizer.Calendar%2Fbin%2FDebug%2FOrganizer.dll&quot; Namespace%3DOrganizer Type%3DCalendarContext Member%3D.ctor"
-                tag="ViewCode" />
-            </referencesInternal>
-            <appliedStereotypesInternal>
-              <stereotypeInstance
-                Id="6e7619e5-33f0-4944-be46-6067be4635c0"
-                name="method"
-                profile="CSharpProfile">
-                <propertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="7546108a-d269-4750-b206-275c9fe6b0ee">
-                    <propertyInstance
-                      Id="d20307c9-74d3-4d07-a1dc-978e1f090438"
-                      name="ClrAttributes" />
-                  </stereotypeInstanceHasPropertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="fc8a6d70-f484-434d-8bd2-1cff7ac38f93">
-                    <propertyInstance
-                      Id="dff3f597-e70c-423a-88ed-8a4c8a6bd886"
-                      name="IsPartial"
-                      value="false" />
-                  </stereotypeInstanceHasPropertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="b4a769ea-294c-488f-b0d3-862743bd4d00">
-                    <propertyInstance
-                      Id="dbf28d56-e8ac-4b3a-a6ab-8321e5985145"
-                      name="IsUnsafe"
-                      value="false" />
-                  </stereotypeInstanceHasPropertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="50ef48d3-317a-46ad-92ec-cf3dc9d6ea85">
-                    <propertyInstance
-                      Id="eaf6aa96-0ff5-40a9-860d-1803fe362986"
-                      name="Inheritance"
-                      value="none" />
-                  </stereotypeInstanceHasPropertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="7cbf559a-1b10-40ca-9f15-4ffb506fc19b">
-                    <propertyInstance
-                      Id="96201884-94a3-4efa-93a8-2879fde76e8c"
-                      name="PackageVisibility"
-                      value="internal" />
-                  </stereotypeInstanceHasPropertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="88e673c1-80af-4ee8-9b0f-afe94bc0abfe">
-                    <propertyInstance
-                      Id="c5bd1817-401d-4802-b997-983269bb979e"
-                      name="params"
-                      value="false" />
-                  </stereotypeInstanceHasPropertyInstances>
-                </propertyInstances>
-              </stereotypeInstance>
-            </appliedStereotypesInternal>
-          </operation>
-          <operation
             Id="47967df9-04b4-44f3-b571-dc936e2864d5"
             name="OnModelCreating"
             visibility="Protected"
@@ -1121,6 +1056,71 @@
                 </parameter>
               </operationHasOwnedParameters>
             </ownedParameters>
+          </operation>
+          <operation
+            Id="d4450c35-7542-4503-910a-e953205fc26b"
+            name="CalendarContext"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="9c674a04-8bcf-4261-a8fe-b534db8cce04"
+                handle="viewcode://./CodeSchema_Method?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2FTobias%2FDocuments%2FVisual Studio 2012%2FProjects%2FOrganizer%2Fserver%2FOrganizer%2FOrganizer.Calendar%2Fbin%2FDebug%2FOrganizer.dll&quot; Namespace%3DOrganizer Type%3DCalendarContext Member%3D.ctor"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="6a6d33c6-b876-4a7d-888f-497f69e600dd"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="3db685b5-c7c9-44ec-81ae-8a2e61d341ef">
+                    <propertyInstance
+                      Id="b9c7bec2-7a72-45e9-8187-832095da7188"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="6a07bf71-38d4-4254-9eda-b69625bd1a50">
+                    <propertyInstance
+                      Id="02c03c40-8076-442f-af8d-e287064fb3aa"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="745fa432-f85c-4cdd-8b88-05d6242014cb">
+                    <propertyInstance
+                      Id="27071e7d-f859-4910-9225-9327cab0b5ad"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="4aa838af-a4af-4f5c-8096-60ddf63189b2">
+                    <propertyInstance
+                      Id="3e806306-fe4a-41a6-aee5-78df5d676db7"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="bca444f7-3a04-41fc-abd6-b242c4c77306">
+                    <propertyInstance
+                      Id="b9fbcf27-fd62-4e57-9c74-06380078cd70"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="5f542e17-67bb-4600-9e3d-c8b7de2a9e8b">
+                    <propertyInstance
+                      Id="d2d7176e-86d5-4367-9f97-253186cc9ed7"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
           </operation>
         </ownedOperationsInternal>
       </class>
@@ -1318,71 +1318,6 @@
           </property>
         </ownedAttributesInternal>
         <ownedOperationsInternal>
-          <operation
-            Id="4f9b296f-ce76-4c4e-8d52-02ee00b179a7"
-            name="TimePlanner"
-            isLeaf="false"
-            isStatic="false"
-            isAbstract="false"
-            concurrency="Sequential"
-            isQuery="false">
-            <referencesInternal>
-              <reference
-                Id="240156f9-63dd-45ab-ba55-e7f48465b9c2"
-                handle="viewcode://./CodeSchema_Method?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2FTobias%2FDocuments%2FVisual Studio 2012%2FProjects%2FOrganizer%2Fserver%2FOrganizer%2FOrganizer.Calendar%2Fbin%2FDebug%2FOrganizer.dll&quot; Namespace%3DOrganizer Type%3DTimePlanner Member%3D.ctor"
-                tag="ViewCode" />
-            </referencesInternal>
-            <appliedStereotypesInternal>
-              <stereotypeInstance
-                Id="aa8ca07a-54b3-474c-9bec-e411f79b13cf"
-                name="method"
-                profile="CSharpProfile">
-                <propertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="45aba1c7-c937-40f7-bd74-5a9a113911a1">
-                    <propertyInstance
-                      Id="9d37c75d-59aa-4964-978a-44764e305e68"
-                      name="ClrAttributes" />
-                  </stereotypeInstanceHasPropertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="a3568ff8-0535-47d4-96be-a07e82b3f779">
-                    <propertyInstance
-                      Id="225b6a7a-3637-4ba9-bb7a-29d6fb9e52bd"
-                      name="IsPartial"
-                      value="false" />
-                  </stereotypeInstanceHasPropertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="cbfac6db-1b40-4765-aa0b-a175806a58a1">
-                    <propertyInstance
-                      Id="73ee7bda-9ec6-4d8d-9b05-1a775105d125"
-                      name="IsUnsafe"
-                      value="false" />
-                  </stereotypeInstanceHasPropertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="c0ef0f12-9cc7-4f45-9edf-120b2f920b17">
-                    <propertyInstance
-                      Id="d274bd28-097e-4fde-8e32-37991048b923"
-                      name="Inheritance"
-                      value="none" />
-                  </stereotypeInstanceHasPropertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="48bf3e96-509f-41fe-8c17-49fe20d6851b">
-                    <propertyInstance
-                      Id="e6c480c5-7e89-44d5-a0a6-cef26cb08694"
-                      name="PackageVisibility"
-                      value="internal" />
-                  </stereotypeInstanceHasPropertyInstances>
-                  <stereotypeInstanceHasPropertyInstances
-                    Id="a40f9ef3-f0da-457b-bf00-24a2c17dc811">
-                    <propertyInstance
-                      Id="085ee4b3-1eba-4de9-9202-f25d87484551"
-                      name="params"
-                      value="false" />
-                  </stereotypeInstanceHasPropertyInstances>
-                </propertyInstances>
-              </stereotypeInstance>
-            </appliedStereotypesInternal>
-          </operation>
           <operation
             Id="1f223f57-394f-428b-8428-7182da15a775"
             name="AcceptInvite"
@@ -5662,6 +5597,71 @@
                 </parameter>
               </operationHasOwnedParameters>
             </ownedParameters>
+          </operation>
+          <operation
+            Id="c5098322-b45f-467e-accd-885b3f7d4183"
+            name="TimePlanner"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="4a7b2c45-d3d9-4525-b350-d3e323a9139a"
+                handle="viewcode://./CodeSchema_Method?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2FTobias%2FDocuments%2FVisual Studio 2012%2FProjects%2FOrganizer%2Fserver%2FOrganizer%2FOrganizer.Calendar%2Fbin%2FDebug%2FOrganizer.dll&quot; Namespace%3DOrganizer Type%3DTimePlanner Member%3D.ctor"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="47eba5c5-baa4-4734-9575-b133c2d72e80"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="7583c746-a496-4d73-9e39-772c387d93fb">
+                    <propertyInstance
+                      Id="54f31a17-8bfa-4fbb-9058-9e683012acd9"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="cb68dd9a-736d-43df-92a4-28ba5026635d">
+                    <propertyInstance
+                      Id="09e3e2aa-3acd-4525-99d8-5757d9a87310"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="2d57b2cf-8ceb-494f-84d3-a932452215fd">
+                    <propertyInstance
+                      Id="81d04143-64e2-452d-89a0-b3a4308d95da"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="92f822b6-67f3-47e3-8065-a56ae6f704b0">
+                    <propertyInstance
+                      Id="14816510-b117-4d04-a58c-c2ca52261d5b"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="2443857e-c41c-44ac-8114-cc5ce4272603">
+                    <propertyInstance
+                      Id="183ec9fb-bf7e-435c-baff-754fe9d42033"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="5e5694d4-0d88-4ecf-a2bb-931590b3e865">
+                    <propertyInstance
+                      Id="4bec96ca-a560-4399-8d72-91640187d6c5"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
           </operation>
         </ownedOperationsInternal>
       </class>
