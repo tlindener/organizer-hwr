@@ -685,7 +685,7 @@
         </ownedAttributesInternal>
         <ownedOperationsInternal>
           <operation
-            Id="f30f6f53-598f-4d30-b0a9-b0686f39a35b"
+            Id="1047efe2-8d66-40f7-a36f-dfbd7bcdeef6"
             name="Calendar"
             isLeaf="false"
             isStatic="false"
@@ -694,54 +694,54 @@
             isQuery="false">
             <referencesInternal>
               <reference
-                Id="8dddc674-1b2e-4b1e-b7dd-f58d1e06943c"
+                Id="d4855d12-7e6d-4130-927d-adc4dab247ae"
                 handle="viewcode://./CodeSchema_Method?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2FTobias%2FDocuments%2FVisual Studio 2012%2FProjects%2FOrganizer%2Fserver%2FOrganizer%2FOrganizer.Interfaces%2Fbin%2FDebug%2FOrganizer.Interfaces.dll&quot; Namespace%3DOrganizer.Interfaces Type%3DCalendar Member%3D.ctor"
                 tag="ViewCode" />
             </referencesInternal>
             <appliedStereotypesInternal>
               <stereotypeInstance
-                Id="c20e3b28-1ff7-4218-8dd9-4cb38dd8a73e"
+                Id="499e9d89-a7a7-476c-8f98-9be73c47edfc"
                 name="method"
                 profile="CSharpProfile">
                 <propertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="c36399c5-bb96-4468-8d94-43b9fbb5387f">
+                    Id="c5684ee6-d99d-46b2-baa7-c734c63e9ec3">
                     <propertyInstance
-                      Id="51f533e4-d447-4c7e-b50f-fdaee8cb2ef4"
+                      Id="feb868d7-72bf-4ab9-9fcd-7220abeb5273"
                       name="ClrAttributes" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="1596335f-a486-4cdd-a360-c24e6920ce77">
+                    Id="79ba1446-82b3-4b91-92bc-d2200c8bd96a">
                     <propertyInstance
-                      Id="c28a680c-4666-4136-8468-e43e9305accb"
+                      Id="0abef3bd-fd3e-4b42-aa55-44dd13a87568"
                       name="IsPartial"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="32073404-a9d1-4680-a3e3-6bd9f4f6db4e">
+                    Id="daa72396-33f0-45ca-b1d8-f4132b808b7c">
                     <propertyInstance
-                      Id="a3891b5b-d4fb-463b-b945-4de81f0a6828"
+                      Id="bfe713bc-27ed-40bf-8ddd-f5c34c58e855"
                       name="IsUnsafe"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="e2607e45-7b84-41a7-969b-78ec1f739ae1">
+                    Id="a4a119ed-f7af-4fb5-9f70-c008db916455">
                     <propertyInstance
-                      Id="76ce963a-6b1f-461a-92fd-4a2ad4097830"
+                      Id="d9f6740d-a988-4d17-97f5-bc3f73d15b7a"
                       name="Inheritance"
                       value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="2177649f-1b2c-400c-a486-fec670dc002c">
+                    Id="5a9d40a4-83a3-4af9-ac84-050cb3691f2e">
                     <propertyInstance
-                      Id="b17f1e9e-2ca2-410b-a9df-67a9fbc4bcd1"
+                      Id="a10b0917-b640-4b63-82e6-a60c071f518d"
                       name="PackageVisibility"
                       value="internal" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="f5b84e6d-9770-48ee-870c-6326656fa83f">
+                    Id="fdad52d2-7c86-4b84-8586-6850227f093d">
                     <propertyInstance
-                      Id="3317fa0d-771c-45b9-8381-21fb5a2a99ac"
+                      Id="8bd3e224-7ad9-4eb3-8e8c-d2c3a1b019e2"
                       name="params"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
@@ -808,477 +808,13 @@
             </propertyInstances>
           </stereotypeInstance>
         </appliedStereotypesInternal>
-        <targetEnds>
-          <association
-            Id="a1cff0d0-1d3f-4d65-b5a8-019c5c71b63b"
-            isDerived="false"
-            sourceEndRoleName="CalendarEntry"
-            targetEndRoleName="Calendar"
-            isLeaf="false"
-            isAbstract="false">
-            <classMoniker
-              Id="9f3676d0-1560-460b-a876-16e5fce81f96"
-              LastKnownName="Calendar"
-              LastKnownLocation="Package2_2128.uml" />
-            <description>Property Calendar references type Calendar.</description>
-            <relationshipOwnedElementsInternal>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="1f9c1ee7-8344-433c-8f43-765f9104be7f"
-                  name="CalendarEntry"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false"
-                  isNavigableOwned="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="6a389903-dc37-4b26-8558-8e4ee931795e"
-                      name="Lower"
-                      value="*" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="e48519fe-c203-48e4-9a3a-d5dfc915c1cb"
-                      name="Upper"
-                      value="*" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="ecb6b86e-345e-4c05-a3e7-08bb61808850"
-                  name="Calendar"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="521f8c87-75d0-4a5e-af2a-e7bef09fac62"
-                      name="Lower"
-                      value="1" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="01d84071-152d-411b-ab3e-f992b9483d17"
-                      name="Upper"
-                      value="1" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-            </relationshipOwnedElementsInternal>
-          </association>
-          <association
-            Id="871b6348-3c49-4310-86e6-1a758555c9c1"
-            isDerived="false"
-            sourceEndRoleName="CalendarEntry"
-            targetEndRoleName="Duration"
-            isLeaf="false"
-            isAbstract="false">
-            <classMoniker
-              Id="f3df5166-cb01-461a-8ef7-61f5705549b6"
-              LastKnownName="Double"
-              LastKnownLocation="Package3_2128.uml" />
-            <description>Property Duration references type Double.</description>
-            <relationshipOwnedElementsInternal>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="e70c28e6-55e0-4cdc-9e27-055bd3ebbf1e"
-                  name="CalendarEntry"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false"
-                  isNavigableOwned="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="db13a0fb-690f-46da-852a-131f170bf75e"
-                      name="Lower"
-                      value="*" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="ba8d2cd5-f10a-4c9d-9fc9-f030613701f3"
-                      name="Upper"
-                      value="*" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="745365d7-3c63-46ac-bdb9-950703609cbe"
-                  name="Duration"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="f531f84f-8c2e-4fa1-b17d-215306180118"
-                      name="Lower"
-                      value="1" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="68ab0dff-2b1f-43c4-87d4-e2c4905b9637"
-                      name="Upper"
-                      value="1" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-            </relationshipOwnedElementsInternal>
-          </association>
-          <association
-            Id="d71d930d-dbf8-4f60-b46d-b99a1534f588"
-            isDerived="false"
-            sourceEndRoleName="CalendarEntry"
-            targetEndRoleName="EndDate"
-            isLeaf="false"
-            isAbstract="false">
-            <classMoniker
-              Id="d3dd48e4-6493-4dec-9701-032a0bee8f34"
-              LastKnownName="DateTime"
-              LastKnownLocation="Package3_2128.uml" />
-            <description>Property EndDate references type DateTime.</description>
-            <relationshipOwnedElementsInternal>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="8917340a-0fe0-4352-8693-30bfa0fa470a"
-                  name="CalendarEntry"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false"
-                  isNavigableOwned="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="041f0c84-4098-420a-9946-63312a898b4a"
-                      name="Lower"
-                      value="*" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="b42ca1bf-dfc5-4328-9d49-7f2e9da7bea4"
-                      name="Upper"
-                      value="*" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="f1fd4018-45f5-4905-8ab7-8fc6053626c8"
-                  name="EndDate"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="13c66c93-edbc-4aeb-b723-4b98be015d09"
-                      name="Lower"
-                      value="1" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="56e727b9-8d8b-4011-9f6d-376de3134524"
-                      name="Upper"
-                      value="1" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-            </relationshipOwnedElementsInternal>
-          </association>
-          <association
-            Id="5331b430-2977-48cc-9f4c-6e1a5f2c9c3a"
-            isDerived="false"
-            sourceEndRoleName="CalendarEntry"
-            targetEndRoleName="Invitations"
-            isLeaf="false"
-            isAbstract="false">
-            <interfaceMoniker
-              Id="2c1bd3d2-4575-4a7f-aba9-b966dd327e19"
-              LastKnownName="ICollection&lt;Invite‎&gt;"
-              LastKnownLocation="Package5_2128.uml" />
-            <description>Property Invitations references type ICollection&lt;Invite‎&gt;.</description>
-            <relationshipOwnedElementsInternal>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="5dfbd138-6362-4cf3-bde3-19c6ee62ceb8"
-                  name="CalendarEntry"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false"
-                  isNavigableOwned="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="80134477-0328-41c4-beaa-d1827d983284"
-                      name="Lower"
-                      value="*" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="42ac6a85-edd7-44ad-9472-ef11ecf7cde1"
-                      name="Upper"
-                      value="*" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="4c616adf-504f-45c6-8efd-fe9a216b8aca"
-                  name="Invitations"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="46dd056f-ca68-4909-986d-31bc8618f236"
-                      name="Lower"
-                      value="1" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="a5b7d4cd-b4b6-4d6c-a8be-085cc0a58b03"
-                      name="Upper"
-                      value="1" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-            </relationshipOwnedElementsInternal>
-          </association>
-          <association
-            Id="d6740bc8-e9db-4363-8f2b-b10fd2091e6b"
-            isDerived="false"
-            sourceEndRoleName="CalendarEntry"
-            targetEndRoleName="Owner"
-            isLeaf="false"
-            isAbstract="false">
-            <classMoniker
-              Id="d145c924-e38d-4b3e-b644-76b2cdb1a693"
-              LastKnownName="User"
-              LastKnownLocation="Package2_2128.uml" />
-            <description>Property Owner references type User.</description>
-            <relationshipOwnedElementsInternal>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="eb863126-8968-4d8a-9a14-87f319bb732f"
-                  name="CalendarEntry"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false"
-                  isNavigableOwned="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="312a6584-ce66-4be5-8b26-43860c49336d"
-                      name="Lower"
-                      value="*" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="48937a98-4aab-4777-a604-9d563e35b6e9"
-                      name="Upper"
-                      value="*" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="9b51091f-d6e2-42cb-b704-8602e80c8194"
-                  name="Owner"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="faf24799-663f-401c-90e1-f653d85eb745"
-                      name="Lower"
-                      value="1" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="689ba5be-51da-4dd3-a997-64914fc11070"
-                      name="Upper"
-                      value="1" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-            </relationshipOwnedElementsInternal>
-          </association>
-          <association
-            Id="92adffe0-c175-4d5d-a75f-8afa5b2771c2"
-            isDerived="false"
-            sourceEndRoleName="CalendarEntry"
-            targetEndRoleName="Room"
-            isLeaf="false"
-            isAbstract="false">
-            <classMoniker
-              Id="9bd16d4a-2380-4b67-89f8-d576cfd28063"
-              LastKnownName="Room"
-              LastKnownLocation="Package2_2128.uml" />
-            <description>Property Room references type Room.</description>
-            <relationshipOwnedElementsInternal>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="d79c9764-909c-4a4e-979e-99541fa0dfe9"
-                  name="CalendarEntry"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false"
-                  isNavigableOwned="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="fa8bd0d3-08e0-461b-b867-44d227f96412"
-                      name="Lower"
-                      value="*" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="4405ca80-4903-4797-9fe9-d4d5d59b5bc2"
-                      name="Upper"
-                      value="*" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="7cad5364-bc62-4488-b43c-0361fada8606"
-                  name="Room"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="c138b66d-f9fa-455f-bfbd-f09e04ee0a6b"
-                      name="Lower"
-                      value="1" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="3a263266-73a6-46eb-ad74-b41b0c84daa4"
-                      name="Upper"
-                      value="1" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-            </relationshipOwnedElementsInternal>
-          </association>
-          <association
-            Id="992c4d10-8e08-45c7-b1f5-f17ddc511070"
-            isDerived="false"
-            sourceEndRoleName="CalendarEntry"
-            targetEndRoleName="StartDate"
-            isLeaf="false"
-            isAbstract="false">
-            <classMoniker
-              Id="d3dd48e4-6493-4dec-9701-032a0bee8f34"
-              LastKnownName="DateTime"
-              LastKnownLocation="Package3_2128.uml" />
-            <description>Property StartDate references type DateTime.</description>
-            <relationshipOwnedElementsInternal>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="4803aa41-1945-4d91-8929-7ad8a3801696"
-                  name="CalendarEntry"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false"
-                  isNavigableOwned="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="632539aa-79a0-4999-a752-3dd569d1ce41"
-                      name="Lower"
-                      value="*" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="79a7584a-c16d-4fa2-9f09-3ad438770db8"
-                      name="Upper"
-                      value="*" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-              <associationHasOwnedEnds>
-                <memberEnd
-                  Id="bc16e0e4-ec10-4259-95e8-13c05fb334f9"
-                  name="StartDate"
-                  isLeaf="false"
-                  isStatic="false"
-                  isReadOnly="false"
-                  isDerived="false"
-                  isDerivedUnion="false"
-                  aggregation="None"
-                  isComposite="false">
-                  <lowerValueInternal>
-                    <literalString
-                      Id="f2fd22c2-d2af-40d1-ac9a-eda5f4a1c76e"
-                      name="Lower"
-                      value="1" />
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString
-                      Id="ed3f9695-2e83-459f-add9-adf1cdb69a9d"
-                      name="Upper"
-                      value="1" />
-                  </upperValueInternal>
-                </memberEnd>
-              </associationHasOwnedEnds>
-            </relationshipOwnedElementsInternal>
-          </association>
-        </targetEnds>
         <ownedAttributesInternal>
           <property
             Id="e6fa345f-3f3c-4328-943b-253d5b093a45"
             name="Calendar"
             isLeaf="false"
             isStatic="false"
-            isReadOnly="false"
+            isReadOnly="true"
             isDerived="false"
             isDerivedUnion="false"
             aggregation="None"
@@ -1306,7 +842,7 @@
                     <propertyInstance
                       Id="615af666-7840-4884-8809-93e5dea55e64"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="96fb9376-91ba-46f7-9f4a-1f09d3a10e69">
@@ -1341,7 +877,7 @@
                     <propertyInstance
                       Id="9399c57b-7c99-4911-a97c-8a3f39ea7bc6"
                       name="Set"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                 </propertyInstances>
               </stereotypeInstance>
@@ -1358,7 +894,7 @@
             name="CalendarId"
             isLeaf="false"
             isStatic="false"
-            isReadOnly="false"
+            isReadOnly="true"
             isDerived="false"
             isDerivedUnion="false"
             aggregation="None"
@@ -1386,7 +922,7 @@
                     <propertyInstance
                       Id="efc37f8b-feff-4e25-896a-9699974d62eb"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="d95983bc-1340-4278-a4c4-78bc60bc130f">
@@ -1421,7 +957,7 @@
                     <propertyInstance
                       Id="9670e8d5-8628-4dd4-b45b-a9a30b590ef4"
                       name="Set"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                 </propertyInstances>
               </stereotypeInstance>
@@ -1438,7 +974,7 @@
             name="Description"
             isLeaf="false"
             isStatic="false"
-            isReadOnly="false"
+            isReadOnly="true"
             isDerived="false"
             isDerivedUnion="false"
             aggregation="None"
@@ -1466,7 +1002,7 @@
                     <propertyInstance
                       Id="b59da385-1ed9-422a-bbe5-89ab379621c1"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="e6646806-ddf5-4564-99d5-614ebebb7968">
@@ -1501,7 +1037,7 @@
                     <propertyInstance
                       Id="bcd4d966-ea49-41dc-a60f-7b8d05792f54"
                       name="Set"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                 </propertyInstances>
               </stereotypeInstance>
@@ -1518,7 +1054,7 @@
             name="CalendarEntryId"
             isLeaf="false"
             isStatic="false"
-            isReadOnly="false"
+            isReadOnly="true"
             isDerived="false"
             isDerivedUnion="false"
             aggregation="None"
@@ -1546,7 +1082,7 @@
                     <propertyInstance
                       Id="6c3e56a1-b213-4afb-92ab-69965dc50309"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="b4130fb3-ad16-4d62-91eb-8bcab1564cbd">
@@ -1581,7 +1117,7 @@
                     <propertyInstance
                       Id="3cfd30e4-f8e0-46ee-8b93-d81569a54ff9"
                       name="Set"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                 </propertyInstances>
               </stereotypeInstance>
@@ -1626,7 +1162,7 @@
                     <propertyInstance
                       Id="b3d18612-c612-4a17-8a61-c2e17610728f"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="b067ff80-652c-4dab-993d-3b2ffec862c8">
@@ -1678,7 +1214,7 @@
             name="EndDate"
             isLeaf="false"
             isStatic="false"
-            isReadOnly="false"
+            isReadOnly="true"
             isDerived="false"
             isDerivedUnion="false"
             aggregation="None"
@@ -1706,7 +1242,7 @@
                     <propertyInstance
                       Id="61a06284-7198-4499-a7ab-f62a0e3afeb8"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="7ad0da8c-889f-4639-8b47-501a83043bc9">
@@ -1741,7 +1277,7 @@
                     <propertyInstance
                       Id="affa1d7d-daeb-45c1-9685-57200eabc5bb"
                       name="Set"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                 </propertyInstances>
               </stereotypeInstance>
@@ -1758,7 +1294,7 @@
             name="Invitations"
             isLeaf="false"
             isStatic="false"
-            isReadOnly="false"
+            isReadOnly="true"
             isDerived="false"
             isDerivedUnion="false"
             aggregation="None"
@@ -1786,7 +1322,7 @@
                     <propertyInstance
                       Id="211acc23-4724-4867-aebd-5aea88302250"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="d3b3f589-9724-4ac6-8e97-926ad074a15b">
@@ -1821,7 +1357,7 @@
                     <propertyInstance
                       Id="5145c739-8220-48a0-85fe-52afc014bcf3"
                       name="Set"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                 </propertyInstances>
               </stereotypeInstance>
@@ -1866,7 +1402,7 @@
                     <propertyInstance
                       Id="dc616ccb-6a20-48b2-bd05-a9c6aa098fb8"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="0355726e-cba2-403e-9a59-da471058e320">
@@ -1918,7 +1454,7 @@
             name="Owner"
             isLeaf="false"
             isStatic="false"
-            isReadOnly="false"
+            isReadOnly="true"
             isDerived="false"
             isDerivedUnion="false"
             aggregation="None"
@@ -1946,7 +1482,7 @@
                     <propertyInstance
                       Id="1eb434d4-6974-4bdf-839e-e1362922d889"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="f6b991bf-d4a4-4807-925f-401b886ac4d7">
@@ -1981,7 +1517,7 @@
                     <propertyInstance
                       Id="a05895ad-05a4-42f0-a682-834a7a46c27a"
                       name="Set"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                 </propertyInstances>
               </stereotypeInstance>
@@ -1998,7 +1534,7 @@
             name="Room"
             isLeaf="false"
             isStatic="false"
-            isReadOnly="false"
+            isReadOnly="true"
             isDerived="false"
             isDerivedUnion="false"
             aggregation="None"
@@ -2026,7 +1562,7 @@
                     <propertyInstance
                       Id="27e2f37e-5301-46b8-a5bd-8f231bc79c52"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="be5ee081-0061-42eb-b182-18e3ffe40fda">
@@ -2061,7 +1597,7 @@
                     <propertyInstance
                       Id="054bf2c3-9bd9-4f60-b962-76d1cfb25cb1"
                       name="Set"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                 </propertyInstances>
               </stereotypeInstance>
@@ -2078,7 +1614,7 @@
             name="StartDate"
             isLeaf="false"
             isStatic="false"
-            isReadOnly="false"
+            isReadOnly="true"
             isDerived="false"
             isDerivedUnion="false"
             aggregation="None"
@@ -2106,7 +1642,7 @@
                     <propertyInstance
                       Id="5a2548cc-2aa7-4d44-bd8f-d6dee3ae702f"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="140b9494-4aa9-4900-902b-7ee7aa10f1ff">
@@ -2141,7 +1677,7 @@
                     <propertyInstance
                       Id="ada7a468-7743-4002-87ff-19b1a4ee116f"
                       name="Set"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                 </propertyInstances>
               </stereotypeInstance>
@@ -2158,7 +1694,7 @@
             name="Title"
             isLeaf="false"
             isStatic="false"
-            isReadOnly="false"
+            isReadOnly="true"
             isDerived="false"
             isDerivedUnion="false"
             aggregation="None"
@@ -2186,7 +1722,7 @@
                     <propertyInstance
                       Id="d6234786-2103-4722-855c-3204b55fac11"
                       name="Get"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
                     Id="8090c178-d8ba-4f75-8eb2-6b472d69a2a9">
@@ -2221,7 +1757,7 @@
                     <propertyInstance
                       Id="2dcc4375-6de1-449d-b94d-8399991ddbc2"
                       name="Set"
-                      value="public" />
+                      value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                 </propertyInstances>
               </stereotypeInstance>
@@ -2236,7 +1772,7 @@
         </ownedAttributesInternal>
         <ownedOperationsInternal>
           <operation
-            Id="777e5448-8974-442c-9a19-b3bfb548af2e"
+            Id="b4f24d74-b976-4781-b91b-362d2c0be070"
             name="CalendarEntry"
             isLeaf="false"
             isStatic="false"
@@ -2245,54 +1781,54 @@
             isQuery="false">
             <referencesInternal>
               <reference
-                Id="6b1ba970-1fb2-4ee6-a78a-433108b429e6"
+                Id="8f563221-8873-4a6e-a84f-1164efac5e00"
                 handle="viewcode://./CodeSchema_Method?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2FTobias%2FDocuments%2FVisual Studio 2012%2FProjects%2FOrganizer%2Fserver%2FOrganizer%2FOrganizer.Interfaces%2Fbin%2FDebug%2FOrganizer.Interfaces.dll&quot; Namespace%3DOrganizer.Interfaces Type%3DCalendarEntry Member%3D.ctor"
                 tag="ViewCode" />
             </referencesInternal>
             <appliedStereotypesInternal>
               <stereotypeInstance
-                Id="24f33193-3c6e-46b3-a292-764c7d8bd52c"
+                Id="8bc389a0-b478-4d3c-af00-4a5c1995f2dc"
                 name="method"
                 profile="CSharpProfile">
                 <propertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="4b534bfc-4ba1-4af5-8b65-2715a30ca7d1">
+                    Id="988532b8-af81-4496-a912-8ba4b3177445">
                     <propertyInstance
-                      Id="72a5a538-3f49-487a-8115-938a0c421433"
+                      Id="ee6139d9-6e7a-4992-b3dd-a5b34521f387"
                       name="ClrAttributes" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="46def6da-82ea-4243-a72d-3c7fc55936aa">
+                    Id="c12a75f1-4b10-447f-b5dd-94c713e7b4e2">
                     <propertyInstance
-                      Id="aab571ef-06ca-4a39-abda-c2bbb0e9e319"
+                      Id="c9e81335-d06d-4358-8f19-a8e4ea2bbb43"
                       name="IsPartial"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="9bb2bf7b-46d4-4be7-bea1-5d5aa6495bc5">
+                    Id="17db624f-dec0-413b-986e-259f170608cc">
                     <propertyInstance
-                      Id="19e8a8d5-ad73-4c2f-8312-4440f6bcc3e9"
+                      Id="5415679c-f866-4669-ab38-0708a3a93d49"
                       name="IsUnsafe"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="ab1ad2e9-0f1e-40fc-ae25-88008b87ac63">
+                    Id="3fa01ed2-56a5-41a6-b32e-ae20c2250371">
                     <propertyInstance
-                      Id="add9f450-135a-47d6-9508-4753d34a2a86"
+                      Id="2419eace-6e23-45e1-af4d-8cf3b2f643e2"
                       name="Inheritance"
                       value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="118627ae-1770-49e1-a292-f0539ad79138">
+                    Id="791482c9-69d8-4f02-9446-b1ba1333f06f">
                     <propertyInstance
-                      Id="1fc9a576-8ab4-4f24-a715-48d773f2ed29"
+                      Id="e142e33f-2b34-41b1-b4bf-6c107ce2ca9d"
                       name="PackageVisibility"
                       value="internal" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="d0885af7-dc2d-417c-bf72-20e9b73447d4">
+                    Id="ef594176-bf31-4265-9edd-5f706279bb2b">
                     <propertyInstance
-                      Id="20ffab26-cc89-4366-b59e-9a76cd66ca9a"
+                      Id="4a5ebbcc-0a03-4dc6-8de0-9690743c1aae"
                       name="params"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
@@ -2625,7 +2161,7 @@
             </relationshipOwnedElementsInternal>
           </association>
           <association
-            Id="adb7dc79-58a3-4e4d-8172-fa50c2c6753c"
+            Id="309e107c-dc89-42b2-b041-9bd8a969ca4a"
             isDerived="false"
             sourceEndRoleName="User"
             targetEndRoleName="Group"
@@ -2638,7 +2174,7 @@
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
                 <memberEnd
-                  Id="1be24782-82b9-4a22-bb0c-7035d750c780"
+                  Id="e33c8741-75c1-42b6-aabe-45e9e9e99e04"
                   name="User"
                   isLeaf="false"
                   isStatic="false"
@@ -2650,13 +2186,13 @@
                   isNavigableOwned="false">
                   <lowerValueInternal>
                     <literalString
-                      Id="ea2b7100-f341-4c09-b49b-6b1ae7866f6c"
+                      Id="202088a3-ffca-48d6-a0d9-4895d7874943"
                       name="Lower"
                       value="*" />
                   </lowerValueInternal>
                   <upperValueInternal>
                     <literalString
-                      Id="85d1d593-f543-438d-87e4-3b2fce8c9f30"
+                      Id="e9cdbd78-939f-44b5-be1d-5f16e9a6012c"
                       name="Upper"
                       value="*" />
                   </upperValueInternal>
@@ -2664,7 +2200,7 @@
               </associationHasOwnedEnds>
               <associationHasOwnedEnds>
                 <memberEnd
-                  Id="3af44761-e10f-4625-a097-077d5c37c9de"
+                  Id="f92e15f8-3312-4a10-a651-3bd326d93ee6"
                   name="Group"
                   isLeaf="false"
                   isStatic="false"
@@ -2675,13 +2211,13 @@
                   isComposite="false">
                   <lowerValueInternal>
                     <literalString
-                      Id="c611a1b0-921f-4db5-91b8-772aeefd8a59"
+                      Id="04467d91-ee29-44a5-9266-2acba4fc590a"
                       name="Lower"
                       value="*" />
                   </lowerValueInternal>
                   <upperValueInternal>
                     <literalString
-                      Id="49ec67c3-601c-4fe3-9cc3-2cccfda2a593"
+                      Id="927d7265-52c2-45bf-9d80-90f7cf8ecb12"
                       name="Upper"
                       value="*" />
                   </upperValueInternal>
@@ -3561,7 +3097,7 @@
         </ownedAttributesInternal>
         <ownedOperationsInternal>
           <operation
-            Id="6299433b-7859-4476-9548-e42cb8cf2f17"
+            Id="bcb64681-a52d-4897-88e7-1ad82291f822"
             name="User"
             isLeaf="false"
             isStatic="false"
@@ -3570,54 +3106,54 @@
             isQuery="false">
             <referencesInternal>
               <reference
-                Id="5cbdfa8b-c968-4595-a934-0bca77f8d3fa"
+                Id="4593843c-86d5-4681-a5c7-00d1d35ea358"
                 handle="viewcode://./CodeSchema_Method?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2FTobias%2FDocuments%2FVisual Studio 2012%2FProjects%2FOrganizer%2Fserver%2FOrganizer%2FOrganizer.Interfaces%2Fbin%2FDebug%2FOrganizer.Interfaces.dll&quot; Namespace%3DOrganizer.Interfaces Type%3DUser Member%3D.ctor"
                 tag="ViewCode" />
             </referencesInternal>
             <appliedStereotypesInternal>
               <stereotypeInstance
-                Id="889f4388-fc35-4666-97df-db646da3360e"
+                Id="6cc55189-8da4-4010-b3c6-8441baeb1188"
                 name="method"
                 profile="CSharpProfile">
                 <propertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="d9354197-af58-4c8b-bb54-ab4785445800">
+                    Id="2c03afe7-2017-4d7c-af89-71d779a60740">
                     <propertyInstance
-                      Id="66841688-79aa-4d8d-b368-2edfceacebfb"
+                      Id="793d5351-9972-4c03-b39b-5454c7f2934f"
                       name="ClrAttributes" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="b7008da3-4148-4202-8918-1d1a6f351139">
+                    Id="44b8a0e8-fc92-4cc8-bc98-a13e8dd860b8">
                     <propertyInstance
-                      Id="f989095b-ce63-4f6f-88ca-bd7015598829"
+                      Id="f3b94ec3-1a9e-4c8e-b41e-da6e1bc62c65"
                       name="IsPartial"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="65b82c7f-b46d-425c-8823-1b09c071a359">
+                    Id="18e47e50-3360-4618-a230-76f801eb2aa8">
                     <propertyInstance
-                      Id="1f7fd1f7-f5e9-4e36-ad40-94854ac78fe1"
+                      Id="4f22668a-2e10-4426-807c-d08ca7625873"
                       name="IsUnsafe"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="1e45ba1f-d130-4173-aee8-5476602eb306">
+                    Id="af13a1e5-1ad8-4be3-84ba-21d8afbf81bf">
                     <propertyInstance
-                      Id="87f2d7c8-d36b-4242-b4bb-7aa810394c2f"
+                      Id="1ebe5795-6f64-47a1-9482-decb5492f754"
                       name="Inheritance"
                       value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="dc0ecdc1-5513-4588-acb9-68b768217dad">
+                    Id="eb0fc3c5-8e9c-4a09-bace-8817f4bae5b1">
                     <propertyInstance
-                      Id="d42c9e64-64e1-4fdd-af62-034f4cfe07fa"
+                      Id="775bd328-cd1d-4ee8-8107-6866ad88a0bf"
                       name="PackageVisibility"
                       value="internal" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="06bbdd6c-df03-42e1-95c4-ee0c5485c870">
+                    Id="5725eae3-f2f2-4e4a-825b-07151891c9d1">
                     <propertyInstance
-                      Id="68e3bacd-0f21-4935-9fee-2c0c6f9d3f2c"
+                      Id="e163c865-19b8-4f5c-932c-b44443dd41c2"
                       name="params"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
@@ -4076,7 +3612,7 @@
         </ownedAttributesInternal>
         <ownedOperationsInternal>
           <operation
-            Id="e3718f80-1e8c-4aa9-a5e5-2bed2e9a0b83"
+            Id="6ccd3542-2467-44a4-a2ff-941021790ead"
             name="Group"
             isLeaf="false"
             isStatic="false"
@@ -4085,54 +3621,54 @@
             isQuery="false">
             <referencesInternal>
               <reference
-                Id="9bac7f0a-bfb3-4117-a301-f793aae5f766"
+                Id="2a1687ee-4b1b-42fa-b99b-d26c92f782a5"
                 handle="viewcode://./CodeSchema_Method?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2FTobias%2FDocuments%2FVisual Studio 2012%2FProjects%2FOrganizer%2Fserver%2FOrganizer%2FOrganizer.Interfaces%2Fbin%2FDebug%2FOrganizer.Interfaces.dll&quot; Namespace%3DOrganizer.Interfaces Type%3DGroup Member%3D.ctor"
                 tag="ViewCode" />
             </referencesInternal>
             <appliedStereotypesInternal>
               <stereotypeInstance
-                Id="245d0c6a-45de-4776-b138-49ea42f02d4a"
+                Id="de39ffcf-6c42-4f3b-9df1-a498c11b12f5"
                 name="method"
                 profile="CSharpProfile">
                 <propertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="856c9a78-b6ed-43c7-a89b-ae6156907638">
+                    Id="b32d24fa-fb4e-4d42-8e45-cad63c9f061d">
                     <propertyInstance
-                      Id="18227cbb-d537-461c-a782-b5f80813127c"
+                      Id="65c1aaba-904d-4ca0-8b76-0b82efdc6abb"
                       name="ClrAttributes" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="ce8ffdcf-06ad-4449-9536-c221be7ac04d">
+                    Id="1236981c-1c9e-48b2-a8f4-5fbc08b15709">
                     <propertyInstance
-                      Id="d95a34ec-cd5f-4d47-b509-0ba8ee91898b"
+                      Id="207915e2-8be7-492e-a928-8ef20f822603"
                       name="IsPartial"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="1cdbee4d-2395-4caf-a292-aa00e0c5c344">
+                    Id="39b629a5-4b1e-4484-8f77-a46bc4eb9d82">
                     <propertyInstance
-                      Id="79d51821-0527-4e7f-a4f0-a25cbd16ac0b"
+                      Id="9da6381a-78b2-4081-98eb-7a7f1baae28f"
                       name="IsUnsafe"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="996015f7-169e-478c-a748-80cfbfaf81ad">
+                    Id="b2b52d8d-eb80-4ba6-815c-819a8547dbb7">
                     <propertyInstance
-                      Id="750e6e20-0036-4e17-898c-3024d7b43768"
+                      Id="bcb13a5a-80e2-410e-acc7-7aeb7b9ec5c4"
                       name="Inheritance"
                       value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="5fcce16c-4d5e-46f8-b54e-f3aa3a999b8b">
+                    Id="ff7bd1eb-e254-40dc-a8e5-95be80136d1b">
                     <propertyInstance
-                      Id="8a4bbe97-08a9-430b-9562-a1d2bbc1d6f2"
+                      Id="62bb87e3-234b-474c-859b-0b29898a784e"
                       name="PackageVisibility"
                       value="internal" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="bb95bb9b-e3df-4051-acde-a7872935d9f9">
+                    Id="46d3b247-61cf-40d9-a776-9a191f0d2733">
                     <propertyInstance
-                      Id="39b5a184-df72-499c-a778-ab92264bdba0"
+                      Id="8a35484c-27bc-474b-b553-1fe544136338"
                       name="params"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
@@ -4657,7 +4193,7 @@
         </ownedAttributesInternal>
         <ownedOperationsInternal>
           <operation
-            Id="9990174b-0bfe-40da-8e9d-949095764837"
+            Id="df52778f-3746-4a90-9846-e09442d3c410"
             name="Invite"
             isLeaf="false"
             isStatic="false"
@@ -4666,54 +4202,54 @@
             isQuery="false">
             <referencesInternal>
               <reference
-                Id="3e89f72d-0fa5-4a94-bdb7-82b322247e2f"
+                Id="cb5b0dfc-dd32-4b17-a0bc-934d59ef5973"
                 handle="viewcode://./CodeSchema_Method?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2FTobias%2FDocuments%2FVisual Studio 2012%2FProjects%2FOrganizer%2Fserver%2FOrganizer%2FOrganizer.Interfaces%2Fbin%2FDebug%2FOrganizer.Interfaces.dll&quot; Namespace%3DOrganizer.Interfaces Type%3DInvite Member%3D.ctor"
                 tag="ViewCode" />
             </referencesInternal>
             <appliedStereotypesInternal>
               <stereotypeInstance
-                Id="bae7a1bd-dab2-47af-903b-86305061a782"
+                Id="2e8284bf-41b3-4eb7-8f52-a8aee40d4f81"
                 name="method"
                 profile="CSharpProfile">
                 <propertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="50703ca8-be2c-4cd6-b26d-4b60cf91c3d5">
+                    Id="c19b24ae-71a1-46e8-ae13-8cbb84494438">
                     <propertyInstance
-                      Id="5ac43619-4b67-444e-9a00-0284fe831ea4"
+                      Id="9ccaaffc-b8b9-445c-9382-fb8563fbafd9"
                       name="ClrAttributes" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="5d3f7499-71ce-4c46-b325-68382ee79411">
+                    Id="ed1ebd20-2a9a-4102-98a4-797e9499aa76">
                     <propertyInstance
-                      Id="f4a2126c-8088-4b01-b27d-3862816e8ffc"
+                      Id="989dd0a1-315b-44e9-8d14-6fac62bcdea9"
                       name="IsPartial"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="f2013fd5-0c13-41b1-aa20-de2ca77a805f">
+                    Id="8ea56496-43c8-4ba7-87d4-57a621e04080">
                     <propertyInstance
-                      Id="6a676dc8-2587-4821-a479-a9b536bcb776"
+                      Id="33eaa275-53a4-4d5c-9c54-b8e08d92babf"
                       name="IsUnsafe"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="eadcc961-5690-405a-a297-08e71324b47f">
+                    Id="d6d2fb5b-3e82-4fac-9648-7f95fd8ce17d">
                     <propertyInstance
-                      Id="7a81f9fc-42ac-41c1-a751-a7aa8f08135d"
+                      Id="5111dc11-f96d-4f09-849d-130b9089e931"
                       name="Inheritance"
                       value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="552e7101-a200-41ed-9e75-af6ef77d0cd4">
+                    Id="5d5196af-7db6-4256-91d8-6ad43fd9582c">
                     <propertyInstance
-                      Id="74fdf2b2-48b6-49dc-b866-030e366b9030"
+                      Id="dc09a6be-854f-4073-bcf1-8b57ba1d89e3"
                       name="PackageVisibility"
                       value="internal" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="7e8845d0-1fd2-43b8-b4d1-4ea308acbeb4">
+                    Id="a773009e-5dab-45aa-b9f8-12c0c7968975">
                     <propertyInstance
-                      Id="34cea868-2ea8-4844-9377-1d72c8c32a65"
+                      Id="d0c9e3d1-bd59-417d-90b6-1c0b8729e351"
                       name="params"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
@@ -5252,7 +4788,7 @@
         </ownedAttributesInternal>
         <ownedOperationsInternal>
           <operation
-            Id="e880817f-4d34-4733-b794-d8571647e0d5"
+            Id="a6d3ce1c-ca9d-4baf-8e30-19b8dfd3d7c5"
             name="Room"
             isLeaf="false"
             isStatic="false"
@@ -5261,54 +4797,54 @@
             isQuery="false">
             <referencesInternal>
               <reference
-                Id="51f23933-f9eb-4c34-9cda-c835e10c5585"
+                Id="13f589d0-8dbe-450c-b62b-30b0b3cf2d42"
                 handle="viewcode://./CodeSchema_Method?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2FTobias%2FDocuments%2FVisual Studio 2012%2FProjects%2FOrganizer%2Fserver%2FOrganizer%2FOrganizer.Interfaces%2Fbin%2FDebug%2FOrganizer.Interfaces.dll&quot; Namespace%3DOrganizer.Interfaces Type%3DRoom Member%3D.ctor"
                 tag="ViewCode" />
             </referencesInternal>
             <appliedStereotypesInternal>
               <stereotypeInstance
-                Id="75642fdb-07c2-4202-b510-c171796aeaca"
+                Id="04aec0bb-7909-4c5b-a911-9df03719f620"
                 name="method"
                 profile="CSharpProfile">
                 <propertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="411522fe-20a3-4603-ac85-b8922743aad0">
+                    Id="f6bd43be-4d91-475f-97b6-7884a0a5cfcd">
                     <propertyInstance
-                      Id="5393a3b6-c12e-4970-9421-973d4942ec4a"
+                      Id="9b5ec8db-07c6-4f65-8d6c-78d126ec5f3b"
                       name="ClrAttributes" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="399155cc-5c19-4ea3-8313-18238703ccd8">
+                    Id="d9a9daa6-c157-49c8-81d9-e66eff133001">
                     <propertyInstance
-                      Id="30fc5569-f503-46c1-a3a6-6ca0f875c510"
+                      Id="b8ca804e-c4f5-4757-af6d-940f0a575899"
                       name="IsPartial"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="dc04c0a3-3319-4452-a3dc-4ba3a74c96b1">
+                    Id="5d9abec1-c275-4735-86b5-ee028c3b39de">
                     <propertyInstance
-                      Id="9e01943f-ddd7-4f45-b120-ec4bb298b1d0"
+                      Id="d6879ebe-f630-4d16-9810-e8cccc1fda52"
                       name="IsUnsafe"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="4d145e1a-e495-42d3-8a23-ca96214d2cff">
+                    Id="2252f9d3-e045-4be0-af6f-d225f2298094">
                     <propertyInstance
-                      Id="30062673-f597-45af-b216-3834a61ee32f"
+                      Id="a93d9393-0fb9-424f-aa7e-33fefb44c4d4"
                       name="Inheritance"
                       value="none" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="fa7105ba-277c-4f32-8983-165c08ab81e1">
+                    Id="4cb18346-6abb-4754-a610-3fc9e978a376">
                     <propertyInstance
-                      Id="4c4bd8fb-9104-4d60-bdbb-eb0dbb55e54d"
+                      Id="47845426-4bd4-4602-9042-3631b77eb81a"
                       name="PackageVisibility"
                       value="internal" />
                   </stereotypeInstanceHasPropertyInstances>
                   <stereotypeInstanceHasPropertyInstances
-                    Id="01f20f0f-6bbd-489a-9b8b-0607b7a85933">
+                    Id="1530741a-95e3-4e5c-90b6-a06568bb2dcd">
                     <propertyInstance
-                      Id="72d71956-849a-42bf-ae19-b3c2f1dc1217"
+                      Id="3ca5f4ed-6578-4610-b181-3c3bc9f8cb87"
                       name="params"
                       value="false" />
                   </stereotypeInstanceHasPropertyInstances>
