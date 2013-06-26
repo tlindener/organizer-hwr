@@ -1,12 +1,5 @@
 package test.junit;
 
-//import static org.junit.Assert.assertEquals;
-//import static org.junit.Assert.assertFalse;
-//import static org.junit.Assert.assertNotNull;
-//import static org.junit.Assert.assertNull;
-//import static org.junit.Assert.assertTrue;
-//import static org.junit.Assert.fail;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -36,8 +29,6 @@ import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
 public class TestSuite implements ErrorConstans{
-
-	
 
 	
 	private static RequestHandler requester = null;
@@ -105,6 +96,8 @@ public class TestSuite implements ErrorConstans{
 				for(int id : entry.getInviteIds()){
 					Invite in = requestInvite(id);
 					assertNotNull(ERROR_TYPE_REQ + NULL_INVITE, in);
+					assertTrue(in.getCalendarEntryId() == entry.getID());
+					assertTrue(in.getOwnerId() != 0);
 				}
 				
 			}
