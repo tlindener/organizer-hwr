@@ -1007,7 +1007,7 @@ namespace Organizer.WebService
                 Id = invite.InviteId,
                 CalendarEntryId = invite.CalendarEntry.CalendarEntryId,
                 Accepted = invite.Accepted,
-                OwnerId = invite.Owner.UserId
+                UserId = invite.Owner.UserId
             };
 
         }
