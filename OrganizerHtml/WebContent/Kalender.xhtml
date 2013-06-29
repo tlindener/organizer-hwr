@@ -20,7 +20,7 @@
 					<f:facet name="header">
 						<p:row>
 							<p:column colspan="1">Kalendar</p:column>
-							<p:column colspan="1">Schedular</p:column>
+							<p:column colspan="3">Schedular</p:column>
 						</p:row>
 					</f:facet>
 					<p:row>
@@ -33,7 +33,7 @@
 							</p:calendar>
 						</p:column>
 
-						<p:column rowspan="10" style="font-weight: bold;">
+						<p:column rowspan="10" colspan="3" style="font-weight: bold;">
 							<p:schedule id="schedule" initialDate="#{controller.date}"
 								value="#{controller.eventModel}" view="agendaDay"
 								allDaySlot="false" showWeekends="true">

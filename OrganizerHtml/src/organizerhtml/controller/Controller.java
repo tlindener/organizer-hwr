@@ -17,6 +17,7 @@ import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
+import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 import organizerhtml.model.Model;
@@ -87,12 +88,10 @@ public class Controller {
 				User tmpu = myRequester.login(username, password);
 				if (tmpu != null) {
 					aktUser = tmpu;
-					System.out.println(aktUser.getMailAddress());
 					aktUserCa = new Calendar();
 					aktUserCa.setID(1);
 					Calendar tmpCal = myRequester
 							.requestObjectByOwnId(aktUserCa);
-					System.out.println("hier");
 					// null Abfrage
 					if (tmpCal != null) {
 						aktUserCa = tmpCal;
@@ -121,6 +120,8 @@ public class Controller {
 	private void fillMyModel(ScheduleEvent event) {
 		SimpleDateFormat format = new SimpleDateFormat("DDDYY");
 		CalendarEntry temp = (CalendarEntry) event.getData();
+		
+		
 		Room room = new Room();
 		room.setID(temp.getRoomId());
 		room = myRequester.requestObjectByOwnId(room);
@@ -130,30 +131,46 @@ public class Controller {
 			myModel.setRaum(roomString);
 		}
 		List<String> pers = new ArrayList<String>();
-		for (User u : temp.getInvitees()) {
-			pers.add(u.getGivenName());
+		// for (User u : temp.getInvitees()) {
+		// pers.add(u.getGivenName());
+		// }
+		List<User> userList = getInvitesOfEntry(temp.getInviteIds());
+		for (User user :userList) {
+			System.out.print(user.getGivenName());
+			// Anzeigen des Users bzw. Übertragen ins das Modell
+			pers.add(user.getGivenName());
 		}
-		// List<Invite> invites = myRequester.requestFollowingObjectsByOwnId(
-		// temp.getInvitees(), new Invite());
-		// for (Invite invite : invites) {
-		// if (invite == null) {
-		// // Fehler bei der Abfrage, ID exitiert entweder nicht oder es
-		// // gab einen ParsingError (sollte hier nicht vorkommen, aber um
-		// // sicher zu gehen)
-		// } else {
-		// User requestUser = new User();
-		// requestUser.setID(invite.getOwnerId());
-		// requestUser = myRequester.requestObjectByOwnId(requestUser);
-		// if (requestUser == null) {
-		// // Fehler bei der Abfrage, sollte nicht vorkommen...
-		// } else {
-		// // Anzeigen des Users bzw. Übertragen ins das Modell
-		// }
-		// }
-		// }
+		System.out.println("-----------");
+		for (String s : pers) {
+			System.out.println(s);
+		}
+		System.out.println("-----------");
 		myModel.setBeschreibung(temp.getDescription());
 		myModel.setPers(pers);
 
+	}
+
+	/**
+	 * Hier werden die User von den Invites abgefragt XXX Hier ist die Methode
+	 * 
+	 * @param inviteIds
+	 * @return
+	 */
+	private List<User> getInvitesOfEntry(List<Integer> inviteIds) {
+		ArrayList<User> user = new ArrayList<User>();
+		List<Invite> invites = myRequester.requestFollowingObjectsByOwnId(
+				inviteIds, new Invite());
+		for (Invite invite : invites) {
+			if (invite != null) {
+				User requestUser = new User();
+				requestUser.setID(invite.getOwnerId());
+				requestUser = myRequester.requestObjectByOwnId(requestUser);
+				if (requestUser != null) {
+					user.add(requestUser);
+				}
+			}
+		}
+		return user;
 	}
 
 	/*
@@ -170,8 +187,6 @@ public class Controller {
 			// .getStartDate(), c.getEndDate()));
 			eventModel.addEvent(new DefaultScheduleEvent(c.getTitle(), c
 					.getStartDate(), c.getEndDate(), c));
-			System.out.println(c.getTitle() + " / " + c.getStartDate() + " / "
-					+ c.getEndDate());
 		}
 	}
 
@@ -238,7 +253,6 @@ public class Controller {
 	 */
 	public void onEventSelect(SelectEvent selectEvent) {
 		event = (ScheduleEvent) selectEvent.getObject();
-		System.out.println(event.getTitle());
 		fillMyModel(event);
 	}
 
@@ -325,7 +339,7 @@ public class Controller {
 	public String getPers() {
 		StringBuilder sb = new StringBuilder();
 		for (String s : myModel.getPers()) {
-			sb.append(s + "\n");
+			sb.append(s + ", ");
 		}
 		return sb.toString();
 	}
