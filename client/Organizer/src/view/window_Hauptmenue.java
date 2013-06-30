@@ -72,9 +72,10 @@ public class window_Hauptmenue extends JFrame {
 	private JCalendar cali;
 	private int rowCount;
 	private JLabel picLabel;
-	
+
 	private TableModel dataModel;
 	private JLabel lblAnzahlEinladungen;
+	private JButton btnRaumErstellen;
 
 	/**
 	 * Launch the application.
@@ -123,7 +124,8 @@ public class window_Hauptmenue extends JFrame {
 
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] { 21, 145, 1, 342, 0, 0 };
-		gbl_panel.rowHeights = new int[] { 9, 186, 0, 0, 0, 0, 110, 0, 0, 0, 31 };
+		gbl_panel.rowHeights = new int[] { 9, 186, 0, 0, 0, 0, 110, 0, 0, 0, 0,
+				31 };
 		gbl_panel.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, 0.0,
 				Double.MIN_VALUE };
 
@@ -145,10 +147,11 @@ public class window_Hauptmenue extends JFrame {
 		table_1 = new JTable(dataModel);
 
 		table_1.setDefaultRenderer(Object.class, myRenderer);
-		
-//		table_1.getColumn("Beschreibung").setCellRenderer(new ButtonRenderer());
-//	    table_1.getColumn("Beschreibung").setCellEditor(
-//	        new ButtonEditor(new JCheckBox()));
+
+		// table_1.getColumn("Beschreibung").setCellRenderer(new
+		// ButtonRenderer());
+		// table_1.getColumn("Beschreibung").setCellEditor(
+		// new ButtonEditor(new JCheckBox()));
 		table_1.addMouseListener(myML);
 
 		JScrollPane scrollpane = new JScrollPane(table_1);
@@ -245,7 +248,7 @@ public class window_Hauptmenue extends JFrame {
 		btnTerminEntfernen
 				.setToolTipText("W\u00E4hlen Sie einen Termin aus um ihn zu l\u00F6schen");
 		btnTerminEntfernen.addActionListener(myCon);
-		
+
 		lblAnzahlEinladungen = new JLabel("AnzahlEinladungen");
 		GridBagConstraints gbc_lblAnzahlEinladungen = new GridBagConstraints();
 		gbc_lblAnzahlEinladungen.anchor = GridBagConstraints.NORTH;
@@ -253,7 +256,7 @@ public class window_Hauptmenue extends JFrame {
 		gbc_lblAnzahlEinladungen.gridx = 1;
 		gbc_lblAnzahlEinladungen.gridy = 8;
 		panel.add(lblAnzahlEinladungen, gbc_lblAnzahlEinladungen);
-		
+
 		GridBagConstraints gbc_btnTerminEntfernen = new GridBagConstraints();
 		gbc_btnTerminEntfernen.anchor = GridBagConstraints.EAST;
 		gbc_btnTerminEntfernen.insets = new Insets(0, 0, 5, 5);
@@ -261,54 +264,64 @@ public class window_Hauptmenue extends JFrame {
 		gbc_btnTerminEntfernen.gridy = 8;
 		panel.add(btnTerminEntfernen, gbc_btnTerminEntfernen);
 
+		btnRaumErstellen = new JButton("Raum erstellen");
+		btnRaumErstellen.addActionListener(myCon);
+		GridBagConstraints gbc_btnRaumErstellen = new GridBagConstraints();
+		gbc_btnRaumErstellen.anchor = GridBagConstraints.EAST;
+		gbc_btnRaumErstellen.insets = new Insets(0, 0, 5, 5);
+		gbc_btnRaumErstellen.gridx = 3;
+		gbc_btnRaumErstellen.gridy = 9;
+		panel.add(btnRaumErstellen, gbc_btnRaumErstellen);
+
 		btnAbmelden = new JButton("Abmelden");
 		btnAbmelden.addActionListener(myCon);
 		GridBagConstraints gbc_btnAbmelden = new GridBagConstraints();
 		gbc_btnAbmelden.anchor = GridBagConstraints.EAST;
-		gbc_btnAbmelden.insets = new Insets(0, 0, 5, 5);
+		gbc_btnAbmelden.insets = new Insets(0, 0, 0, 5);
 		gbc_btnAbmelden.gridx = 3;
-		gbc_btnAbmelden.gridy = 9;
+		gbc_btnAbmelden.gridy = 10;
 		panel.add(btnAbmelden, gbc_btnAbmelden);
-		
-		
+
 		URL filename = getClass().getResource("briefkasten.png");
-		
-		if (filename!= null)
-		{
-		Image image = Toolkit.getDefaultToolkit().getImage( filename );
-		image=image.getScaledInstance(50, 100, 0);
-		 picLabel = new JLabel(new ImageIcon(image));
-		picLabel.addMouseListener(myML);
-		
-		GridBagConstraints gbc_lblImage = new GridBagConstraints();
-		gbc_lblImage.anchor = GridBagConstraints.CENTER;
-		gbc_lblImage.insets = new Insets(0, 0, 5, 5);
-		gbc_lblImage.gridwidth=1;
-		gbc_lblImage.gridheight=1;
-		gbc_lblImage.gridx = 1;
-		gbc_lblImage.gridy = 8;
-		panel.add(picLabel, gbc_lblImage);
-		}
-		else
-		{
+
+		if (filename != null) {
+			Image image = Toolkit.getDefaultToolkit().getImage(filename);
+			image = image.getScaledInstance(50, 100, 0);
+			picLabel = new JLabel(new ImageIcon(image));
+			picLabel.addMouseListener(myML);
+
+			GridBagConstraints gbc_lblImage = new GridBagConstraints();
+			gbc_lblImage.anchor = GridBagConstraints.CENTER;
+			gbc_lblImage.insets = new Insets(0, 0, 5, 5);
+			gbc_lblImage.gridwidth = 1;
+			gbc_lblImage.gridheight = 1;
+			gbc_lblImage.gridx = 1;
+			gbc_lblImage.gridy = 8;
+			panel.add(picLabel, gbc_lblImage);
+		} else {
 			System.out.println("Ich habe das Foto nicht gefunden");
 		}
-		
-		
-		
+
 		setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	/*
-	 * XXX Wie im anderen Fenster bereits gezeigt und gemacht:
-	 * Du solltest in der Regel keine GUI-Elemente zurückgeben
-	 * oder setzen. Das gilt auch für die anderen Fenster. 
+	 * XXX Wie im anderen Fenster bereits gezeigt und gemacht: Du solltest in
+	 * der Regel keine GUI-Elemente zurückgeben oder setzen. Das gilt auch für
+	 * die anderen Fenster.
 	 */
-	
-	
+
 	public JTextArea getTextArea() {
 		return textArea;
+	}
+
+	public JButton getBtnRaumErstellen() {
+		return btnRaumErstellen;
+	}
+
+	public void setBtnRaumErstellen(JButton btnRaumErstellen) {
+		this.btnRaumErstellen = btnRaumErstellen;
 	}
 
 	public void setTextArea(JTextArea textArea) {
@@ -375,7 +388,7 @@ public class window_Hauptmenue extends JFrame {
 	public void setTxtRaum(JTextField textField) {
 		this.txtRaum = textField;
 	}
-	
+
 	public JLabel getPicLabel() {
 		return picLabel;
 	}
@@ -384,7 +397,6 @@ public class window_Hauptmenue extends JFrame {
 		this.picLabel = picLabel;
 	}
 
-	
 	public JLabel getLblAnzahlEinladungen() {
 		return lblAnzahlEinladungen;
 	}
@@ -393,8 +405,7 @@ public class window_Hauptmenue extends JFrame {
 		this.lblAnzahlEinladungen = lblAnzahlEinladungen;
 	}
 
-	public void updateTable()
-	{
+	public void updateTable() {
 		dataModel = new AbstractTableModel() {
 			/**
 			 * 

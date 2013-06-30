@@ -145,6 +145,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 		if (e.getSource() == myHauptmenue.getBtnAbmelden()) {
 			myHauptmenue.dispose();
+			/*
+			 * Abmelden mit Neuanmeldung??? 
+			 * new Controller klappt nicht
+			 * LogScreen.setvisible auch nicht
+			 */
 		}
 		if (e.getSource() == myHauptmenue.getBtnTerminEntfernen()) {
 			entferneTermin();
