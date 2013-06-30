@@ -349,23 +349,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			// inv.setOwnerId(aktUser.getID());
 
 			List<Integer> inviteIds = aktUser.getInviteIds();
-			// List<Invite> invites = new ArrayList<Invite>();
-
-			// for (int id : inviteIds) {
-			// Invite request = new Invite();
-			// request.setID(id);
-			// Invite tmp = myRequester.requestObjectByOwnId(request);
-			// if (tmp == null) {
-			// // ERROR
-			// } else {
-			// invites.add(tmp);
-			// }
-			// }
-			// myModel.setEinladungen(invites);
-
-			// List<Invite> li= myRequester.requestAllObjects(inv);
-			// myModel.setEinladungen(li);
-
 			aktUserCa = myRequester.requestObjectByOwnId(aktUserCa);
 
 			List<CalendarEntry> myCes = aktUserCa.getCalendarEntries();
@@ -405,8 +388,10 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 							if (requestUser != null) {
 								eingeladene.add(requestUser);
 							} else {
-								// Fehler bei der Abfrage, sollte nicht
-								// vorkommen...
+								//TESTf
+								User us= new User();
+								us.setGivenname("klappt nicht....");
+								eingeladene.add(us);
 							}
 						}
 					}
@@ -498,7 +483,17 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	}
 
 	public void befuelleEinladungen() {
+		
 		List<Invite> einl = myModel.getEinladungen();
+		List<Invite> sortEinl= new ArrayList();
+		for(Invite in:einl)
+		{
+			if(in.isAccepted()==0)
+			{
+				sortEinl.add(in);
+			}
+		}
+		einl=sortEinl;
 		aktin = einl.get(0);
 		int id = aktin.getCalendarEntryId();
 		CalendarEntry ce = new CalendarEntry();
