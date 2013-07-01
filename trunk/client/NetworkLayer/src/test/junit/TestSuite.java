@@ -997,7 +997,7 @@ public class TestSuite implements ErrorConstans{
 	private CalendarEntry addDefaultEntry(User user, String suffix, int roomId){
 		CalendarEntry calendarEntry = new CalendarEntry();
 		calendarEntry.setTitle("DefaultEntry - " + suffix);
-		calendarEntry.setDescription("Entry automated generated for "+user.getGivenName() + " " + user.getSurname());
+		calendarEntry.setDescription("!\"$%&/()[]*+'#,;:=><ִײÜהצüß Entry automated generated for "+user.getGivenName() + " " + user.getSurname());
 		calendarEntry.setStartDate(new Date());
 		calendarEntry.setEndDate(new Date());
 		calendarEntry.setCalendarId(user.getCalendarIds().get(0));

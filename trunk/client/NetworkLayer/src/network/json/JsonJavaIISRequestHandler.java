@@ -43,11 +43,15 @@ public class JsonJavaIISRequestHandler extends JsonJavaRequestHandler {
 			super.connection = (HttpURLConnection) (new URL("http://" + hostname
 					+ ":" + port + "/Organizer/OrganizerService.svc/" + request))
 					.openConnection();
+			connection.setRequestProperty("Accept-Charset", super.charset);
+			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + super.charset );
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					connection.getInputStream()));
 			String jsonString = reader.readLine();
 			connection.disconnect();
-			return jsonString;
+			if(jsonString == null) return null;
+			byte[] array = jsonString.getBytes();
+			return new String(array, super.charset);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

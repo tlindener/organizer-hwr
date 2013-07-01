@@ -206,7 +206,7 @@ public class Start implements ProcessListener {
 		Scanner scan = new Scanner(System.in);
 		System.out.print("Enter your login name: ");
 		String name = scan.nextLine();
-		scan.close();
+		
 		User user1 = new User();
 		user1.setMailAddress(name);
 		user1.setGivenname(name);
@@ -351,7 +351,7 @@ public class Start implements ProcessListener {
 		int readIn = scan.nextInt();
 		System.out.print("Enter the ID of the Entry you want to invite to: ");
 		int entryId = scan.nextInt();
-		scan.close();
+		
 		return sendInvitesTo(readIn, entryId);
 	}
 
@@ -395,7 +395,7 @@ public class Start implements ProcessListener {
 			System.out.print("To exit use -1, otherwise use another int: ");
 			goOn = scan.nextInt();
 		} while (goOn != -1);
-		scan.close();
+		
 		return true;
 	}
 
@@ -403,7 +403,7 @@ public class Start implements ProcessListener {
 		System.out.print("MailAddress for the Login: ");
 		Scanner scan = new Scanner(System.in);
 		String mail = scan.nextLine();
-		scan.close();
+		
 		return login(mail, "123456");
 	}
 
@@ -414,7 +414,7 @@ public class Start implements ProcessListener {
 		CalendarEntry entry = new CalendarEntry();
 		entry.setID(id);
 		boolean result = requester.removeObjectByOwnId(entry);
-		scan.close();
+		
 		return result;
 	}
 
@@ -431,7 +431,7 @@ public class Start implements ProcessListener {
 		CalendarEntry ce = new CalendarEntry();
 		ce.setID(idEntry);
 		ce = requester.requestObjectByOwnId(ce);
-		scan.close();
+		
 		return updateRoomForCalendarEntry(r, ce);
 	}
 
@@ -446,7 +446,7 @@ public class Start implements ProcessListener {
 					System.out.print("Repeat your input: ");
 					continue;
 				}
-				scan.close();
+				
 				return chosen;
 			} catch (InputMismatchException ex) {
 				ex.printStackTrace();

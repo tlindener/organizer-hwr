@@ -53,6 +53,8 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	protected String hostname = "";
 	/** Port of the backend application */
 	protected int port = -1;
+	/** The char set for the URL to send */
+	protected String charset = "UTF-8";
 
 	/**
 	 * Default construtor to connect to the server
@@ -69,56 +71,71 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	}
 
 	/**
-	 * Initialize the JSON-Parser. <br>
-	 * The {@link NetDateTimeAdapter} is added for parsing C#-DateTime Objects
-	 */
-	private void init() {
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(Date.class, new NetDateTimeAdapter());
-		builder.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE);
-		gson = builder.create();
-	}
-
-	/**
-	 * Requests an given object by using its own ID. Look on
-	 * {@link AbstractOrganizerObject#getID()} for more information. <br>
-	 * <b>Following restrictions are given by the back end:</b>
-	 * <ul>
-	 * <li>{@link User}: You can only request the user object you logged into.
-	 * All other user objects will be anonymized.
-	 * <li>{@link CalendarEntry}: You receive the whole {@link CalendarEntry},
-	 * if you are owner of it or if you are invited to it.
-	 * <li>{@link Calendar}: You can only request a {@link Calendar} of yours.
-	 * <li>{@link Invite}: You can only request an {@link Invite} you are
-	 * registered as owner of it or owner of the {@link CalendarEntry}.
-	 * </ul>
+	 * Sends a confirmation of an {@link Invite} to the Server. As result the ID
+	 * of the generated {@link CalendarEntry} is returned.
 	 * 
-	 * Rooms and Groups do not have any restrictions.
-	 * 
-	 * @param obj
-	 *            Instance of {@link AbstractOrganizerObject} thats ID is used
-	 *            to request an element from the back end.
-	 * @return filled instance of {@link AbstractOrganizerObject} or null, if no
-	 *         element with the given ID exists.
+	 * @param inviteId
+	 *            the ID of the {@link Invite} that should be confirmed
+	 * @return the ID of the created {@link CalendarEntry} in the own
+	 *         {@link Calendar} or 0, if there was an Error.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj) {
-		// makes the start of the HTTP command 'GetOBJECTNAMEById' where
-		// OBJECTNAME is the name of T obj
-		String getCmd = ParseUtils.makeGetByOwnIdCommand(obj);
+	public int acceptInvite(Invite invite) {
+		// makes the start of the HTTP command
+		String getCmd = ParseUtils.makeAcceptCommand();
 		// makes the parameter for the own id
-		String parameterOwnId = ParseUtils.getParameterOwnId(obj);
+		String parameterInviteId = ParseUtils.getParameterOwnId(invite);
 		// makes the parameter for the user authentication
 		String parameterUserAuth = ParseUtils.getParameterUserAuth(authString);
-		// returns the parameters as String for HTTP command and combines it
-		// with the command start
-		getCmd += ParseUtils.getParameterString(parameterOwnId,
+		// combines command and parameter
+		getCmd += ParseUtils.getParameterString(parameterInviteId,
 				parameterUserAuth);
 		String json = sendGetToServer(getCmd);
 		try {
+			return (int) gson.fromJson(json, int.class);
+		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
+		}
+		return 0;
+	}
 
-			return (T) gson.fromJson(json, newInstanceOf(obj).getClass());
+	/**
+	 * Adds an new object of {@link AbstractOrganizerObject} to the database.<br>
+	 * <b>For adding an {@link User} use
+	 * {@link JsonJavaRequestHandler#registerNewUser(User, String)} instead.
+	 * 
+	 * @param obj
+	 *            defines the main attributes of the object, that should be
+	 *            added.
+	 * @return the obj containing its set ID or null, if such an object already
+	 *         exists.
+	 */
+	@Override
+	public <T extends AbstractOrganizerObject> T addObject(T obj) {
+		if (obj instanceof User)
+			throw new UnsupportedOperationException(
+					"User must be added by method \"registerNewUser\"");
+		try {
+			// returns the start of the HTTP command
+			String getCmd = ParseUtils.makeAddCommand(obj);
+			// returns the parameters as list
+			ArrayList<String> parameters = ParseUtils
+					.getParameterStringList(obj);
+			// returns the password as encoded value and adds it to the
+			// parameter list
+			parameters.add(ParseUtils.getParameterUserAuth(authString));
+			// returns the parameters as String for HTTP command and combines it
+			// with the command start
+			getCmd += ParseUtils.getParameterString(parameters
+					.toArray(new String[parameters.size()]));
+			String json = sendGetToServer(getCmd);
+			Integer id = gson.fromJson(json, int.class);
+			if (id == null || id == 0 || id == -1)
+				return null;
+			obj.setID(id);
+			return obj;
+		} catch (IllegalArgumentException ex) {
+			ex.printStackTrace();
 		} catch (JsonSyntaxException ex) {
 			ex.printStackTrace();
 		}
@@ -126,29 +143,207 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	}
 
 	/**
-	 * Sends the GET-Command to the server and receives a JSON-String
-	 * representing the answer.
+	 * Adds the given {@link User} to the given {@link Group} with sending a
 	 * 
-	 * @param request
-	 * @return JSON-String representing the object or null, if there was an
-	 *         exception during transmission.
+	 * @param user
+	 * @param group
 	 */
-	public String sendGetToServer(String request) {
+	@Override
+	public <T extends AbstractOrganizerObject> boolean addUserToGroup(
+			User user, Group group) {
 		try {
-			connection = (HttpURLConnection) (new URL("http://" + hostname
-					+ ":" + port + "/OrganizerService.svc/" + request))
-					.openConnection();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					connection.getInputStream()));
-			String jsonString = reader.readLine();
-			connection.disconnect();
-			return jsonString;
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			String getCmd = ParseUtils.makeAddUserToGroupCommand();
+			String parameterUserId = ParseUtils.getParameterOwnId(user);
+			String parameterGroupId = ParseUtils.getParameterOwnId(group);
+			String parameterUserAuth = ParseUtils
+					.getParameterUserAuth(authString);
+			getCmd += ParseUtils.getParameterString(parameterGroupId,
+					parameterUserId, parameterUserAuth);
+
+			String json = sendGetToServer(getCmd);
+			Boolean result = gson.fromJson(json, boolean.class);
+			if (result == null)
+				return false;
+			return result;
+		} catch (IllegalArgumentException ex) {
+			ex.printStackTrace();
+		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * Sends a declining of an {@link Invite} to the Server.
+	 * 
+	 * @param inviteId
+	 *            the ID of the {@link Invite} that should be confirmed
+	 * @return 1 if there was no error, otherwise 0
+	 */
+	@Override
+	public int declineInvite(Invite invite) {
+		// makes the start of the HTTP command
+		String getCmd = ParseUtils.makeDeclineCommand();
+		// makes the parameter for the own id
+		String parameterInviteId = ParseUtils.getParameterOwnId(invite);
+		// makes the parameter for the user authentication
+		String parameterUserAuth = ParseUtils.getParameterUserAuth(authString);
+		// combines command and parameter
+		getCmd += ParseUtils.getParameterString(parameterInviteId,
+				parameterUserAuth);
+		String json = sendGetToServer(getCmd);
+		try {
+			return (int) gson.fromJson(json, int.class);
+		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public boolean dropDatabase() {
+		String json = sendGetToServer("RemoveDatabase");
+		Boolean errorValue = gson.fromJson(json, boolean.class);
+		if (errorValue == null)
+			return false;
+		return errorValue;
+	}
+
+	/**
+	 * Requests a {@link User} for the given mail address and password. <br>
+	 * The credentials will be stored to ensure an authentication by a
+	 * combination of the mail address and password.
+	 * 
+	 * @param mail
+	 *            plain text
+	 * @param password
+	 *            plain text password, which will be hashed, ASCII-based and
+	 *            Base64 encoded for the transmission
+	 * @return the {@link User} linked to the given credentials or null, if such
+	 *         a user does not exist.
+	 */
+	@Override
+	public User login(String mail, String password) {
+
+		String cmd = ParseUtils.getCompleteLoginCommand(mail, password);
+		String json = sendGetToServer(cmd);
+		try {
+			User user = (User) gson.fromJson(json, User.class);
+			if (user == null) {
+				return null;
+			}
+			authString = generateAuthenticationString(user.getID(), mail,
+					password);
+			return user;
+		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
+		} catch (NullPointerException ex) {
+			ex.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * Adds new {@link User} to the database. The password is hashed
+	 * and hexadecimal encoded before it is sent to the server. With the
+	 * mail address being necessary for the login it must be defined by the
+	 * given {@link User}, otherwise an {@link IllegalArgumentException} is
+	 * thrown.
+	 * 
+	 * @param user
+	 *            defines the main attributes of the user, that should be added
+	 * @param password
+	 *            plain text password for secure login
+	 * @return the {@link User} containing its set ID or null, if such an
+	 *         {@link User} already exits.
+	 */
+	@Override
+	public User registerNewUser(User user, String password) {
+		if (user.getMailAddress() == null || user.getMailAddress().isEmpty())
+			throw new IllegalArgumentException(
+					"The mail address must not be empty or null");
+		try {
+			// returns the start of the HTTP command
+			String getCmd = ParseUtils.makeAddCommand(user);
+			// returns the parameters as list
+			ArrayList<String> parameters = ParseUtils
+					.getParameterStringList(user);
+			// returns the password as encoded value and adds it to the
+			// parameter list
+			parameters.add(ParseUtils.getParameterPassword(password));
+			// returns the parameters as String for HTTP command and combines it
+			// with the command start
+			getCmd += ParseUtils.getParameterString(parameters
+					.toArray(new String[parameters.size()]));
+			String json = sendGetToServer(getCmd);
+			Integer id = gson.fromJson(json, int.class);
+			if (id == null || id == 0)
+				return null;
+			user.setID(id);
+			return user;
+		} catch (IllegalArgumentException ex) {
+			ex.printStackTrace();
+		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Removes an {@link AbstractOrganizerObject} from the database by using its
+	 * ID.
+	 * 
+	 * @param obj
+	 *            the object, which should be removed by its id.
+	 * @return true if the object was removed, false otherwise.
+	 */
+	@Override
+	public <T extends AbstractOrganizerObject> boolean removeObjectByOwnId(T obj) {
+		// makes the start of the HTTP command 'GetOBJECTNAMEById' where
+		// OBJECTNAME is the name of T obj
+		String getCmd = ParseUtils.makeRemoveByOwnIdCommand(obj);
+		// makes the parameter for the own id
+		String parameterOwnId = ParseUtils.getParameterOwnId(obj);
+		// makes the parameter for the user authentication
+		String parameterUserAuth = ParseUtils.getParameterUserAuth(authString);
+		// combines command and parameter
+		getCmd += ParseUtils.getParameterString(parameterOwnId,
+				parameterUserAuth);
+		String json = sendGetToServer(getCmd);
+		try {
+			Boolean result = gson.fromJson(json, boolean.class);
+			if (result == null)
+				return false;
+			return result;
+		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public <T extends AbstractOrganizerObject> boolean removeUserFromGroup(
+			User user, Group group) {
+		try {
+			String getCmd = ParseUtils.makeRemoveUserFromGroupCommand();
+			String parameterUserId = ParseUtils.getParameterOwnId(user);
+			String parameterGroupId = ParseUtils.getParameterOwnId(group);
+			String parameterUserAuth = ParseUtils
+					.getParameterUserAuth(authString);
+			getCmd += ParseUtils.getParameterString(parameterGroupId,
+					parameterUserId, parameterUserAuth);
+
+			String json = sendGetToServer(getCmd);
+			Boolean result = gson.fromJson(json, boolean.class);
+			if (result == null)
+				return false;
+			return result;
+		} catch (IllegalArgumentException ex) {
+			ex.printStackTrace();
+		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
+		}
+		return false;
 	}
 
 	/**
@@ -224,29 +419,6 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	}
 
 	/**
-	 * Requests the first object of the given object type by using its set
-	 * property. Look on {@link AbstractOrganizerObject#getProperty()} for more
-	 * information. With this method using the
-	 * {@link #requestAllObjectsByProperty(AbstractOrganizerObject)} method, the
-	 * same restrictions are given.
-	 * 
-	 * @param obj
-	 *            Instance of {@link AbstractOrganizerObject} thats set property
-	 *            is used.
-	 * @return filled instance of {@link AbstractOrganizerObject} or null, if
-	 *         such object does not exist.
-	 */
-	@Override
-	public <T extends AbstractOrganizerObject> T requestObjectByProperty(T obj) {
-		// requesting all and taking the first element
-		List<T> result = requestAllObjectsByProperty(obj);
-		if (result != null && !result.isEmpty()) {
-			return result.get(0);
-		}
-		return null;
-	}
-
-	/**
 	 * Requests all objects of the given object type by using its set property.
 	 * Look on {@link AbstractOrganizerObject#getProperty()} for more
 	 * information.
@@ -257,12 +429,14 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * <li> {@link CalendarEntry}:
 	 * <ul>
 	 * <li>by owner ID: You can only request {@link CalendarEntry}s of your own
-	 * ID or you are invited to.
+	 * ID or you are invited to. {@link Organizer.WebService.IOrganizerService#GetAllCalendarEntriesByOwnerId(int ownerId, String auth)}
 	 * <li>by room id: You will receive a List of anonymous
-	 * {@link CalendarEntry}(time, owner ID)
+	 * {@link CalendarEntry}(time, owner ID) {@link Organizer.WebService.IOrganizerService#GetAllCalendarEntriesByRoomId(int roomId, String auth)}
 	 * </ul>
 	 * <li> {@link Group}: You will request {@link Group}s you are member of.
 	 * </ul>
+	 * 
+	 * 
 	 * 
 	 * @param obj
 	 *            Instance of {@link AbstractOrganizerObject} whose set property
@@ -300,215 +474,120 @@ public class JsonJavaRequestHandler extends RequestHandler {
 		return new ArrayList<T>();
 	}
 
-	/**
-	 * Adds new {@link User} to the database. The password is hashed
-	 * and hexadecimal encoded before it is sent to the server. With the
-	 * mail address being necessary for the login it must be defined by the
-	 * given {@link User}, otherwise an {@link IllegalArgumentException} is
-	 * thrown.
-	 * 
-	 * @param user
-	 *            defines the main attributes of the user, that should be added
-	 * @param password
-	 *            plain text password for secure login
-	 * @return the {@link User} containing its set ID or null, if such an
-	 *         {@link User} already exits.
-	 */
 	@Override
-	public User registerNewUser(User user, String password) {
-		if (user.getMailAddress() == null || user.getMailAddress().isEmpty())
-			throw new IllegalArgumentException(
-					"The mail address must not be empty or null");
-		try {
-			// returns the start of the HTTP command
-			String getCmd = ParseUtils.makeAddCommand(user);
-			// returns the parameters as list
-			ArrayList<String> parameters = ParseUtils
-					.getParameterStringList(user);
-			// returns the password as encoded value and adds it to the
-			// parameter list
-			parameters.add(ParseUtils.getParameterPassword(password));
-			// returns the parameters as String for HTTP command and combines it
-			// with the command start
-			getCmd += ParseUtils.getParameterString(parameters
-					.toArray(new String[parameters.size()]));
-			String json = sendGetToServer(getCmd);
-			Integer id = gson.fromJson(json, int.class);
-			if (id == null || id == 0)
-				return null;
-			user.setID(id);
-			return user;
-		} catch (IllegalArgumentException ex) {
-			ex.printStackTrace();
-		} catch (JsonSyntaxException ex) {
-			ex.printStackTrace();
+	public <T extends AbstractOrganizerObject> List<T> requestFollowingObjectsByOwnId(
+			List<Integer> ids, T obj) {
+		List<T> requestedObjects = new ArrayList<T>();
+
+		for (int i = 0; i < ids.size(); i++) {
+			T tmp = newInstanceOf(obj);
+			tmp.setID(ids.get(i));
+			requestedObjects.add(requestObjectByOwnId(tmp));
+			for (ProcessListener listener : getProcessListeners()) {
+				listener.getCurrentProcessState((double) (i + 1)
+						/ (double) ids.size());
+			}
 		}
-		return null;
+		return requestedObjects;
 	}
 
 	/**
-	 * Adds an new object of {@link AbstractOrganizerObject} to the database.<br>
-	 * <b>For adding an {@link User} use
-	 * {@link JsonJavaRequestHandler#registerNewUser(User, String)} instead.
+	 * Requests an given object by using its own ID. Look on
+	 * {@link AbstractOrganizerObject#getID()} for more information. <br>
+	 * <b>Following restrictions are given by the back end:</b>
+	 * <ul>
+	 * <li>{@link User}: You can only request the user object you logged into.
+	 * All other user objects will be anonymized.
+	 * <li>{@link CalendarEntry}: You receive the whole {@link CalendarEntry},
+	 * if you are owner of it or if you are invited to it.
+	 * <li>{@link Calendar}: You can only request a {@link Calendar} of yours.
+	 * <li>{@link Invite}: You can only request an {@link Invite} you are
+	 * registered as owner of it or owner of the {@link CalendarEntry}.
+	 * </ul>
+	 * 
+	 * Rooms and Groups do not have any restrictions.
 	 * 
 	 * @param obj
-	 *            defines the main attributes of the object, that should be
-	 *            added.
-	 * @return the obj containing its set ID or null, if such an object already
-	 *         exists.
+	 *            Instance of {@link AbstractOrganizerObject} thats ID is used
+	 *            to request an element from the back end.
+	 * @return filled instance of {@link AbstractOrganizerObject} or null, if no
+	 *         element with the given ID exists.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends AbstractOrganizerObject> T addObject(T obj) {
-		if (obj instanceof User)
-			throw new UnsupportedOperationException(
-					"User must be added by method \"registerNewUser\"");
-		try {
-			// returns the start of the HTTP command
-			String getCmd = ParseUtils.makeAddCommand(obj);
-			// returns the parameters as list
-			ArrayList<String> parameters = ParseUtils
-					.getParameterStringList(obj);
-			// returns the password as encoded value and adds it to the
-			// parameter list
-			parameters.add(ParseUtils.getParameterUserAuth(authString));
-			// returns the parameters as String for HTTP command and combines it
-			// with the command start
-			getCmd += ParseUtils.getParameterString(parameters
-					.toArray(new String[parameters.size()]));
-			String json = sendGetToServer(getCmd);
-			Integer id = gson.fromJson(json, int.class);
-			if (id == null || id == 0 || id == -1)
-				return null;
-			obj.setID(id);
-			return obj;
-		} catch (IllegalArgumentException ex) {
-			ex.printStackTrace();
-		} catch (JsonSyntaxException ex) {
-			ex.printStackTrace();
-		}
-		return null;
-	}
-
-	/**
-	 * Removes an {@link AbstractOrganizerObject} from the database by using its
-	 * ID.
-	 * 
-	 * @param obj
-	 *            the object, which should be removed by its id.
-	 * @return true if the object was removed, false otherwise.
-	 */
-	@Override
-	public <T extends AbstractOrganizerObject> boolean removeObjectByOwnId(T obj) {
+	public <T extends AbstractOrganizerObject> T requestObjectByOwnId(T obj) {
 		// makes the start of the HTTP command 'GetOBJECTNAMEById' where
 		// OBJECTNAME is the name of T obj
-		String getCmd = ParseUtils.makeRemoveByOwnIdCommand(obj);
+		String getCmd = ParseUtils.makeGetByOwnIdCommand(obj);
 		// makes the parameter for the own id
 		String parameterOwnId = ParseUtils.getParameterOwnId(obj);
 		// makes the parameter for the user authentication
 		String parameterUserAuth = ParseUtils.getParameterUserAuth(authString);
-		// combines command and parameter
+		// returns the parameters as String for HTTP command and combines it
+		// with the command start
 		getCmd += ParseUtils.getParameterString(parameterOwnId,
 				parameterUserAuth);
 		String json = sendGetToServer(getCmd);
 		try {
-			Boolean result = gson.fromJson(json, boolean.class);
-			if (result == null)
-				return false;
-			return result;
-		} catch (JsonSyntaxException ex) {
-			ex.printStackTrace();
-		}
-		return false;
-	}
 
-	/**
-	 * Requests a {@link User} for the given mail address and password. <br>
-	 * The credentials will be stored to ensure an authentication by a
-	 * combination of the mail address and password.
-	 * 
-	 * @param mail
-	 *            plain text
-	 * @param password
-	 *            plain text password, which will be hashed, ASCII-based and
-	 *            Base64 encoded for the transmission
-	 * @return the {@link User} linked to the given credentials or null, if such
-	 *         a user does not exist.
-	 */
-	@Override
-	public User login(String mail, String password) {
-
-		String cmd = ParseUtils.getCompleteLoginCommand(mail, password);
-		String json = sendGetToServer(cmd);
-		try {
-			User user = (User) gson.fromJson(json, User.class);
-			if (user == null) {
-				return null;
-			}
-			authString = generateAuthenticationString(user.getID(), mail,
-					password);
-			return user;
+			return (T) gson.fromJson(json, newInstanceOf(obj).getClass());
 		} catch (JsonSyntaxException ex) {
-			ex.printStackTrace();
-		} catch (NullPointerException ex) {
 			ex.printStackTrace();
 		}
 		return null;
 	}
 
 	/**
-	 * Sends a confirmation of an {@link Invite} to the Server. As result the ID
-	 * of the generated {@link CalendarEntry} is returned.
+	 * Requests the first object of the given object type by using its set
+	 * property. Look on {@link AbstractOrganizerObject#getProperty()} for more
+	 * information. With this method using the
+	 * {@link #requestAllObjectsByProperty(AbstractOrganizerObject)} method, the
+	 * same restrictions are given.
 	 * 
-	 * @param inviteId
-	 *            the ID of the {@link Invite} that should be confirmed
-	 * @return the ID of the created {@link CalendarEntry} in the own
-	 *         {@link Calendar} or 0, if there was an Error.
+	 * @param obj
+	 *            Instance of {@link AbstractOrganizerObject} thats set property
+	 *            is used.
+	 * @return filled instance of {@link AbstractOrganizerObject} or null, if
+	 *         such object does not exist.
 	 */
 	@Override
-	public int acceptInvite(Invite invite) {
-		// makes the start of the HTTP command
-		String getCmd = ParseUtils.makeAcceptCommand();
-		// makes the parameter for the own id
-		String parameterInviteId = ParseUtils.getParameterOwnId(invite);
-		// makes the parameter for the user authentication
-		String parameterUserAuth = ParseUtils.getParameterUserAuth(authString);
-		// combines command and parameter
-		getCmd += ParseUtils.getParameterString(parameterInviteId,
-				parameterUserAuth);
-		String json = sendGetToServer(getCmd);
-		try {
-			return (int) gson.fromJson(json, int.class);
-		} catch (JsonSyntaxException ex) {
-			ex.printStackTrace();
+	public <T extends AbstractOrganizerObject> T requestObjectByProperty(T obj) {
+		// requesting all and taking the first element
+		List<T> result = requestAllObjectsByProperty(obj);
+		if (result != null && !result.isEmpty()) {
+			return result.get(0);
 		}
-		return 0;
+		return null;
 	}
 
 	/**
-	 * Sends a declining of an {@link Invite} to the Server.
+	 * Sends the GET-Command to the server and receives a JSON-String
+	 * representing the answer. 
 	 * 
-	 * @param inviteId
-	 *            the ID of the {@link Invite} that should be confirmed
-	 * @return 1 if there was no error, otherwise 0
+	 * @param request
+	 * @return JSON-String representing the object or null, if there was an
+	 *         exception during transmission.
 	 */
-	@Override
-	public int declineInvite(Invite invite) {
-		// makes the start of the HTTP command
-		String getCmd = ParseUtils.makeDeclineCommand();
-		// makes the parameter for the own id
-		String parameterInviteId = ParseUtils.getParameterOwnId(invite);
-		// makes the parameter for the user authentication
-		String parameterUserAuth = ParseUtils.getParameterUserAuth(authString);
-		// combines command and parameter
-		getCmd += ParseUtils.getParameterString(parameterInviteId,
-				parameterUserAuth);
-		String json = sendGetToServer(getCmd);
+	public String sendGetToServer(String request) {
 		try {
-			return (int) gson.fromJson(json, int.class);
-		} catch (JsonSyntaxException ex) {
-			ex.printStackTrace();
+			connection = (HttpURLConnection) (new URL("http://" + hostname
+					+ ":" + port + "/OrganizerService.svc/" + request))
+					.openConnection();
+			connection.setRequestProperty("Accept-Charset", charset);
+			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset );
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					connection.getInputStream()));
+			String jsonString = reader.readLine();
+			connection.disconnect();
+			if(jsonString == null) return null;
+			byte[] array = jsonString.getBytes();
+			return new String(array, charset);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return 0;
+		return null;
 	}
 
 	@Override
@@ -553,6 +632,17 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	}
 
 	/**
+	 * Initialize the JSON-Parser. <br>
+	 * The {@link NetDateTimeAdapter} is added for parsing C#-DateTime Objects
+	 */
+	private void init() {
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Date.class, new NetDateTimeAdapter());
+		builder.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE);
+		gson = builder.create();
+	}
+
+	/**
 	 * Creates a new instance from the given object to ensure the old reference
 	 * is not used.
 	 * 
@@ -571,87 +661,5 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	/**
-	 * Adds the given {@link User} to the given {@link Group} with sending a
-	 * 
-	 * @param user
-	 * @param group
-	 */
-	@Override
-	public <T extends AbstractOrganizerObject> boolean addUserToGroup(
-			User user, Group group) {
-		try {
-			String getCmd = ParseUtils.makeAddUserToGroupCommand();
-			String parameterUserId = ParseUtils.getParameterOwnId(user);
-			String parameterGroupId = ParseUtils.getParameterOwnId(group);
-			String parameterUserAuth = ParseUtils
-					.getParameterUserAuth(authString);
-			getCmd += ParseUtils.getParameterString(parameterGroupId,
-					parameterUserId, parameterUserAuth);
-
-			String json = sendGetToServer(getCmd);
-			Boolean result = gson.fromJson(json, boolean.class);
-			if (result == null)
-				return false;
-			return result;
-		} catch (IllegalArgumentException ex) {
-			ex.printStackTrace();
-		} catch (JsonSyntaxException ex) {
-			ex.printStackTrace();
-		}
-		return false;
-	}
-
-	@Override
-	public <T extends AbstractOrganizerObject> boolean removeUserFromGroup(
-			User user, Group group) {
-		try {
-			String getCmd = ParseUtils.makeRemoveUserFromGroupCommand();
-			String parameterUserId = ParseUtils.getParameterOwnId(user);
-			String parameterGroupId = ParseUtils.getParameterOwnId(group);
-			String parameterUserAuth = ParseUtils
-					.getParameterUserAuth(authString);
-			getCmd += ParseUtils.getParameterString(parameterGroupId,
-					parameterUserId, parameterUserAuth);
-
-			String json = sendGetToServer(getCmd);
-			Boolean result = gson.fromJson(json, boolean.class);
-			if (result == null)
-				return false;
-			return result;
-		} catch (IllegalArgumentException ex) {
-			ex.printStackTrace();
-		} catch (JsonSyntaxException ex) {
-			ex.printStackTrace();
-		}
-		return false;
-	}
-
-	@Override
-	public <T extends AbstractOrganizerObject> List<T> requestFollowingObjectsByOwnId(
-			List<Integer> ids, T obj) {
-		List<T> requestedObjects = new ArrayList<T>();
-
-		for (int i = 0; i < ids.size(); i++) {
-			T tmp = newInstanceOf(obj);
-			tmp.setID(ids.get(i));
-			requestedObjects.add(requestObjectByOwnId(tmp));
-			for (ProcessListener listener : getProcessListeners()) {
-				listener.getCurrentProcessState((double) (i + 1)
-						/ (double) ids.size());
-			}
-		}
-		return requestedObjects;
-	}
-
-	@Override
-	public boolean dropDatabase() {
-		String json = sendGetToServer("RemoveDatabase");
-		Boolean errorValue = gson.fromJson(json, boolean.class);
-		if (errorValue == null)
-			return false;
-		return errorValue;
 	}
 }
