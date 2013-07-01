@@ -1,11 +1,11 @@
-package network;
+package organizer.networklayer.network;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import network.listener.ProcessListener;
-import network.utilities.ParseUtils;
 
+import organizer.networklayer.network.listener.ProcessListener;
+import organizer.networklayer.network.utilities.ParseUtils;
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Group;
 import organizer.objects.types.Invite;

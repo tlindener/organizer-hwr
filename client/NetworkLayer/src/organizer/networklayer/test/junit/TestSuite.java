@@ -1,4 +1,4 @@
-package test.junit;
+package organizer.networklayer.test.junit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -11,9 +11,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import network.RequestHandler;
-import network.json.JsonJavaIISRequestHandler;
-import network.json.JsonJavaRequestHandler;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,6 +18,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import organizer.networklayer.network.RequestHandler;
+import organizer.networklayer.network.json.JsonJavaIISRequestHandler;
+import organizer.networklayer.network.json.JsonJavaRequestHandler;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Group;

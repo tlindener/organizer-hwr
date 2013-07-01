@@ -1,4 +1,4 @@
-package test.junit;
+package organizer.networklayer.test.junit;
 
 public interface ErrorConstans {
 	
