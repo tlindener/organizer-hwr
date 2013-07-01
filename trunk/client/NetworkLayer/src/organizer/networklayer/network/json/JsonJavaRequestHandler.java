@@ -1,7 +1,7 @@
 /**
  * 
  */
-package network.json;
+package organizer.networklayer.network.json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import network.RequestHandler;
-import network.listener.ProcessListener;
-import network.utilities.NetDateTimeAdapter;
-import network.utilities.ParseUtils;
 
+import organizer.networklayer.network.RequestHandler;
+import organizer.networklayer.network.listener.ProcessListener;
+import organizer.networklayer.network.utilities.NetDateTimeAdapter;
+import organizer.networklayer.network.utilities.ParseUtils;
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package network.json;
+package organizer.networklayer.network.json;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package network.utilities;
+package organizer.networklayer.network.utilities;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -13,8 +13,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import network.RequestHandler;
 
+import organizer.networklayer.network.RequestHandler;
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;

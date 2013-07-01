@@ -1,4 +1,4 @@
-package run;
+package organizer.networklayer.run;
 
 import java.util.Date;
 import java.util.InputMismatchException;
@@ -7,11 +7,11 @@ import java.util.Scanner;
 
 import junit.framework.TestSuite;
 
-import network.RequestHandler;
-import network.json.JsonJavaIISRequestHandler;
-import network.json.JsonJavaRequestHandler;
-import network.listener.ProcessListener;
 
+import organizer.networklayer.network.RequestHandler;
+import organizer.networklayer.network.json.JsonJavaIISRequestHandler;
+import organizer.networklayer.network.json.JsonJavaRequestHandler;
+import organizer.networklayer.network.listener.ProcessListener;
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
