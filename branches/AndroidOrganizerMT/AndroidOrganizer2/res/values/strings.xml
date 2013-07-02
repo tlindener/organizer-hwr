@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AndroidOrganizer</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="preferences_category_user">User Settings</string>
+    <string name="preferences_category_server">Server Settings</string>
+    <string name="preferences_edittext_mail_address">Mail Address</string>
+    <string name="preferences_edittext_password">Password</string>
+    <string name="preferences_summary_mail_address">Insert mail address</string>
+    <string name="preferences_summary_password">Insert password</string>
+    <string name="preferences_edittext_port">Port</string>
+    <string name="preferences_summary_port">Insert port</string>
+    <string name="preferences_edittext_server_address">Server address</string>
+    <string name="preferences_summary_server_address">Insert server address</string>
+    <string name="title_activity_calendar_entry">Calendar entry details</string>
+    
+    <string name="calendarEntryActivityTitleHeader">Title: </string>
+ <string name="calendarEntryActivityDescriptionHeader">Description: </string>
+ <string name="calendarEntryActivityStartDateHeader">Starts: </string>
+  <string name="calendarEntryActivityEndDateHeader">Ends: </string>
+   <string name="calendarEntryActivityRoomLocationHeader">Location: </string>
+    <string name="calendarEntryActivityRoomSeatHeader">Seats: </string>
+     <string name="calendarEntryActivityInvitationsHeader">Invites: </string>
+</resources>
