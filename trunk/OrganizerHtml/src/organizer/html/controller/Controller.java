@@ -1,4 +1,4 @@
-package organizerhtml.controller;
+package organizer.html.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,12 +15,13 @@ import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
+
+import organizer.html.model.Model;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
-import organizerhtml.model.Model;
 
 public class Controller {
 
