@@ -9,8 +9,13 @@ namespace Organizer.Client.ConsoleApplication
 {
     class Program
     {
-      
 
+        public void TestAddRoom()
+        {
+
+        
+
+        }
 
         static void Main(string[] args)
         {

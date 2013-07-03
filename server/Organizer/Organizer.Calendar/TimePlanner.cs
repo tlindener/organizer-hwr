@@ -38,6 +38,44 @@ namespace Organizer
 
         #region Calendar
 
+                /// <summary>
+        ///     Adds a new calendar item to database
+        /// </summary>
+        /// <param name="calendar"></param>
+        /// <returns>The primaryKey of the added item. Returns 0 if not successful</returns>
+        public int AddCalendar(Calendar calendar)
+        {
+
+            try
+            {
+                User owner = _calendarDatabase.User.Find(calendar.Owner.UserId);
+                if (owner == null)
+                    return 0;
+
+
+                _calendarDatabase.Calendar.Add(calendar);
+                _calendarDatabase.SaveChanges();
+
+                /*resolution of nullable integer is a manual job
+                 * Next step would be to implement 1:n relationship von user and calendar
+                 */
+                owner.CalendarId = calendar.CalendarId;
+                _calendarDatabase.SaveChanges();
+
+                return calendar.CalendarId;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+            }
+            return 0;
+        }
+
+        public ICollection<Calendar> GetAllCalendar()
+        {
+            return _calendarDatabase.Calendar.ToList();
+        }
+
         /// <summary>
         ///     Adds a new calendar item to database
         /// </summary>
@@ -210,6 +248,18 @@ namespace Organizer
                 _logger.Error(ex.ToString());
             }
             return 0;
+        }
+
+
+
+        public ICollection<CalendarEntry> GetAllCalendarEntries()
+        {
+            return _calendarDatabase.CalendarEntries.ToList();
+        }
+
+        public ICollection<Invite> GetAllInvites()
+        {
+            return _calendarDatabase.Invites.ToList();
         }
 
         /// <summary>
@@ -394,13 +444,18 @@ namespace Organizer
             try
             {
                 //each values with constraint has to be set to null
-                RemoveCalendar(user.Calendar.CalendarId);
-                user.Calendar = null;
-
-                var invites = user.Invites.ToList();
-                foreach (Invite inv in invites)
+                if (user.Calendar != null)
                 {
-                    _calendarDatabase.Invites.Remove(inv);
+                    RemoveCalendar(user.Calendar.CalendarId);
+                    user.Calendar = null;
+                }
+                if (user.Invites != null)
+                {
+                    var invites = user.Invites.ToList();
+                    foreach (Invite inv in invites)
+                    {
+                        _calendarDatabase.Invites.Remove(inv);
+                    }
                 }
                 user.Groups = null;
                 _calendarDatabase.User.Remove(user);
