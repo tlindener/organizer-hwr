@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
+import de.lindener.androidorganizer.preferences.PreferenceData;
 import de.lindener.androidorganizer.preferences.SettingsActivity;
+import de.lindener.androidorganizer.viewmodels.CalendarViewModel;
 
 //import network.JsonJavaRequestHandler;
 //import network.RequestHandler;
@@ -16,14 +15,14 @@ import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.User;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,81 +34,140 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	String title = "";
 	int adapterIndex = 1;
+	CalendarAbstractionLayer layer = null;
 	ListView calendarEntryListView = null;
-	OrganizerRequester requester = null;
-
-	Handler servicehandler = new Handler() {
-		public void receiveMessage(Message msg) {
-
-			Gson gson = new Gson();
-			switch (msg.what) {
-			case 1: {
-
-				Bundle b = msg.getData();
-				Calendar calendar = gson.fromJson(b.getString("Calendar"),
-						new TypeToken<Calendar>() {
-						}.getType());
-				List<CalendarEntry> calendarEntries = gson.fromJson(
-						b.getString("CalendarEntries"),
-						new TypeToken<List<CalendarEntry>>() {
-						}.getType());
-
-				CalendarEntryAdapter adapter = new CalendarEntryAdapter(
-						getApplicationContext(), R.layout.calendarentry, 0,
-						calendarEntries);
-
-				calendarEntryListView = (ListView) findViewById(R.id.calendarView);
-
-				calendarEntryListView
-						.setOnItemClickListener(new OnItemClickListener() {
-							public void onItemClick(AdapterView<?> arg0,
-									View v, int position, long id) {
-
-								CalendarEntry entry = (CalendarEntry) calendarEntryListView
-										.getItemAtPosition(position);
-								if (entry != null) {
-									Intent intent = new Intent(
-											getBaseContext(),
-											CalendarEntryActivity.class);
-									intent.putExtra(
-											Constants.CALENDAR_ENTRY_ID,
-											entry.getID());
-									startActivity(intent);
-								}
-							}
-						});
-
-				View header = (View) getLayoutInflater().inflate(
-						R.layout.calendarentry_listview_header, null);
-				if (header != null) {
-					if (calendarEntryListView.getHeaderViewsCount() == 0) {
-						calendarEntryListView.addHeaderView(header);
-					}
-				}
-				TextView title = (TextView) findViewById(R.id.calendarTitleTextView);
-				if (title != null) {
-					title.setText(calendar.getName());
-				}
-				calendarEntryListView.setAdapter(adapter);
-
-				break;
-			}
-
-			}
-		}
-	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		requester = new OrganizerRequester(servicehandler,
-				getApplicationContext());
-		requester.run();
+		PreferenceData data = requestSettings();
+		if (data != null) {
+			new requestCalendarTask(data).execute();
+		}
 
+	}
+
+	class requestCalendarTask extends AsyncTask<Void, Void, CalendarViewModel> {
+		PreferenceData prefs = null;
+
+		requestCalendarTask(PreferenceData preferences) {
+			this.prefs = preferences;
+
+		}
+
+		@Override
+		protected void onPostExecute(CalendarViewModel result) {
+			super.onPostExecute(result);
+			setCalendarData(result);
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+		}
+
+		@Override
+		protected CalendarViewModel doInBackground(Void... arg0) {
+			CalendarViewModel calendar = new CalendarViewModel();
+			List<CalendarEntry> calendarEntries = new ArrayList<CalendarEntry>();
+			List<Calendar> calendarList = new ArrayList<Calendar>();
+
+			layer = new CalendarAbstractionLayer(prefs.getServerAddress(),
+					prefs.getServerPort(), prefs.getMailAddress(),
+					prefs.getPassword());
+
+			if (layer != null) {
+			Log.w("AsyncTask","layer != null");
+
+				calendarList = layer.getCalendars();
+
+				if (!calendarList.isEmpty()) {
+					Log.w("AsyncTask","calendarList not empty");
+					calendar.setCalendar(calendarList.get(0));
+				}
+				if (calendar.getCalendar() != null) {
+
+					calendarEntries.clear();
+					Date today = new Date();
+					today.setDate(today.getDate() - 1);
+					for (CalendarEntry entry : calendar.getCalendar().getCalendarEntries()) {
+						if (entry.getStartDate().after(today)) {
+							calendarEntries.add(entry);
+						}
+					}
+					calendar.setCalendarEntries(calendarEntries);
+				}
+
+			}
+			return calendar;
+		}
+	}
+
+	private PreferenceData requestSettings() {
+		PreferenceData prefs = new PreferenceData();
+
+		SharedPreferences sharedPref = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		prefs.setMailAddress(sharedPref.getString(
+				"preferences_edittext_mail_address", ""));
+		prefs.setServerAddress(sharedPref.getString(
+				"preferences_edittext_server_address", ""));
+		prefs.setServerPort(Integer.valueOf(sharedPref.getString(
+				"preferences_edittext_port", "80")));
+		prefs.setPassword(sharedPref.getString("preferences_edittext_password",
+				""));
+
+		if (!prefs.getMailAddress().isEmpty()
+				|| !prefs.getServerAddress().isEmpty()
+				|| prefs.getServerPort() > 0 || !prefs.getPassword().isEmpty()) {
+			return prefs;
+
+		}
+		return null;
+	}
+
+	private void setCalendarData(CalendarViewModel calendar) {
+
+		CalendarEntryAdapter adapter = new CalendarEntryAdapter(this,
+				R.layout.calendarentry, 0, calendar.getCalendarEntries());
+
+		calendarEntryListView = (ListView) findViewById(R.id.calendarView);
+
+		calendarEntryListView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> arg0, View v, int position,
+					long id) {
+
+				CalendarEntry entry = (CalendarEntry) calendarEntryListView
+						.getItemAtPosition(position);
+				if (entry != null) {
+					Intent intent = new Intent(getBaseContext(),
+							CalendarEntryActivity.class);
+					intent.putExtra(Constants.CALENDAR_ENTRY_ID, entry.getID());
+					startActivity(intent);
+				}
+			}
+		});
+
+		View header = (View) getLayoutInflater().inflate(
+				R.layout.calendarentry_listview_header, null);
+		if (header != null) {
+			if (calendarEntryListView.getHeaderViewsCount() == 0) {
+				calendarEntryListView.addHeaderView(header);
+			}
+		}
+		TextView title = (TextView) findViewById(R.id.calendarTitleTextView);
+		if (title != null) {
+			if (calendar.getCalendar() != null) {
+				title.setText(calendar.getCalendar().getName());
+			}
+
+		}
+		calendarEntryListView.setAdapter(adapter);
 	}
 
 	@Override
@@ -135,23 +193,6 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-//	public void addCalendarEntry(String titel, String description,
-//			String startday, String starttime, String endday, String endtime,
-//			int calendarId, int ownerId, int roomId) {
-//		CalendarEntry ce = new CalendarEntry();
-//
-//		ce.setID(adapterIndex++);
-//
-//		ce.setTitle(titel);
-//		ce.setDescription(description);
-//		ce.setStartDate(CalendarEntry.parseStringToDate(startday, starttime));
-//		ce.setEndDate(CalendarEntry.parseStringToDate(endday, endtime));
-//
-//		ce.setCalendarId(calendarId);
-//		ce.setOwnerId(ownerId);
-//		ce.setRoomId(roomId);
-//		calendarEntries.add(ce);
-//	}
 
 	@Override
 	protected void onPause() {
@@ -163,15 +204,15 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-//		requestSettings();
-//		requestData();
+		requestSettings();
+
 	}
 
 	@Override
 	protected void onRestart() {
 		// TODO Auto-generated method stub
 		super.onRestart();
-//		requestSettings();
-//		requestData();
+		requestSettings();
+
 	}
 }
