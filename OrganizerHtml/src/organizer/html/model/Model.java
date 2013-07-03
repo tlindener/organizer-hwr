@@ -1,4 +1,4 @@
-package organizerhtml.model;
+package organizer.html.model;
 
 import java.util.ArrayList;
 import java.util.Date;
