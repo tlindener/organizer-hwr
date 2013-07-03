@@ -6,6 +6,11 @@
             android:key="preferences_edittext_mail_address"
             android:summary="@string/preferences_summary_mail_address"
             android:title="@string/preferences_edittext_mail_address" />
+                <EditTextPreference
+            android:dialogTitle="@string/preferences_summary_password"
+            android:key="preferences_edittext_password"
+            android:summary="@string/preferences_summary_password"
+            android:title="@string/preferences_edittext_password" />
 
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_category_server" >

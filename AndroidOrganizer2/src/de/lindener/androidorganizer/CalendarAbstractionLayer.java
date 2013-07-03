@@ -33,16 +33,14 @@ public class CalendarAbstractionLayer {
 		this.port = servicePort;
 		this.mail = mailAdress;
 		this.password = userPassword;
-		String dat;
-
-		if (user == null) {
-			connectToServiceAndLogin(address, port, mail, password);
-		}
-
 	}
+	
+	
 
 	public List<Calendar> getCalendars() {
-
+		if (user == null) {
+			connectToServiceAndLogin(address, port, mail, password);
+		}		
 		List<Calendar> calendars = new ArrayList<Calendar>();
 		if (user != null) {
 			List<Integer> calendarIds = user.getCalendarIds();
@@ -59,6 +57,10 @@ public class CalendarAbstractionLayer {
 	}
 
 	public CalendarEntryViewModel getCalendarEntry(int calendarEntryId) {
+		if (user == null) {
+			connectToServiceAndLogin(address, port, mail, password);
+		}
+		
 		CalendarEntry serverEntry = new CalendarEntry();
 		serverEntry.setID(calendarEntryId);
 
@@ -90,6 +92,10 @@ public class CalendarAbstractionLayer {
 	 * @return
 	 */
 	private List<User> getInvitesOfEntry(List<Integer> inviteIds) {
+		if (user == null) {
+			connectToServiceAndLogin(address, port, mail, password);
+		}
+		
 		ArrayList<User> user = new ArrayList<User>();
 		List<Invite> invites = requestHandler.requestFollowingObjectsByOwnId(
 				inviteIds, new Invite());
@@ -107,6 +113,10 @@ public class CalendarAbstractionLayer {
 	}
 
 	private Room requestRoom(int roomId) {
+		if (user == null) {
+			connectToServiceAndLogin(address, port, mail, password);
+		}
+		
 		Room room = new Room();
 		room.setID(roomId);
 		room = requestHandler.requestObjectByOwnId(room);
