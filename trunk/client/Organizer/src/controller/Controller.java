@@ -13,13 +13,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.ListModel;
-import javax.swing.border.Border;
-
 import logik.DataPusher;
 import logik.Model;
 import network.json.JsonJavaRequestHandler;
@@ -50,7 +47,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private Model myModel;
 
 	private Object[][] tabellenDaten;
-	private Object[][] terminDauer;
 
 	private window_TerminBearbeiten editEntry;
 
@@ -144,15 +140,19 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		}
 		if (e.getSource() == myHauptmenue.getBtnAbmelden()) {
-			myHauptmenue.dispose();
+			myHauptmenue.setVisible(false);
+			myLogScreen.setVisible(true);
+
 			/*
-			 * Abmelden mit Neuanmeldung??? 
-			 * new Controller klappt nicht
+			 * Abmelden mit Neuanmeldung??? new Controller klappt nicht
 			 * LogScreen.setvisible auch nicht
 			 */
 		}
 		if (e.getSource() == myHauptmenue.getBtnTerminEntfernen()) {
 			entferneTermin();
+		}
+		if (e.getSource() == myHauptmenue.getBtnRaumErstellen()) {
+			myNeuerRaum.setVisible(true);
 		}
 		if (e.getSource() == myLogScreen.getBtnAnmelden()) {
 			meldeUserAn();
@@ -163,7 +163,14 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 		if (e.getSource() == myRegistration.getBtnRegistrieren()) {
 			registriereUser();
+		}
+		if (e.getSource() == myRegistration.getBtnAbbrechen()) {
+			abbrechen(myRegistration, myLogScreen);
+			// Abbrechen Methode implentieren
+		}
 
+		if (editEntry != null && e.getSource() == editEntry.getBtnAbbrechen()) {
+			abbrechen(editEntry, myHauptmenue);
 		}
 
 		if (editEntry != null
@@ -175,7 +182,10 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		if (e.getSource() == myNeuerRaum.getBtnSpeichern()) {
 			speichereRaum();
 		}
+		if (e.getSource() == myNeuerRaum.getBtnAbbrechen()) {
+			myNeuerRaum.setVisible(false);
 
+		}
 		if (e.getSource() == myEinladungen.getBtnAbsagen()) {
 			aktin.setAccepted(-1);
 			bearbeiteEinladung();
@@ -234,7 +244,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 		if (e.getOldValue() != null) {
 			aktDate = myHauptmenue.getAktDateCali();
-			updateData();
 			connectServerModel();
 
 		}
@@ -354,6 +363,19 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			// inv.setOwnerId(aktUser.getID());
 
 			List<Integer> inviteIds = aktUser.getInviteIds();
+			List<Invite> einladungen = new ArrayList();
+			for (int i : inviteIds) {
+				Invite in = new Invite();
+				in.setID(inviteIds.get(i - 1));
+				in = myRequester.requestObjectByOwnId(in);
+				if (in != null) {
+					einladungen.add(in);
+				} else
+					System.out
+							.println("hier konnte kein invite abgefragt werden");
+			}
+			myModel.setEinladungen(einladungen);
+
 			aktUserCa = myRequester.requestObjectByOwnId(aktUserCa);
 
 			List<CalendarEntry> myCes = aktUserCa.getCalendarEntries();
@@ -367,8 +389,10 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 					String anfangZeit = format.format(myCe.getStartDate());
 					String endZeit = format.format(myCe.getEndDate());
+					System.out.println("Anfangszeit: "+anfangZeit);
 					myModel.setAktDate(aktDate);
 					myModel.setBeschreibungen(anfangZeit, myCe.getTitle());
+					System.out.println("Beschreibung: "+myModel.returnBeschreibung(anfangZeit));
 					myModel.setDauer(anfangZeit, myCe.getDuration());
 
 					List<User> invitees = getInvitesOfEntry(myCe.getInviteIds());
@@ -393,8 +417,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 							if (requestUser != null) {
 								eingeladene.add(requestUser);
 							} else {
-								//TESTf
-								User us= new User();
+								// TESTf
+								User us = new User();
 								us.setGivenname("klappt nicht....");
 								eingeladene.add(us);
 							}
@@ -402,10 +426,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					}
 					myModel.setPersonen(anfangZeit, eingeladene);
 
-					// for (User u : myCe.getInvitees()) {
-					// System.out.println("Eingeladen im Model: "
-					// + u.getGivenName());
-					// }
 					myModel.setDetails(anfangZeit, myCe.getDescription());
 					myModel.setAnfangEnde(anfangZeit, endZeit);
 
@@ -421,9 +441,10 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			}
 		}
 	}
+
 	/**
-	 * Hier werden die User von den Invites abgefragt
-	 * XXX Hier ist die Methode
+	 * Hier werden die User von den Invites abgefragt XXX Hier ist die Methode
+	 * 
 	 * @param inviteIds
 	 * @return
 	 */
@@ -488,17 +509,16 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	}
 
 	public void befuelleEinladungen() {
-		
+
 		List<Invite> einl = myModel.getEinladungen();
-		List<Invite> sortEinl= new ArrayList();
-		for(Invite in:einl)
-		{
-			if(in.isAccepted()==0)
-			{
+
+		List<Invite> sortEinl = new ArrayList();
+		for (Invite in : einl) {
+			if (in.isAccepted() == 0) {
 				sortEinl.add(in);
 			}
 		}
-		einl=sortEinl;
+		einl = sortEinl;
 		aktin = einl.get(0);
 		int id = aktin.getCalendarEntryId();
 		CalendarEntry ce = new CalendarEntry();
@@ -586,12 +606,18 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	}
 
+	public void abbrechen(JFrame aktframe, JFrame vorframe) {
+		aktframe.setVisible(false);
+		vorframe.setVisible(true);
+	}
+
 	/**
 	 * Fills the Model with new data and generates new table data.
 	 */
 	public void updateData() {
 
 		try {
+			System.out.println("Datum: "+aktDate);
 			befuelleModel();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -617,7 +643,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		Room erstRaum = myRequester.addObject(tmpRaum);
 		if (erstRaum != null) {
-			editEntry.getTxtRaum().setText(erstRaum.getDescription());
+			editEntry.getTxtRaum().setText(
+					erstRaum.getLocation() + "; " + erstRaum.getDescription());
 			editEntry.stateChangedForRoom(true, erstRaum);
 			myNeuerRaum.setVisible(false);
 			updateData();
@@ -638,21 +665,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	public void speichereTermin() {
 		neuCalEnt = new CalendarEntry();
 
-		String startzeit = editEntry.getStartUhrzeit().getText();
-		String endzeit = editEntry.getEndUhrzeit().getText();
-
-		Date startDate = parseStringtoDate(startzeit);
-		Date endDate = parseStringtoDate(endzeit);
-
-		neuCalEnt.setCalendarId(aktUserCa.getID());
-		neuCalEnt.setDescription(editEntry.getTxtADetails().getText());
-		// neuCalEnt.setInvitees(editEntry.getSelectedUsers());
-
-		neuCalEnt.setEndDate(endDate);
-		neuCalEnt.setOwnerId(aktUser.getID());
-
-		// String raum = editEntry.getTxtRaum().getText();
-
 		if (editEntry.getSelectedRoom().getID() == -1) {
 			// öffne Fenster neuer Raum eingeben
 			myNeuerRaum.setVisible(true);
@@ -662,14 +674,39 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			neuCalEnt.setRoomId(editEntry.getSelectedRoom().getID());
 		}
 
+				
+		String startzeit = editEntry.getStartUhrzeit().getText();
+		String endzeit = editEntry.getEndUhrzeit().getText();
+
+		Date startDate = parseStringtoDate(startzeit);
+		Date endDate = parseStringtoDate(endzeit);
+
+		neuCalEnt.setCalendarId(aktUserCa.getID());
+		neuCalEnt.setDescription(editEntry.getTxtADetails().getText());
+
+		neuCalEnt.setEndDate(endDate);
+		neuCalEnt.setOwnerId(aktUser.getID());
+
 		neuCalEnt.setStartDate(startDate);
 		neuCalEnt.setTitle(editEntry.getBeschreibung().getText());
-		boolean status = false;
+		
+		boolean status = true;
 		CalendarEntry obj = new CalendarEntry();
+		int id = 0;
 		if (aktTermin != null) {
-			neuCalEnt.setID(myModel.returnKalendarentryId(aktTermin));
-			status = myRequester.updateObject(neuCalEnt);
+			boolean hasid = myModel.getKalendarentries().containsKey(aktTermin);
+			if (hasid == true) {
+				id= myModel.returnKalendarentryId(aktTermin);
+				System.out.println(id);
+				neuCalEnt.setID(id);
+				status = myRequester.updateObject(neuCalEnt);
+			}
+			else
+			{
+				obj = myRequester.addObject(neuCalEnt);	
+			}
 		} else {
+			//prüfe schon entry vorhanden?
 			obj = myRequester.addObject(neuCalEnt);
 		}
 
@@ -681,12 +718,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 						"Termin konnte nicht eingetragen werden",
 						JOptionPane.INFORMATION_MESSAGE);
 
-			else
+			if (status == false)
 				JOptionPane.showMessageDialog(editEntry,
 						"Termin konnte nicht geupdatet werden",
 						"Termin konnte nicht geupdatet werden",
 						JOptionPane.INFORMATION_MESSAGE);
 		} else {
+			
 			JOptionPane.showMessageDialog(editEntry,
 					"Termin wurde eingetragen", "Termin wurde eingetragen",
 					JOptionPane.INFORMATION_MESSAGE);
@@ -696,6 +734,14 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		 * removen von Invites ?? abgleich der Listen... vorher prüfen ob
 		 * tatsächlich der alte Termin genutzt wird
 		 */
+//		Wurde geupdatet?
+		if(obj==null)
+		{
+			CalendarEntry entry= new CalendarEntry();
+			entry.setID(id);
+			
+		}
+		else{
 		Invite in = new Invite();
 		for (User user : editEntry.getSelectedUsers()) {
 			in.setCalendarEntryId(obj.getID());
@@ -705,17 +751,17 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				System.out
 						.println("Die Einladungen konnten nicht versandt werden");
 			}
-		}
+		}}
+
 
 		editEntry.setVisible(false);
 
 		updateData();
 
+
 	}
 
-	/*
-	 * Termin wird nicht gelöscht... mir ist nicht klar warum!!
-	 */
+	
 	public void entferneTermin() {
 		if (aktTermin != null) {
 			if (myModel.getKalendarentries().containsKey(aktTermin)) {
@@ -781,7 +827,19 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * Pushes an array from type User with the data from the Model.
 	 */
 	public User[] pushUserList() {
-		return myModel.getAllePersonen();
+		User[] alleUser = myModel.getAllePersonen();
+		User[] sortUser = new User[alleUser.length - 1];
+		int i=0;
+		for (User u : alleUser) {
+			
+				if (u.getID() != aktUser.getID()) {
+					sortUser[i] = u;
+					i++;
+				}
+
+			
+		}
+		return sortUser;
 	}
 
 	@Override
@@ -797,9 +855,12 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		char[] passwort1 = myRegistration.getTxtPasswort().getPassword();
 		char[] passwort2 = myRegistration.getTxtPasswortBest().getPassword();
 
-		if (!myRegistration.getTxtEmailadresse().getText().isEmpty()
-				&& !myRegistration.getTxtNachname().getText().isEmpty()
-				&& !myRegistration.getTxtVorname().getText().isEmpty()
+		String email = myRegistration.getTxtEmailadresse().getText();
+		String nachname = myRegistration.getTxtNachname().getText();
+		String vorname = myRegistration.getTxtVorname().getText();
+		String telefonnr = myRegistration.getTxtTelefon().getText();
+
+		if (!email.isEmpty() && !nachname.isEmpty() && !vorname.isEmpty()
 				&& passwort1.length != 0 && passwort2.length != 0) {
 
 			String pwd1 = new String(passwort1);
@@ -811,10 +872,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				if (myRequester == null) {
 					pruefeServereinstellungen();
 				}
-				aktUser.setMailAddress(myRegistration.getTxtEmailadresse()
-						.getText());
-				aktUser.setSurname(myRegistration.getTxtNachname().getText());
-				aktUser.setGivenname(myRegistration.getTxtVorname().getText());
+				aktUser.setMailAddress(email);
+				aktUser.setSurname(nachname);
+				aktUser.setGivenname(vorname);
+				if (!telefonnr.isEmpty())
+					aktUser.setPhoneNumber(telefonnr);
 
 				User utmp = myRequester.registerNewUser(aktUser, passwort);
 
@@ -947,10 +1009,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 							"Benutzername oder Passwort falsch",
 							JOptionPane.INFORMATION_MESSAGE);
 		} else {
-			// new Calendar();
-			// /*
-			// * Abfrage der Id für den Benutzernamen
-			// */
+
 			User tmpu = myRequester.login(benutzername, passwort);
 
 			if (tmpu != null) {
