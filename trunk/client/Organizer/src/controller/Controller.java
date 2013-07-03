@@ -211,6 +211,10 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				JOptionPane.showMessageDialog(myHauptmenue,
 						"Sie haben derzeit keine neuen Einladungen");
 		}
+		if (editEntry!=null&&e.getSource()==editEntry.getBtnTerminEintragen())
+		{ 
+			befuelleMainFrame(e);
+		}
 
 	}
 
@@ -244,6 +248,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 		if (e.getOldValue() != null) {
 			aktDate = myHauptmenue.getAktDateCali();
+			myHauptmenue.repaint();
 			connectServerModel();
 
 		}
@@ -386,7 +391,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 						parseDatetoString(myHauptmenue.getCali().getDate()))) {
 					// Methode?
 					SimpleDateFormat format = new SimpleDateFormat("H:mm");
-
 					String anfangZeit = format.format(myCe.getStartDate());
 					String endZeit = format.format(myCe.getEndDate());
 					System.out.println("Anfangszeit: "+anfangZeit);
@@ -763,6 +767,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		editEntry.setVisible(false);
 
 		updateData();
+		myHauptmenue.repaint();
 
 
 	}
@@ -956,7 +961,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	}
 
 	public void bearbeiteTermin() {
-		editEntry = new window_TerminBearbeiten(this, this);
+		editEntry = new window_TerminBearbeiten(this, this,this);
 		aktDate = myHauptmenue.getAktDateCali();
 		String startZeit = aktTermin;
 		boolean containsTermin = myModel.getKalendarentries().containsKey(

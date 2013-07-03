@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 
 	private DataPusher myDataPusher;
 	private ActionListener myCon;
+	private MouseListener myMl;
 
 	private String btnText = "";
 
@@ -59,8 +61,9 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 
 	private JButton btnAbbrechen;
 
-	public window_TerminBearbeiten(DataPusher myDataPusher, ActionListener con) {
+	public window_TerminBearbeiten(DataPusher myDataPusher, ActionListener con, MouseListener mo) {
 		myCon = con;
+		myMl=mo;
 		this.myDataPusher = myDataPusher;
 		setButtonText(DEFAULT_BTN_TEXT);
 	}
@@ -177,6 +180,7 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 
 		btnTerminEintragen = new JButton(btnText);
 		btnTerminEintragen.addActionListener(myCon);
+		btnTerminEintragen.addMouseListener(myMl);
 		GridBagConstraints gbc_btnTerminEintragen = createGridBagContraints(1,
 				1, 9, 10, GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(btnTerminEintragen, gbc_btnTerminEintragen);
