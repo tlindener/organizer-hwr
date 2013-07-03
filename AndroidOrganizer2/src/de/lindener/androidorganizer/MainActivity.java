@@ -82,12 +82,12 @@ public class MainActivity extends Activity {
 					prefs.getPassword());
 
 			if (layer != null) {
-			Log.w("AsyncTask","layer != null");
+				Log.w("AsyncTask", "layer != null");
 
 				calendarList = layer.getCalendars();
 
 				if (!calendarList.isEmpty()) {
-					Log.w("AsyncTask","calendarList not empty");
+					Log.w("AsyncTask", "calendarList not empty");
 					calendar.setCalendar(calendarList.get(0));
 				}
 				if (calendar.getCalendar() != null) {
@@ -95,7 +95,8 @@ public class MainActivity extends Activity {
 					calendarEntries.clear();
 					Date today = new Date();
 					today.setDate(today.getDate() - 1);
-					for (CalendarEntry entry : calendar.getCalendar().getCalendarEntries()) {
+					for (CalendarEntry entry : calendar.getCalendar()
+							.getCalendarEntries()) {
 						if (entry.getStartDate().after(today)) {
 							calendarEntries.add(entry);
 						}
@@ -180,19 +181,26 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_settings:
+		case R.id.action_settings: {
 			Intent intent = new Intent(this, SettingsActivity.class);
 
 			startActivity(intent);
 
 			break;
+		}
+		case R.id.action_refresh: {
+			PreferenceData data = requestSettings();
+			if (data != null) {
+				new requestCalendarTask(data).execute();
+			}
+			break;
+		}
 		default:
 			break;
 		}
 
 		return true;
 	}
-
 
 	@Override
 	protected void onPause() {
@@ -204,7 +212,10 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		requestSettings();
+		PreferenceData data = requestSettings();
+		if (data != null) {
+			new requestCalendarTask(data).execute();
+		}
 
 	}
 
@@ -212,7 +223,9 @@ public class MainActivity extends Activity {
 	protected void onRestart() {
 		// TODO Auto-generated method stub
 		super.onRestart();
-		requestSettings();
-
+		PreferenceData data = requestSettings();
+		if (data != null) {
+			new requestCalendarTask(data).execute();
+		}
 	}
 }
