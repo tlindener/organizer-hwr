@@ -120,8 +120,7 @@ public class Controller {
 	private void fillMyModel(ScheduleEvent event) {
 		SimpleDateFormat format = new SimpleDateFormat("DDDYY");
 		CalendarEntry temp = (CalendarEntry) event.getData();
-		
-		
+
 		Room room = new Room();
 		room.setID(temp.getRoomId());
 		room = myRequester.requestObjectByOwnId(room);
@@ -131,13 +130,8 @@ public class Controller {
 			myModel.setRaum(roomString);
 		}
 		List<String> pers = new ArrayList<String>();
-		// for (User u : temp.getInvitees()) {
-		// pers.add(u.getGivenName());
-		// }
 		List<User> userList = getInvitesOfEntry(temp.getInviteIds());
-		for (User user :userList) {
-			System.out.print(user.getGivenName());
-			// Anzeigen des Users bzw. Übertragen ins das Modell
+		for (User user : userList) {
 			pers.add(user.getGivenName());
 		}
 		System.out.println("-----------");
@@ -151,7 +145,7 @@ public class Controller {
 	}
 
 	/**
-	 * Hier werden die User von den Invites abgefragt XXX Hier ist die Methode
+	 * Receives the User-Objects from Invitees
 	 * 
 	 * @param inviteIds
 	 * @return
@@ -183,8 +177,6 @@ public class Controller {
 	private void updateEventModel() {
 		eventModel.clear();
 		for (CalendarEntry c : aktUserCa.getCalendarEntries()) {
-			// eventModel.addEvent(new DefaultScheduleEvent(c.getTitle(), c
-			// .getStartDate(), c.getEndDate()));
 			eventModel.addEvent(new DefaultScheduleEvent(c.getTitle(), c
 					.getStartDate(), c.getEndDate(), c));
 		}
