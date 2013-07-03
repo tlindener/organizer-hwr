@@ -9,6 +9,9 @@ namespace Organizer.UnitTests
     public class TimeplannerTests
     {
 
+        /// <summary>
+        /// Tests adding/getting a calendar 
+        /// </summary>
         [TestMethod]
         public void TestAddCalendar()
         {
@@ -68,6 +71,10 @@ namespace Organizer.UnitTests
             Assert.IsTrue(timeplanner.GetAllCalendar().Contains(calendar1));
 
         }
+
+        /// <summary>
+        /// Tests adding/getting a user
+        /// </summary>
         [TestMethod]
         public void TestAddGetUser()
         {
@@ -83,6 +90,9 @@ namespace Organizer.UnitTests
             timeplanner.AddUser(user1);
             Assert.IsTrue(timeplanner.GetAllUser().Contains(user1));
         }
+        /// <summary>
+        /// Tests adding/getting a Room
+        /// </summary>
         [TestMethod]
         public void TestAddGetRoom()
         {
@@ -97,6 +107,9 @@ namespace Organizer.UnitTests
             timeplanner.AddRoom(room1);
             Assert.IsTrue(timeplanner.GetAllRooms().Contains(room1));
         }
+        /// <summary>
+        /// Tests adding/getting a Group
+        /// </summary>
         [TestMethod]
         public void TestAddGetGroup()
         {
@@ -111,6 +124,9 @@ namespace Organizer.UnitTests
             Assert.IsTrue(timeplanner.GetAllGroups().Contains(group1));
         }
 
+        /// <summary>
+        /// Tests adding/getting a CalendarEntry
+        /// </summary>
         [TestMethod]
         public void TestAddGetCalendarEntry()
         {
@@ -155,6 +171,10 @@ namespace Organizer.UnitTests
             Assert.IsTrue(timeplanner.GetAllCalendarEntries().Contains(ce1));
 
         }
+
+        /// <summary>
+        /// Tests adding/getting an Invite
+        /// </summary>
         [TestMethod]
         public void TestAddGetInvite()
         {
@@ -217,7 +237,11 @@ namespace Organizer.UnitTests
 
 
         ///////////////////////////////////////////////////////////////////////////////
-        //REMOVE
+        ////////////////////////////////////REMOVE
+        //////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// Tests removing a Calendar
+        /// </summary>
         [TestMethod]
         public void TestRemoveCalendar()
         {
@@ -278,6 +302,10 @@ namespace Organizer.UnitTests
             Assert.IsTrue(timeplanner.RemoveCalendar(calendar1.CalendarId));
 
         }
+
+        /// <summary>
+        /// Tests removing an user
+        /// </summary>
         [TestMethod]
         public void TestRemoveUser()
         {
@@ -294,6 +322,10 @@ namespace Organizer.UnitTests
             Assert.IsTrue(timeplanner.GetAllUser().Contains(user1));
             Assert.IsTrue(timeplanner.RemoveUser(user1.UserId));
         }
+
+        /// <summary>
+        /// Tests removing a room
+        /// </summary>
         [TestMethod]
         public void TestRemoveRoom()
         {
@@ -309,6 +341,10 @@ namespace Organizer.UnitTests
             Assert.IsTrue(timeplanner.GetAllRooms().Contains(room1));
             Assert.IsTrue(timeplanner.RemoveRoom(room1.RoomId));
         }
+
+        /// <summary>
+        /// Tests removing a group
+        /// </summary>
         [TestMethod]
         public void TestRemoveGroup()
         {
@@ -324,6 +360,9 @@ namespace Organizer.UnitTests
             Assert.IsTrue(timeplanner.RemoveGroup(group1.GroupId));
         }
 
+        /// <summary>
+        /// Tests removing a calendar entry
+        /// </summary>
         [TestMethod]
         public void TestRemoveCalendarEntry()
         {
@@ -369,6 +408,9 @@ namespace Organizer.UnitTests
             Assert.IsTrue(timeplanner.RemoveCalendarEntry(ce1.CalendarEntryId));
 
         }
+        /// <summary>
+        /// Tests removing an invite
+        /// </summary>
         [TestMethod]
         public void TestRemoveInvite()
         {
