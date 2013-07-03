@@ -118,14 +118,14 @@ public class window_Hauptmenue extends JFrame {
 			// If Nimbus is not available, you can set the GUI to another look
 			// and feel.
 		}
-		setBounds(100, 100, 823, 599);
+		setBounds(100, 100, 823, 620);
 
 		JPanel panel = new JPanel();
 
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] { 21, 145, 1, 342, 0, 0 };
-		gbl_panel.rowHeights = new int[] { 9, 186, 0, 0, 0, 0, 110, 0, 0, 0, 0,
-				31 };
+		gbl_panel.rowHeights = new int[] { 30, 186, 0, 0, 0, 0, 110, 0, 0, 0, 0,0,
+				21 };
 		gbl_panel.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, 0.0,
 				Double.MIN_VALUE };
 
@@ -294,7 +294,7 @@ public class window_Hauptmenue extends JFrame {
 			gbc_lblImage.anchor = GridBagConstraints.CENTER;
 			gbc_lblImage.insets = new Insets(0, 0, 5, 5);
 			gbc_lblImage.gridwidth = 1;
-			gbc_lblImage.gridheight = 1;
+			gbc_lblImage.gridheight = 4;
 			gbc_lblImage.gridx = 1;
 			gbc_lblImage.gridy = 8;
 			panel.add(picLabel, gbc_lblImage);
@@ -306,11 +306,6 @@ public class window_Hauptmenue extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	/*
-	 * XXX Wie im anderen Fenster bereits gezeigt und gemacht: Du solltest in
-	 * der Regel keine GUI-Elemente zurückgeben oder setzen. Das gilt auch für
-	 * die anderen Fenster.
-	 */
 
 	public JTextArea getTextArea() {
 		return textArea;

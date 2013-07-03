@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -50,7 +52,6 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 			this);
 	private List<User> selectedUsers = new ArrayList<User>();
 	private Room selectedRoom = new Room();
-	
 
 	private JLabel lblRaeume;
 
@@ -124,6 +125,7 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		getContentPane().add(lblBeschreibung, gbc_lblBeschreibung);
 
 		txtRaum = new JTextField(raum);
+		txtRaum.setEditable(false);
 		GridBagConstraints gbc_textField1 = createGridBagContraints(5, 1, 1, 4,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(txtRaum, gbc_textField1);
@@ -153,7 +155,6 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		lstRaum = new JList<Room>(myDataPusher.pushRoomList());
 		lstRaum.setCellRenderer(combinedListener);
 		lstRaum.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//		lstRaum.setSelectionModel(new MyListSelectionModel());
 		setSelectedValues(lstRaum, rooms);
 		GridBagConstraints gbc_lstRaum = createGridBagContraints(5, 2, 1, 7,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH);
@@ -226,7 +227,7 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		JPanel panel = new JPanel();
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] { 21, 145, 1, 20, 0, 0 };
-		gbl_panel.rowHeights = new int[] { 9, 0, 0, 0, 0, 0, 0, 0};
+		gbl_panel.rowHeights = new int[] { 9, 0, 0, 0, 0, 0, 0, 0 };
 		gbl_panel.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, 0.0,
 				Double.MIN_VALUE };
 		panel.setLayout(gbl_panel);
@@ -274,7 +275,6 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		return txtADetails;
 	}
 
-	
 	public Room getSelectedRoom() {
 		return selectedRoom;
 	}
@@ -318,8 +318,8 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 	}
 
 	/**
-	 * Setzt den Raum als selected 
-	 * wird der Raum erneut ausgewählt wird nichts gemacht
+	 * Setzt den Raum als selected wird der Raum erneut ausgewählt wird nichts
+	 * gemacht
 	 */
 	@Override
 	public void stateChangedForRoom(boolean state, Room room) {
@@ -329,8 +329,58 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 			}
 		} else {
 			if (selectedRoom == room) {
-				
+
 			}
 		}
+		getTxtRaum().setText(
+				selectedRoom.getLocation() + "; "
+						+ selectedRoom.getDescription());
 	}
+
+//	public boolean pruefeFelder()
+//	{
+//		boolean fehler=false;
+////		Felder leer?
+//		if(getEndUhrzeit().getText().isEmpty()||getStartUhrzeit().getText().isEmpty()||getBeschreibung().getText().isEmpty())
+//		{
+//			JOptionPane.showMessageDialog(this,"Bitte füllen Sie die Felder vollständig aus!");
+//			fehler=true;
+//		}
+//			//Uhrzeit richtiges format
+//		String enduhrzeit=getEndUhrzeit().getText();	
+//		String startuhrzeit= getStartUhrzeit().getText();
+//		int laengeend=enduhrzeit.length();
+//		int laengesta=startuhrzeit.length();
+//		int endStd= Integer.parseInt(enduhrzeit.substring(0,2));
+//		int endMin= Integer.parseInt(enduhrzeit.substring(3, 5));
+//		System.out.println(endStd+";"+endMin);
+//
+//		
+////		if(!enduhrzeit.equals(endFormat)&&!startuhrzeit.equals(startFormat))
+////		{
+////			JOptionPane.showMessageDialog(this, "Bitte geben Sie die Uhrzeit im Format xx:xx an");
+////			fehler=true;
+////		}
+//		//Uhrzeit zwischen 0 und 23:59
+//			
+//		
+//		
+//		//Uhrzeit start kleiner als ende
+////		else
+////		{
+////		int endStd=Integer.parseInt(enduhrzeit.substring(2));
+////		System.out.println(endStd);
+//		
+//		
+////		if()
+////		{
+////			
+////		}
+//			
+////		}
+//		
+//		return fehler;
+//		
+//	}
+	
 }
