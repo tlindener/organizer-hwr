@@ -385,7 +385,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				if (parseDatetoString(myCe.getStartDate()).equals(
 						parseDatetoString(myHauptmenue.getCali().getDate()))) {
 					// Methode?
-					SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+					SimpleDateFormat format = new SimpleDateFormat("H:mm");
 
 					String anfangZeit = format.format(myCe.getStartDate());
 					String endZeit = format.format(myCe.getEndDate());
@@ -577,6 +577,12 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		JTable zwTab = (JTable) e.getSource();
 		aktTermin = (String) myHauptmenue.getTable_1().getValueAt(
 				zwTab.getSelectedRow(), 0);
+//		System.out.println(aktTermin+","+aktTermin.substring(1,2));
+//		if(aktTermin.substring(1,2).equals(":"))
+//		{
+//			aktTermin="0"+aktTermin;
+//			System.out.println(aktTermin);
+//		}
 		zwTab.getSelectedRow();
 		String details = (String) myModel.returnDetail(aktTermin);
 		myHauptmenue.getTextArea().setText(details);
@@ -790,6 +796,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	public void connectServerModel() {
 		myModel.setAktDate(aktDate);
+		
 		updateData();
 		myHauptmenue.setVisible(true);
 

@@ -450,11 +450,6 @@ public class window_Hauptmenue extends JFrame {
 
 			}
 
-			public void setValueAt(Object value, int row, int col) {
-
-				myDataPusher.getBeschreibungen()[row][col] = value;
-				fireTableCellUpdated(row, col);
-			}
 
 		};
 	}
