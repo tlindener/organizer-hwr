@@ -23,7 +23,8 @@
             android:dialogTitle="@string/preferences_summary_port"
             android:key="preferences_edittext_port"
             android:summary="@string/preferences_summary_port"
-            android:title="@string/preferences_edittext_port" />
+            android:title="@string/preferences_edittext_port"
+            android:defaultValue="80" />
     </PreferenceCategory>
 
 </PreferenceScreen>

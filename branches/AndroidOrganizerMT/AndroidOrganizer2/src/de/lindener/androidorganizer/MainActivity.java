@@ -32,6 +32,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Main Android Activity which displays a users calendar
+ * @author TobiasLindener
+ *
+ */
 public class MainActivity extends Activity {
 
 	int adapterIndex = 1;
@@ -50,6 +55,11 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * AsyncTask to request calendar
+	 * @author TobiasLindener
+	 *
+	 */
 	class requestCalendarTask extends AsyncTask<Void, Void, CalendarViewModel> {
 		PreferenceData prefs = null;
 
@@ -109,6 +119,10 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Returns the settings saved in Android sharedPreferences
+	 * @return
+	 */
 	private PreferenceData requestSettings() {
 		PreferenceData prefs = new PreferenceData();
 

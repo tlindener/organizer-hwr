@@ -61,8 +61,7 @@ public final class R {
         public static final int userviewmodel_list_item=0x7f030004;
     }
     public static final class menu {
-        public static final int calendar_entry=0x7f080000;
-        public static final int main=0x7f080001;
+        public static final int main=0x7f080000;
     }
     public static final class string {
         public static final int action_refresh=0x7f060002;

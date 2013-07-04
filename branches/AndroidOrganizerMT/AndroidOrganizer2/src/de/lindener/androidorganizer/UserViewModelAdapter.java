@@ -16,6 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+
+/**
+ * Adapter to bind UserViewModel objects to a ListView
+ * @author TobiasLindener
+ *
+ */
 public class UserViewModelAdapter extends ArrayAdapter<UserViewModel> {
 
 	
@@ -34,11 +40,7 @@ public class UserViewModelAdapter extends ArrayAdapter<UserViewModel> {
 		
 		
 		
-	}
-
-
-
-	
+	}	
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
