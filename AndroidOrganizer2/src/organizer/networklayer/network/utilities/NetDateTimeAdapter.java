@@ -1,4 +1,4 @@
-package network.utilities;
+package organizer.networklayer.network.utilities;
 
 import java.io.IOException;
 import java.util.Date;

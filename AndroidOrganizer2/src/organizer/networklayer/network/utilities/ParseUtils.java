@@ -1,7 +1,9 @@
-package network.utilities;
+package organizer.networklayer.network.utilities;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -11,8 +13,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import network.RequestHandler;
 
+import organizer.networklayer.network.RequestHandler;
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
@@ -35,6 +37,8 @@ public class ParseUtils {
 	 * HashMap containing the plurals of the class names.
 	 */
 	private static HashMap<Class<? extends AbstractOrganizerObject>, String> plurals;
+	private static HashMap<Character, String> urlReplacments;
+	
 	/**
 	 * Static constructor creates and fills the {@link #plurals}
 	 */
@@ -46,6 +50,44 @@ public class ParseUtils {
 		plurals.put(CalendarEntry.class, "CalendarEntries");
 		plurals.put(Room.class, "Rooms");
 		plurals.put(Invite.class, "Invites");
+		
+		
+		urlReplacments = new HashMap<Character, String>();
+		urlReplacments.put(' ', "%20");
+		urlReplacments.put('!', "%21");
+		urlReplacments.put('"', "%22");
+		urlReplacments.put('#', "%23");
+		urlReplacments.put('$', "%24");		
+		urlReplacments.put('%', "%25");		
+		urlReplacments.put('&', "%26");		
+		urlReplacments.put('\'', "%27");		
+		urlReplacments.put('(', "%28");
+		urlReplacments.put(')', "%29");		
+		urlReplacments.put('*', "%2A");
+		urlReplacments.put('+', "%2B");
+		urlReplacments.put(',', "%2C");	
+		
+		urlReplacments.put('/', "%2F");	
+		
+		urlReplacments.put(':', "%3A");
+		urlReplacments.put(';', "%3B");
+		urlReplacments.put('<', "%3C");			
+		urlReplacments.put('=', "%3D");		
+		urlReplacments.put('>', "%3E");			
+		urlReplacments.put('?', "%3F");		
+		urlReplacments.put('@', "%40");	
+		
+		urlReplacments.put('[', "%5B");
+		urlReplacments.put('\\', "%5C");
+		urlReplacments.put(']', "%5D");
+		
+		urlReplacments.put('Ä', "%C4");
+		urlReplacments.put('Ö', "%D6");
+		urlReplacments.put('Ü', "%DC");
+		urlReplacments.put('ß', "%DF");
+		urlReplacments.put('ä', "%E4");
+		urlReplacments.put('ö', "%F6");
+		urlReplacments.put('ü', "%FC");
 	}
 
 	/**
@@ -332,9 +374,32 @@ public class ParseUtils {
 	 * @return the
 	 */
 	public static String parseStringToHTTP(String value) {
-		value = value.replaceAll(" ", "%20");
-		value = value.replaceAll("[+]", "%2B");
-		return value;
+		
+		String encoded;
+		try {
+			encoded = URLEncoder.encode(value, "UTF-8");
+			return encoded;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return "";
+//		
+//		StringBuilder encoded = new StringBuilder();
+//		StringBuilder builder = new StringBuilder(value);
+//		for(int i = 0; i < builder.length(); i++){
+//			char tmp = builder.charAt(i);
+//			if(urlReplacments.containsKey(tmp)){
+//				encoded.append(urlReplacments.get(tmp));
+//			}else{
+//				encoded.append(tmp);
+//			}
+//		}
+//		
+//		return encoded.toString();
+		
+//		value = value.replaceAll(" ", "%20");
+//		value = value.replaceAll("[+]", "%2B");
+		
 	}
 
 	/**
@@ -370,11 +435,12 @@ public class ParseUtils {
 	 * @return GET-Command
 	 */
 	public static String makeRemoveUserFromGroupCommand() {
-		return "RemoveUserToGroup";
+		return "RemoveUserFromGroup";
 	}
 
 	/**
-	 * Parses the Java-Date into a JSON value representing an C#-DateTime object
+	 * Parses the Java-Date into a JSON value representing an C#-DateTime object.
+	 * Representation as ISO 8601 needs jre 1.7.
 	 * 
 	 * @param date
 	 * @return String representation of C#-DateTime
@@ -414,11 +480,7 @@ public class ParseUtils {
 
 	public static void main(String[] args) {
 
-		// System.out.println(encodeString("Test"));
 		System.out.println(hashString("Test"));
-
-		// System.out.println(parseStringToHTTP("Das ist ein Test"));
-		// System.out.println(encodeString("Test"));
 		System.out.println(parseDateToNetDateTime(new Date()));
 		System.out
 				.println(parseStringToDate("2008-11-01T19:35:00.0000000-07:00"));

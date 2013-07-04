@@ -1,13 +1,12 @@
 package de.lindener.androidorganizer.preferences;
 
-import de.lindener.androidorganizer.R;
 import android.app.Activity;
 import android.os.Bundle;
-
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
-
+/**
+ * Activity to display settings fragment
+ * @author TobiasLindener
+ *
+ */
 public class SettingsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

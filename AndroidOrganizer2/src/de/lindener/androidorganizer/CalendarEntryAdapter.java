@@ -9,11 +9,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * Adapter to bind CalendarEntry objects to ListView
+ * @author TobiasLindener
+ *
+ */
 public class CalendarEntryAdapter extends ArrayAdapter<CalendarEntry> {
 
 	
@@ -28,15 +31,8 @@ public class CalendarEntryAdapter extends ArrayAdapter<CalendarEntry> {
 	
 		this.layoutResourceId = resource;
 		this.context = context;
-		this.data = objects;
-		
-		
-		
+		this.data = objects;		
 	}
-
-
-
-	
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;

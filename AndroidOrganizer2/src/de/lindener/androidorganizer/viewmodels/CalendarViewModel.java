@@ -8,6 +8,10 @@ import organizer.objects.types.CalendarEntry;
 
 import android.widget.CalendarView;
 
+/**
+ * Model to easily bind data to views
+ * @author TobiasLindener
+ */
 public class CalendarViewModel {
 	
 	Calendar calendar;

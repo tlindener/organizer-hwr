@@ -1,5 +1,10 @@
 package de.lindener.androidorganizer.preferences;
 
+/**
+ * Model to store preferences
+ * @author TobiasLindener
+ *
+ */
 public class PreferenceData {
 
 	public PreferenceData() {

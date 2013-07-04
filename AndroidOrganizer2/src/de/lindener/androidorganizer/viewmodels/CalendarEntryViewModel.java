@@ -6,6 +6,11 @@ import java.util.List;
 
 import organizer.objects.types.Room;
 
+/**
+ * Model to easily bind data to views
+ * @author TobiasLindener
+ *
+ */
 public class CalendarEntryViewModel {
 
 	public List<UserViewModel> getInvitees() {

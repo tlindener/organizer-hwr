@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import network.RequestHandler;
+
 
 /**
  * Standardschnittstelle, die erfüllt werden muss, um über den

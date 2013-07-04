@@ -1,5 +1,11 @@
 package de.lindener.androidorganizer.viewmodels;
 
+/**
+ * 
+ * Model to easily bind data to views
+ * @author TobiasLindener
+ *
+ */
 public class UserViewModel {
 
         String givenName = null;        
