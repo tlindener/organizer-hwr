@@ -159,7 +159,7 @@ namespace Organizer.UnitTests
 
             CalendarEntry ce1 = new CalendarEntry()
             {
-                CalendarId=calendar1.CalendarId,
+                CalendarId = calendar1.CalendarId,
                 Room = room1,
                 Owner = user1,
                 Description = "Sportplatz vor der Tür",
@@ -201,7 +201,7 @@ namespace Organizer.UnitTests
                 GivenName = "Jennifer",
                 Surname = "Blumenthal",
                 MailAddress = "j.blumenthal@gmail.com",
-                PhoneNumber = "040333445561"       
+                PhoneNumber = "040333445561"
             };
             timeplanner.AddUser(user1);
             timeplanner.AddUser(user2);
@@ -233,7 +233,7 @@ namespace Organizer.UnitTests
 
         }
 
-  
+
 
 
         ///////////////////////////////////////////////////////////////////////////////
@@ -467,6 +467,246 @@ namespace Organizer.UnitTests
             Assert.IsNotNull(invite);
             Assert.IsTrue(timeplanner.GetAllInvites().Contains(invite));
             Assert.IsTrue(timeplanner.RemoveInvite(inviteId));
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////Update
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// Tests updating a calendar 
+        /// </summary>
+        [TestMethod]
+        public void TestUpdateCalendar()
+        {
+            TimePlanner timeplanner = new TimePlanner();
+            timeplanner.RemoveDatabase();
+
+            Room room1 = new Room()
+            {
+                Description = "1.1",
+                Location = "1",
+                Seats = 8
+            };
+            timeplanner.AddRoom(room1);
+
+            User user1 = new User()
+            {
+                GivenName = "Tobias",
+                Surname = "Lindener",
+                MailAddress = "t.lindener@gmail.com",
+                PhoneNumber = "030123456789"
+            };
+            timeplanner.AddUser(user1);
+
+            CalendarEntry ce1 = new CalendarEntry()
+            {
+                Room = room1,
+                Owner = user1,
+                Description = "Sportplatz vor der Tür",
+                StartDate = new DateTime(2013, 5, 1, 11, 30, 0),
+                EndDate = new DateTime(2013, 5, 1, 12, 0, 0),
+                Title = "Fuuuußball"
+            };
+
+            CalendarEntry ce2 = new CalendarEntry()
+            {
+                Room = room1,
+                Owner = user1,
+                Description = "Bei Jenny",
+                StartDate = new DateTime(2013, 5, 4, 13, 30, 0),
+                EndDate = new DateTime(2013, 5, 4, 16, 0, 0),
+                Title = "Netzwerkbesprechung"
+            };
+
+            List<CalendarEntry> calendarEntryList = new List<CalendarEntry>();
+            calendarEntryList.Add(ce1);
+            calendarEntryList.Add(ce2);
+
+            Calendar calendar1 = new Calendar()
+            {
+                Description = "Fußballkalender für meine Freunde",
+                Name = "Fußballkalender",
+                Owner = user1,
+                CalendarEntries = calendarEntryList
+            };
+            int calendarId = timeplanner.AddCalendar(calendar1);
+            Assert.IsTrue(timeplanner.GetAllCalendar().Contains(calendar1));
+            Assert.IsTrue(timeplanner.UpdateCalendar(calendarId, "Update name", "Update description"));
+
+
+        }
+
+        /// <summary>
+        /// Tests update a user
+        /// </summary>
+        [TestMethod]
+        public void TestUpdateUser()
+        {
+            TimePlanner timeplanner = new TimePlanner();
+            timeplanner.RemoveDatabase();
+            User user1 = new User()
+            {
+                GivenName = "Tobias",
+                Surname = "Lindener",
+                MailAddress = "t.lindener@gmail.com",
+                PhoneNumber = "030123456789"
+            };
+            timeplanner.AddUser(user1);
+            Assert.IsTrue(timeplanner.GetAllUser().Contains(user1));
+            Assert.IsTrue(timeplanner.UpdateUser(user1.UserId, "Update", "UpdateSurname", "mail@address.de", "123456", "Test"));
+        }
+        /// <summary>
+        /// Tests adding/getting a Room
+        /// </summary>
+        [TestMethod]
+        public void TestUpdateRoom()
+        {
+            TimePlanner timeplanner = new TimePlanner();
+            timeplanner.RemoveDatabase();
+            Room room1 = new Room()
+            {
+                Description = "1.1",
+                Location = "1",
+                Seats = 8
+            };
+            timeplanner.AddRoom(room1);
+            Assert.IsTrue(timeplanner.GetAllRooms().Contains(room1));
+            Assert.IsTrue(timeplanner.UpdateRoom(room1.RoomId, "TestDesc", "TestLocation", 10));
+        }
+        /// <summary>
+        /// Tests adding/getting a Group
+        /// </summary>
+        [TestMethod]
+        public void TestUpdateGroup()
+        {
+            TimePlanner timeplanner = new TimePlanner();
+            timeplanner.RemoveDatabase();
+            Group group1 = new Group()
+            {
+                Description = "Netzwerke"
+            };
+
+            timeplanner.AddGroup(group1);
+            Assert.IsTrue(timeplanner.GetAllGroups().Contains(group1));
+            Assert.IsTrue(timeplanner.UpdateGroup(group1.GroupId, "TestDesc"));
+        }
+
+        /// <summary>
+        /// Tests adding/getting a CalendarEntry
+        /// </summary>
+        [TestMethod]
+        public void TestUpdateCalendarEntry()
+        {
+            TimePlanner timeplanner = new TimePlanner();
+            timeplanner.RemoveDatabase();
+
+            Room room1 = new Room()
+            {
+                Description = "1.1",
+                Location = "1",
+                Seats = 8
+            };
+            timeplanner.AddRoom(room1);
+
+            User user1 = new User()
+            {
+                GivenName = "Tobias",
+                Surname = "Lindener",
+                MailAddress = "t.lindener@gmail.com",
+                PhoneNumber = "030123456789"
+            };
+            timeplanner.AddUser(user1);
+            Calendar calendar1 = new Calendar()
+            {
+                Description = "Fußballkalender für meine Freunde",
+                Name = "Fußballkalender",
+                Owner = user1
+            };
+            timeplanner.AddCalendar(calendar1);
+
+            CalendarEntry ce1 = new CalendarEntry()
+            {
+                CalendarId = calendar1.CalendarId,
+                Room = room1,
+                Owner = user1,
+                Description = "Sportplatz vor der Tür",
+                StartDate = new DateTime(2013, 5, 1, 11, 30, 0),
+                EndDate = new DateTime(2013, 5, 1, 12, 0, 0),
+                Title = "Fuuuußball"
+            };
+            timeplanner.AddCalendarEntry(ce1);
+            Assert.IsTrue(timeplanner.GetAllCalendarEntries().Contains(ce1));
+            Assert.IsTrue(timeplanner.UpdateCalendarEntry(ce1.CalendarEntryId, "TestTitle", "TestDesc", DateTime.Now, DateTime.Now.AddHours(5), room1.RoomId));
+
+        }
+
+        /// <summary>
+        /// Tests adding/getting an Invite
+        /// </summary>
+        [TestMethod]
+        public void TestUpdateInvite()
+        {
+            TimePlanner timeplanner = new TimePlanner();
+            timeplanner.RemoveDatabase();
+
+            Room room1 = new Room()
+            {
+                Description = "1.1",
+                Location = "1",
+                Seats = 8
+            };
+            timeplanner.AddRoom(room1);
+
+            User user1 = new User()
+            {
+                GivenName = "Tobias",
+                Surname = "Lindener",
+                MailAddress = "t.lindener@gmail.com",
+                PhoneNumber = "030123456789"
+            };
+            User user2 = new User()
+            {
+                GivenName = "Jennifer",
+                Surname = "Blumenthal",
+                MailAddress = "j.blumenthal@gmail.com",
+                PhoneNumber = "040333445561"
+            };
+            timeplanner.AddUser(user1);
+            timeplanner.AddUser(user2);
+            Calendar calendar1 = new Calendar()
+            {
+                Description = "Fußballkalender für meine Freunde",
+                Name = "Fußballkalender",
+                Owner = user1
+            };
+            timeplanner.AddCalendar(calendar1);
+            Calendar calendar2 = new Calendar()
+            {
+                Description = "Fußballkalender für meine Freunde",
+                Name = "Fußballkalender2",
+                Owner = user2
+            };
+            timeplanner.AddCalendar(calendar2);
+
+            CalendarEntry ce1 = new CalendarEntry()
+            {
+                CalendarId = calendar1.CalendarId,
+                Room = room1,
+                Owner = user1,
+                Description = "Sportplatz vor der Tür",
+                StartDate = new DateTime(2013, 5, 1, 11, 30, 0),
+                EndDate = new DateTime(2013, 5, 1, 12, 0, 0),
+                Title = "Fuuuußball"
+            };
+            timeplanner.AddCalendarEntry(ce1);
+
+
+            int inviteId = timeplanner.AddInvite(ce1.CalendarEntryId, user2.UserId);
+            var invite = timeplanner.GetInviteById(inviteId);
+            Assert.IsNotNull(invite);
+            Assert.IsTrue(timeplanner.GetAllInvites().Contains(invite));
+            Assert.AreNotEqual(0 ,timeplanner.AcceptInvite(inviteId));
+
         }
     }
 }

@@ -951,7 +951,13 @@ namespace Organizer
 
 
 
-
+        /// <summary>
+        /// Updates specified calendar
+        /// </summary>
+        /// <param name="calendarId"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
         public bool UpdateCalendar(int calendarId, string name, string description)
         {
             var calendar = _calendarDatabase.Calendar.Find(calendarId);
@@ -973,6 +979,16 @@ namespace Organizer
 
         }
 
+        /// <summary>
+        /// Update specified calendarEntry
+        /// </summary>
+        /// <param name="calendarEntryId"></param>
+        /// <param name="title"></param>
+        /// <param name="description"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         public bool UpdateCalendarEntry(int calendarEntryId, string title, string description, DateTime startDate, DateTime endDate, int roomId)
         {
             var calendarEntry = _calendarDatabase.CalendarEntries.Find(calendarEntryId);
@@ -998,6 +1014,16 @@ namespace Organizer
             return false;
         }
 
+        /// <summary>
+        /// Update specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="givenName"></param>
+        /// <param name="surname"></param>
+        /// <param name="mailAddress"></param>
+        /// <param name="phoneNumber"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public bool UpdateUser(int userId, string givenName, string surname, string mailAddress, string phoneNumber, string password)
         {
             if (!Utils.IsEmailValid(mailAddress))
@@ -1006,6 +1032,10 @@ namespace Organizer
             var users = this.GetAllUser();
 
             if (users != null && users.Where(p => p.MailAddress == mailAddress).Count() > 0)
+            {
+                return false;
+            }
+            if (String.IsNullOrEmpty(password))
             {
                 return false;
             }
@@ -1032,6 +1062,14 @@ namespace Organizer
 
         }
 
+        /// <summary>
+        /// Update specified room
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="description"></param>
+        /// <param name="location"></param>
+        /// <param name="seats"></param>
+        /// <returns></returns>
         public bool UpdateRoom(int roomId, string description, string location, int seats)
         {
             var room = _calendarDatabase.Rooms.Find(roomId);
@@ -1054,6 +1092,12 @@ namespace Organizer
             return false;
         }
 
+        /// <summary>
+        /// Update specified group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
         public bool UpdateGroup(int groupId, string description)
         {
             var group = _calendarDatabase.Groups.Find(groupId);
@@ -1074,6 +1118,10 @@ namespace Organizer
             return false;
         }
 
+        /// <summary>
+        /// Method is used to allow automated UnitTesting. Security issue!
+        /// </summary>
+        /// <returns></returns>
         public bool RemoveDatabase()
         {
             return _calendarDatabase.Database.Delete();
