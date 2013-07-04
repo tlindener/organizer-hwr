@@ -34,6 +34,10 @@
             android:name="de.lindener.androidorganizer.CalendarEntryActivity"
             android:label="@string/title_activity_calendar_entry" >
         </activity>
+        <activity
+            android:name="de.lindener.androidorganizer.CalendarEntryActivityCreate"
+            android:label="@string/title_activity_calendar_entry_activity_create" >
+        </activity>
     </application>
 
 </manifest>

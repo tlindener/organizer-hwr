@@ -209,6 +209,13 @@ public class MainActivity extends Activity {
 			}
 			break;
 		}
+		case R.id.action_create_calendar_entry:
+		{
+			Intent intent = new Intent(this, CalendarEntryActivityCreate.class);
+
+			startActivity(intent);
+
+		}
 		default:
 			break;
 		}

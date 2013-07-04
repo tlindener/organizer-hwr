@@ -10,5 +10,11 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="@string/action_refresh"/>
+    <item 
+        android:id="@+id/action_create_calendar_entry"
+                android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/action_create_calendar_entry"/>
+        />
 
 </menu>
