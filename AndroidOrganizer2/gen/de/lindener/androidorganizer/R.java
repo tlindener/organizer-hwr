@@ -24,8 +24,13 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_refresh=0x7f09001b;
-        public static final int action_settings=0x7f09001a;
+        public static final int action_create_calendar_entry=0x7f090020;
+        public static final int action_refresh=0x7f09001f;
+        public static final int action_settings=0x7f09001e;
+        public static final int calendarEntryActivityCreateDescription=0x7f090012;
+        public static final int calendarEntryActivityCreateEndDate=0x7f090014;
+        public static final int calendarEntryActivityCreateStartDate=0x7f090013;
+        public static final int calendarEntryActivityCreateTitle=0x7f090011;
         public static final int calendarEntryActivityDescription=0x7f090004;
         public static final int calendarEntryActivityDescriptionHeader=0x7f090003;
         public static final int calendarEntryActivityDescriptionSeperator=0x7f090005;
@@ -43,49 +48,54 @@ public final class R {
         public static final int calendarEntryActivityTitle=0x7f090001;
         public static final int calendarEntryActivityTitleHeader=0x7f090000;
         public static final int calendarEntryActivityTitleSeperator=0x7f090002;
-        public static final int calendarEntryEndDate=0x7f090013;
-        public static final int calendarEntryStartDate=0x7f090012;
-        public static final int calendarEntryTitle=0x7f090014;
-        public static final int calendarTitleTextView=0x7f090015;
-        public static final int calendarView=0x7f090011;
-        public static final int userViewModelGivenName=0x7f090017;
-        public static final int userViewModelMailAddress=0x7f090019;
-        public static final int userViewModelPhoneNumber=0x7f090018;
-        public static final int userViewModelSurname=0x7f090016;
+        public static final int calendarEntryEndDate=0x7f090017;
+        public static final int calendarEntryStartDate=0x7f090016;
+        public static final int calendarEntryTitle=0x7f090018;
+        public static final int calendarTitleTextView=0x7f090019;
+        public static final int calendarView=0x7f090015;
+        public static final int userViewModelGivenName=0x7f09001b;
+        public static final int userViewModelMailAddress=0x7f09001d;
+        public static final int userViewModelPhoneNumber=0x7f09001c;
+        public static final int userViewModelSurname=0x7f09001a;
     }
     public static final class layout {
         public static final int activity_calendar_entry=0x7f030000;
-        public static final int activity_main=0x7f030001;
-        public static final int calendarentry=0x7f030002;
-        public static final int calendarentry_listview_header=0x7f030003;
-        public static final int userviewmodel_list_item=0x7f030004;
+        public static final int activity_calendar_entry_activity_create=0x7f030001;
+        public static final int activity_main=0x7f030002;
+        public static final int calendarentry=0x7f030003;
+        public static final int calendarentry_listview_header=0x7f030004;
+        public static final int userviewmodel_list_item=0x7f030005;
     }
     public static final class menu {
-        public static final int main=0x7f080000;
+        public static final int calendar_entry_activity_create=0x7f080000;
+        public static final int main=0x7f080001;
     }
     public static final class string {
+        public static final int action_create_calendar_entry=0x7f060003;
         public static final int action_refresh=0x7f060002;
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
-        public static final int calendarEntryActivityDescriptionHeader=0x7f060010;
-        public static final int calendarEntryActivityEndDateHeader=0x7f060012;
-        public static final int calendarEntryActivityInvitationsHeader=0x7f060015;
-        public static final int calendarEntryActivityRoomLocationHeader=0x7f060013;
-        public static final int calendarEntryActivityRoomSeatHeader=0x7f060014;
-        public static final int calendarEntryActivityStartDateHeader=0x7f060011;
-        public static final int calendarEntryActivityTitleHeader=0x7f06000f;
-        public static final int preferences_category_server=0x7f060005;
-        public static final int preferences_category_user=0x7f060004;
-        public static final int preferences_edittext_mail_address=0x7f060006;
-        public static final int preferences_edittext_password=0x7f060007;
-        public static final int preferences_edittext_port=0x7f06000a;
-        public static final int preferences_edittext_server_address=0x7f06000c;
-        public static final int preferences_summary_mail_address=0x7f060008;
-        public static final int preferences_summary_password=0x7f060009;
-        public static final int preferences_summary_port=0x7f06000b;
-        public static final int preferences_summary_server_address=0x7f06000d;
-        public static final int title_activity_calendar_entry=0x7f06000e;
-        public static final int title_activity_settings=0x7f060003;
+        public static final int calendarEntryActivityDescriptionHeader=0x7f060011;
+        public static final int calendarEntryActivityEndDateHeader=0x7f060013;
+        public static final int calendarEntryActivityInvitationsHeader=0x7f060016;
+        public static final int calendarEntryActivityRoomLocationHeader=0x7f060014;
+        public static final int calendarEntryActivityRoomSeatHeader=0x7f060015;
+        public static final int calendarEntryActivityStartDateHeader=0x7f060012;
+        public static final int calendarEntryActivityTitleHeader=0x7f060010;
+        public static final int hello_world=0x7f060018;
+        public static final int preferences_category_server=0x7f060006;
+        public static final int preferences_category_user=0x7f060005;
+        public static final int preferences_edittext_mail_address=0x7f060007;
+        public static final int preferences_edittext_password=0x7f060008;
+        public static final int preferences_edittext_port=0x7f06000b;
+        public static final int preferences_edittext_server_address=0x7f06000d;
+        public static final int preferences_summary_mail_address=0x7f060009;
+        public static final int preferences_summary_password=0x7f06000a;
+        public static final int preferences_summary_port=0x7f06000c;
+        public static final int preferences_summary_server_address=0x7f06000e;
+        public static final int title_activity_calendar_entry=0x7f06000f;
+        public static final int title_activity_calendar_entry_activity_create=0x7f060017;
+        public static final int title_activity_settings=0x7f060004;
     }
     public static final class style {
         /** 
