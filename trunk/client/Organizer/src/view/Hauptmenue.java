@@ -50,7 +50,8 @@ import javax.swing.UIManager.*;
 import view.renderer.*;
 import java.awt.Canvas;
 
-public class window_Hauptmenue extends JFrame {
+
+public class Hauptmenue extends JFrame {
 
 	private JTable table_1;
 	private JPanel contentPane;
@@ -78,9 +79,15 @@ public class window_Hauptmenue extends JFrame {
 	private JButton btnRaumErstellen;
 
 	/**
-	 * Launch the application.
+	 * Default constructor that creates the main frames in which all entries are displayed and 
+	 * from where entries can be created, edited or deleted.
+	 * 
+	 * @param myDataPusher
+	 * @param con
+	 * @param mL
+	 * @param pCL
 	 */
-	public window_Hauptmenue(DataPusher myDataPusher, ActionListener con,
+	public Hauptmenue(DataPusher myDataPusher, ActionListener con,
 			MouseListener mL, PropertyChangeListener pCL) {
 		myCon = con;
 		myML = mL;
@@ -89,14 +96,6 @@ public class window_Hauptmenue extends JFrame {
 		myRenderer = new CellRenderer();
 
 		init();
-	}
-
-	public JList getList() {
-		return list;
-	}
-
-	public void setList(JList list) {
-		this.list = list;
 	}
 
 	/**
@@ -110,6 +109,7 @@ public class window_Hauptmenue extends JFrame {
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Metal".equals(info.getName())) {
+					
 					UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}
@@ -399,12 +399,20 @@ public class window_Hauptmenue extends JFrame {
 	public void setLblAnzahlEinladungen(JLabel lblAnzahlEinladungen) {
 		this.lblAnzahlEinladungen = lblAnzahlEinladungen;
 	}
+	public JList getList() {
+		return list;
+	}
 
+	public void setList(JList list) {
+		this.list = list;
+	}
+	
+	/**
+	 * Updates the JTable with the newest data.
+	 */
 	public void updateTable() {
 		dataModel = new AbstractTableModel() {
-			/**
-			 * 
-			 */
+			
 			private static final long serialVersionUID = 1L;
 
 			@Override

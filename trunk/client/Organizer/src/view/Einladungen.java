@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 
-public class windowEinladungen extends JFrame {
+public class Einladungen extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtBeschreibung;
@@ -31,8 +31,11 @@ public class windowEinladungen extends JFrame {
 	private JButton btnZusagen;
 	private Canvas canStatus;
 	private JTextArea txtADetails;
-
-	public windowEinladungen(ActionListener Con) {
+/**
+ * Default constructor that initializes the actionlistener and creates the frame.
+ * @param Con
+ */
+	public Einladungen(ActionListener Con) {
 		myCon=Con;
 		init();
 	}

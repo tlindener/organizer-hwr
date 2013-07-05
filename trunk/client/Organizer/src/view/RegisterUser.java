@@ -19,7 +19,7 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 
-public class window_RegisterUser extends JFrame {
+public class RegisterUser extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtEmailadresse;
@@ -46,7 +46,7 @@ public class window_RegisterUser extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public window_RegisterUser(ActionListener con)
+	public RegisterUser(ActionListener con)
 	{
 		myCon=con;
 		init();
@@ -310,6 +310,17 @@ public class window_RegisterUser extends JFrame {
 		
 		repaint();
 		}
+	}
+	
+	public void loescheInhalte()
+	{
+		getTxtEmailadresse().setText("");
+		getTxtNachname().setText("");
+		getTxtVorname().setText("");
+		getTxtPasswort().setText("");
+		getTxtPasswortBest().setText("");
+		getTxtTelefon().setText("");
+		
 	}
 
 
