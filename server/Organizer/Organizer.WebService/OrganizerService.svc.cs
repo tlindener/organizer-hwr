@@ -40,7 +40,7 @@ namespace Organizer.WebService
                 var user = GetUserFromAuthString(userAuth);
                 if (user != null)
                 {
-                    var stringToHash = user.MailAddress + user.Password;
+                    var stringToHash = user.MailAddress.ToLowerInvariant() + user.Password;
                     var hash = Utils.getSHA512Hash(stringToHash);
 
                     var authenticationString = hash;
@@ -383,7 +383,7 @@ namespace Organizer.WebService
             var users = timeplanner.GetAllUser();
             if (users != null && users.Count > 0)
             {
-                var user = users.Where(p => p.MailAddress == mailAddress && p.Password == password);
+                var user = users.Where(p => p.MailAddress.Equals(mailAddress,StringComparison.InvariantCultureIgnoreCase) && p.Password == password);
 
                 if (user != null && user.Count() > 0)
                 {
