@@ -37,7 +37,7 @@ class TimeVerifier extends InputVerifier {
                     date = format.parse(text);
                     result |= true;
                 } catch (ParseException pe) {
-                	JOptionPane.showMessageDialog(null, "Bitte geben Sie die Uhrzeit im Format (H)H:mm ein!");
+//                	JOptionPane.showMessageDialog(null, "Bitte geben Sie die Uhrzeit im Format (H)H:mm ein!");
                     result |= false;
                 }
             }

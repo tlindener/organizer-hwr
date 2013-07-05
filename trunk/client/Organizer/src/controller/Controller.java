@@ -35,6 +35,7 @@ import view.LogScreen;
 import view.RegisterUser;
 import view.Servereinstellungen;
 import view.TerminBearbeiten;
+import view.View;
 
 /**
  * The Controller functions as the communication interface between the Model and
@@ -64,13 +65,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private Object[][] tabellenDaten;
 
 	private TerminBearbeiten editEntry;
-
-	private Hauptmenue myHauptmenue;
-	private LogScreen myLogScreen;
-	private Servereinstellungen myServereinstellungen;
-	private RegisterUser myRegistration;
-	private NeuerRaum myNeuerRaum;
-	private Einladungen myEinladungen;
+	private View view;
 
 	private RequestHandler myRequester;
 	private Date aktDate;
@@ -87,26 +82,15 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 
 	/**
-	 * Default Controller which creates instances of all windows accept from the
-	 * "Termin Bearbeiten" window. Sets the current date in the model and
+	 * Default Controller which creates an instance of the view class which creates all windows 
+	 * accept from the "Termin Bearbeiten" window. Sets the current date in the model and
 	 * initially updates the data.
 	 */
 	public Controller() {
 
 		myModel = new Model(aktDate);
 		updateData();
-		myHauptmenue = new Hauptmenue(this, this, this, this);
-		myHauptmenue.setVisible(false);
-		myLogScreen = new LogScreen(this);
-		myLogScreen.setVisible(true);
-		myRegistration = new RegisterUser(this);
-		myRegistration.setVisible(false);
-		myServereinstellungen = new Servereinstellungen(this);
-		myServereinstellungen.setVisible(false);
-		myNeuerRaum = new NeuerRaum(this);
-		myNeuerRaum.setVisible(false);
-		myEinladungen = new Einladungen(this);
-		myEinladungen.setVisible(false);
+		view = new View(this,this,this,this);
 		aktUser = new User();
 		aktUserCa = new organizer.objects.types.Calendar();
 
@@ -127,49 +111,49 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == myLogScreen.getMntmServerkonfigurationen()) {
-			myServereinstellungen.setVisible(true);
+		if (e.getSource() == view.getMyLogScreen().getMntmServerkonfigurationen()) {
+			view.getMyServereinstellungen().setVisible(true);
 		}
 
 		
-		if (e.getSource() == myServereinstellungen.getBtnSpeichern()) {
+		if (e.getSource() == view.getMyServereinstellungen().getBtnSpeichern()) {
 			speichereServereinstellungen();
 
 		}
-		if (e.getSource() == myHauptmenue.getBtnTerminBearbeiten()) {
+		if (e.getSource() == view.getMyHauptmenue().getBtnTerminBearbeiten()) {
 			bearbeiteTermin();
 
 		}
-		if (e.getSource() == myHauptmenue.getBtnAbmelden()) {
-			myHauptmenue.setVisible(false);
-			myLogScreen.setVisible(true);
+		if (e.getSource() == view.getMyHauptmenue().getBtnAbmelden()) {
+			view.getMyHauptmenue().setVisible(false);
+			view.getMyLogScreen().setVisible(true);
 
 		}
-		if (e.getSource() == myHauptmenue.getBtnTerminEntfernen()) {
+		if (e.getSource() == view.getMyHauptmenue().getBtnTerminEntfernen()) {
 			entferneTermin();
 		}
-		if (e.getSource() == myHauptmenue.getBtnRaumErstellen()) {
-			myNeuerRaum.setVisible(true);
+		if (e.getSource() == view.getMyHauptmenue().getBtnRaumErstellen()) {
+			view.getMyNeuerRaum().setVisible(true);
 		}
-		if (e.getSource() == myLogScreen.getBtnAnmelden()) {
+		if (e.getSource() == view.getMyLogScreen().getBtnAnmelden()) {
 			meldeUserAn();
 		}
-		if (e.getSource() == myLogScreen.getBtnRegistrieren()) {
-			myRegistration.setVisible(true);
+		if (e.getSource() == view.getMyLogScreen().getBtnRegistrieren()) {
+			view.getMyRegistration().setVisible(true);
 
 		}
-		if (e.getSource() == myRegistration.getBtnRegistrieren()) {
+		if (e.getSource() == view.getMyRegistration().getBtnRegistrieren()) {
 			registriereUser();
 		}
-		if (e.getSource() == myRegistration.getBtnAbbrechen()) {
-			myRegistration.loescheInhalte();
-			abbrechen(myRegistration, myLogScreen);
+		if (e.getSource() == view.getMyRegistration().getBtnAbbrechen()) {
+			view.getMyRegistration().loescheInhalte();
+			abbrechen(view.getMyRegistration(), view.getMyLogScreen());
 			
 
 		}
 
 		if (editEntry != null && e.getSource() == editEntry.getBtnAbbrechen()) {
-			abbrechen(editEntry, myHauptmenue);
+			abbrechen(editEntry, view.getMyHauptmenue());
 		}
 
 		if (editEntry != null
@@ -178,18 +162,18 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			speichereTermin();
 		}
 
-		if (e.getSource() == myNeuerRaum.getBtnSpeichern()) {
+		if (e.getSource() == view.getMyNeuerRaum().getBtnSpeichern()) {
 			speichereRaum();
 		}
-		if (e.getSource() == myNeuerRaum.getBtnAbbrechen()) {
-			myNeuerRaum.setVisible(false);
+		if (e.getSource() == view.getMyNeuerRaum().getBtnAbbrechen()) {
+			view.getMyNeuerRaum().setVisible(false);
 
 		}
-		if (e.getSource() == myEinladungen.getBtnAbsagen()) {
+		if (e.getSource() == view.getMyEinladungen().getBtnAbsagen()) {
 			aktin.setAccepted(-1);
 			bearbeiteEinladung();
 		}
-		if (e.getSource() == myEinladungen.getBtnZusagen()) {
+		if (e.getSource() == view.getMyEinladungen().getBtnZusagen()) {
 			aktin.setAccepted(1);
 			bearbeiteEinladung();
 		}
@@ -205,15 +189,15 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
-		if (e.getSource() == myHauptmenue.getTable_1()) {
+		if (e.getSource() == view.getMyHauptmenue().getTable_1()) {
 			befuelleMainFrame(e);
 		}
-		if (e.getSource() == myHauptmenue.getPicLabel()) {
+		if (e.getSource() == view.getMyHauptmenue().getPicLabel()) {
 			if (myModel.getEinladungen().size() > 0) {
-				myEinladungen.setVisible(true);
+				view.getMyEinladungen().setVisible(true);
 				befuelleEinladungen();
 			} else
-				JOptionPane.showMessageDialog(myHauptmenue,
+				JOptionPane.showMessageDialog(view.getMyHauptmenue(),
 						"Sie haben derzeit keine neuen Einladungen");
 		}
 
@@ -273,8 +257,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		}
 		if (e.getOldValue() != null) {
-			aktDate = myHauptmenue.getAktDateCali();
-			myHauptmenue.repaint();
+			aktDate = view.getMyHauptmenue().getAktDateCali();
+			view.getMyHauptmenue().repaint();
 			connectServerModel();
 
 		}
@@ -393,9 +377,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			myModel.setAllePersonen(lp);
 
 			aktUser = myRequester.requestObjectByOwnId(aktUser);
-			// Invite inv= new Invite();
-			// inv.setOwnerId(aktUser.getID());
-
+			
 			List<Integer> inviteIds = aktUser.getInviteIds();
 			List<Invite> einladungen = new ArrayList();
 			for (int i : inviteIds) {
@@ -417,19 +399,17 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			for (CalendarEntry myCe : myCes) {
 
 				if (parseDatetoString(myCe.getStartDate()).equals(
-						parseDatetoString(myHauptmenue.getCali().getDate()))) {
-					// Methode?
+						parseDatetoString(view.getMyHauptmenue().getCali().getDate()))) {
+				
 					SimpleDateFormat format = new SimpleDateFormat("H:mm");
 					String anfangZeit = format.format(myCe.getStartDate());
 					String endZeit = format.format(myCe.getEndDate());
-					System.out.println("Anfangszeit: " + anfangZeit);
+					
 					myModel.setAktDate(aktDate);
 					myModel.setBeschreibungen(anfangZeit, myCe.getTitle());
-					System.out.println("Beschreibung: "
-							+ myModel.returnBeschreibung(anfangZeit));
 					myModel.setDauer(anfangZeit, myCe.getDuration());
 
-					List<User> invitees = getInvitesOfEntry(myCe.getInviteIds());
+					ArrayList<User> invitees = (ArrayList<User>) getInvitesOfEntry(myCe.getInviteIds());
 
 					myModel.setPersonen(anfangZeit, invitees);
 
@@ -554,7 +534,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	public void bearbeiteEinladung() {
 		myRequester.acceptInvite(aktin);
 		updateData();
-		myEinladungen.setVisible(false);
+		view.getMyEinladungen().setVisible(false);
 	}
 
 	/**
@@ -578,28 +558,28 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		ce.setID(id);
 		ce = myRequester.requestObjectByOwnId(ce);
 		if (ce != null) {
-			myEinladungen.getTxtBeschreibung().setText(ce.getTitle());
-			myEinladungen.getTxtADetails().setText(ce.getDescription());
+			view.getMyEinladungen().getTxtBeschreibung().setText(ce.getTitle());
+			view.getMyEinladungen().getTxtADetails().setText(ce.getDescription());
 			Room room = new Room();
 			room.setID(ce.getRoomId());
 			room = myRequester.requestObjectByOwnId(room);
 			if (room != null)
-				myEinladungen.getTxtRaum().setText(
+				view.getMyEinladungen().getTxtRaum().setText(
 						room.getDescription() + " ; " + room.getLocation());
 
 			User einladener = new User();
 			einladener.setID(ce.getOwnerId());
 			einladener = myRequester.requestObjectByOwnId(einladener);
 			if (einladener != null)
-				myEinladungen.getTxtEinladener().setText(
+				view.getMyEinladungen().getTxtEinladener().setText(
 						einladener.getGivenName() + " "
 								+ einladener.getSurname());
 
 			SimpleDateFormat format = new SimpleDateFormat("HH:mm");
 			String anfang = format.format(ce.getStartDate());
 			String ende = format.format(ce.getEndDate());
-			myEinladungen.getTxtVon().setText(anfang);
-			myEinladungen.getTxtBis().setText(ende);
+			view.getMyEinladungen().getTxtVon().setText(anfang);
+			view.getMyEinladungen().getTxtBis().setText(ende);
 
 			boolean status = false;
 
@@ -614,9 +594,9 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			}
 
 			if (status == true)
-				myEinladungen.getCanStatus().setBackground(Color.RED);
+				view.getMyEinladungen().getCanStatus().setBackground(Color.RED);
 			else
-				myEinladungen.getCanStatus().setBackground(Color.GREEN);
+				view.getMyEinladungen().getCanStatus().setBackground(Color.GREEN);
 
 		}
 	}
@@ -629,33 +609,33 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	public void befuelleMainFrame(MouseEvent e) {
 		
-		myHauptmenue.getBtnTerminBearbeiten().setText("Termin bearbeiten");
+		view.getMyHauptmenue().getBtnTerminBearbeiten().setText("Termin bearbeiten");
 		JTable zwTab = (JTable) e.getSource();
-		aktTermin = (String) myHauptmenue.getTable_1().getValueAt(
+		aktTermin = (String) view.getMyHauptmenue().getTable_1().getValueAt(
 				zwTab.getSelectedRow(), 0);
 		
 		zwTab.getSelectedRow();
 		String details = (String) myModel.returnDetail(aktTermin);
-		myHauptmenue.getTextArea().setText(details);
+		view.getMyHauptmenue().getTextArea().setText(details);
 		
 		List<User> myList = new ArrayList<User>();
 
 		myList = myModel.returnEingeladene(aktTermin);
 
 		if (myList != null) {
-			myHauptmenue.getListModel().removeAllElements();
+			view.getMyHauptmenue().getListModel().removeAllElements();
 
 			for (User element : myList) {
 				System.out.println(element);
-				myHauptmenue.getListModel().addElement(
+				view.getMyHauptmenue().getListModel().addElement(
 						element.getGivenName() + " " + element.getSurname());
-				myHauptmenue.repaint();
+				view.getMyHauptmenue().repaint();
 			}
 		} else {
-			myHauptmenue.getListModel().removeAllElements();
+			view.getMyHauptmenue().getListModel().removeAllElements();
 		}
 		
-		myHauptmenue.getTxtRaum().setText(myModel.returnRaum(aktTermin));
+		view.getMyHauptmenue().getTxtRaum().setText(myModel.returnRaum(aktTermin));
 
 	}
 
@@ -692,11 +672,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * Saves a new created room and submits it to the database.
 	 */
 	public void speichereRaum() {
-		myNeuerRaum.pruefeFelder();
+		view.getMyNeuerRaum().pruefeFelder();
 		Room tmpRaum = new Room();
-		String name = myNeuerRaum.getTxtBeschreibung().getText();
-		String lage = myNeuerRaum.getTxtALage().getText();
-		int sitze = Integer.parseInt(myNeuerRaum.getTxtSitze().getText());
+		String name = view.getMyNeuerRaum().getTxtBeschreibung().getText();
+		String lage = view.getMyNeuerRaum().getTxtALage().getText();
+		int sitze = Integer.parseInt(view.getMyNeuerRaum().getTxtSitze().getText());
 
 		tmpRaum.setDescription(name);
 		tmpRaum.setLocation(lage);
@@ -707,7 +687,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			editEntry.getTxtRaum().setText(
 					erstRaum.getLocation() + "; " + erstRaum.getDescription());
 			editEntry.stateChangedForRoom(true, erstRaum);
-			myNeuerRaum.setVisible(false);
+			view.getMyNeuerRaum().setVisible(false);
 			updateData();
 			editEntry.getLstRaum().setListData(pushRoomList());
 			neuCalEnt.setRoomId(erstRaum.getID());
@@ -730,7 +710,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		if (pruefefeld == false) {
 			if (editEntry.getSelectedRoom().getID() == -1) {
-				myNeuerRaum.setVisible(true);
+				view.getMyNeuerRaum().setVisible(true);
 				return;
 			} else {
 				neuCalEnt.setRoomId(editEntry.getSelectedRoom().getID());
@@ -801,7 +781,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			editEntry.setVisible(false);
 
 			updateData();
-			myHauptmenue.repaint();
+			view.getMyHauptmenue().repaint();
 		} else {
 			JOptionPane.showMessageDialog(editEntry,
 					"Termin konnte nicht eingetragen werden",
@@ -847,13 +827,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				if (geloescht == false)
 					JOptionPane
 							.showMessageDialog(
-									myHauptmenue,
+									view.getMyHauptmenue(),
 									"Der Termin konnte nicht gelöscht werden! Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut");
 
 				updateData();
 			}
 		} else
-			JOptionPane.showMessageDialog(myHauptmenue,
+			JOptionPane.showMessageDialog(view.getMyHauptmenue(),
 					"Bitte wählen Sie einen Termin aus!");
 	}
 
@@ -866,7 +846,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		myModel.setAktDate(aktDate);
 
 		updateData();
-		myHauptmenue.setVisible(true);
+		view.getMyHauptmenue().setVisible(true);
 
 	}
 
@@ -879,19 +859,19 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	public int pruefeServereinstellungen() {
 
-		if (myServereinstellungen.getTxtPort().getText().isEmpty()
-				|| myServereinstellungen.getTxtAdresse().getText().isEmpty()) {
-			JOptionPane.showMessageDialog(myLogScreen,
+		if (view.getMyServereinstellungen().getTxtPort().getText().isEmpty()
+				|| view.getMyServereinstellungen().getTxtAdresse().getText().isEmpty()) {
+			JOptionPane.showMessageDialog(view.getMyLogScreen(),
 					"Bitte wählen Sie gültige Servereinstellungen",
 					"Ungültige Servereinstellungen",
 					JOptionPane.INFORMATION_MESSAGE);
-			myHauptmenue.setVisible(false);
-			myServereinstellungen.setVisible(true);
+			view.getMyHauptmenue().setVisible(false);
+			view.getMyServereinstellungen().setVisible(true);
 			return 0;
 		} else {
-			port = Integer.parseInt(myServereinstellungen.getTxtPort()
+			port = Integer.parseInt(view.getMyServereinstellungen().getTxtPort()
 					.getText());
-			adresse = myServereinstellungen.getTxtAdresse().getText();
+			adresse = view.getMyServereinstellungen().getTxtAdresse().getText();
 			myRequester = new JsonJavaRequestHandler(adresse, port);
 			return 1;
 		}
@@ -940,13 +920,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	public void registriereUser() {
 
-		char[] passwort1 = myRegistration.getTxtPasswort().getPassword();
-		char[] passwort2 = myRegistration.getTxtPasswortBest().getPassword();
+		char[] passwort1 = view.getMyRegistration().getTxtPasswort().getPassword();
+		char[] passwort2 = view.getMyRegistration().getTxtPasswortBest().getPassword();
 
-		String email = myRegistration.getTxtEmailadresse().getText();
-		String nachname = myRegistration.getTxtNachname().getText();
-		String vorname = myRegistration.getTxtVorname().getText();
-		String telefonnr = myRegistration.getTxtTelefon().getText();
+		String email = view.getMyRegistration().getTxtEmailadresse().getText();
+		String nachname = view.getMyRegistration().getTxtNachname().getText();
+		String vorname = view.getMyRegistration().getTxtVorname().getText();
+		String telefonnr = view.getMyRegistration().getTxtTelefon().getText();
 
 		if (!email.isEmpty() && !nachname.isEmpty() && !vorname.isEmpty()
 				&& passwort1.length != 0 && passwort2.length != 0) {
@@ -970,7 +950,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 				if (utmp == null) {
 
-					JOptionPane.showMessageDialog(myRegistration,"Sie konnten nicht registriert werden. Bitte versuchen Sie es später erneut!");
+					JOptionPane.showMessageDialog(view.getMyRegistration(),"Sie konnten nicht registriert werden. Bitte versuchen Sie es später erneut!");
 
 
 				} else {
@@ -998,21 +978,21 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 					}
 				}
-				myRegistration.loescheInhalte();
-				myRegistration.setVisible(false);
-				myLogScreen.setVisible(true);
+				view.getMyRegistration().loescheInhalte();
+				view.getMyRegistration().setVisible(false);
+				view.getMyLogScreen().setVisible(true);
 
 			} else {
-				JOptionPane.showMessageDialog(myLogScreen,
+				JOptionPane.showMessageDialog(view.getMyLogScreen(),
 						"Das Passwort stimmt nicht überein!",
 						"Passwort falsch", JOptionPane.INFORMATION_MESSAGE);
-				myRegistration.getTxtPasswort().setText("");
-				myRegistration.getTxtPasswortBest().setText("");
+				view.getMyRegistration().getTxtPasswort().setText("");
+				view.getMyRegistration().getTxtPasswortBest().setText("");
 				return;
 			}
 		} else {
 
-			myRegistration.pruefeVollständigkeit();
+			view.getMyRegistration().pruefeVollständigkeit();
 		}
 
 	}
@@ -1024,20 +1004,20 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * created to access the server via the networklayer.
 	 */
 	public void speichereServereinstellungen() {
-		if (myServereinstellungen.getTxtPort().getText().equals("")
-				|| myServereinstellungen.getTxtAdresse().getText().equals("")) {
+		if (view.getMyServereinstellungen().getTxtPort().getText().equals("")
+				|| view.getMyServereinstellungen().getTxtAdresse().getText().equals("")) {
 
 			JOptionPane.showMessageDialog(null,
 					"Bitte wählen Sie gültige Servereinstellungen",
 					"Ungültige Servereinstellungen",
 					JOptionPane.INFORMATION_MESSAGE);
-			myServereinstellungen.setVisible(true);
+			view.getMyServereinstellungen().setVisible(true);
 		} else {
 
-			port = Integer.parseInt(myServereinstellungen.getTxtPort()
+			port = Integer.parseInt(view.getMyServereinstellungen().getTxtPort()
 					.getText());
-			adresse = myServereinstellungen.getTxtAdresse().getText();
-			myServereinstellungen.setVisible(false);
+			adresse = view.getMyServereinstellungen().getTxtAdresse().getText();
+			view.getMyServereinstellungen().setVisible(false);
 			myRequester = new JsonJavaRequestHandler(adresse, port);
 
 		}
@@ -1051,7 +1031,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	public void bearbeiteTermin() {
 		editEntry = new TerminBearbeiten(this, this, this);
-		aktDate = myHauptmenue.getAktDateCali();
+		aktDate = view.getMyHauptmenue().getAktDateCali();
 		String startZeit = aktTermin;
 		boolean containsTermin = myModel.getKalendarentries().containsKey(
 				aktTermin);
@@ -1071,10 +1051,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			String beschreibung = myModel.returnBeschreibung(aktTermin);
 			String raum = myModel.returnRaum(aktTermin);
 			Room[] raeume = myModel.getAlleRaeume();
-			User[] allePersonen = myModel.getAllePersonen();
-			System.out.println(allePersonen[0]);
+			
+			ArrayList<User> eing=myModel.returnEingeladene(aktTermin);
+			User[] personen = eing.toArray(new User[eing.size()]);
+			System.out.println("eingeladene: "+personen[0]);
+			
 			editEntry.openFrameWithValues(startZeit, endZeit, beschreibung,
-					details, raeume, allePersonen, raum);
+					details, raeume, personen, raum);
 
 		}
 	}
@@ -1092,8 +1075,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			return;
 		}
 
-		benutzername = myLogScreen.getTextField().getText();
-		char[] tmppasswort = myLogScreen.getPasswort().getPassword();
+		benutzername = view.getMyLogScreen().getTextField().getText();
+		char[] tmppasswort = view.getMyLogScreen().getPasswort().getPassword();
 
 		passwort = "";
 		for (int i = 0; i < tmppasswort.length; i++) {
@@ -1103,7 +1086,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		if (benutzername.equals("") || passwort.equals("")) {
 			JOptionPane
 					.showMessageDialog(
-							myLogScreen,
+							view.getMyLogScreen(),
 							"Bitte geben Sie einen gültigen Benutzernamen und ein gültiges Passwort ein",
 							"Benutzername oder Passwort falsch",
 							JOptionPane.INFORMATION_MESSAGE);
@@ -1120,7 +1103,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				} else {
 					JOptionPane
 							.showMessageDialog(
-									myLogScreen,
+									view.getMyLogScreen(),
 									"Es ist noch kein Kalendar für Sie erstellt worden",
 									"Verbindungsfehler",
 									JOptionPane.INFORMATION_MESSAGE);
@@ -1136,7 +1119,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				} else {
 					JOptionPane
 							.showMessageDialog(
-									myLogScreen,
+									view.getMyLogScreen(),
 									"Es konnte keine Verbindung zum Server hergestellt werden, bitte starten Sie das Programm neu",
 									"Verbindungsfehler",
 									JOptionPane.INFORMATION_MESSAGE);
@@ -1144,15 +1127,15 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				}
 				//
 				int myEinl = myModel.getEinladungen().size();
-				myHauptmenue.getLblAnzahlEinladungen().setText(
+				view.getMyHauptmenue().getLblAnzahlEinladungen().setText(
 						Integer.toString(myEinl));
-				myHauptmenue.getLblAnzahlEinladungen().setForeground(Color.RED);
-				myLogScreen.setVisible(false);
-				myHauptmenue.setVisible(true);
+				view.getMyHauptmenue().getLblAnzahlEinladungen().setForeground(Color.RED);
+				view.getMyLogScreen().setVisible(false);
+				view.getMyHauptmenue().setVisible(true);
 			} else {
 				JOptionPane
 						.showMessageDialog(
-								myLogScreen,
+								view.getMyLogScreen(),
 								"Leider sind Sie noch nicht registriert. Bitte Registrieren Sie sich um die MyOrganizer Funktionen nutzen zu können.",
 								"User nicht vorhanden",
 								JOptionPane.INFORMATION_MESSAGE);
