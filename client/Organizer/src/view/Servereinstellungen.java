@@ -17,7 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 
-public class window_Servereinstellungen extends JFrame {
+public class Servereinstellungen extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtAdresse;
@@ -29,7 +29,7 @@ public class window_Servereinstellungen extends JFrame {
 	private JTextField txtPort;
 	private NumberFormat formatport;
 	
-	public window_Servereinstellungen(ActionListener myCon) {
+	public Servereinstellungen(ActionListener myCon) {
 		myAL=myCon;
 		init();
 	}

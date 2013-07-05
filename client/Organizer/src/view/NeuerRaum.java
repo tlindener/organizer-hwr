@@ -1,10 +1,15 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 
+import javax.swing.BorderFactory;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -16,8 +21,16 @@ import java.awt.event.ActionListener;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
+import java.text.NumberFormat;
 
-public class windowNeuerRaum extends JFrame {
+/**
+ * This frame supports creating a new room.
+ * Therefore the fields name, location and seats are required.
+ * 
+ * @author Jenny
+ *
+ */
+public class NeuerRaum extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtBeschreibung;
@@ -27,11 +40,13 @@ public class windowNeuerRaum extends JFrame {
 	private ActionListener myCon;
 	private JButton btnSpeichern;
 	private JButton btnAbbrechen;
+	
+	private NumberFormat numberformat;
 
 	/**
 	 * Launch the application.
 	 */
-	public windowNeuerRaum(ActionListener aL)
+	public NeuerRaum(ActionListener aL)
 	{
 					myCon= aL;
 					init();
@@ -80,7 +95,8 @@ public class windowNeuerRaum extends JFrame {
 		contentPane.add(txtBeschreibung, gbc_txtBeschreibung);
 		txtBeschreibung.setColumns(10);
 		
-		txtSitze = new JTextField();
+		numberformat=NumberFormat.getNumberInstance();
+		txtSitze = new JFormattedTextField(numberformat);
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
@@ -155,6 +171,26 @@ public class windowNeuerRaum extends JFrame {
 		this.btnAbbrechen = btnAbbrechen;
 	}
 	
-	
-
+	public void pruefeFelder()
+	{
+		String lage=getTxtALage().getText();
+		String beschreibung=getTxtBeschreibung().getText();
+		String sitze= getTxtSitze().getText();
+		
+		if(lage.isEmpty()||beschreibung.isEmpty()||sitze.isEmpty())
+		{
+			Color c = new Color(255, 86, 63);
+			Border redline = BorderFactory.createLineBorder(c);
+			
+			JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus!");
+			
+			if(lage.isEmpty())
+				getTxtALage().setBorder(redline);
+			if(beschreibung.isEmpty())
+				getTxtBeschreibung().setBorder(redline);
+			if(sitze.isEmpty())
+				getTxtSitze().setBorder(redline);	
+		}	
+		
+	}
 }

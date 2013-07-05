@@ -7,13 +7,15 @@ import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
 
-
+/**
+ * Interface to push data from model to view if required.
+ * 
+ * @author JenniferBlumenthal
+ *
+ */
 
 public interface DataPusher {
-//	gibt ein Objekt zurück in dem jeder Uhrzeit (0-23.30, halbstündliche Einteilung) eine Beschreibung zugeordnet ist
 	public Object[][] getBeschreibungen();
 	public User[] pushUserList();
 	public Room[] pushRoomList();
-	
-
 }

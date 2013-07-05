@@ -1,15 +1,22 @@
 package view;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -19,6 +26,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.Border;
+import javax.swing.text.DateFormatter;
+import javax.swing.text.DefaultFormatterFactory;
 
 import logik.DataPusher;
 
@@ -27,9 +37,10 @@ import organizer.objects.types.User;
 
 import view.renderer.MyCheckBoxListRenderer;
 import view.renderer.MyListSelectionModel;
+import view.renderer.TimeField;
 import controller.MyChangeListener;
 
-public class window_TerminBearbeiten extends JFrame implements MyChangeListener {
+public class TerminBearbeiten extends JFrame implements MyChangeListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,8 +58,8 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 	private JTextArea txtADetails;
 	private JList<Room> lstRaum;
 	private JList<User> lstPersonen;
-	private JTextField startUhrzeit;
-	private JTextField endUhrzeit;
+	private TimeField startUhrzeit;
+	private TimeField endUhrzeit;
 
 	private MyCheckBoxListRenderer combinedListener = new MyCheckBoxListRenderer(
 			this);
@@ -61,21 +72,41 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 
 	private JButton btnAbbrechen;
 
-	public window_TerminBearbeiten(DataPusher myDataPusher, ActionListener con, MouseListener mo) {
+	/**
+	 * Default constructor that initializes the Listener and the interface as well as
+	 * the ButtonText.
+	 * 
+	 * @param myDataPusher
+	 * @param con
+	 * @param mo
+	 */
+	public TerminBearbeiten(DataPusher myDataPusher, ActionListener con,
+			MouseListener mo) {
 		myCon = con;
-		myMl=mo;
+		myMl = mo;
 		this.myDataPusher = myDataPusher;
 		setButtonText(DEFAULT_BTN_TEXT);
 	}
 
-	public void setButtonText(String buttonText) {
-		btnText = buttonText;
-	}
 
+	/**
+	 * Opens an empty frame.
+	 */
 	public void openEmptyFrame() {
 		openFrameWithValues("", "", "", "", null, null, " ");
 	}
 
+	/**
+	 * Opens the frame with the submitted values.
+	 * 
+	 * @param startTime
+	 * @param endTime
+	 * @param beschreibung
+	 * @param details
+	 * @param rooms
+	 * @param user
+	 * @param raum
+	 */
 	public void openFrameWithValues(String startTime, String endTime,
 			String beschreibung, String details, Room[] rooms, User[] user,
 			String raum) {
@@ -92,66 +123,66 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		getContentPane().setLayout(gridBagLayout);
 
 		JLabel lblVon = new JLabel("von");
-		GridBagConstraints gbc_lblVon = createGridBagContraints(1, 1, 2, 1,
+		GridBagConstraints gbc_lblVon = util.createGridBagContraints(1, 1, 2, 1,
 				GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(lblVon, gbc_lblVon);
 
-		startUhrzeit = new JTextField(startTime);
+		startUhrzeit = erstelleTimefield(startTime);
 		startUhrzeit
 				.setToolTipText("Bitte geben Sie eine Uhrzeit im Format xx:xx ein.");
-		GridBagConstraints gbc_textField = createGridBagContraints(1, 1, 3, 1,
+		GridBagConstraints gbc_textField = util.createGridBagContraints(1, 1, 3, 1,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(startUhrzeit, gbc_textField);
 		startUhrzeit.setColumns(10);
 
 		JLabel lblBis = new JLabel("bis");
-		GridBagConstraints gbc_lblBis = createGridBagContraints(1, 1, 4, 1,
+		GridBagConstraints gbc_lblBis = util.createGridBagContraints(1, 1, 4, 1,
 				GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(lblBis, gbc_lblBis);
 
-		endUhrzeit = new JTextField(endTime);
+		endUhrzeit = erstelleTimefield(endTime);
 		endUhrzeit
 				.setToolTipText("Bitte geben Sie eine Uhrzeit im Format xx:xx ein.");
-		GridBagConstraints gbc_textField_1 = createGridBagContraints(1, 1, 5,
+		GridBagConstraints gbc_textField_1 = util.createGridBagContraints(1, 1, 5,
 				1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(endUhrzeit, gbc_textField_1);
 		endUhrzeit.setColumns(10);
 
 		JLabel lblRaum = new JLabel("Raum");
-		GridBagConstraints gbc_lblRaum = createGridBagContraints(5, 1, 1, 3,
+		GridBagConstraints gbc_lblRaum = util.createGridBagContraints(5, 1, 1, 3,
 				GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblRaum, gbc_lblRaum);
 
 		JLabel lblBeschreibung = new JLabel("Beschreibung");
-		GridBagConstraints gbc_lblBeschreibung = createGridBagContraints(3, 1,
+		GridBagConstraints gbc_lblBeschreibung = util.createGridBagContraints(3, 1,
 				7, 3, GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblBeschreibung, gbc_lblBeschreibung);
 
 		txtRaum = new JTextField(raum);
 		txtRaum.setEditable(false);
-		GridBagConstraints gbc_textField1 = createGridBagContraints(5, 1, 1, 4,
+		GridBagConstraints gbc_textField1 = util.createGridBagContraints(5, 1, 1, 4,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(txtRaum, gbc_textField1);
 		txtRaum.setColumns(10);
 
 		txtBeschreibung = new JTextField(beschreibung);
-		GridBagConstraints gbc_txtBeschreibung = createGridBagContraints(3, 1,
+		GridBagConstraints gbc_txtBeschreibung = util.createGridBagContraints(3, 1,
 				7, 4, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(txtBeschreibung, gbc_txtBeschreibung);
 		txtBeschreibung.setColumns(10);
 
 		JLabel lblDetails = new JLabel("Details");
-		GridBagConstraints gbc_lblDetails = createGridBagContraints(3, 1, 7, 5,
+		GridBagConstraints gbc_lblDetails = util.createGridBagContraints(3, 1, 7, 5,
 				GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblDetails, gbc_lblDetails);
 
 		lblRaeume = new JLabel("R\u00E4ume");
-		GridBagConstraints gbc_lblRume = createGridBagContraints(5, 1, 1, 6,
+		GridBagConstraints gbc_lblRume = util.createGridBagContraints(5, 1, 1, 6,
 				GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblRaeume, gbc_lblRume);
 
 		txtADetails = new JTextArea(details);
-		GridBagConstraints gbc_txtADetails = createGridBagContraints(3, 3, 7,
+		GridBagConstraints gbc_txtADetails = util.createGridBagContraints(3, 3, 7,
 				6, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(txtADetails, gbc_txtADetails);
 
@@ -159,12 +190,12 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		lstRaum.setCellRenderer(combinedListener);
 		lstRaum.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setSelectedValues(lstRaum, rooms);
-		GridBagConstraints gbc_lstRaum = createGridBagContraints(5, 2, 1, 7,
+		GridBagConstraints gbc_lstRaum = util.createGridBagContraints(5, 2, 1, 7,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(new JScrollPane(lstRaum), gbc_lstRaum);
 
 		JLabel lblPersonen = new JLabel("Personen");
-		GridBagConstraints gbc_lblPersonen = createGridBagContraints(5, 1, 1,
+		GridBagConstraints gbc_lblPersonen = util.createGridBagContraints(5, 1, 1,
 				9, GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblPersonen, gbc_lblPersonen);
 
@@ -174,20 +205,20 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstPersonen.setSelectionModel(new MyListSelectionModel());
 		setSelectedValues(lstPersonen, user);
-		GridBagConstraints gbc_lstPersonen = createGridBagContraints(5, 2, 1,
+		GridBagConstraints gbc_lstPersonen = util.createGridBagContraints(5, 2, 1,
 				10, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(new JScrollPane(lstPersonen), gbc_lstPersonen);
 
 		btnTerminEintragen = new JButton(btnText);
 		btnTerminEintragen.addActionListener(myCon);
 		btnTerminEintragen.addMouseListener(myMl);
-		GridBagConstraints gbc_btnTerminEintragen = createGridBagContraints(1,
+		GridBagConstraints gbc_btnTerminEintragen = util.createGridBagContraints(1,
 				1, 9, 10, GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(btnTerminEintragen, gbc_btnTerminEintragen);
 
 		btnAbbrechen = new JButton("Abbrechen");
 		btnAbbrechen.addActionListener(myCon);
-		GridBagConstraints gbc_btnAbbrechen = createGridBagContraints(1, 1, 9,
+		GridBagConstraints gbc_btnAbbrechen = util.createGridBagContraints(1, 1, 9,
 				11, GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(btnAbbrechen, gbc_btnAbbrechen);
 
@@ -195,26 +226,20 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 
 	}
 
-	private GridBagConstraints createGridBagContraints(int gWidth, int gHeight,
-			int gridx, int gridy, int anchor, int fill) {
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = anchor;
-		gbc.gridwidth = gWidth;
-		gbc.gridheight = gHeight;
-		gbc.fill = fill;
-		gbc.gridx = gridx;
-		gbc.gridy = gridy;
-		gbc.insets = new Insets(0, 0, 5, 5);
-		return gbc;
-	}
-
+	
+	/**
+	 * 
+	 * 
+	 * @param awtList
+	 * @param list
+	 */
 	private <T> void setSelectedValues(JList<T> awtList, T[] list) {
 
 		if (list == null || list.length == 0)
 			return;
 
 		for (Object obj : list) {
-			System.out.println("Schleife");
+
 			awtList.setSelectedValue(obj, false);
 			awtList.setValueIsAdjusting(false);
 		}
@@ -287,11 +312,11 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		return selectedUsers;
 	}
 
-	public JTextField getStartUhrzeit() {
+	public TimeField getStartUhrzeit() {
 		return startUhrzeit;
 	}
 
-	public JTextField getEndUhrzeit() {
+	public TimeField getEndUhrzeit() {
 		return endUhrzeit;
 	}
 
@@ -303,10 +328,14 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 		this.txtRaum = txtRaum;
 	}
 
+	public void setButtonText(String buttonText) {
+		btnText = buttonText;
+	}
+	
 	/**
-	 * Fügt den User zur Liste hinzu wenn der Status true ist und er noch nicht
-	 * in der Liste steht Ist der Status false, wird er aus der Liste entfernt,
-	 * falls er vorhanden ist
+	 * Adds the User to the selectedUser list or removes him according to 
+	 * the checkbox status.
+	 *
 	 */
 	@Override
 	public void stateChangedForUser(boolean state, User user) {
@@ -322,8 +351,9 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 	}
 
 	/**
-	 * Setzt den Raum als selected wird der Raum erneut ausgewählt wird nichts
-	 * gemacht
+	 * Sets the room that has been chosen as selected. 
+	 * If the room is chosen again nothing will happen.
+	 * 
 	 */
 	@Override
 	public void stateChangedForRoom(boolean state, Room room) {
@@ -340,51 +370,73 @@ public class window_TerminBearbeiten extends JFrame implements MyChangeListener 
 				selectedRoom.getLocation() + "; "
 						+ selectedRoom.getDescription());
 	}
-
-//	public boolean pruefeFelder()
-//	{
-//		boolean fehler=false;
-////		Felder leer?
-//		if(getEndUhrzeit().getText().isEmpty()||getStartUhrzeit().getText().isEmpty()||getBeschreibung().getText().isEmpty())
-//		{
-//			JOptionPane.showMessageDialog(this,"Bitte füllen Sie die Felder vollständig aus!");
-//			fehler=true;
-//		}
-//			//Uhrzeit richtiges format
-//		String enduhrzeit=getEndUhrzeit().getText();	
-//		String startuhrzeit= getStartUhrzeit().getText();
-//		int laengeend=enduhrzeit.length();
-//		int laengesta=startuhrzeit.length();
-//		int endStd= Integer.parseInt(enduhrzeit.substring(0,2));
-//		int endMin= Integer.parseInt(enduhrzeit.substring(3, 5));
-//		System.out.println(endStd+";"+endMin);
-//
-//		
-////		if(!enduhrzeit.equals(endFormat)&&!startuhrzeit.equals(startFormat))
-////		{
-////			JOptionPane.showMessageDialog(this, "Bitte geben Sie die Uhrzeit im Format xx:xx an");
-////			fehler=true;
-////		}
-//		//Uhrzeit zwischen 0 und 23:59
-//			
-//		
-//		
-//		//Uhrzeit start kleiner als ende
-////		else
-////		{
-////		int endStd=Integer.parseInt(enduhrzeit.substring(2));
-////		System.out.println(endStd);
-//		
-//		
-////		if()
-////		{
-////			
-////		}
-//			
-////		}
-//		
-//		return fehler;
-//		
-//	}
 	
+/**
+ * Proofs if all fields are filled and if the data ist inserted in the correct format.
+ * Furthermore it proofs the logical correctness of the times.
+ *  
+ * @return fehler
+ */
+	public boolean pruefeFelder() {
+		boolean fehler = false;
+
+		Color c = new Color(255, 86, 63);
+		Border redline = BorderFactory.createLineBorder(c);
+		String endzeit = getEndUhrzeit().getText();
+		String startzeit = getStartUhrzeit().getText();
+		String beschreibungen = getBeschreibung().getText();
+		if (endzeit.isEmpty() || startzeit.isEmpty()
+				|| beschreibungen.isEmpty()) {
+			if (endzeit.isEmpty())
+				getEndUhrzeit().setBorder(redline);
+			if (startzeit.isEmpty())
+				getStartUhrzeit().setBorder(redline);
+			if (beschreibungen.isEmpty())
+				getBeschreibung().setBorder(redline);
+
+			JOptionPane.showMessageDialog(this,
+					"Bitte füllen Sie die Felder vollständig aus!");
+			fehler = true;
+		} else {
+
+			long start = getStartUhrzeit().getTime();
+			System.out.println(start);
+			long ende = getEndUhrzeit().getTime();
+			System.out.println(ende);
+			if (start > ende) {
+				JOptionPane
+						.showMessageDialog(this,
+								"Die Endzeit muss zeitlich nach der Startzeit eines Termins liegen!");
+				fehler = true;
+			}
+
+		}
+		return fehler;
+
+	}
+
+	/**
+	 * Creates a timefield that only accepts times in the format xx:xx.
+	 * 
+	 * @param time
+	 * @return tf
+	 */
+	public TimeField erstelleTimefield(String time) {
+		TimeField tf = new TimeField();
+		if (time != null && !time.isEmpty()) {
+			SimpleDateFormat format = new SimpleDateFormat("H:mm");
+			Date date = new Date();
+			try {
+				date = format.parse(time);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			tf = new TimeField(date);
+		} else
+			tf = new TimeField();
+
+		return tf;
+	}
+
 }

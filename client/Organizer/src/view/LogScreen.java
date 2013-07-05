@@ -21,7 +21,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-public class window_LogScreen extends JFrame {
+public class LogScreen extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -71,7 +71,7 @@ public class window_LogScreen extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public window_LogScreen(ActionListener myCon) {
+	public LogScreen(ActionListener myCon) {
 		myAL=myCon;
 		init();
 	}
