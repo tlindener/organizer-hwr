@@ -38,7 +38,7 @@ namespace Organizer
 
         #region Calendar
 
-                /// <summary>
+        /// <summary>
         ///     Adds a new calendar item to database
         /// </summary>
         /// <param name="calendar"></param>
@@ -412,7 +412,7 @@ namespace Organizer
 
             var users = this.GetAllUser();
 
-            if (users != null && users.Where(p => p.MailAddress == dbUser.MailAddress).Count() > 0)
+            if (users != null && users.Where(p => p.MailAddress.Equals(dbUser.MailAddress,StringComparison.InvariantCultureIgnoreCase)).Count() > 0)
             {
                 return 0;
             }
