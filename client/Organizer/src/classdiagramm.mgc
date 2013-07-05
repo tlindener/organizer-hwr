@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <Class name="view.View" x="716" y="254">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association destinationClassName="view.Servereinstellungen"
+            endpointName="myServereinstellungen" kind="Simple"/>
+        <Association destinationClassName="view.RegisterUser"
+            endpointName="myRegistration" kind="Simple"/>
+        <Association destinationClassName="view.Hauptmenue"
+            endpointName="myHauptmenue" kind="Simple"/>
+        <Association destinationClassName="view.LogScreen"
+            endpointName="myLogScreen" kind="Simple"/>
+        <Association destinationClassName="view.Einladungen"
+            endpointName="myEinladungen" kind="Simple"/>
+        <Association destinationClassName="logik.DataPusher"
+            endpointName="myDP" kind="Simple"/>
+        <Association destinationClassName="view.NeuerRaum"
+            endpointName="myNeuerRaum" kind="Simple"/>
+    </Class>
+    <Class name="logik.Model" x="14" y="796">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="view.Einladungen" x="780" y="-6">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="view.renderer.TimeField" x="340" y="1196">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Communication destinationClassName="view.renderer.TimeVerifier"/>
+    </Class>
+    <Class name="controller.Controller" x="14" y="24">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="logik.DataPusher"/>
+        <Association destinationClassName="view.TerminBearbeiten"
+            endpointName="editEntry" kind="Simple"/>
+        <Association destinationClassName="view.View"
+            endpointName="view" kind="Simple"/>
+        <Association destinationClassName="logik.Model"
+            endpointName="myModel" kind="Simple"/>
+        <Communication destinationClassName="view.TerminBearbeiten"/>
+        <Communication destinationClassName="view.Einladungen"/>
+        <Communication destinationClassName="logik.Model"/>
+        <Communication destinationClassName="view.LogScreen"/>
+        <Communication destinationClassName="view.RegisterUser"/>
+        <Communication destinationClassName="view.Hauptmenue"/>
+        <Communication destinationClassName="view.NeuerRaum"/>
+        <Communication destinationClassName="view.Servereinstellungen"/>
+    </Class>
+    <Class name="view.renderer.MyListSelectionModel" x="746" y="1076">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="view.LogScreen" x="1008" y="28">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="view.Servereinstellungen" x="1060" y="462">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="controller.MyChangeListener" x="554" y="1244">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="view.renderer.TimeVerifier" x="242" y="1266">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="view.TerminBearbeiten" x="317" y="664">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="controller.MyChangeListener"/>
+        <Association destinationClassName="view.renderer.TimeField"
+            endpointName="startUhrzeit" kind="Simple"/>
+        <Association
+            destinationClassName="view.renderer.MyCheckBoxListRenderer"
+            endpointName="combinedListener" kind="Simple"/>
+        <Association destinationClassName="logik.DataPusher"
+            endpointName="myDataPusher" kind="Simple"/>
+        <Association destinationClassName="view.renderer.TimeField"
+            endpointName="endUhrzeit" kind="Simple"/>
+        <Communication destinationClassName="view.renderer.TimeField"/>
+        <Communication destinationClassName="logik.DataPusher"/>
+        <Communication destinationClassName="view.util"/>
+    </Class>
+    <Class name="view.renderer.MyCheckBoxListRenderer" x="476" y="1104">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association destinationClassName="controller.MyChangeListener"
+            endpointName="listener" kind="Simple"/>
+        <Communication destinationClassName="controller.MyChangeListener"/>
+    </Class>
+    <Class name="logik.DataPusher" x="460" y="400">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="view.RegisterUser" x="1037" y="665">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="view.util" x="642" y="218">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="view.Hauptmenue" x="767" y="578">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association destinationClassName="view.renderer.CellRenderer"
+            endpointName="myRenderer" kind="Simple"/>
+        <Association destinationClassName="logik.DataPusher"
+            endpointName="myDataPusher" kind="Simple"/>
+        <Communication destinationClassName="logik.DataPusher"/>
+    </Class>
+    <Class name="view.renderer.CellRenderer" x="812" y="962">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="view.NeuerRaum" x="1036" y="252">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+</ClassDiagram>

@@ -29,7 +29,7 @@ public class Model {
 	private HashMap<String, String> beschreibungen;
 	private HashMap<String, String> anfangende;
 	private HashMap<String, String> details;
-	private HashMap<String, List<User>> eingeladene;
+	private HashMap<String, ArrayList<User>> eingeladene;
 	private HashMap<String, String> raeume;
 	private HashMap<String, Double> dauer;
 	private List<User> allePersonen;
@@ -204,12 +204,15 @@ public class Model {
 	 * @param time
 	 * @return list of invitees
 	 */
-	public List returnEingeladene(String time) {
-		List lreturn = new ArrayList<String>();
+	public ArrayList<User> returnEingeladene(String time) {
+		ArrayList <User>lreturn = new ArrayList<User>();
 		lreturn = eingeladene.get(time);
 		return lreturn;
 	}
 
+	
+	
+	
 	/**
 	 * Returns the detail of the calendarentrie at the submitted time.
 	 * 
@@ -365,10 +368,9 @@ public class Model {
 	 * Puts the submitted invitee list with the submitted time as key into the
 	 * hashmap eingeladene.
 	 * 
-	 * @param personen
-	 *            , time
+	 * @param personen, time
 	 */
-	public void setPersonen(String time, List teilnehmer) {
+	public void setPersonen(String time, ArrayList<User> teilnehmer) {
 		eingeladene.put(time, teilnehmer);
 	}
 
