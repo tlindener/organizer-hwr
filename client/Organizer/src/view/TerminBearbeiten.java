@@ -400,9 +400,9 @@ public class TerminBearbeiten extends JFrame implements MyChangeListener {
 		} else {
 
 			long start = getStartUhrzeit().getTime();
-			System.out.println(start);
+//			System.out.println(start);
 			long ende = getEndUhrzeit().getTime();
-			System.out.println(ende);
+//			System.out.println(ende);
 			if (start > ende) {
 				JOptionPane
 						.showMessageDialog(this,

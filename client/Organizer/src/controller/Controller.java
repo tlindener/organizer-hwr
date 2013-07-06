@@ -10,30 +10,28 @@ import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.management.MXBean;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+
 import logik.DataPusher;
 import logik.Model;
-import network.json.JsonJavaRequestHandler;
-import network.RequestHandler;
 
+import organizer.networklayer.network.RequestHandler;
+import organizer.networklayer.network.json.JsonJavaIISRequestHandler;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Invite;
 import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
-import view.Einladungen;
-import view.NeuerRaum;
-import view.Hauptmenue;
-import view.LogScreen;
-import view.RegisterUser;
-import view.Servereinstellungen;
 import view.TerminBearbeiten;
 import view.View;
 
@@ -170,12 +168,17 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		}
 		if (e.getSource() == view.getMyEinladungen().getBtnAbsagen()) {
-			aktin.setAccepted(-1);
-			bearbeiteEinladung();
+			if(aktin != null){
+				aktin.setAccepted(-1);
+				bearbeiteEinladung();
+			}
+			
 		}
 		if (e.getSource() == view.getMyEinladungen().getBtnZusagen()) {
-			aktin.setAccepted(1);
-			bearbeiteEinladung();
+			if(aktin != null){
+				aktin.setAccepted(1);
+				bearbeiteEinladung();
+			}
 		}
 	}
 
@@ -379,10 +382,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			aktUser = myRequester.requestObjectByOwnId(aktUser);
 			
 			List<Integer> inviteIds = aktUser.getInviteIds();
-			List<Invite> einladungen = new ArrayList();
-			for (int i : inviteIds) {
+			List<Invite> einladungen = new ArrayList<>();
+			
+			for (int i = 0; i < inviteIds.size(); i++) {
 				Invite in = new Invite();
-				in.setID(inviteIds.get(i - 1));
+				in.setID(inviteIds.get(i));
 				in = myRequester.requestObjectByOwnId(in);
 				if (in != null) {
 					einladungen.add(in);
@@ -424,9 +428,9 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					r.setID(myCe.getRoomId());
 					Room tmp = myRequester.requestObjectByOwnId(r);
 					if (tmp != null) {
-						myModel.setRaeume(anfangZeit, tmp.getDescription());
+						myModel.setRaeume(anfangZeit, tmp);
 					} else {
-						myModel.setRaeume(anfangZeit, "");
+						myModel.setRaeume(anfangZeit, null);
 					}
 				}
 			}
@@ -544,7 +548,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	public void befuelleEinladungen() {
 
 		List<Invite> einl = myModel.getEinladungen();
-
+		//XXX Was willst du hier machen? Sortieren macht man über einen Comperator...
 		List<Invite> sortEinl = new ArrayList();
 		for (Invite in : einl) {
 			if (in.isAccepted() == 0) {
@@ -552,6 +556,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			}
 		}
 		einl = sortEinl;
+		//XXX QuickFix
+		if(einl.isEmpty()){
+			aktin = null;
+			return;
+		}
 		aktin = einl.get(0);
 		int id = aktin.getCalendarEntryId();
 		CalendarEntry ce = new CalendarEntry();
@@ -635,7 +644,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			view.getMyHauptmenue().getListModel().removeAllElements();
 		}
 		
-		view.getMyHauptmenue().getTxtRaum().setText(myModel.returnRaum(aktTermin));
+		String text = returnStringOfObject(myModel.returnRaum(aktTermin));
+		view.getMyHauptmenue().getTxtRaum().setText(text);
 
 	}
 
@@ -704,9 +714,10 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * Saves a new created calendar entry and submits it to the database.
 	 */
 	public void speichereTermin() {
+		
 		neuCalEnt = new CalendarEntry();
 		
-		boolean pruefefeld = 	editEntry.pruefeFelder();
+		boolean pruefefeld = editEntry.pruefeFelder();
 
 		if (pruefefeld == false) {
 			if (editEntry.getSelectedRoom().getID() == -1) {
@@ -732,7 +743,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			neuCalEnt.setTitle(editEntry.getBeschreibung().getText());
 
 			boolean status = true;
-			CalendarEntry obj = new CalendarEntry();
+			CalendarEntry entry = new CalendarEntry();
 			int id = 0;
 
 				boolean hasid = myModel.getKalendarentries().containsKey(startzeit);
@@ -743,12 +754,12 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					
 					status = myRequester.updateObject(neuCalEnt);
 				} else {
-					obj = myRequester.addObject(neuCalEnt);
+					entry = myRequester.addObject(neuCalEnt);
 				}
 
 
-			if (obj == null || status == false) {
-				if (obj == null)
+			if (entry == null || status == false) {
+				if (entry == null)
 
 					JOptionPane.showMessageDialog(editEntry,
 							"Termin konnte nicht eingetragen werden",
@@ -773,10 +784,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			 */
 			// Wurde geupdatet?
 			
-			if (status==true) 				
-				versendeEinladungen(id);
-			 else 
-				versendeEinladungen(obj.getID());
+			if (status==true) {
+				versendeEinladungen(neuCalEnt.getID());
+			}else{
+				versendeEinladungen(entry.getID());
+			}
 			
 			editEntry.setVisible(false);
 
@@ -793,22 +805,58 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	/**
 	 * Submits the invitation to the server.
-	 * @param id
+	 * @param calendarEntryId
+	 * @param list 
 	 */
-	public void versendeEinladungen(int id)
-	{
-		Invite in = new Invite();
+	public void versendeEinladungen(int calendarEntryId)
+	{		
+		CalendarEntry entry = new CalendarEntry();
+		entry.setID(calendarEntryId);
+		entry = myRequester.requestObjectByOwnId(entry);
+		List<Integer> listInviteIds = new ArrayList<>();
+		if(entry == null){
+			
+		}else{
+			listInviteIds = entry.getInviteIds();
+		}
+		
+		HashMap<User, Integer> invitedUsers = new HashMap<User, Integer>();
+		
+		for(int inviteId: listInviteIds){
+			Invite in = new Invite();
+			in.setID(inviteId);
+			Invite vorhanden=myRequester.requestObjectByOwnId(in);
+			if(vorhanden != null){
+				User requestUser = new User();
+				requestUser.setID(vorhanden.getOwnerId());
+				User user = myRequester.requestObjectByOwnId(requestUser);
+				if(user!=null){
+					invitedUsers.put(user,inviteId);
+				}
+			}
+		}		
+		
 	
 		for (User user : editEntry.getSelectedUsers()) {
-			in.setCalendarEntryId(id);
-			in.setOwnerId(user.getID());
-			Invite vorhanden=myRequester.requestObjectByOwnId(in);
-			if(vorhanden==null)
-			{
-			Invite tmpin = myRequester.addObject(in);
-			if (tmpin == null) {
-				JOptionPane.showMessageDialog(editEntry, "Die Einladungen konnten nicht versandt werden!");
+			if(!invitedUsers.containsKey(user)){
+				Invite newInvite = new Invite();
+				newInvite.setOwnerId(user.getID());
+				newInvite.setCalendarEntryId(calendarEntryId);
+				Invite tmpin = myRequester.addObject(newInvite);
+				if (tmpin == null) {
+					JOptionPane.showMessageDialog(editEntry, "Die Einladungen konnten nicht versandt werden!");
+				}
+			}else{
+				System.out.println("Result:" + invitedUsers.remove(user));
 			}
+		}
+		
+		for (User user : invitedUsers.keySet()) {
+			Invite removeInvite = new Invite();
+			removeInvite.setID(invitedUsers.get(user));
+			boolean tmpin = myRequester.removeObjectByOwnId(removeInvite);
+			if (tmpin == false) {
+				JOptionPane.showMessageDialog(editEntry, "Die Einladung konnte nicht gelöscht werden!");
 			}
 		}
 	}
@@ -872,7 +920,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			port = Integer.parseInt(view.getMyServereinstellungen().getTxtPort()
 					.getText());
 			adresse = view.getMyServereinstellungen().getTxtAdresse().getText();
-			myRequester = new JsonJavaRequestHandler(adresse, port);
+			myRequester = new JsonJavaIISRequestHandler(adresse, port);
 			return 1;
 		}
 	}
@@ -1018,7 +1066,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					.getText());
 			adresse = view.getMyServereinstellungen().getTxtAdresse().getText();
 			view.getMyServereinstellungen().setVisible(false);
-			myRequester = new JsonJavaRequestHandler(adresse, port);
+			myRequester = new JsonJavaIISRequestHandler(adresse, port);
 
 		}
 	}
@@ -1049,12 +1097,12 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			String details = myModel.returnDetail(aktTermin);
 			String endZeit = myModel.returnEndzeit(aktTermin);
 			String beschreibung = myModel.returnBeschreibung(aktTermin);
-			String raum = myModel.returnRaum(aktTermin);
-			Room[] raeume = myModel.getAlleRaeume();
-			
+			Room r = myModel.returnRaum(aktTermin);
+			String raum = returnStringOfObject(r);
+			Room[] raeume = new Room[]{r};
 			ArrayList<User> eing=myModel.returnEingeladene(aktTermin);
 			User[] personen = eing.toArray(new User[eing.size()]);
-			System.out.println("eingeladene: "+personen[0]);
+//			System.out.println("eingeladene: "+personen[0]);
 			
 			editEntry.openFrameWithValues(startZeit, endZeit, beschreibung,
 					details, raeume, personen, raum);
@@ -1143,4 +1191,15 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		}
 	}
+	
+	private String returnStringOfObject(Object obj){
+		if(obj == null){
+			return "";
+		}
+		if(obj instanceof Room){
+			return ((Room) obj).getDescription();
+		}
+		return obj.toString();
+	}
+	
 }

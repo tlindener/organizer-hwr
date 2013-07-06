@@ -30,7 +30,7 @@ public class Model {
 	private HashMap<String, String> anfangende;
 	private HashMap<String, String> details;
 	private HashMap<String, ArrayList<User>> eingeladene;
-	private HashMap<String, String> raeume;
+	private HashMap<String, Room> raeume;
 	private HashMap<String, Double> dauer;
 	private List<User> allePersonen;
 	private List<Room> alleRaeume;
@@ -173,12 +173,12 @@ public class Model {
 	 * @return room or String "kein Raum zugeteilt" if there is no room for the
 	 *         calendarentrie
 	 */
-	public String returnRaum(String time) {
+	public Room returnRaum(String time) {
 		if (raeume.get(time) != null) {
 
 			return raeume.get(time);
 		} else {
-			return "kein Raum zugeteilt";
+			return null;
 		}
 
 	}
@@ -270,7 +270,7 @@ public class Model {
 	 * 
 	 * @return kalendardaten
 	 */
-	public HashMap getKalendarentries() {
+	public HashMap<String, Integer> getKalendarentries() {
 		return Kalenderentries;
 	}
 
@@ -392,7 +392,7 @@ public class Model {
 	 * @param time
 	 *            , room
 	 */
-	public void setRaeume(String time, String room) {
+	public void setRaeume(String time, Room room) {
 		raeume.put(time, room);
 	}
 
