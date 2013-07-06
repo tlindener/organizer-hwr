@@ -2,10 +2,12 @@ package organizer.objects;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import organizer.networklayer.network.RequestHandler;
 
 
 /**
@@ -132,6 +134,17 @@ public abstract class AbstractOrganizerObject implements Comparable<AbstractOrga
 	public void setRequestProperty(String property, String value) {
 		this.byValue = value;
 		this.byProperty = property;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) return false;
+		return toString().equals(obj.toString());
+	}
+	
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
 	}
 	
 	@Override

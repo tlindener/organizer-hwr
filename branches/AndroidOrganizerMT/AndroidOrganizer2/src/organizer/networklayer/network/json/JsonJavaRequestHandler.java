@@ -109,6 +109,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 *            added.
 	 * @return the obj containing its set ID or null, if such an object already
 	 *         exists.
+	 *       
 	 */
 	@Override
 	public <T extends AbstractOrganizerObject> T addObject(T obj) {
@@ -355,7 +356,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * user contains its given name, surname, mail address, phone number and ID.
 	 * The stored lists will be empty <b>expected</b> the groupIds.
 	 * <li>{@link CalendarEntry}: This method is not supported. Use the method
-	 * {@link #requestAllObjectsByProperty(AbstractOrganizerObject)} with the
+	 * {@link JsonJavaRequestHandler#requestAllObjectsByProperty(AbstractOrganizerObject)} with the
 	 * user id as byProperty instead.
 	 * <li>{@link Calendar}: This method is not supported. Use the List of
 	 * calendar IDs in your user object.
@@ -431,12 +432,12 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	 * <li>by owner ID: You can only request {@link CalendarEntry}s of your own
 	 * ID or you are invited to. {@link Organizer.WebService.IOrganizerService#GetAllCalendarEntriesByOwnerId(int ownerId, String auth)}
 	 * <li>by room id: You will receive a List of anonymous
-	 * {@link CalendarEntry}(time, owner ID) {@link Organizer.WebService.IOrganizerService#GetAllCalendarEntriesByRoomId(int roomId, String auth)}
+	 * {@link CalendarEntry}(time, owner ID)
 	 * </ul>
 	 * <li> {@link Group}: You will request {@link Group}s you are member of.
 	 * </ul>
 	 * 
-	 * 
+	 * @see Organizer.WebService.IOrganizerService#GetAllCalendarEntriesByRoomId(int roomId, String auth)
 	 * 
 	 * @param obj
 	 *            Instance of {@link AbstractOrganizerObject} whose set property
