@@ -5,13 +5,11 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-import junit.framework.TestSuite;
-
-
 import organizer.networklayer.network.RequestHandler;
 import organizer.networklayer.network.json.JsonJavaIISRequestHandler;
 import organizer.networklayer.network.json.JsonJavaRequestHandler;
 import organizer.networklayer.network.listener.ProcessListener;
+import organizer.networklayer.test.junit.TestSuite;
 import organizer.objects.AbstractOrganizerObject;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
@@ -28,6 +26,9 @@ import organizer.objects.types.User;
  * phase it was used for manual tests. This approach is replaced by the class
  * {@link TestSuite}, that contains JUnit - automated - tests.
  * 
+ * It will provide a command line based menu to add, request, update and remove
+ * elements.
+ * 
  * @author Steffen Baumann
  * @version 1.0
  * 
@@ -41,6 +42,7 @@ public class Start implements ProcessListener {
 		new Start();
 		// new Start("");
 	}
+
 	RequestHandler requester;
 	final String[] mainmenu = new String[] {
 			"CREATE default USER(with Calendar)", "LOGIN" };
@@ -206,7 +208,7 @@ public class Start implements ProcessListener {
 		Scanner scan = new Scanner(System.in);
 		System.out.print("Enter your login name: ");
 		String name = scan.nextLine();
-		
+
 		User user1 = new User();
 		user1.setMailAddress(name);
 		user1.setGivenname(name);
@@ -351,7 +353,7 @@ public class Start implements ProcessListener {
 		int readIn = scan.nextInt();
 		System.out.print("Enter the ID of the Entry you want to invite to: ");
 		int entryId = scan.nextInt();
-		
+
 		return sendInvitesTo(readIn, entryId);
 	}
 
@@ -395,7 +397,7 @@ public class Start implements ProcessListener {
 			System.out.print("To exit use -1, otherwise use another int: ");
 			goOn = scan.nextInt();
 		} while (goOn != -1);
-		
+
 		return true;
 	}
 
@@ -403,7 +405,7 @@ public class Start implements ProcessListener {
 		System.out.print("MailAddress for the Login: ");
 		Scanner scan = new Scanner(System.in);
 		String mail = scan.nextLine();
-		
+
 		return login(mail, "123456");
 	}
 
@@ -414,7 +416,7 @@ public class Start implements ProcessListener {
 		CalendarEntry entry = new CalendarEntry();
 		entry.setID(id);
 		boolean result = requester.removeObjectByOwnId(entry);
-		
+
 		return result;
 	}
 
@@ -425,13 +427,13 @@ public class Start implements ProcessListener {
 		Room r = new Room();
 		r.setID(idRoom);
 		r = requester.requestObjectByOwnId(r);
-	
+
 		System.out.print("Enter a entry id: ");
 		int idEntry = scan.nextInt();
 		CalendarEntry ce = new CalendarEntry();
 		ce.setID(idEntry);
 		ce = requester.requestObjectByOwnId(ce);
-		
+
 		return updateRoomForCalendarEntry(r, ce);
 	}
 
@@ -446,7 +448,7 @@ public class Start implements ProcessListener {
 					System.out.print("Repeat your input: ");
 					continue;
 				}
-				
+
 				return chosen;
 			} catch (InputMismatchException ex) {
 				ex.printStackTrace();

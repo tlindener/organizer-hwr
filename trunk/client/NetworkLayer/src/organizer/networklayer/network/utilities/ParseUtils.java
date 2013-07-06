@@ -51,43 +51,6 @@ public class ParseUtils {
 		plurals.put(Room.class, "Rooms");
 		plurals.put(Invite.class, "Invites");
 		
-		
-		urlReplacments = new HashMap<Character, String>();
-		urlReplacments.put(' ', "%20");
-		urlReplacments.put('!', "%21");
-		urlReplacments.put('"', "%22");
-		urlReplacments.put('#', "%23");
-		urlReplacments.put('$', "%24");		
-		urlReplacments.put('%', "%25");		
-		urlReplacments.put('&', "%26");		
-		urlReplacments.put('\'', "%27");		
-		urlReplacments.put('(', "%28");
-		urlReplacments.put(')', "%29");		
-		urlReplacments.put('*', "%2A");
-		urlReplacments.put('+', "%2B");
-		urlReplacments.put(',', "%2C");	
-		
-		urlReplacments.put('/', "%2F");	
-		
-		urlReplacments.put(':', "%3A");
-		urlReplacments.put(';', "%3B");
-		urlReplacments.put('<', "%3C");			
-		urlReplacments.put('=', "%3D");		
-		urlReplacments.put('>', "%3E");			
-		urlReplacments.put('?', "%3F");		
-		urlReplacments.put('@', "%40");	
-		
-		urlReplacments.put('[', "%5B");
-		urlReplacments.put('\\', "%5C");
-		urlReplacments.put(']', "%5D");
-		
-		urlReplacments.put('Ä', "%C4");
-		urlReplacments.put('Ö', "%D6");
-		urlReplacments.put('Ü', "%DC");
-		urlReplacments.put('ß', "%DF");
-		urlReplacments.put('ä', "%E4");
-		urlReplacments.put('ö', "%F6");
-		urlReplacments.put('ü', "%FC");
 	}
 
 	/**
@@ -290,7 +253,6 @@ public class ParseUtils {
 	 * Creates a {@link ArrayList}<{@link String}> containing all private fields
 	 * of the given {@link AbstractOrganizerObject} represented as HTTP
 	 * parameter
-	 * 
 	 * @param obj
 	 *            with full set attributes
 	 * @return a List of HTTP parameters
@@ -308,11 +270,6 @@ public class ParseUtils {
 				if (f.getName().equals("accepted")) {
 					continue;
 				}
-				// if(value == null){
-				// parameters.add(f.getName() + "=");
-				// // throw new
-				// IllegalArgumentException("Darf nicht null sein");
-				// }
 				if (value instanceof List<?>) {
 					continue;
 				} else if (value instanceof String) {
