@@ -3,8 +3,6 @@
  */
 package organizer.objects.types;
 
-import java.util.List;
-
 import organizer.objects.AbstractOrganizerObject;
 
 /**
@@ -14,9 +12,6 @@ import organizer.objects.AbstractOrganizerObject;
  */
 public class Invite extends AbstractOrganizerObject {
 
-//	public static final String OWNER_ID = "OwnerId";
-//	public static final String CALENDAR_ENTRY_ID = "CalendarEntryId";
-	
 	private int userId = 0;
 	private int accepted = 0;
 	private int calendarEntryId = 0;
