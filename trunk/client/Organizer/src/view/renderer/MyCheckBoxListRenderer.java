@@ -16,6 +16,12 @@ import organizer.objects.types.Room;
 import organizer.objects.types.User;
 
 import controller.MyChangeListener;
+/**
+ * Class that handles the appearance of the chec kboxes and realizes changes.
+ * 
+ * @author Steffen Baumann
+ *
+ */
 
 public class MyCheckBoxListRenderer implements
 		ListCellRenderer<AbstractOrganizerObject>, ChangeListener {
@@ -32,10 +38,22 @@ public class MyCheckBoxListRenderer implements
 	 */
 	private MyChangeListener listener = null;
 
+	/**
+	 * Default constructor that initializes the submitted ChangeListener.
+	 * 
+	 * @param listener
+	 */
 	public MyCheckBoxListRenderer(MyChangeListener listener) {
 		this.listener = listener;
 	}
 
+	
+	/**
+	 * Creates a new checkbox with the submitted values.
+	 * If the checkbox already exists it is taken from
+	 * the user-/room-map that contains all existing checkboxes.
+	 * 
+	 */
 	@Override
 	public Component getListCellRendererComponent(
 			JList<? extends AbstractOrganizerObject> list,
@@ -94,6 +112,9 @@ public class MyCheckBoxListRenderer implements
 		return box;
 	}
 
+	/**
+	 * Changes the status of a checkbox.
+	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
 //		Welche Checkbox hat das Event ausgelöst?
@@ -116,6 +137,7 @@ public class MyCheckBoxListRenderer implements
 			return;
 		}
 	}
+	
 	/**
 	 * Searchs for the key that is related to the given value in the given map. This is just for one-to-one relations
 	 * @param map to search in

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassDiagram>
-    <Class name="view.View" x="716" y="254">
+    <Class name="view.View" x="536" y="388">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -10,6 +10,8 @@
             accessors-accepted="false" constructors-accepted="false"/>
         <Association destinationClassName="view.Servereinstellungen"
             endpointName="myServereinstellungen" kind="Simple"/>
+        <Association destinationClassName="view.TerminBearbeiten"
+            endpointName="myTerminBearbeiten" kind="Simple"/>
         <Association destinationClassName="view.RegisterUser"
             endpointName="myRegistration" kind="Simple"/>
         <Association destinationClassName="view.Hauptmenue"
@@ -22,6 +24,7 @@
             endpointName="myDP" kind="Simple"/>
         <Association destinationClassName="view.NeuerRaum"
             endpointName="myNeuerRaum" kind="Simple"/>
+        <Communication destinationClassName="view.TerminBearbeiten"/>
     </Class>
     <Class name="logik.Model" x="14" y="796">
         <AttributesDisplayFilter public-accepted="true"
@@ -41,7 +44,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="view.renderer.TimeField" x="340" y="1196">
+    <Class name="view.renderer.TimeField" x="1040" y="1086">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -51,7 +54,7 @@
             accessors-accepted="false" constructors-accepted="false"/>
         <Communication destinationClassName="view.renderer.TimeVerifier"/>
     </Class>
-    <Class name="controller.Controller" x="14" y="24">
+    <Class name="controller.Controller" x="22" y="50">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -60,12 +63,11 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
         <Extension destinationClassName="logik.DataPusher"/>
-        <Association destinationClassName="view.TerminBearbeiten"
-            endpointName="editEntry" kind="Simple"/>
         <Association destinationClassName="view.View"
             endpointName="view" kind="Simple"/>
         <Association destinationClassName="logik.Model"
             endpointName="myModel" kind="Simple"/>
+        <Communication destinationClassName="view.View"/>
         <Communication destinationClassName="view.TerminBearbeiten"/>
         <Communication destinationClassName="view.Einladungen"/>
         <Communication destinationClassName="logik.Model"/>
@@ -102,7 +104,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="controller.MyChangeListener" x="554" y="1244">
+    <Class name="controller.MyChangeListener" x="552" y="1158">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -111,7 +113,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="view.renderer.TimeVerifier" x="242" y="1266">
+    <Class name="view.renderer.TimeVerifier" x="976" y="1154">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -120,7 +122,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="view.TerminBearbeiten" x="317" y="664">
+    <Class name="view.TerminBearbeiten" x="457" y="662">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -130,7 +132,9 @@
             accessors-accepted="false" constructors-accepted="false"/>
         <Extension destinationClassName="controller.MyChangeListener"/>
         <Association destinationClassName="view.renderer.TimeField"
-            endpointName="startUhrzeit" kind="Simple"/>
+            endpointName="startUhrzeit" kind="Simple">
+            <Point x="942" y="1096"/>
+        </Association>
         <Association
             destinationClassName="view.renderer.MyCheckBoxListRenderer"
             endpointName="combinedListener" kind="Simple"/>
@@ -142,7 +146,7 @@
         <Communication destinationClassName="logik.DataPusher"/>
         <Communication destinationClassName="view.util"/>
     </Class>
-    <Class name="view.renderer.MyCheckBoxListRenderer" x="476" y="1104">
+    <Class name="view.renderer.MyCheckBoxListRenderer" x="386" y="1058">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -154,7 +158,7 @@
             endpointName="listener" kind="Simple"/>
         <Communication destinationClassName="controller.MyChangeListener"/>
     </Class>
-    <Class name="logik.DataPusher" x="460" y="400">
+    <Class name="logik.DataPusher" x="352" y="544">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -172,7 +176,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="view.util" x="642" y="218">
+    <Class name="view.util" x="840" y="278">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -181,7 +185,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="view.Hauptmenue" x="767" y="578">
+    <Class name="view.Hauptmenue" x="357" y="-14">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -195,7 +199,7 @@
             endpointName="myDataPusher" kind="Simple"/>
         <Communication destinationClassName="logik.DataPusher"/>
     </Class>
-    <Class name="view.renderer.CellRenderer" x="812" y="962">
+    <Class name="view.renderer.CellRenderer" x="648" y="98">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>

@@ -56,14 +56,14 @@ public class RegisterUser extends JFrame {
 	 * Create the frame.
 	 */
 	public void init() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 400, 506);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 387, 483);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{40, 123, 18, 155, 40, 0};
-		gbl_contentPane.rowHeights = new int[]{50, 15, 15, 15, 15, 15, 0, 0, 15, 15, 15, 15, 15, 30, 0, 50};
+		gbl_contentPane.rowHeights = new int[]{50, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 0, 50};
 		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
@@ -283,30 +283,17 @@ public class RegisterUser extends JFrame {
 			
 		Color c = new Color(255, 86, 63);
 		Border redline = BorderFactory.createLineBorder(c);
-		Border blackline = BorderFactory.createLineBorder(Color.black);
+		
 		if (getTxtEmailadresse().getText().equals("")) 
 			getTxtEmailadresse().setBorder(redline);
-		else
-			getTxtEmailadresse().setBorder(blackline);
-
 		if (getTxtNachname().getText().equals(""))
 			getTxtNachname().setBorder(redline);
-		else
-			getTxtNachname().setBorder(blackline);
-		
 		if (getTxtVorname().getText().equals("")) 
 			getTxtVorname().setBorder(redline);
-		else
-			getTxtVorname().setBorder(blackline);
-	
 		if (getTxtPasswort().getPassword().length==0) 
 			getTxtPasswort().setBorder(redline);
-		else
-			getTxtPasswort().setBorder(blackline);
 		if (getTxtPasswortBest().getPassword().length==0) 
 			getTxtPasswortBest().setBorder(redline);
-		else
-			getTxtPasswortBest().setBorder(blackline);
 		
 		repaint();
 		}
