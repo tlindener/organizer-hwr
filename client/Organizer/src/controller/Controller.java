@@ -112,45 +112,60 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		if (view.getMyServereinstellungen()!=null&&e.getSource() == view.getMyServereinstellungen().getBtnSpeichern()) {
+
+		if (view.getMyServereinstellungen() != null
+				&& e.getSource() == view.getMyServereinstellungen()
+						.getBtnSpeichern()) {
 			speichereServereinstellungen();
 
 		}
-		if (view.getMyHauptmenue()!=null&&e.getSource() == view.getMyHauptmenue().getBtnTerminBearbeiten()) {
+		if (view.getMyHauptmenue() != null
+				&& e.getSource() == view.getMyHauptmenue()
+						.getBtnTerminBearbeiten()) {
 			bearbeiteTermin();
 
 		}
-		if (view.getMyHauptmenue()!=null&&e.getSource() == view.getMyHauptmenue().getBtnAbmelden()) {
-			view.getMyHauptmenue().dispose();
+		if (view.getMyHauptmenue() != null
+				&& e.getSource() == view.getMyHauptmenue().getBtnAbmelden()) {
+			view.schliesseAlleFenster();
 			view.createLogScreen();
 
 		}
-		if (view.getMyHauptmenue()!=null&&e.getSource() == view.getMyHauptmenue().getBtnTerminEntfernen()) {
+		if (view.getMyHauptmenue() != null
+				&& e.getSource() == view.getMyHauptmenue()
+						.getBtnTerminEntfernen()) {
 			entferneTermin();
 		}
-		if (view.getMyHauptmenue()!=null&&e.getSource() == view.getMyHauptmenue().getBtnRaumErstellen()) {
+		if (view.getMyHauptmenue() != null
+				&& e.getSource() == view.getMyHauptmenue()
+						.getBtnRaumErstellen()) {
 			view.createNeuerRaum();
 		}
-		if (view.getMyLogScreen()!=null&&e.getSource() == view.getMyLogScreen()
-				.getMntmServerkonfigurationen()) {
+		if (view.getMyLogScreen() != null
+				&& e.getSource() == view.getMyLogScreen()
+						.getMntmServerkonfigurationen()) {
 			view.createServereinstellungen();
 		}
-		if (view.getMyLogScreen()!=null&&e.getSource() == view.getMyLogScreen().getBtnAnmelden()) {
+		if (view.getMyLogScreen() != null
+				&& e.getSource() == view.getMyLogScreen().getBtnAnmelden()) {
 			view.getMyLogScreen().dispose();
 			meldeUserAn();
 		}
-		if (view.getMyLogScreen()!=null&&e.getSource() == view.getMyLogScreen().getBtnRegistrieren()) {
+		if (view.getMyLogScreen() != null
+				&& e.getSource() == view.getMyLogScreen().getBtnRegistrieren()) {
 			view.getMyLogScreen().dispose();
 			view.createRegistrieren();
 
 		}
-		if (view.getMyRegistration()!=null&&e.getSource() == view.getMyRegistration().getBtnRegistrieren()) {
+		if (view.getMyRegistration() != null
+				&& e.getSource() == view.getMyRegistration()
+						.getBtnRegistrieren()) {
 			registriereUser();
 		}
-		if (view.getMyRegistration()!=null&&e.getSource() == view.getMyRegistration().getBtnAbbrechen()) {
+		if (view.getMyRegistration() != null
+				&& e.getSource() == view.getMyRegistration().getBtnAbbrechen()) {
 			view.getMyRegistration().loescheInhalte();
-			view.getMyRegistration().dispose(); 
+			view.getMyRegistration().dispose();
 			view.createLogScreen();
 		}
 
@@ -166,21 +181,25 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			speichereTermin();
 		}
 
-		if (view.getMyNeuerRaum()!=null&&e.getSource() == view.getMyNeuerRaum().getBtnSpeichern()) {
+		if (view.getMyNeuerRaum() != null
+				&& e.getSource() == view.getMyNeuerRaum().getBtnSpeichern()) {
 			speichereRaum();
 		}
-		if (view.getMyNeuerRaum()!=null&&e.getSource() == view.getMyNeuerRaum().getBtnAbbrechen()) {
+		if (view.getMyNeuerRaum() != null
+				&& e.getSource() == view.getMyNeuerRaum().getBtnAbbrechen()) {
 			view.getMyNeuerRaum().dispose();
 
 		}
-		if (view.getMyEinladungen()!=null&&e.getSource() == view.getMyEinladungen().getBtnAbsagen()) {
+		if (view.getMyEinladungen() != null
+				&& e.getSource() == view.getMyEinladungen().getBtnAbsagen()) {
 			if (aktin != null) {
 				aktin.setAccepted(-1);
 				bearbeiteEinladung();
 			}
 
 		}
-		if (view.getMyEinladungen()!=null&&e.getSource() == view.getMyEinladungen().getBtnZusagen()) {
+		if (view.getMyEinladungen() != null
+				&& e.getSource() == view.getMyEinladungen().getBtnZusagen()) {
 			if (aktin != null) {
 				aktin.setAccepted(1);
 				bearbeiteEinladung();
@@ -687,7 +706,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 	}
 
-	
 	/**
 	 * Fills the Model with new data and generates new table data.
 	 */
@@ -718,7 +736,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		tmpRaum.setSeats(sitze);
 
 		Room erstRaum = myRequester.addObject(tmpRaum);
-		if (erstRaum != null&&view.getMyTerminBearbeiten()!=null) {
+		if (erstRaum != null && view.getMyTerminBearbeiten() != null) {
 			view.getMyTerminBearbeiten()
 					.getTxtRaum()
 					.setText(
@@ -828,7 +846,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			} else {
 				versendeEinladungen(entry.getID());
 			}
-			
+
 			view.getMyTerminBearbeiten().dispose();
 			updateData();
 
@@ -873,27 +891,26 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * created to access the server via the networklayer.
 	 */
 	public void speichereServereinstellungen() {
-		if (view.getMyServereinstellungen().getTxtPort().getText().isEmpty()
-				|| view.getMyServereinstellungen().getTxtAdresse().getText()
-						.isEmpty()) {
 
-			JOptionPane.showMessageDialog(null,
-					"Bitte wählen Sie gültige Servereinstellungen",
-					"Ungültige Servereinstellungen",
-					JOptionPane.INFORMATION_MESSAGE);
-			view.createServereinstellungen();
-		} else {
-
+		boolean fehler = view.getMyServereinstellungen().pruefeFelder();
+		if (!fehler) {
 			port = Integer.parseInt(view.getMyServereinstellungen()
 					.getTxtPort().getText());
 			adresse = view.getMyServereinstellungen().getTxtAdresse().getText();
+
 			myRequester = new JsonJavaIISRequestHandler(adresse, port);
 			view.getMyServereinstellungen().dispose();
 			if (myRequester == null) {
 				JOptionPane.showMessageDialog(null,
 						"Bitte prüfen Sie ob der Server in Betrieb ist");
 			}
-
+		} else {
+			JOptionPane
+					.showMessageDialog(
+							null,
+							"Bitte geben Sie gültige Servereinstellungen ein. "
+									+ "Bedenken Sie, dass sie wenn Sie die Standardeinstellungen ändern es zu Verbindungsproblemen kommen kann!"
+									+ "Standardeinstellungen adresse: ´localhost´ und port:´80´ ein");
 		}
 	}
 
@@ -1052,13 +1069,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				if (utmp == null) {
 					JOptionPane
 							.showMessageDialog(view.getMyRegistration(),
-									"Sie konnten nicht registriert werden. Bitte versuchen Sie es später erneut!");
+									"Sie konnten nicht registriert werden. Bitte stellen Sie sicher, dass Sie nicht bereits registriert sind!");
 					return;
 				} else {
 					JOptionPane.showMessageDialog(view.getMyRegistration(),
 							"Sie wurden erfolgreich registriert");
 					aktUser = utmp;
-					aktUserCa=null;
+					aktUserCa = null;
 					aktUserCa = new Calendar();
 					aktUserCa.setOwnerId(aktUser.getID());
 					aktUserCa.setDescription("persönlicher Kalendar von "
@@ -1071,7 +1088,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 						JOptionPane.showMessageDialog(view.getMyRegistration(),
 								"Es konnte kein Kalendar hinzugefügt werden");
 
-					} 
+					}
 				}
 				view.getMyRegistration().loescheInhalte();
 				view.getMyRegistration().dispose();
@@ -1169,6 +1186,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 								"Leider sind Sie noch nicht registriert. Bitte Registrieren Sie sich um die MyOrganizer Funktionen nutzen zu können.",
 								"User nicht vorhanden",
 								JOptionPane.INFORMATION_MESSAGE);
+				view.createLogScreen();
 				return;
 			}
 

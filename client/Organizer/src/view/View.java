@@ -177,6 +177,28 @@ public class View {
 
 	}
 
+	/**
+	 * Closes all windows.
+	 */
+	public void schliesseAlleFenster()
+	{
+		if(myHauptmenue!=null)
+			myHauptmenue.dispose();
+		if(myLogScreen!=null)
+			myLogScreen.dispose();
+		if(myRegistration!=null)	
+			myRegistration.dispose();
+		if(myServereinstellungen!=null)	
+			myServereinstellungen.dispose();
+		if(myNeuerRaum!=null)	
+			myNeuerRaum.dispose();
+		if(myEinladungen!=null)	
+			myEinladungen.dispose();
+		if(myTerminBearbeiten!=null)	
+			myTerminBearbeiten.dispose();
+
+	}
+
 	public Hauptmenue getMyHauptmenue() {
 		return myHauptmenue;
 	}

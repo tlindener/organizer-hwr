@@ -1,15 +1,18 @@
 package view;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -84,6 +87,28 @@ public class Servereinstellungen extends JFrame {
 		contentPane.add(btnSpeichern, gbc_btnSpeichern);
 	}
 
+	/**
+	 * Proofs if the fields are filled.
+	 * @return fehler
+	 */
+	public boolean pruefeFelder()
+	{
+		boolean fehler=false;
+		String adresse=txtAdresse.getText();
+		String port= txtPort.getText();
+		Color c = new Color(255, 86, 63);
+		Border redline = BorderFactory.createLineBorder(c);
+		if(adresse.isEmpty()||port.isEmpty())
+		{
+			if(adresse.isEmpty())
+				txtAdresse.setBorder(redline);
+			if(port.isEmpty())
+				txtPort.setBorder(redline);
+			fehler=true;
+		}
+		return fehler;
+	}
+	
 	public JTextField getTxtPort() {
 		return txtPort;
 	}
