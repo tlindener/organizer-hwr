@@ -1450,6 +1450,7 @@ public class TestSuite implements ErrorConstans {
 		user.setGivenname("Update");
 		user.setSurname("Test");
 		user.setMailAddress("updateUser@localhost.de");
+		user.setPassword(defaultPassword);
 		return requester.updateObject(user);
 	}
 	/**
