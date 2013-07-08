@@ -11,8 +11,16 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 
+/**
+ * Verifies that the input into the TimeField is a valid time 
+ * specified by a SimpleDateFormat.
+ * 
+ * @author Jennifer Blumenthal
+ *
+ */
 class TimeVerifier extends InputVerifier {
 
+	
     private static List<SimpleDateFormat> validForms =
         new ArrayList<SimpleDateFormat>();
 
@@ -20,13 +28,20 @@ class TimeVerifier extends InputVerifier {
     static {
         validForms.add(new SimpleDateFormat("H:mm"));
     }
+    
     private JFormattedTextField txtField;
     private Date date;
-
+/**
+ * Default constructor that initializes the submitted JFormattedTextField as TimeField.
+ * @param tf
+ */
     public TimeVerifier(JFormattedTextField tf) {
         this.txtField = tf;
     }
 
+    /**
+     * Verifies the input as time.
+     */
     @Override
     public boolean verify(JComponent input) {
         boolean result = false;
@@ -37,7 +52,6 @@ class TimeVerifier extends InputVerifier {
                     date = format.parse(text);
                     result |= true;
                 } catch (ParseException pe) {
-//                	JOptionPane.showMessageDialog(null, "Bitte geben Sie die Uhrzeit im Format (H)H:mm ein!");
                     result |= false;
                 }
             }

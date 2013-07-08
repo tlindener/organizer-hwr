@@ -42,7 +42,6 @@ import controller.MyChangeListener;
 
 public class TerminBearbeiten extends JFrame implements MyChangeListener {
 
-	private static final long serialVersionUID = 1L;
 
 	public final String BUTTON_NAME = "Button_Termin_Window";
 	private final String DEFAULT_BTN_TEXT = "EDIT ENTRY";
@@ -93,6 +92,7 @@ public class TerminBearbeiten extends JFrame implements MyChangeListener {
 	 * Opens an empty frame.
 	 */
 	public void openEmptyFrame() {
+		
 		openFrameWithValues("", "", "", "", null, null, " ");
 	}
 
@@ -123,66 +123,66 @@ public class TerminBearbeiten extends JFrame implements MyChangeListener {
 		getContentPane().setLayout(gridBagLayout);
 
 		JLabel lblVon = new JLabel("von");
-		GridBagConstraints gbc_lblVon = util.createGridBagContraints(1, 1, 2, 1,
+		GridBagConstraints gbc_lblVon = Util.createGridBagContraints(1, 1, 2, 1,
 				GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(lblVon, gbc_lblVon);
 
 		startUhrzeit = erstelleTimefield(startTime);
 		startUhrzeit
 				.setToolTipText("Bitte geben Sie eine Uhrzeit im Format xx:xx ein.");
-		GridBagConstraints gbc_textField = util.createGridBagContraints(1, 1, 3, 1,
+		GridBagConstraints gbc_textField = Util.createGridBagContraints(1, 1, 3, 1,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(startUhrzeit, gbc_textField);
 		startUhrzeit.setColumns(10);
 
 		JLabel lblBis = new JLabel("bis");
-		GridBagConstraints gbc_lblBis = util.createGridBagContraints(1, 1, 4, 1,
+		GridBagConstraints gbc_lblBis = Util.createGridBagContraints(1, 1, 4, 1,
 				GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(lblBis, gbc_lblBis);
 
 		endUhrzeit = erstelleTimefield(endTime);
 		endUhrzeit
 				.setToolTipText("Bitte geben Sie eine Uhrzeit im Format xx:xx ein.");
-		GridBagConstraints gbc_textField_1 = util.createGridBagContraints(1, 1, 5,
+		GridBagConstraints gbc_textField_1 = Util.createGridBagContraints(1, 1, 5,
 				1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(endUhrzeit, gbc_textField_1);
 		endUhrzeit.setColumns(10);
 
 		JLabel lblRaum = new JLabel("Raum");
-		GridBagConstraints gbc_lblRaum = util.createGridBagContraints(5, 1, 1, 3,
+		GridBagConstraints gbc_lblRaum = Util.createGridBagContraints(5, 1, 1, 3,
 				GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblRaum, gbc_lblRaum);
 
 		JLabel lblBeschreibung = new JLabel("Beschreibung");
-		GridBagConstraints gbc_lblBeschreibung = util.createGridBagContraints(3, 1,
+		GridBagConstraints gbc_lblBeschreibung = Util.createGridBagContraints(3, 1,
 				7, 3, GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblBeschreibung, gbc_lblBeschreibung);
 
 		txtRaum = new JTextField(raum);
 		txtRaum.setEditable(false);
-		GridBagConstraints gbc_textField1 = util.createGridBagContraints(5, 1, 1, 4,
+		GridBagConstraints gbc_textField1 = Util.createGridBagContraints(5, 1, 1, 4,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(txtRaum, gbc_textField1);
 		txtRaum.setColumns(10);
 
 		txtBeschreibung = new JTextField(beschreibung);
-		GridBagConstraints gbc_txtBeschreibung = util.createGridBagContraints(3, 1,
+		GridBagConstraints gbc_txtBeschreibung = Util.createGridBagContraints(3, 1,
 				7, 4, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL);
 		getContentPane().add(txtBeschreibung, gbc_txtBeschreibung);
 		txtBeschreibung.setColumns(10);
 
 		JLabel lblDetails = new JLabel("Details");
-		GridBagConstraints gbc_lblDetails = util.createGridBagContraints(3, 1, 7, 5,
+		GridBagConstraints gbc_lblDetails = Util.createGridBagContraints(3, 1, 7, 5,
 				GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblDetails, gbc_lblDetails);
 
 		lblRaeume = new JLabel("R\u00E4ume");
-		GridBagConstraints gbc_lblRume = util.createGridBagContraints(5, 1, 1, 6,
+		GridBagConstraints gbc_lblRume = Util.createGridBagContraints(5, 1, 1, 6,
 				GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblRaeume, gbc_lblRume);
 
 		txtADetails = new JTextArea(details);
-		GridBagConstraints gbc_txtADetails = util.createGridBagContraints(3, 3, 7,
+		GridBagConstraints gbc_txtADetails = Util.createGridBagContraints(3, 3, 7,
 				6, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(txtADetails, gbc_txtADetails);
 
@@ -190,12 +190,12 @@ public class TerminBearbeiten extends JFrame implements MyChangeListener {
 		lstRaum.setCellRenderer(combinedListener);
 		lstRaum.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setSelectedValues(lstRaum, rooms);
-		GridBagConstraints gbc_lstRaum = util.createGridBagContraints(5, 2, 1, 7,
+		GridBagConstraints gbc_lstRaum = Util.createGridBagContraints(5, 2, 1, 7,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(new JScrollPane(lstRaum), gbc_lstRaum);
 
 		JLabel lblPersonen = new JLabel("Personen");
-		GridBagConstraints gbc_lblPersonen = util.createGridBagContraints(5, 1, 1,
+		GridBagConstraints gbc_lblPersonen = Util.createGridBagContraints(5, 1, 1,
 				9, GridBagConstraints.WEST, GridBagConstraints.NONE);
 		getContentPane().add(lblPersonen, gbc_lblPersonen);
 
@@ -205,20 +205,20 @@ public class TerminBearbeiten extends JFrame implements MyChangeListener {
 				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstPersonen.setSelectionModel(new MyListSelectionModel());
 		setSelectedValues(lstPersonen, user);
-		GridBagConstraints gbc_lstPersonen = util.createGridBagContraints(5, 2, 1,
+		GridBagConstraints gbc_lstPersonen = Util.createGridBagContraints(5, 2, 1,
 				10, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		getContentPane().add(new JScrollPane(lstPersonen), gbc_lstPersonen);
 
 		btnTerminEintragen = new JButton(btnText);
 		btnTerminEintragen.addActionListener(myCon);
 		btnTerminEintragen.addMouseListener(myMl);
-		GridBagConstraints gbc_btnTerminEintragen = util.createGridBagContraints(1,
+		GridBagConstraints gbc_btnTerminEintragen = Util.createGridBagContraints(1,
 				1, 9, 10, GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(btnTerminEintragen, gbc_btnTerminEintragen);
 
 		btnAbbrechen = new JButton("Abbrechen");
 		btnAbbrechen.addActionListener(myCon);
-		GridBagConstraints gbc_btnAbbrechen = util.createGridBagContraints(1, 1, 9,
+		GridBagConstraints gbc_btnAbbrechen = Util.createGridBagContraints(1, 1, 9,
 				11, GridBagConstraints.EAST, GridBagConstraints.NONE);
 		getContentPane().add(btnAbbrechen, gbc_btnAbbrechen);
 
@@ -228,12 +228,13 @@ public class TerminBearbeiten extends JFrame implements MyChangeListener {
 
 	
 	/**
-	 * 
+	 * Sets the submitted objects in the list as selected
+	 * in the submitted awtList.
 	 * 
 	 * @param awtList
 	 * @param list
 	 */
-	private <T> void setSelectedValues(JList<T> awtList, T[] list) {
+	public <T> void setSelectedValues(JList<T> awtList, T[] list) {
 
 		if (list == null || list.length == 0)
 			return;
@@ -260,77 +261,10 @@ public class TerminBearbeiten extends JFrame implements MyChangeListener {
 		gbl_panel.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, 0.0,
 				Double.MIN_VALUE };
 		panel.setLayout(gbl_panel);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);;
 		this.setVisible(true);
 	}
 
-	public void setSelectedRoom(Room selectedRoom) {
-		this.selectedRoom = selectedRoom;
-	}
-
-	public JList<Room> getLstRaum() {
-		return lstRaum;
-	}
-
-	public void setLstRaum(JList<Room> lstRaum) {
-		this.lstRaum = lstRaum;
-	}
-
-	public JList<User> getLstPersonen() {
-		return lstPersonen;
-	}
-
-	public void setLstPersonen(JList<User> lstPersonen) {
-		this.lstPersonen = lstPersonen;
-	}
-
-	public JButton getBtnAbbrechen() {
-		return btnAbbrechen;
-	}
-
-	public void setBtnAbbrechen(JButton btnAbbrechen) {
-		this.btnAbbrechen = btnAbbrechen;
-	}
-
-	public JTextField getBeschreibung() {
-		return txtBeschreibung;
-	}
-
-	public JButton getBtnTerminEintragen() {
-		return btnTerminEintragen;
-	}
-
-	public JTextArea getTxtADetails() {
-		return txtADetails;
-	}
-
-	public Room getSelectedRoom() {
-		return selectedRoom;
-	}
-
-	public List<User> getSelectedUsers() {
-		return selectedUsers;
-	}
-
-	public TimeField getStartUhrzeit() {
-		return startUhrzeit;
-	}
-
-	public TimeField getEndUhrzeit() {
-		return endUhrzeit;
-	}
-
-	public JTextField getTxtRaum() {
-		return txtRaum;
-	}
-
-	public void setTxtRaum(JTextField txtRaum) {
-		this.txtRaum = txtRaum;
-	}
-
-	public void setButtonText(String buttonText) {
-		btnText = buttonText;
-	}
 	
 	/**
 	 * Adds the User to the selectedUser list or removes him according to 
@@ -400,17 +334,18 @@ public class TerminBearbeiten extends JFrame implements MyChangeListener {
 		} else {
 
 			long start = getStartUhrzeit().getTime();
-//			System.out.println(start);
 			long ende = getEndUhrzeit().getTime();
-//			System.out.println(ende);
 			if (start > ende) {
 				JOptionPane
 						.showMessageDialog(this,
 								"Die Endzeit muss zeitlich nach der Startzeit eines Termins liegen!");
+				getEndUhrzeit().setBorder(redline);
+				getEndUhrzeit().setText("");
 				fehler = true;
 			}
 
 		}
+
 		return fehler;
 
 	}
@@ -438,5 +373,75 @@ public class TerminBearbeiten extends JFrame implements MyChangeListener {
 
 		return tf;
 	}
+
+	public void setSelectedRoom(Room selectedRoom) {
+		setSelectedValues(this.lstRaum, new Room[]{selectedRoom});
+		this.selectedRoom = selectedRoom;
+		}
+
+	public JList<Room> getLstRaum() {
+		return lstRaum;
+	}
+
+	public void setLstRaum(JList<Room> lstRaum) {
+		this.lstRaum = lstRaum;
+	}
+
+	public JList<User> getLstPersonen() {
+		return lstPersonen;
+	}
+
+	public void setLstPersonen(JList<User> lstPersonen) {
+		this.lstPersonen = lstPersonen;
+	}
+
+	public JButton getBtnAbbrechen() {
+		return btnAbbrechen;
+	}
+
+	public void setBtnAbbrechen(JButton btnAbbrechen) {
+		this.btnAbbrechen = btnAbbrechen;
+	}
+
+	public JTextField getBeschreibung() {
+		return txtBeschreibung;
+	}
+
+	public JButton getBtnTerminEintragen() {
+		return btnTerminEintragen;
+	}
+
+	public JTextArea getTxtADetails() {
+		return txtADetails;
+	}
+
+	public Room getSelectedRoom() {
+		return selectedRoom;
+	}
+
+	public List<User> getSelectedUsers() {
+		return selectedUsers;
+	}
+
+	public TimeField getStartUhrzeit() {
+		return startUhrzeit;
+	}
+
+	public TimeField getEndUhrzeit() {
+		return endUhrzeit;
+	}
+
+	public JTextField getTxtRaum() {
+		return txtRaum;
+	}
+
+	public void setTxtRaum(JTextField txtRaum) {
+		this.txtRaum = txtRaum;
+	}
+
+	public void setButtonText(String buttonText) {
+		btnText = buttonText;
+	}
+
 
 }

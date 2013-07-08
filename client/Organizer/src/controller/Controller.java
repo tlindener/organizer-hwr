@@ -20,12 +20,15 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import logik.DataPusher;
 import logik.Model;
 
 import organizer.networklayer.network.RequestHandler;
 import organizer.networklayer.network.json.JsonJavaIISRequestHandler;
+import organizer.networklayer.network.json.JsonJavaRequestHandler;
 import organizer.objects.types.Calendar;
 import organizer.objects.types.CalendarEntry;
 import organizer.objects.types.Invite;
@@ -51,7 +54,7 @@ import view.View;
  * @version final version x.xxx
  */
 public class Controller implements DataPusher, ActionListener, MouseListener,
-		PropertyChangeListener {
+		PropertyChangeListener, ListSelectionListener {
 
 	/**
 	 * @param args
@@ -62,7 +65,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	private Object[][] tabellenDaten;
 
-	private TerminBearbeiten editEntry;
 	private View view;
 
 	private RequestHandler myRequester;
@@ -78,17 +80,17 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	private CalendarEntry neuCalEnt;
 	private Invite aktin;
 
-
 	/**
-	 * Default Controller which creates an instance of the view class which creates all windows 
-	 * accept from the "Termin Bearbeiten" window. Sets the current date in the model and
-	 * initially updates the data.
+	 * Default Controller which creates an instance of the view class which
+	 * creates all windows accept from the "Termin Bearbeiten" window. Sets the
+	 * current date in the model and initially updates the data.
 	 */
 	public Controller() {
 
 		myModel = new Model(aktDate);
 		updateData();
-		view = new View(this,this,this,this);
+		view = new View(this, this, this, this, this);
+		view.createLogScreen();
 		aktUser = new User();
 		aktUserCa = new organizer.objects.types.Calendar();
 
@@ -96,6 +98,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	/**
 	 * Starts the programm.
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -109,73 +112,76 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == view.getMyLogScreen().getMntmServerkonfigurationen()) {
-			view.getMyServereinstellungen().setVisible(true);
-		}
-
 		
-		if (e.getSource() == view.getMyServereinstellungen().getBtnSpeichern()) {
+		if (view.getMyServereinstellungen()!=null&&e.getSource() == view.getMyServereinstellungen().getBtnSpeichern()) {
 			speichereServereinstellungen();
 
 		}
-		if (e.getSource() == view.getMyHauptmenue().getBtnTerminBearbeiten()) {
+		if (view.getMyHauptmenue()!=null&&e.getSource() == view.getMyHauptmenue().getBtnTerminBearbeiten()) {
 			bearbeiteTermin();
 
 		}
-		if (e.getSource() == view.getMyHauptmenue().getBtnAbmelden()) {
-			view.getMyHauptmenue().setVisible(false);
-			view.getMyLogScreen().setVisible(true);
+		if (view.getMyHauptmenue()!=null&&e.getSource() == view.getMyHauptmenue().getBtnAbmelden()) {
+			view.getMyHauptmenue().dispose();
+			view.createLogScreen();
 
 		}
-		if (e.getSource() == view.getMyHauptmenue().getBtnTerminEntfernen()) {
+		if (view.getMyHauptmenue()!=null&&e.getSource() == view.getMyHauptmenue().getBtnTerminEntfernen()) {
 			entferneTermin();
 		}
-		if (e.getSource() == view.getMyHauptmenue().getBtnRaumErstellen()) {
-			view.getMyNeuerRaum().setVisible(true);
+		if (view.getMyHauptmenue()!=null&&e.getSource() == view.getMyHauptmenue().getBtnRaumErstellen()) {
+			view.createNeuerRaum();
 		}
-		if (e.getSource() == view.getMyLogScreen().getBtnAnmelden()) {
+		if (view.getMyLogScreen()!=null&&e.getSource() == view.getMyLogScreen()
+				.getMntmServerkonfigurationen()) {
+			view.createServereinstellungen();
+		}
+		if (view.getMyLogScreen()!=null&&e.getSource() == view.getMyLogScreen().getBtnAnmelden()) {
+			view.getMyLogScreen().dispose();
 			meldeUserAn();
 		}
-		if (e.getSource() == view.getMyLogScreen().getBtnRegistrieren()) {
-			view.getMyRegistration().setVisible(true);
+		if (view.getMyLogScreen()!=null&&e.getSource() == view.getMyLogScreen().getBtnRegistrieren()) {
+			view.getMyLogScreen().dispose();
+			view.createRegistrieren();
 
 		}
-		if (e.getSource() == view.getMyRegistration().getBtnRegistrieren()) {
+		if (view.getMyRegistration()!=null&&e.getSource() == view.getMyRegistration().getBtnRegistrieren()) {
 			registriereUser();
 		}
-		if (e.getSource() == view.getMyRegistration().getBtnAbbrechen()) {
+		if (view.getMyRegistration()!=null&&e.getSource() == view.getMyRegistration().getBtnAbbrechen()) {
 			view.getMyRegistration().loescheInhalte();
-			abbrechen(view.getMyRegistration(), view.getMyLogScreen());
-			
-
+			view.getMyRegistration().dispose(); 
+			view.createLogScreen();
 		}
 
-		if (editEntry != null && e.getSource() == editEntry.getBtnAbbrechen()) {
-			abbrechen(editEntry, view.getMyHauptmenue());
+		if (view.getMyTerminBearbeiten() != null
+				&& e.getSource() == view.getMyTerminBearbeiten()
+						.getBtnAbbrechen()) {
+			view.getMyTerminBearbeiten().dispose();
 		}
 
-		if (editEntry != null
-				&& e.getSource().equals(editEntry.getBtnTerminEintragen())) {
-			// Überprüfung auf richtiges Format!!
+		if (view.getMyTerminBearbeiten() != null
+				&& e.getSource().equals(
+						view.getMyTerminBearbeiten().getBtnTerminEintragen())) {
 			speichereTermin();
 		}
 
-		if (e.getSource() == view.getMyNeuerRaum().getBtnSpeichern()) {
+		if (view.getMyNeuerRaum()!=null&&e.getSource() == view.getMyNeuerRaum().getBtnSpeichern()) {
 			speichereRaum();
 		}
-		if (e.getSource() == view.getMyNeuerRaum().getBtnAbbrechen()) {
-			view.getMyNeuerRaum().setVisible(false);
+		if (view.getMyNeuerRaum()!=null&&e.getSource() == view.getMyNeuerRaum().getBtnAbbrechen()) {
+			view.getMyNeuerRaum().dispose();
 
 		}
-		if (e.getSource() == view.getMyEinladungen().getBtnAbsagen()) {
-			if(aktin != null){
+		if (view.getMyEinladungen()!=null&&e.getSource() == view.getMyEinladungen().getBtnAbsagen()) {
+			if (aktin != null) {
 				aktin.setAccepted(-1);
 				bearbeiteEinladung();
 			}
-			
+
 		}
-		if (e.getSource() == view.getMyEinladungen().getBtnZusagen()) {
-			if(aktin != null){
+		if (view.getMyEinladungen()!=null&&e.getSource() == view.getMyEinladungen().getBtnZusagen()) {
+			if (aktin != null) {
 				aktin.setAccepted(1);
 				bearbeiteEinladung();
 			}
@@ -192,12 +198,9 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
-		if (e.getSource() == view.getMyHauptmenue().getTable_1()) {
-			befuelleMainFrame(e);
-		}
 		if (e.getSource() == view.getMyHauptmenue().getPicLabel()) {
 			if (myModel.getEinladungen().size() > 0) {
-				view.getMyEinladungen().setVisible(true);
+				view.createEinladungen();
 				befuelleEinladungen();
 			} else
 				JOptionPane.showMessageDialog(view.getMyHauptmenue(),
@@ -247,13 +250,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	}
 
 	/**
-	 * unused
+	 * Handles all PropertyChangeEvents.
 	 * 
 	 * @param e
 	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
-		// System.out.println(e.getPropertyName());
+
 		if (e.getOldValue() == null && e.getNewValue() != null) {
 			//
 			aktDate = new Date();
@@ -264,6 +267,18 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			view.getMyHauptmenue().repaint();
 			connectServerModel();
 
+		}
+
+	}
+
+	/**
+	 * Handles the events that are triggered by the ListSelectionListener.
+	 */
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+
+		if (e.getSource() == view.getMyHauptmenue().getListSelectionModel()) {
+			befuelleMainFrame(e);
 		}
 
 	}
@@ -380,10 +395,10 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			myModel.setAllePersonen(lp);
 
 			aktUser = myRequester.requestObjectByOwnId(aktUser);
-			
+
 			List<Integer> inviteIds = aktUser.getInviteIds();
 			List<Invite> einladungen = new ArrayList<>();
-			
+
 			for (int i = 0; i < inviteIds.size(); i++) {
 				Invite in = new Invite();
 				in.setID(inviteIds.get(i));
@@ -399,21 +414,23 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			aktUserCa = myRequester.requestObjectByOwnId(aktUserCa);
 
 			List<CalendarEntry> myCes = aktUserCa.getCalendarEntries();
-			
+
 			for (CalendarEntry myCe : myCes) {
 
 				if (parseDatetoString(myCe.getStartDate()).equals(
-						parseDatetoString(view.getMyHauptmenue().getCali().getDate()))) {
-				
+						parseDatetoString(view.getMyHauptmenue().getCali()
+								.getDate()))) {
+
 					SimpleDateFormat format = new SimpleDateFormat("H:mm");
 					String anfangZeit = format.format(myCe.getStartDate());
 					String endZeit = format.format(myCe.getEndDate());
-					
+
 					myModel.setAktDate(aktDate);
 					myModel.setBeschreibungen(anfangZeit, myCe.getTitle());
 					myModel.setDauer(anfangZeit, myCe.getDuration());
 
-					ArrayList<User> invitees = (ArrayList<User>) getInvitesOfEntry(myCe.getInviteIds());
+					ArrayList<User> invitees = (ArrayList<User>) getInvitesOfEntry(myCe
+							.getInviteIds());
 
 					myModel.setPersonen(anfangZeit, invitees);
 
@@ -437,17 +454,15 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 	}
 
-/**	
- * Requests all invitees to a particular calendarEntry that is submitted.
- * 
- * @param ce
- * @return eingeladene
- */
-	public ArrayList<User> rufeEingeladeneab(CalendarEntry ce)
-	{
-		List<Invite> invites = myRequester
-				.requestFollowingObjectsByOwnId(
-						ce.getInviteIds(), new Invite());
+	/**
+	 * Requests all invitees to a particular calendarEntry that is submitted.
+	 * 
+	 * @param ce
+	 * @return eingeladene
+	 */
+	public ArrayList<User> rufeEingeladeneab(CalendarEntry ce) {
+		List<Invite> invites = myRequester.requestFollowingObjectsByOwnId(
+				ce.getInviteIds(), new Invite());
 		List<User> eingeladene = new ArrayList<User>();
 		for (Invite invite : invites) {
 			if (invite == null) {
@@ -457,8 +472,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			} else {
 				User requestUser = new User();
 				requestUser.setID(invite.getOwnerId());
-				requestUser = myRequester
-						.requestObjectByOwnId(requestUser);
+				requestUser = myRequester.requestObjectByOwnId(requestUser);
 				if (requestUser != null) {
 					eingeladene.add(requestUser);
 				} else {
@@ -471,7 +485,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 		return (ArrayList<User>) eingeladene;
 	}
-	
+
 	/**
 	 * Hier werden die User von den Invites abgefragt XXX Hier ist die Methode
 	 * 
@@ -538,7 +552,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	public void bearbeiteEinladung() {
 		myRequester.acceptInvite(aktin);
 		updateData();
-		view.getMyEinladungen().setVisible(false);
+		view.getMyEinladungen().dispose();
 	}
 
 	/**
@@ -548,7 +562,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	public void befuelleEinladungen() {
 
 		List<Invite> einl = myModel.getEinladungen();
-		//XXX Was willst du hier machen? Sortieren macht man über einen Comperator...
+		// XXX Was willst du hier machen? Sortieren macht man über einen
+		// Comperator...
 		List<Invite> sortEinl = new ArrayList();
 		for (Invite in : einl) {
 			if (in.isAccepted() == 0) {
@@ -556,8 +571,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			}
 		}
 		einl = sortEinl;
-		//XXX QuickFix
-		if(einl.isEmpty()){
+		// XXX QuickFix
+		if (einl.isEmpty()) {
 			aktin = null;
 			return;
 		}
@@ -568,21 +583,27 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		ce = myRequester.requestObjectByOwnId(ce);
 		if (ce != null) {
 			view.getMyEinladungen().getTxtBeschreibung().setText(ce.getTitle());
-			view.getMyEinladungen().getTxtADetails().setText(ce.getDescription());
+			view.getMyEinladungen().getTxtADetails()
+					.setText(ce.getDescription());
 			Room room = new Room();
 			room.setID(ce.getRoomId());
 			room = myRequester.requestObjectByOwnId(room);
 			if (room != null)
-				view.getMyEinladungen().getTxtRaum().setText(
-						room.getDescription() + " ; " + room.getLocation());
+				view.getMyEinladungen()
+						.getTxtRaum()
+						.setText(
+								room.getDescription() + " ; "
+										+ room.getLocation());
 
 			User einladener = new User();
 			einladener.setID(ce.getOwnerId());
 			einladener = myRequester.requestObjectByOwnId(einladener);
 			if (einladener != null)
-				view.getMyEinladungen().getTxtEinladener().setText(
-						einladener.getGivenName() + " "
-								+ einladener.getSurname());
+				view.getMyEinladungen()
+						.getTxtEinladener()
+						.setText(
+								einladener.getGivenName() + " "
+										+ einladener.getSurname());
 
 			SimpleDateFormat format = new SimpleDateFormat("HH:mm");
 			String anfang = format.format(ce.getStartDate());
@@ -605,7 +626,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			if (status == true)
 				view.getMyEinladungen().getCanStatus().setBackground(Color.RED);
 			else
-				view.getMyEinladungen().getCanStatus().setBackground(Color.GREEN);
+				view.getMyEinladungen().getCanStatus()
+						.setBackground(Color.GREEN);
 
 		}
 	}
@@ -616,62 +638,64 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * 
 	 * @param e
 	 */
-	public void befuelleMainFrame(MouseEvent e) {
-		
-		view.getMyHauptmenue().getBtnTerminBearbeiten().setText("Termin bearbeiten");
-		JTable zwTab = (JTable) e.getSource();
-		aktTermin = (String) view.getMyHauptmenue().getTable_1().getValueAt(
-				zwTab.getSelectedRow(), 0);
-		
-		zwTab.getSelectedRow();
+	public void befuelleMainFrame(ListSelectionEvent e) {
+
+		JTable zwTab = view.getMyHauptmenue().getTable_1();
+		aktTermin = (String) view.getMyHauptmenue().getTable_1()
+				.getValueAt(zwTab.getSelectedRow(), 0);
 		String details = (String) myModel.returnDetail(aktTermin);
-		view.getMyHauptmenue().getTextArea().setText(details);
-		
-		List<User> myList = new ArrayList<User>();
-
-		myList = myModel.returnEingeladene(aktTermin);
-
-		if (myList != null) {
-			view.getMyHauptmenue().getListModel().removeAllElements();
-
-			for (User element : myList) {
-				System.out.println(element);
-				view.getMyHauptmenue().getListModel().addElement(
-						element.getGivenName() + " " + element.getSurname());
-				view.getMyHauptmenue().repaint();
-			}
-		} else {
-			view.getMyHauptmenue().getListModel().removeAllElements();
-		}
-		
-		String text = returnStringOfObject(myModel.returnRaum(aktTermin));
-		view.getMyHauptmenue().getTxtRaum().setText(text);
+		List<User> eingeladene = new ArrayList<User>();
+		eingeladene = myModel.returnEingeladene(aktTermin);
+		String raum = returnStringOfObject(myModel.returnRaum(aktTermin));
+		view.befuelleHauptmenue(zwTab, details, eingeladene, raum);
 
 	}
 
 	/**
-	 * Method to handle cancel option. Returns to the previously opened window
-	 * through setting the current window invisible and the prior window
-	 * visible.
-	 * 
-	 * @param aktframe
-	 * @param vorframe
+	 * Creates a new window to edit an entry with the right settings. If there
+	 * is no current entry chosen (a table row selected) the window will be
+	 * opened without any attributes as an empty window. Otherwise the window is
+	 * opened with the attributes to this entry that are stored in the model.
 	 */
-	public void abbrechen(JFrame aktframe, JFrame vorframe) {
-		aktframe.setVisible(false);
-		vorframe.setVisible(true);
+	public void bearbeiteTermin() {
+
+		aktDate = view.getMyHauptmenue().getAktDateCali();
+		String startZeit = aktTermin;
+		boolean containsTermin = myModel.getKalendarentries().containsKey(
+				aktTermin);
+		if (aktTermin == null || containsTermin == false) {
+
+			if (containsTermin == false) {
+				view.createTerminBearbeiten(startZeit, "", "", "", "", null,
+						null);
+			} else {
+				view.createTerminBearbeiten();
+			}
+		} else {
+
+			String details = myModel.returnDetail(aktTermin);
+			String endZeit = myModel.returnEndzeit(aktTermin);
+			String beschreibung = myModel.returnBeschreibung(aktTermin);
+			Room r = myModel.returnRaum(aktTermin);
+			String raum = returnStringOfObject(r);
+			Room[] raeume = new Room[] { r };
+			ArrayList<User> eing = myModel.returnEingeladene(aktTermin);
+			User[] personen = eing.toArray(new User[eing.size()]);
+			view.createTerminBearbeiten(details, endZeit, startZeit,
+					beschreibung, raum, raeume, personen);
+
+		}
 	}
 
+	
 	/**
 	 * Fills the Model with new data and generates new table data.
 	 */
 	public void updateData() {
 
 		try {
-			System.out.println("Datum: " + aktDate);
 			befuelleModel();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		erstelleTabellenDaten();
@@ -686,27 +710,35 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		Room tmpRaum = new Room();
 		String name = view.getMyNeuerRaum().getTxtBeschreibung().getText();
 		String lage = view.getMyNeuerRaum().getTxtALage().getText();
-		int sitze = Integer.parseInt(view.getMyNeuerRaum().getTxtSitze().getText());
+		int sitze = Integer.parseInt(view.getMyNeuerRaum().getTxtSitze()
+				.getText());
 
 		tmpRaum.setDescription(name);
 		tmpRaum.setLocation(lage);
 		tmpRaum.setSeats(sitze);
 
 		Room erstRaum = myRequester.addObject(tmpRaum);
-		if (erstRaum != null) {
-			editEntry.getTxtRaum().setText(
-					erstRaum.getLocation() + "; " + erstRaum.getDescription());
-			editEntry.stateChangedForRoom(true, erstRaum);
+		if (erstRaum != null&&view.getMyTerminBearbeiten()!=null) {
+			view.getMyTerminBearbeiten()
+					.getTxtRaum()
+					.setText(
+							erstRaum.getLocation() + "; "
+									+ erstRaum.getDescription());
 			view.getMyNeuerRaum().setVisible(false);
 			updateData();
-			editEntry.getLstRaum().setListData(pushRoomList());
+			view.getMyTerminBearbeiten().getLstRaum()
+					.setListData(pushRoomList());
 			neuCalEnt.setRoomId(erstRaum.getID());
-			// editEntry.repaint();
-			editEntry.setVisible(true);
+			view.getMyTerminBearbeiten().setSelectedRoom(erstRaum);
+			view.getMyNeuerRaum().loescheInhalte();
+			view.getMyTerminBearbeiten().repaint();
+
+			view.getMyTerminBearbeiten().setVisible(true);
 		}
-		// JOptionPane
+
 		else
-			System.out.println("Ihr Raum konnte nicht hinzugefügt werden");
+			JOptionPane.showMessageDialog(view.getMyNeuerRaum(),
+					"Ihr Raum konnte nicht hinzugefügt werden");
 
 	}
 
@@ -714,88 +746,97 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * Saves a new created calendar entry and submits it to the database.
 	 */
 	public void speichereTermin() {
-		
+
 		neuCalEnt = new CalendarEntry();
-		
-		boolean pruefefeld = editEntry.pruefeFelder();
+
+		boolean pruefefeld = view.getMyTerminBearbeiten().pruefeFelder();
 
 		if (pruefefeld == false) {
-			if (editEntry.getSelectedRoom().getID() == -1) {
-				view.getMyNeuerRaum().setVisible(true);
+			if (view.getMyTerminBearbeiten().getSelectedRoom().getID() == -1) {
+				view.createNeuerRaum();
 				return;
 			} else {
-				neuCalEnt.setRoomId(editEntry.getSelectedRoom().getID());
+				neuCalEnt.setRoomId(view.getMyTerminBearbeiten()
+						.getSelectedRoom().getID());
 			}
 
-			String startzeit = editEntry.getStartUhrzeit().getText();
-			String endzeit = editEntry.getEndUhrzeit().getText();
-			
+			String startzeit = view.getMyTerminBearbeiten().getStartUhrzeit()
+					.getText();
+			String endzeit = view.getMyTerminBearbeiten().getEndUhrzeit()
+					.getText();
+
 			Date startDate = parseStringtoDate(startzeit);
 			Date endDate = parseStringtoDate(endzeit);
 
 			neuCalEnt.setCalendarId(aktUserCa.getID());
-			neuCalEnt.setDescription(editEntry.getTxtADetails().getText());
+			neuCalEnt.setDescription(view.getMyTerminBearbeiten()
+					.getTxtADetails().getText());
 
 			neuCalEnt.setEndDate(endDate);
 			neuCalEnt.setOwnerId(aktUser.getID());
 
 			neuCalEnt.setStartDate(startDate);
-			neuCalEnt.setTitle(editEntry.getBeschreibung().getText());
+			neuCalEnt.setTitle(view.getMyTerminBearbeiten().getBeschreibung()
+					.getText());
 
 			boolean status = true;
 			CalendarEntry entry = new CalendarEntry();
 			int id = 0;
 
-				boolean hasid = myModel.getKalendarentries().containsKey(startzeit);
-				if (hasid == true) {
-					id = myModel.returnKalendarentryId(startzeit);
-					neuCalEnt.setID(id);
-					JOptionPane.showMessageDialog(editEntry,"Der Eintrag besteht bereits. Wollen Sie den bestehenden Termin ändern?", "Termin bereits vorhanden", JOptionPane.OK_CANCEL_OPTION);
-					
+			boolean hasid = myModel.getKalendarentries().containsKey(startzeit);
+			if (hasid == true) {
+				id = myModel.returnKalendarentryId(startzeit);
+				neuCalEnt.setID(id);
+				int i = JOptionPane
+						.showConfirmDialog(
+								view.getMyTerminBearbeiten(),
+								"Der Eintrag besteht bereits. Wollen Sie den bestehenden Termin ändern (der bestehende Termin wird dabei überschreiben)? Wenn Sie Nein wählen, wählen Sie bitte eine neue Startzeit aus.",
+								"Termin bereits vorhanden",
+								JOptionPane.YES_NO_OPTION);
+				if (i == JOptionPane.YES_OPTION)
 					status = myRequester.updateObject(neuCalEnt);
-				} else {
-					entry = myRequester.addObject(neuCalEnt);
+				else {
+					view.getMyTerminBearbeiten().getStartUhrzeit().setText("");
+					return;
 				}
-
+			} else {
+				entry = myRequester.addObject(neuCalEnt);
+			}
 
 			if (entry == null || status == false) {
 				if (entry == null)
 
-					JOptionPane.showMessageDialog(editEntry,
+					JOptionPane.showMessageDialog(view.getMyTerminBearbeiten(),
 							"Termin konnte nicht eingetragen werden",
 							"Termin konnte nicht eingetragen werden",
 							JOptionPane.INFORMATION_MESSAGE);
 
 				if (status == false)
-					JOptionPane.showMessageDialog(editEntry,
+					JOptionPane.showMessageDialog(view.getMyTerminBearbeiten(),
 							"Termin konnte nicht geupdatet werden",
 							"Termin konnte nicht geupdatet werden",
 							JOptionPane.INFORMATION_MESSAGE);
 			} else {
 
-				JOptionPane.showMessageDialog(editEntry,
+				JOptionPane.showMessageDialog(view.getMyTerminBearbeiten(),
 						"Termin wurde eingetragen", "Termin wurde eingetragen",
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 
-			/*
-			 * removen von Invites ?? abgleich der Listen... vorher prüfen ob
-			 * tatsächlich der alte Termin genutzt wird
-			 */
-			// Wurde geupdatet?
-			
-			if (status==true) {
+			if (status == true) {
 				versendeEinladungen(neuCalEnt.getID());
-			}else{
+			} else {
 				versendeEinladungen(entry.getID());
 			}
 			
-			editEntry.setVisible(false);
-
+			view.getMyTerminBearbeiten().dispose();
 			updateData();
-			view.getMyHauptmenue().repaint();
+
 		} else {
-			JOptionPane.showMessageDialog(editEntry,
+			if (pruefefeld == true) {
+				return;
+			}
+			JOptionPane.showMessageDialog(view.getMyTerminBearbeiten(),
 					"Termin konnte nicht eingetragen werden",
 					"Termin konnte nicht eingetragen werden",
 					JOptionPane.INFORMATION_MESSAGE);
@@ -804,64 +845,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	}
 
 	/**
-	 * Submits the invitation to the server.
-	 * @param calendarEntryId
-	 * @param list 
-	 */
-	public void versendeEinladungen(int calendarEntryId)
-	{		
-		CalendarEntry entry = new CalendarEntry();
-		entry.setID(calendarEntryId);
-		entry = myRequester.requestObjectByOwnId(entry);
-		List<Integer> listInviteIds = new ArrayList<>();
-		if(entry == null){
-			
-		}else{
-			listInviteIds = entry.getInviteIds();
-		}
-		
-		HashMap<User, Integer> invitedUsers = new HashMap<User, Integer>();
-		
-		for(int inviteId: listInviteIds){
-			Invite in = new Invite();
-			in.setID(inviteId);
-			Invite vorhanden=myRequester.requestObjectByOwnId(in);
-			if(vorhanden != null){
-				User requestUser = new User();
-				requestUser.setID(vorhanden.getOwnerId());
-				User user = myRequester.requestObjectByOwnId(requestUser);
-				if(user!=null){
-					invitedUsers.put(user,inviteId);
-				}
-			}
-		}		
-		
-	
-		for (User user : editEntry.getSelectedUsers()) {
-			if(!invitedUsers.containsKey(user)){
-				Invite newInvite = new Invite();
-				newInvite.setOwnerId(user.getID());
-				newInvite.setCalendarEntryId(calendarEntryId);
-				Invite tmpin = myRequester.addObject(newInvite);
-				if (tmpin == null) {
-					JOptionPane.showMessageDialog(editEntry, "Die Einladungen konnten nicht versandt werden!");
-				}
-			}else{
-				System.out.println("Result:" + invitedUsers.remove(user));
-			}
-		}
-		
-		for (User user : invitedUsers.keySet()) {
-			Invite removeInvite = new Invite();
-			removeInvite.setID(invitedUsers.get(user));
-			boolean tmpin = myRequester.removeObjectByOwnId(removeInvite);
-			if (tmpin == false) {
-				JOptionPane.showMessageDialog(editEntry, "Die Einladung konnte nicht gelöscht werden!");
-			}
-		}
-	}
-		
-	/**
 	 * Deletes a calendar entry.
 	 */
 	public void entferneTermin() {
@@ -869,9 +852,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			if (myModel.getKalendarentries().containsKey(aktTermin)) {
 				CalendarEntry delCe = new CalendarEntry();
 				delCe.setID(myModel.returnKalendarentryId(aktTermin));
-				System.out.println(delCe.getID());
 				boolean geloescht = myRequester.removeObjectByOwnId(delCe);
-				System.out.println(geloescht);
 				if (geloescht == false)
 					JOptionPane
 							.showMessageDialog(
@@ -886,43 +867,107 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	}
 
 	/**
+	 * Saves entered server settings. Per default the settings "Serveradresse"
+	 * as "localhost" and port as 48585 are implemented. If the user changes
+	 * these settings the new settings will be saved and a new Requester will be
+	 * created to access the server via the networklayer.
+	 */
+	public void speichereServereinstellungen() {
+		if (view.getMyServereinstellungen().getTxtPort().getText().isEmpty()
+				|| view.getMyServereinstellungen().getTxtAdresse().getText()
+						.isEmpty()) {
+
+			JOptionPane.showMessageDialog(null,
+					"Bitte wählen Sie gültige Servereinstellungen",
+					"Ungültige Servereinstellungen",
+					JOptionPane.INFORMATION_MESSAGE);
+			view.createServereinstellungen();
+		} else {
+
+			port = Integer.parseInt(view.getMyServereinstellungen()
+					.getTxtPort().getText());
+			adresse = view.getMyServereinstellungen().getTxtAdresse().getText();
+			myRequester = new JsonJavaIISRequestHandler(adresse, port);
+			view.getMyServereinstellungen().dispose();
+			if (myRequester == null) {
+				JOptionPane.showMessageDialog(null,
+						"Bitte prüfen Sie ob der Server in Betrieb ist");
+			}
+
+		}
+	}
+
+	/**
+	 * Submits the invitation to the server.
+	 * 
+	 * @param calendarEntryId
+	 * @param list
+	 */
+	public void versendeEinladungen(int calendarEntryId) {
+		CalendarEntry entry = new CalendarEntry();
+		entry.setID(calendarEntryId);
+		entry = myRequester.requestObjectByOwnId(entry);
+		List<Integer> listInviteIds = new ArrayList<>();
+		if (entry == null) {
+
+		} else {
+			listInviteIds = entry.getInviteIds();
+		}
+
+		HashMap<User, Integer> invitedUsers = new HashMap<User, Integer>();
+
+		for (int inviteId : listInviteIds) {
+			Invite in = new Invite();
+			in.setID(inviteId);
+			Invite vorhanden = myRequester.requestObjectByOwnId(in);
+			if (vorhanden != null) {
+				User requestUser = new User();
+				requestUser.setID(vorhanden.getOwnerId());
+				User user = myRequester.requestObjectByOwnId(requestUser);
+				if (user != null) {
+					invitedUsers.put(user, inviteId);
+				}
+			}
+		}
+
+		for (User user : view.getMyTerminBearbeiten().getSelectedUsers()) {
+			if (!invitedUsers.containsKey(user)) {
+				Invite newInvite = new Invite();
+				newInvite.setOwnerId(user.getID());
+				newInvite.setCalendarEntryId(calendarEntryId);
+				Invite tmpin = myRequester.addObject(newInvite);
+				if (tmpin == null) {
+					JOptionPane.showMessageDialog(view.getMyTerminBearbeiten(),
+							"Die Einladungen konnten nicht versandt werden!");
+				}
+			} else {
+				JOptionPane.showMessageDialog(null,
+						"Nutzer " + invitedUsers.remove(user)
+								+ " wurde entfernt");
+			}
+		}
+
+		for (User user : invitedUsers.keySet()) {
+			Invite removeInvite = new Invite();
+			removeInvite.setID(invitedUsers.get(user));
+			boolean tmpin = myRequester.removeObjectByOwnId(removeInvite);
+			if (tmpin == false) {
+				JOptionPane.showMessageDialog(view.getMyTerminBearbeiten(),
+						"Die Einladung konnte nicht gelöscht werden!");
+			}
+		}
+	}
+
+	/**
 	 * Connects the Server and the Model with setting the current Date of the
 	 * Model and afterwards updating the Model data.
 	 * 
 	 */
 	public void connectServerModel() {
 		myModel.setAktDate(aktDate);
-
 		updateData();
-		view.getMyHauptmenue().setVisible(true);
+		view.createHauptmenue();
 
-	}
-
-	/**
-	 * Proofs if the server settings are complete or if fields are missing.
-	 * Creates a connection to the server over a new Requester with valid port
-	 * and host data.
-	 * 
-	 * @return 1 for sucessfull connection and 0 for unsucessful connection
-	 */
-	public int pruefeServereinstellungen() {
-
-		if (view.getMyServereinstellungen().getTxtPort().getText().isEmpty()
-				|| view.getMyServereinstellungen().getTxtAdresse().getText().isEmpty()) {
-			JOptionPane.showMessageDialog(view.getMyLogScreen(),
-					"Bitte wählen Sie gültige Servereinstellungen",
-					"Ungültige Servereinstellungen",
-					JOptionPane.INFORMATION_MESSAGE);
-			view.getMyHauptmenue().setVisible(false);
-			view.getMyServereinstellungen().setVisible(true);
-			return 0;
-		} else {
-			port = Integer.parseInt(view.getMyServereinstellungen().getTxtPort()
-					.getText());
-			adresse = view.getMyServereinstellungen().getTxtAdresse().getText();
-			myRequester = new JsonJavaIISRequestHandler(adresse, port);
-			return 1;
-		}
 	}
 
 	/**
@@ -961,21 +1006,25 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 	/**
 	 * Registers a user with all the entered information through adding a new
-	 * user. If this was sucessful a user ID is returned (not visible for user),
-	 * otherwise a window will open and announce that the registration was not
-	 * sucessful. Furthermore the calendar for the user is created after
-	 * sucessful adding of the user.
+	 * user. If this was successful a user ID is returned (not visible for
+	 * user), otherwise a window will open and announce that the registration
+	 * was not successful. Furthermore the calendar for the user is created
+	 * after successful adding of the user.
 	 */
 	public void registriereUser() {
 
-		char[] passwort1 = view.getMyRegistration().getTxtPasswort().getPassword();
-		char[] passwort2 = view.getMyRegistration().getTxtPasswortBest().getPassword();
+		char[] passwort1 = view.getMyRegistration().getTxtPasswort()
+				.getPassword();
+		char[] passwort2 = view.getMyRegistration().getTxtPasswortBest()
+				.getPassword();
 
 		String email = view.getMyRegistration().getTxtEmailadresse().getText();
 		String nachname = view.getMyRegistration().getTxtNachname().getText();
 		String vorname = view.getMyRegistration().getTxtVorname().getText();
 		String telefonnr = view.getMyRegistration().getTxtTelefon().getText();
-
+		/*
+		 * When all fields are filled with values the data will be processed.
+		 */
 		if (!email.isEmpty() && !nachname.isEmpty() && !vorname.isEmpty()
 				&& passwort1.length != 0 && passwort2.length != 0) {
 
@@ -985,8 +1034,12 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			if (pwd1.equals(pwd2)) {
 
 				passwort = pwd1;
+				/*
+				 * If there is no Requester to communicate with the Networklayer
+				 * the method in which it is creates is invoked.
+				 */
 				if (myRequester == null) {
-					pruefeServereinstellungen();
+					speichereServereinstellungen();
 				}
 				aktUser.setMailAddress(email);
 				aktUser.setSurname(nachname);
@@ -997,38 +1050,32 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				User utmp = myRequester.registerNewUser(aktUser, passwort);
 
 				if (utmp == null) {
-
-					JOptionPane.showMessageDialog(view.getMyRegistration(),"Sie konnten nicht registriert werden. Bitte versuchen Sie es später erneut!");
-
-
+					JOptionPane
+							.showMessageDialog(view.getMyRegistration(),
+									"Sie konnten nicht registriert werden. Bitte versuchen Sie es später erneut!");
+					return;
 				} else {
-
+					JOptionPane.showMessageDialog(view.getMyRegistration(),
+							"Sie wurden erfolgreich registriert");
 					aktUser = utmp;
-					System.out.println("User ID: " + aktUser.getID());
-					aktUserCa = new organizer.objects.types.Calendar();
+					aktUserCa=null;
+					aktUserCa = new Calendar();
 					aktUserCa.setOwnerId(aktUser.getID());
 					aktUserCa.setDescription("persönlicher Kalendar von "
 							+ aktUser.getGivenName());
 					aktUserCa.setName("Kalendar von " + aktUser.getGivenName());
 					myRequester.login(aktUser.getMailAddress(), passwort);
-					Object tmp = myRequester.addObject(aktUserCa);
+					Calendar tmp = myRequester.addObject(aktUserCa);
 
 					if (tmp == null) {
-						// Fenster
-						System.out
-								.println("Es konnte kein Kalendar hinzugefügt werden");
+						JOptionPane.showMessageDialog(view.getMyRegistration(),
+								"Es konnte kein Kalendar hinzugefügt werden");
 
-					} else {
-						aktUserCa = (organizer.objects.types.Calendar) tmp;
-						List<Integer> l = aktUser.getCalendarIds();
-						l.add(aktUserCa.getID());
-						aktUser.setCalendarIds(l);
-
-					}
+					} 
 				}
 				view.getMyRegistration().loescheInhalte();
-				view.getMyRegistration().setVisible(false);
-				view.getMyLogScreen().setVisible(true);
+				view.getMyRegistration().dispose();
+				view.createLogScreen();
 
 			} else {
 				JOptionPane.showMessageDialog(view.getMyLogScreen(),
@@ -1039,89 +1086,21 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				return;
 			}
 		} else {
-
 			view.getMyRegistration().pruefeVollständigkeit();
 		}
 
 	}
 
 	/**
-	 * Saves entered server settings. Per default the settings "Serveradresse"
-	 * as "localhost" and port as 48585 are implemented. If the user changes
-	 * these settings the new settings will be saved and a new Requester will be
-	 * created to access the server via the networklayer.
-	 */
-	public void speichereServereinstellungen() {
-		if (view.getMyServereinstellungen().getTxtPort().getText().equals("")
-				|| view.getMyServereinstellungen().getTxtAdresse().getText().equals("")) {
-
-			JOptionPane.showMessageDialog(null,
-					"Bitte wählen Sie gültige Servereinstellungen",
-					"Ungültige Servereinstellungen",
-					JOptionPane.INFORMATION_MESSAGE);
-			view.getMyServereinstellungen().setVisible(true);
-		} else {
-
-			port = Integer.parseInt(view.getMyServereinstellungen().getTxtPort()
-					.getText());
-			adresse = view.getMyServereinstellungen().getTxtAdresse().getText();
-			view.getMyServereinstellungen().setVisible(false);
-			myRequester = new JsonJavaIISRequestHandler(adresse, port);
-
-		}
-	}
-
-	/**
-	 * Creates a new window to edit an entry with the right settings. If there
-	 * is no current entry chosen (a table row selected) the window will be
-	 * opened without any attributes as an empty window. Otherwise the window is
-	 * opened with the attributes to this entry that are stored in the model.
-	 */
-	public void bearbeiteTermin() {
-		editEntry = new TerminBearbeiten(this, this, this);
-		aktDate = view.getMyHauptmenue().getAktDateCali();
-		String startZeit = aktTermin;
-		boolean containsTermin = myModel.getKalendarentries().containsKey(
-				aktTermin);
-		if (aktTermin == null || containsTermin == false) {
-			editEntry.setButtonText("Erstellen");
-
-			if (containsTermin == false)
-				editEntry.openFrameWithValues(startZeit,"", "", "", null,
-						null, "");
-			else
-				editEntry.openEmptyFrame();
-		} else {
-
-			editEntry.setButtonText("Termin Speichern");
-			String details = myModel.returnDetail(aktTermin);
-			String endZeit = myModel.returnEndzeit(aktTermin);
-			String beschreibung = myModel.returnBeschreibung(aktTermin);
-			Room r = myModel.returnRaum(aktTermin);
-			String raum = returnStringOfObject(r);
-			Room[] raeume = new Room[]{r};
-			ArrayList<User> eing=myModel.returnEingeladene(aktTermin);
-			User[] personen = eing.toArray(new User[eing.size()]);
-//			System.out.println("eingeladene: "+personen[0]);
-			
-			editEntry.openFrameWithValues(startZeit, endZeit, beschreibung,
-					details, raeume, personen, raum);
-
-		}
-	}
-
-	/**
 	 * Logs in a user through collecting the entered email ID and the password.
 	 * Requests through the networklayer to log in this user on the server and
-	 * requests the calendar registered to this ID. If the request was successful
-	 * the users calendar is requested and saved local. Otherwise an error
-	 * message is opened.
+	 * requests the calendar registered to the User. If the request was
+	 * successful the users calendar is requested and saved local. Otherwise an
+	 * error message is opened.
 	 */
 	public void meldeUserAn() {
 
-		if (pruefeServereinstellungen() == 0) {
-			return;
-		}
+		speichereServereinstellungen();
 
 		benutzername = view.getMyLogScreen().getTextField().getText();
 		char[] tmppasswort = view.getMyLogScreen().getPasswort().getPassword();
@@ -1138,6 +1117,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 							"Bitte geben Sie einen gültigen Benutzernamen und ein gültiges Passwort ein",
 							"Benutzername oder Passwort falsch",
 							JOptionPane.INFORMATION_MESSAGE);
+			view.createLogScreen();
+			return;
 		} else {
 
 			User tmpu = myRequester.login(benutzername, passwort);
@@ -1155,11 +1136,11 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 									"Es ist noch kein Kalendar für Sie erstellt worden",
 									"Verbindungsfehler",
 									JOptionPane.INFORMATION_MESSAGE);
+					return;
 				}
 
 				Calendar tmpCal = myRequester.requestObjectByOwnId(aktUserCa);
 
-				// // null Abfrage
 				if (tmpCal != null) {
 					aktUserCa = tmpCal;
 					connectServerModel();
@@ -1171,15 +1152,16 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 									"Es konnte keine Verbindung zum Server hergestellt werden, bitte starten Sie das Programm neu",
 									"Verbindungsfehler",
 									JOptionPane.INFORMATION_MESSAGE);
+					return;
 
 				}
-				//
+
 				int myEinl = myModel.getEinladungen().size();
-				view.getMyHauptmenue().getLblAnzahlEinladungen().setText(
-						Integer.toString(myEinl));
-				view.getMyHauptmenue().getLblAnzahlEinladungen().setForeground(Color.RED);
-				view.getMyLogScreen().setVisible(false);
-				view.getMyHauptmenue().setVisible(true);
+				view.getMyHauptmenue().getLblAnzahlEinladungen()
+						.setText(Integer.toString(myEinl));
+				view.getMyHauptmenue().getLblAnzahlEinladungen()
+						.setForeground(Color.RED);
+				view.getMyLogScreen().dispose();
 			} else {
 				JOptionPane
 						.showMessageDialog(
@@ -1187,19 +1169,26 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 								"Leider sind Sie noch nicht registriert. Bitte Registrieren Sie sich um die MyOrganizer Funktionen nutzen zu können.",
 								"User nicht vorhanden",
 								JOptionPane.INFORMATION_MESSAGE);
+				return;
 			}
 
 		}
 	}
-	
-	private String returnStringOfObject(Object obj){
-		if(obj == null){
+
+	/**
+	 * Returns the name of a room as String.
+	 * 
+	 * @param obj
+	 * @return description
+	 */
+	private String returnStringOfObject(Object obj) {
+		if (obj == null) {
 			return "";
 		}
-		if(obj instanceof Room){
+		if (obj instanceof Room) {
 			return ((Room) obj).getDescription();
 		}
 		return obj.toString();
 	}
-	
+
 }

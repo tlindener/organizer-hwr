@@ -1,46 +1,30 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.text.PasswordView;
-
-import java.awt.GridBagLayout;
-import javax.swing.JTextField;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 
-import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JMenuBar;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+/**
+ * LogScreen in which the User can log in with valid user id and password.
+ * 
+ * @author Jennifer Blumenthal
+ *
+ */
 public class LogScreen extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
-	
-	public JTextField getTextField() {
-		return textField;
-	}
-
-	public void setTextField(JTextField textField) {
-		this.textField = textField;
-	}
-
-	public JPasswordField getPasswort() {
-		return passwort;
-	}
-
-	public void setPasswort(JPasswordField passwort) {
-		this.passwort = passwort;
-	}
+	private JTextField txtAdresse;
 
 	private JPasswordField passwort;
 	private JButton btnAnmelden;
@@ -48,28 +32,13 @@ public class LogScreen extends JFrame {
 	private JMenuBar menuBar;
 	private JMenu mnEinstellungen;
 	private JMenuItem mntmServerkonfigurationen;
-	
-	public JMenuItem getMntmServerkonfigurationen() {
-		return mntmServerkonfigurationen;
-	}
-
-	public void setMntmServerkonfigurationen(JMenuItem mntmServerkonfigurationen) {
-		this.mntmServerkonfigurationen = mntmServerkonfigurationen;
-	}
-
 	private ActionListener myAL;
 	private JButton btnRegistrieren;
 
-	public JButton getBtnRegistrieren() {
-		return btnRegistrieren;
-	}
-
-	public void setBtnRegistrieren(JButton btnRegistrieren) {
-		this.btnRegistrieren = btnRegistrieren;
-	}
 
 	/**
-	 * Launch the application.
+	 * Default constructor that initializes the submitted ActionListener and 
+	 * calls the init() method to create the frame.
 	 */
 	public LogScreen(ActionListener myCon) {
 		myAL=myCon;
@@ -80,7 +49,7 @@ public class LogScreen extends JFrame {
 	 * Create the frame.
 	 */
 	public void init() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 456, 308);
 		
 		menuBar = new JMenuBar();
@@ -103,60 +72,33 @@ public class LogScreen extends JFrame {
 		contentPane.setLayout(gbl_contentPane);
 		
 		JLabel lblBenutzername = new JLabel("Email-Adresse");
-		GridBagConstraints gbc_lblBenutzername = new GridBagConstraints();
-		gbc_lblBenutzername.gridwidth = 2;
-		gbc_lblBenutzername.anchor = GridBagConstraints.WEST;
-		gbc_lblBenutzername.insets = new Insets(0, 0, 5, 5);
-		gbc_lblBenutzername.gridx = 1;
-		gbc_lblBenutzername.gridy = 1;
+		GridBagConstraints gbc_lblBenutzername = Util.createGridBagContraints(2, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);
 		contentPane.add(lblBenutzername, gbc_lblBenutzername);
 		
-		// nur Test!!!
-		textField = new JTextField("jenny@home.de");
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.gridwidth = 2;
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 2;
-		contentPane.add(textField, gbc_textField);
-		textField.setColumns(10);
+		txtAdresse = new JTextField();
+		GridBagConstraints gbc_textField = Util.createGridBagContraints(2, 1, 1, 2, GridBagConstraints.HORIZONTAL);
+		contentPane.add(txtAdresse, gbc_textField);
+		txtAdresse.setColumns(10);
 		
 		JLabel lblPasswort = new JLabel("Passwort");
-		GridBagConstraints gbc_lblPasswort = new GridBagConstraints();
-		gbc_lblPasswort.gridwidth = 2;
-		gbc_lblPasswort.anchor = GridBagConstraints.WEST;
-		gbc_lblPasswort.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPasswort.gridx = 1;
-		gbc_lblPasswort.gridy = 3;
+		GridBagConstraints gbc_lblPasswort =Util.createGridBagContraints(2, 1, 1, 3, GridBagConstraints.WEST, GridBagConstraints.NONE);
 		contentPane.add(lblPasswort, gbc_lblPasswort);
 		
-		// nur Test!!!
-		passwort = new JPasswordField("123");
-		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-		gbc_textField_1.gridwidth = 2;
-		gbc_textField_1.insets = new Insets(0, 0, 5, 5);
-		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_1.gridx = 1;
-		gbc_textField_1.gridy = 4;
+		passwort = new JPasswordField();
+		GridBagConstraints gbc_textField_1 = Util.createGridBagContraints(2, 1, 1, 4, GridBagConstraints.HORIZONTAL);
 		contentPane.add(passwort, gbc_textField_1);
 		passwort.setColumns(10);
 		
 		btnAnmelden = new JButton("Anmelden");
 		btnAnmelden.addActionListener(myAL);
+		GridBagConstraints gbc_btnAnmelden = Util.createGridBagContraints(2, 6, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+		contentPane.add(btnAnmelden, gbc_btnAnmelden);
 		
 		btnRegistrieren = new JButton("Registrieren");
 		btnRegistrieren.addActionListener(myAL);
-		GridBagConstraints gbc_btnRegistrieren = new GridBagConstraints();
-		gbc_btnRegistrieren.insets = new Insets(0, 0, 0, 5);
-		gbc_btnRegistrieren.gridx = 1;
-		gbc_btnRegistrieren.gridy = 6;
+		GridBagConstraints gbc_btnRegistrieren = Util.createGridBagContraints(1, 6, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 		contentPane.add(btnRegistrieren, gbc_btnRegistrieren);
-		GridBagConstraints gbc_btnAnmelden = new GridBagConstraints();
-		gbc_btnAnmelden.insets = new Insets(0, 0, 0, 5);
-		gbc_btnAnmelden.gridx = 2;
-		gbc_btnAnmelden.gridy = 6;
-		contentPane.add(btnAnmelden, gbc_btnAnmelden);
+		
 	}
 
 	public JButton getBtnAnmelden() {
@@ -166,5 +108,36 @@ public class LogScreen extends JFrame {
 	public void setBtnAnmelden(JButton btnAnmelden) {
 		this.btnAnmelden = btnAnmelden;
 	}
+	public JTextField getTextField() {
+		return txtAdresse;
+	}
+
+	public void setTextField(JTextField textField) {
+		this.txtAdresse = textField;
+	}
+
+	public JPasswordField getPasswort() {
+		return passwort;
+	}
+
+	public void setPasswort(JPasswordField passwort) {
+		this.passwort = passwort;
+	}
+	public JMenuItem getMntmServerkonfigurationen() {
+		return mntmServerkonfigurationen;
+	}
+
+	public void setMntmServerkonfigurationen(JMenuItem mntmServerkonfigurationen) {
+		this.mntmServerkonfigurationen = mntmServerkonfigurationen;
+	}
+	
+	public JButton getBtnRegistrieren() {
+		return btnRegistrieren;
+	}
+
+	public void setBtnRegistrieren(JButton btnRegistrieren) {
+		this.btnRegistrieren = btnRegistrieren;
+	}
+
 
 }
