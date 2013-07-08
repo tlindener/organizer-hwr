@@ -103,7 +103,7 @@ public class ParseUtils {
 	 * @return the HTTP parameter
 	 */
 	public static String getParameterMailAddress(String mail) {
-		return "MailAddress=" + mail;
+		return "MailAddress=" + mail.toLowerCase();
 	}
 
 	/**
@@ -436,7 +436,6 @@ public class ParseUtils {
 	}
 
 	public static void main(String[] args) {
-
 		System.out.println(hashString("Test"));
 		System.out.println(parseDateToNetDateTime(new Date()));
 		System.out

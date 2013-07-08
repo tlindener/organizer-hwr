@@ -6,6 +6,7 @@ package organizer.objects.types;
 import java.util.ArrayList;
 import java.util.List;
 
+import organizer.networklayer.network.utilities.ParseUtils;
 import organizer.objects.AbstractOrganizerObject;
 
 /**
@@ -21,6 +22,8 @@ public class User extends AbstractOrganizerObject{
 	private String mailAddress = "";
 	/** the phone number of the user */
 	private String phoneNumber = "";
+	/** the hashed password of the user */
+	private String password = "";
 	/** a list of all group IDs the user participates */
 	private List<Integer> groupIds = new ArrayList<Integer>();
 	/** a list of all calendar IDs the user has */
@@ -75,6 +78,19 @@ public class User extends AbstractOrganizerObject{
 	 */
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+	/**
+	 * Sets the password to this user after hashing it.
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = ParseUtils.hashString(password);
 	}
 	/**
 	 * @return the groupIds

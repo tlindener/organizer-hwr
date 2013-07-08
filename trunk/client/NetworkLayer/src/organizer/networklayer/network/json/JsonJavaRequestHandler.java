@@ -264,6 +264,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 			throw new IllegalArgumentException(
 					"The mail address must not be empty or null");
 		try {
+			user.setPassword(password);
 			// returns the start of the HTTP command
 			String getCmd = ParseUtils.makeAddCommand(user);
 			// returns the parameters as list
@@ -271,7 +272,8 @@ public class JsonJavaRequestHandler extends RequestHandler {
 					.getParameterStringList(user);
 			// returns the password as encoded value and adds it to the
 			// parameter list
-			parameters.add(ParseUtils.getParameterPassword(password));
+			
+//			parameters.add(ParseUtils.getParameterPassword(password));
 			// returns the parameters as String for HTTP command and combines it
 			// with the command start
 			getCmd += ParseUtils.getParameterString(parameters
