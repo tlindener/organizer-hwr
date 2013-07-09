@@ -1,11 +1,13 @@
 package view;
 
+import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionListener;
 
@@ -89,7 +91,7 @@ public class View {
 
 	public void createEinladungen() {
 		myEinladungen = new Einladungen(myAl);
-		myEinladungen.setVisible(false);
+		myEinladungen.setVisible(true);
 	}
 
 	/**
@@ -118,7 +120,7 @@ public class View {
 	 * @return myHauptmenue
 	 */
 	public Hauptmenue befuelleHauptmenue(JTable table, String details,
-			List<User> eingeladene, String raum) {
+			List<User> eingeladene, String raum, int myEinl) {
 
 		myHauptmenue.getBtnTerminBearbeiten().setText("Termin bearbeiten");
 		myHauptmenue.getTextArea().setText(details);
@@ -137,6 +139,13 @@ public class View {
 		}
 
 		myHauptmenue.getTxtRaum().setText(raum);
+		
+		myHauptmenue.getLblAnzahlEinladungen()
+				.setText(Integer.toString(myEinl));
+		myHauptmenue.getLblAnzahlEinladungen()
+				.setForeground(Color.RED);
+
+		
 		return myHauptmenue;
 	}
 
@@ -177,25 +186,41 @@ public class View {
 
 	}
 
+	
+	public void schlieﬂeFenster(JFrame fenster){
+		if(fenster != null){
+			fenster.dispose();
+			fenster = null;
+		}
+	}
+	
 	/**
 	 * Closes all windows.
 	 */
 	public void schliesseAlleFenster()
 	{
-		if(myHauptmenue!=null)
-			myHauptmenue.dispose();
-		if(myLogScreen!=null)
-			myLogScreen.dispose();
-		if(myRegistration!=null)	
-			myRegistration.dispose();
-		if(myServereinstellungen!=null)	
-			myServereinstellungen.dispose();
-		if(myNeuerRaum!=null)	
-			myNeuerRaum.dispose();
-		if(myEinladungen!=null)	
-			myEinladungen.dispose();
-		if(myTerminBearbeiten!=null)	
-			myTerminBearbeiten.dispose();
+		schlieﬂeFenster(myHauptmenue);
+		schlieﬂeFenster(myLogScreen);
+		schlieﬂeFenster(myRegistration);
+		schlieﬂeFenster(myServereinstellungen);
+		schlieﬂeFenster(myNeuerRaum);
+		schlieﬂeFenster(myEinladungen);
+		schlieﬂeFenster(myTerminBearbeiten);
+		
+//		if(myHauptmenue!=null)
+//			myHauptmenue.dispose();
+//		if(myLogScreen!=null)
+//			myLogScreen.dispose();
+//		if(myRegistration!=null)	
+//			myRegistration.dispose();
+//		if(myServereinstellungen!=null)	
+//			myServereinstellungen.dispose();
+//		if(myNeuerRaum!=null)	
+//			myNeuerRaum.dispose();
+//		if(myEinladungen!=null)	
+//			myEinladungen.dispose();
+//		if(myTerminBearbeiten!=null)	
+//			myTerminBearbeiten.dispose();
 
 	}
 

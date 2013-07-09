@@ -154,7 +154,7 @@ public class Einladungen extends JFrame {
 		txtRaum = new JTextField();
 		txtRaum.setEditable(false);
 		GridBagConstraints gbc_txtRaum = Util.createGridBagContraints(4, 8,
-				GridBagConstraints.NONE, GridBagConstraints.HORIZONTAL);
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL);
 		contentPane.add(txtRaum, gbc_txtRaum);
 		txtRaum.setColumns(10);
 	}

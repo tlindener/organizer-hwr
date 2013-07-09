@@ -112,82 +112,93 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		if (view.getMyHauptmenue() != null
+				&& e.getSource() == view.getMyHauptmenue().getBtnAbmelden()) {
+			view.schliesseAlleFenster();
+			view.createLogScreen();
+			return;
+		}
 		if (view.getMyServereinstellungen() != null
 				&& e.getSource() == view.getMyServereinstellungen()
 						.getBtnSpeichern()) {
 			speichereServereinstellungen();
-
+			return;
 		}
 		if (view.getMyHauptmenue() != null
 				&& e.getSource() == view.getMyHauptmenue()
 						.getBtnTerminBearbeiten()) {
 			bearbeiteTermin();
-
+			return;
 		}
-		if (view.getMyHauptmenue() != null
-				&& e.getSource() == view.getMyHauptmenue().getBtnAbmelden()) {
-			view.schliesseAlleFenster();
-			view.createLogScreen();
-
-		}
+	
 		if (view.getMyHauptmenue() != null
 				&& e.getSource() == view.getMyHauptmenue()
 						.getBtnTerminEntfernen()) {
 			entferneTermin();
+			return;
 		}
 		if (view.getMyHauptmenue() != null
 				&& e.getSource() == view.getMyHauptmenue()
 						.getBtnRaumErstellen()) {
 			view.createNeuerRaum();
+			return;
 		}
 		if (view.getMyLogScreen() != null
 				&& e.getSource() == view.getMyLogScreen()
 						.getMntmServerkonfigurationen()) {
 			view.createServereinstellungen();
+			return;
 		}
 		if (view.getMyLogScreen() != null
 				&& e.getSource() == view.getMyLogScreen().getBtnAnmelden()) {
 			view.getMyLogScreen().dispose();
+			view.createHauptmenue();
 			meldeUserAn();
+			return;
 		}
 		if (view.getMyLogScreen() != null
 				&& e.getSource() == view.getMyLogScreen().getBtnRegistrieren()) {
 			view.getMyLogScreen().dispose();
 			view.createRegistrieren();
-
+			return;
 		}
 		if (view.getMyRegistration() != null
 				&& e.getSource() == view.getMyRegistration()
 						.getBtnRegistrieren()) {
 			registriereUser();
+			return;
 		}
 		if (view.getMyRegistration() != null
 				&& e.getSource() == view.getMyRegistration().getBtnAbbrechen()) {
 			view.getMyRegistration().loescheInhalte();
 			view.getMyRegistration().dispose();
 			view.createLogScreen();
+			return;
 		}
 
 		if (view.getMyTerminBearbeiten() != null
 				&& e.getSource() == view.getMyTerminBearbeiten()
 						.getBtnAbbrechen()) {
 			view.getMyTerminBearbeiten().dispose();
+			return;
 		}
 
 		if (view.getMyTerminBearbeiten() != null
 				&& e.getSource().equals(
 						view.getMyTerminBearbeiten().getBtnTerminEintragen())) {
 			speichereTermin();
+			return;
 		}
 
 		if (view.getMyNeuerRaum() != null
 				&& e.getSource() == view.getMyNeuerRaum().getBtnSpeichern()) {
 			speichereRaum();
+			return;
 		}
 		if (view.getMyNeuerRaum() != null
 				&& e.getSource() == view.getMyNeuerRaum().getBtnAbbrechen()) {
 			view.getMyNeuerRaum().dispose();
+			return;
 
 		}
 		if (view.getMyEinladungen() != null
@@ -196,7 +207,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				aktin.setAccepted(-1);
 				bearbeiteEinladung();
 			}
-
+			return;
 		}
 		if (view.getMyEinladungen() != null
 				&& e.getSource() == view.getMyEinladungen().getBtnZusagen()) {
@@ -204,7 +215,9 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				aktin.setAccepted(1);
 				bearbeiteEinladung();
 			}
+			return;
 		}
+	
 	}
 
 	/**
@@ -219,7 +232,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		if (e.getSource() == view.getMyHauptmenue().getPicLabel()) {
 			if (myModel.getEinladungen().size() > 0) {
-				view.createEinladungen();
+				
 				befuelleEinladungen();
 			} else
 				JOptionPane.showMessageDialog(view.getMyHauptmenue(),
@@ -297,7 +310,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	public void valueChanged(ListSelectionEvent e) {
 
 		if (e.getSource() == view.getMyHauptmenue().getListSelectionModel()) {
-			befuelleMainFrame(e);
+			befuelleMainFrame();
 		}
 
 	}
@@ -580,21 +593,18 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	public void befuelleEinladungen() {
 
-		List<Invite> einl = myModel.getEinladungen();
+		
 		// XXX Was willst du hier machen? Sortieren macht man über einen
 		// Comperator...
-		List<Invite> sortEinl = new ArrayList();
-		for (Invite in : einl) {
-			if (in.isAccepted() == 0) {
-				sortEinl.add(in);
-			}
-		}
-		einl = sortEinl;
+		updateData();
+		List<Invite> einl = myModel.getEinladungen();
+		einl = getUnacceptedInvites(einl);
 		// XXX QuickFix
 		if (einl.isEmpty()) {
 			aktin = null;
 			return;
 		}
+		view.createEinladungen();
 		aktin = einl.get(0);
 		int id = aktin.getCalendarEntryId();
 		CalendarEntry ce = new CalendarEntry();
@@ -657,16 +667,21 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * 
 	 * @param e
 	 */
-	public void befuelleMainFrame(ListSelectionEvent e) {
-
+	public void befuelleMainFrame() {
 		JTable zwTab = view.getMyHauptmenue().getTable_1();
-		aktTermin = (String) view.getMyHauptmenue().getTable_1()
-				.getValueAt(zwTab.getSelectedRow(), 0);
+		
+		if(zwTab.getSelectedRow() != -1){
+			aktTermin = (String) view.getMyHauptmenue().getTable_1()
+					.getValueAt(zwTab.getSelectedRow(), 0);
+		}
 		String details = (String) myModel.returnDetail(aktTermin);
 		List<User> eingeladene = new ArrayList<User>();
 		eingeladene = myModel.returnEingeladene(aktTermin);
 		String raum = returnStringOfObject(myModel.returnRaum(aktTermin));
-		view.befuelleHauptmenue(zwTab, details, eingeladene, raum);
+		
+		int myEinl = getUnacceptedInvites(myModel.getEinladungen()).size();
+		
+		view.befuelleHauptmenue(zwTab, details, eingeladene, raum, myEinl);
 
 	}
 
@@ -983,8 +998,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	public void connectServerModel() {
 		myModel.setAktDate(aktDate);
 		updateData();
-		view.createHauptmenue();
-
 	}
 
 	/**
@@ -1172,12 +1185,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 					return;
 
 				}
-
-				int myEinl = myModel.getEinladungen().size();
-				view.getMyHauptmenue().getLblAnzahlEinladungen()
-						.setText(Integer.toString(myEinl));
-				view.getMyHauptmenue().getLblAnzahlEinladungen()
-						.setForeground(Color.RED);
+				befuelleMainFrame();
 				view.getMyLogScreen().dispose();
 			} else {
 				JOptionPane
@@ -1193,6 +1201,16 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 	}
 
+	private List<Invite> getUnacceptedInvites(List<Invite> einl){
+		List<Invite> sortEinl = new ArrayList<>();
+		for (Invite in : einl) {
+			if (in.isAccepted() == 0) {
+				sortEinl.add(in);
+			}
+		}
+		return sortEinl;
+	}
+	
 	/**
 	 * Returns the name of a room as String.
 	 * 
