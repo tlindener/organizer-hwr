@@ -95,8 +95,6 @@ public class Hauptmenue extends JFrame {
 	/**
 	 * Create the frame.
 	 * 
-	 * @param txtADetails
-	 * @param list
 	 */
 
 	public void init() {
