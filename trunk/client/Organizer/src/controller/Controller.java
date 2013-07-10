@@ -130,7 +130,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			bearbeiteTermin();
 			return;
 		}
-	
+
 		if (view.getMyHauptmenue() != null
 				&& e.getSource() == view.getMyHauptmenue()
 						.getBtnTerminEntfernen()) {
@@ -152,7 +152,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		if (view.getMyLogScreen() != null
 				&& e.getSource() == view.getMyLogScreen().getBtnAnmelden()) {
 			view.getMyLogScreen().dispose();
-			view.createHauptmenue();
 			meldeUserAn();
 			return;
 		}
@@ -217,7 +216,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 			}
 			return;
 		}
-	
+
 	}
 
 	/**
@@ -232,7 +231,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 		if (e.getSource() == view.getMyHauptmenue().getPicLabel()) {
 			if (myModel.getEinladungen().size() > 0) {
-				
+
 				befuelleEinladungen();
 			} else
 				JOptionPane.showMessageDialog(view.getMyHauptmenue(),
@@ -498,9 +497,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		List<User> eingeladene = new ArrayList<User>();
 		for (Invite invite : invites) {
 			if (invite == null) {
-				// Fehler bei der Abfrage, ID exitiert entweder
-				// nicht oder es gab einen ParsingError (sollte hier
-				// nicht vorkommen, aber um sicher zu gehen)
+				
 			} else {
 				User requestUser = new User();
 				requestUser.setID(invite.getOwnerId());
@@ -508,7 +505,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 				if (requestUser != null) {
 					eingeladene.add(requestUser);
 				} else {
-					// TESTf
 					User us = new User();
 					us.setGivenname("klappt nicht....");
 					eingeladene.add(us);
@@ -582,8 +578,15 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * Updates the accept status of an invite.
 	 */
 	public void bearbeiteEinladung() {
-		myRequester.acceptInvite(aktin);
+		if (aktin.isAccepted() == 1) {
+			myRequester.acceptInvite(aktin);
+		}
+		if (aktin.isAccepted() == -1) {
+			myRequester.declineInvite(aktin);
+		}
 		updateData();
+		view.getMyHauptmenue().repaint();
+		befuelleMainFrame();
 		view.getMyEinladungen().dispose();
 	}
 
@@ -593,15 +596,14 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	public void befuelleEinladungen() {
 
-		
-		// XXX Was willst du hier machen? Sortieren macht man über einen
-		// Comperator...
 		updateData();
 		List<Invite> einl = myModel.getEinladungen();
 		einl = getUnacceptedInvites(einl);
-		// XXX QuickFix
+
 		if (einl.isEmpty()) {
 			aktin = null;
+			JOptionPane.showMessageDialog(view.getMyHauptmenue(),
+					"Sie haben derzeit keine neuen Einladungen");
 			return;
 		}
 		view.createEinladungen();
@@ -669,8 +671,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 */
 	public void befuelleMainFrame() {
 		JTable zwTab = view.getMyHauptmenue().getTable_1();
-		
-		if(zwTab.getSelectedRow() != -1){
+
+		if (zwTab.getSelectedRow() != -1) {
 			aktTermin = (String) view.getMyHauptmenue().getTable_1()
 					.getValueAt(zwTab.getSelectedRow(), 0);
 		}
@@ -678,9 +680,9 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		List<User> eingeladene = new ArrayList<User>();
 		eingeladene = myModel.returnEingeladene(aktTermin);
 		String raum = returnStringOfObject(myModel.returnRaum(aktTermin));
-		
+
 		int myEinl = getUnacceptedInvites(myModel.getEinladungen()).size();
-		
+
 		view.befuelleHauptmenue(zwTab, details, eingeladene, raum, myEinl);
 
 	}
@@ -1081,7 +1083,8 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 				if (utmp == null) {
 					JOptionPane
-							.showMessageDialog(view.getMyRegistration(),
+							.showMessageDialog(
+									view.getMyRegistration(),
 									"Sie konnten nicht registriert werden. Bitte stellen Sie sicher, dass Sie nicht bereits registriert sind!");
 					return;
 				} else {
@@ -1173,6 +1176,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 
 				if (tmpCal != null) {
 					aktUserCa = tmpCal;
+					view.createHauptmenue();
 					connectServerModel();
 
 				} else {
@@ -1201,7 +1205,13 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 	}
 
-	private List<Invite> getUnacceptedInvites(List<Invite> einl){
+	/**
+	 * Returns the unaccepted Invites of the current user.
+	 * 
+	 * @param einl
+	 * @return sort Einl
+	 */
+	private List<Invite> getUnacceptedInvites(List<Invite> einl) {
 		List<Invite> sortEinl = new ArrayList<>();
 		for (Invite in : einl) {
 			if (in.isAccepted() == 0) {
@@ -1210,7 +1220,7 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 		}
 		return sortEinl;
 	}
-	
+
 	/**
 	 * Returns the name of a room as String.
 	 * 
