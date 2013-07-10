@@ -667,7 +667,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * Fills the main frame with all information and updates data after the
 	 * mouse has been clicked.
 	 * 
-	 * @param e
 	 */
 	public void befuelleMainFrame() {
 		JTable zwTab = view.getMyHauptmenue().getTable_1();
@@ -935,7 +934,6 @@ public class Controller implements DataPusher, ActionListener, MouseListener,
 	 * Submits the invitation to the server.
 	 * 
 	 * @param calendarEntryId
-	 * @param list
 	 */
 	public void versendeEinladungen(int calendarEntryId) {
 		CalendarEntry entry = new CalendarEntry();

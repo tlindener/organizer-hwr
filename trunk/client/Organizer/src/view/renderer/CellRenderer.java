@@ -7,6 +7,12 @@ import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 
+/**
+ * Class that handels the appearance of table cells.
+ * 
+ * @author Jennifer Blumenthal
+ *
+ */
 public class CellRenderer extends DefaultTableCellRenderer{
 	
 	  Color color = new Color(252,255,170);
