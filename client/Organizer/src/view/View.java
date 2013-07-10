@@ -117,7 +117,9 @@ public class View {
 	 * @param details
 	 * @param eingeladene
 	 * @param raum
+	 * @param myEinl
 	 * @return myHauptmenue
+	 * 
 	 */
 	public Hauptmenue befuelleHauptmenue(JTable table, String details,
 			List<User> eingeladene, String raum, int myEinl) {
@@ -130,8 +132,7 @@ public class View {
 
 			for (User element : eingeladene) {
 				System.out.println(element);
-				myHauptmenue.getListModel().addElement(
-						element.getGivenName() + " " + element.getSurname());
+				myHauptmenue.getListModel().addElement(element.getGivenName() + " " + element.getSurname());
 				myHauptmenue.repaint();
 			}
 		} else {
@@ -145,7 +146,6 @@ public class View {
 		myHauptmenue.getLblAnzahlEinladungen()
 				.setForeground(Color.RED);
 
-		
 		return myHauptmenue;
 	}
 
@@ -161,8 +161,7 @@ public class View {
 	 * @param raeume
 	 * @param personen
 	 */
-	public void createTerminBearbeiten(String details, String endZeit,
-			String startZeit, String beschreibung, String raum, Room[] raeume,
+	public void createTerminBearbeiten(String startZeit,String endZeit,String details, String beschreibung, String raum, Room[] raeume,
 			User[] personen) {
 		myTerminBearbeiten = new TerminBearbeiten(myDP, myAl, myMl);
 		if (beschreibung.equals("")) {
@@ -186,7 +185,10 @@ public class View {
 
 	}
 
-	
+	/**
+	 * Closes the submitted JFrame.
+	 * @param fenster
+	 */
 	public void schlieﬂeFenster(JFrame fenster){
 		if(fenster != null){
 			fenster.dispose();
@@ -206,21 +208,6 @@ public class View {
 		schlieﬂeFenster(myNeuerRaum);
 		schlieﬂeFenster(myEinladungen);
 		schlieﬂeFenster(myTerminBearbeiten);
-		
-//		if(myHauptmenue!=null)
-//			myHauptmenue.dispose();
-//		if(myLogScreen!=null)
-//			myLogScreen.dispose();
-//		if(myRegistration!=null)	
-//			myRegistration.dispose();
-//		if(myServereinstellungen!=null)	
-//			myServereinstellungen.dispose();
-//		if(myNeuerRaum!=null)	
-//			myNeuerRaum.dispose();
-//		if(myEinladungen!=null)	
-//			myEinladungen.dispose();
-//		if(myTerminBearbeiten!=null)	
-//			myTerminBearbeiten.dispose();
 
 	}
 

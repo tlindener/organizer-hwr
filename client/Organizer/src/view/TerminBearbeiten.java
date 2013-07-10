@@ -249,8 +249,6 @@ public class TerminBearbeiten extends JFrame implements MyChangeListener {
 	/**
 	 * Create the frame.
 	 * 
-	 * @param textArea
-	 * @param list
 	 */
 	public void init() {
 		setBounds(100, 100, 804, 472);
