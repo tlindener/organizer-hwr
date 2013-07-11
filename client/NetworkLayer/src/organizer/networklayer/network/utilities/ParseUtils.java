@@ -37,8 +37,6 @@ public class ParseUtils {
 	 * HashMap containing the plurals of the class names.
 	 */
 	private static HashMap<Class<? extends AbstractOrganizerObject>, String> plurals;
-	private static HashMap<Character, String> urlReplacments;
-	
 	/**
 	 * Static constructor creates and fills the {@link #plurals}
 	 */
@@ -290,7 +288,12 @@ public class ParseUtils {
 		}
 		return parameters;
 	}
-
+	/**
+	 * Removes the given attribute from the given List
+	 * @param attribute
+	 * @param parameterList
+	 * @return ArrayList without the element
+	 */
 	@SuppressWarnings("unchecked")
 	public static ArrayList<String> removeAttributeFromList(String attribute,
 			ArrayList<String> parameterList) {
@@ -311,7 +314,7 @@ public class ParseUtils {
 	 * using <b>?</b> at the beginning and <b>&</b> between the parameters
 	 * 
 	 * @param parameters
-	 * @return
+	 * @return HTTP-Command parameter string
 	 */
 	public static String getParameterString(String... parameters) {
 		String parameterStr = "?";
@@ -328,7 +331,7 @@ public class ParseUtils {
 	 * 
 	 * @param value
 	 *            to parse to a HTTP-String
-	 * @return the
+	 * @return URL-encoded string
 	 */
 	public static String parseStringToHTTP(String value) {
 		
@@ -433,12 +436,5 @@ public class ParseUtils {
 			e.printStackTrace();
 		}
 		return date;
-	}
-
-	public static void main(String[] args) {
-		System.out.println(hashString("Test"));
-		System.out.println(parseDateToNetDateTime(new Date()));
-		System.out
-				.println(parseStringToDate("2008-11-01T19:35:00.0000000-07:00"));
 	}
 }
