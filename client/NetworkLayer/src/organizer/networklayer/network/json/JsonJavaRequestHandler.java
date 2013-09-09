@@ -67,6 +67,7 @@ public class JsonJavaRequestHandler extends RequestHandler {
 	public JsonJavaRequestHandler(String hostname, int port) {
 		this.hostname = hostname;
 		this.port = port;
+		System.out.println("Test");
 		init();
 	}
 
